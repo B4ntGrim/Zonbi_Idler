@@ -1,0 +1,30 @@
+[
+  {
+    "start": "A",
+    "result": "OK",
+    "days": 3,
+    "failures": [],
+    "warnings": []
+  },
+  {
+    "start": "B-bat",
+    "result": "OK",
+    "days": 3,
+    "failures": [],
+    "warnings": []
+  },
+  {
+    "start": "B-iron_knuckles",
+    "result": "OK",
+    "days": 3,
+    "failures": [],
+    "warnings": []
+  },
+  {
+    "start": "B-pocket_knife",
+    "result": "OK",
+    "days": 3,
+    "failures": [],
+    "warnings": []
+  }
+]

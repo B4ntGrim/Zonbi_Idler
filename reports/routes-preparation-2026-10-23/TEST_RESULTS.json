@@ -1,0 +1,184 @@
+{
+  "summary": {
+    "suites": 29,
+    "total": 617,
+    "passed": 617,
+    "problems": []
+  },
+  "results": [
+    {
+      "name": "bal-a-walk-home-broken.test.js",
+      "total": 54,
+      "passed": 54,
+      "failures": []
+    },
+    {
+      "name": "batch1.test.js",
+      "total": 16,
+      "passed": 16,
+      "failures": []
+    },
+    {
+      "name": "batch2a.test.js",
+      "total": 18,
+      "passed": 18,
+      "failures": []
+    },
+    {
+      "name": "batch2b.test.js",
+      "total": 53,
+      "passed": 53,
+      "failures": []
+    },
+    {
+      "name": "batch3a.test.js",
+      "total": 22,
+      "passed": 22,
+      "failures": []
+    },
+    {
+      "name": "batch3b.test.js",
+      "total": 34,
+      "passed": 34,
+      "failures": []
+    },
+    {
+      "name": "best1-enemy-identity.test.js",
+      "total": 16,
+      "passed": 16,
+      "failures": []
+    },
+    {
+      "name": "bug-fixes.test.js",
+      "total": 17,
+      "passed": 17,
+      "failures": []
+    },
+    {
+      "name": "carrying-1b.test.js",
+      "total": 34,
+      "passed": 34,
+      "failures": []
+    },
+    {
+      "name": "carrying.test.js",
+      "total": 27,
+      "passed": 27,
+      "failures": []
+    },
+    {
+      "name": "cb1-starter-weapons.test.js",
+      "total": 7,
+      "passed": 7,
+      "failures": []
+    },
+    {
+      "name": "fort-s12.test.js",
+      "total": 1,
+      "passed": 1,
+      "failures": []
+    },
+    {
+      "name": "fx1-downed-hp.test.js",
+      "total": 15,
+      "passed": 15,
+      "failures": []
+    },
+    {
+      "name": "fx2-return-cap.test.js",
+      "total": 8,
+      "passed": 8,
+      "failures": []
+    },
+    {
+      "name": "fx3-buffs-sim-time.test.js",
+      "total": 11,
+      "passed": 11,
+      "failures": []
+    },
+    {
+      "name": "fx4-shared-attributes.test.js",
+      "total": 10,
+      "passed": 10,
+      "failures": []
+    },
+    {
+      "name": "fx5-medkit-heal.test.js",
+      "total": 10,
+      "passed": 10,
+      "failures": []
+    },
+    {
+      "name": "jd1a-first-displacement.test.js",
+      "total": 28,
+      "passed": 28,
+      "failures": []
+    },
+    {
+      "name": "load-regressions.test.js",
+      "total": 14,
+      "passed": 14,
+      "failures": []
+    },
+    {
+      "name": "r1.test.js",
+      "total": 42,
+      "passed": 42,
+      "failures": []
+    },
+    {
+      "name": "rb1-retreat-controls.test.js",
+      "total": 7,
+      "passed": 7,
+      "failures": []
+    },
+    {
+      "name": "rb2-retreat-layout.test.js",
+      "total": 4,
+      "passed": 4,
+      "failures": []
+    },
+    {
+      "name": "retreat-getaway.test.js",
+      "total": 7,
+      "passed": 7,
+      "failures": []
+    },
+    {
+      "name": "routes-idle-rewards.test.js",
+      "total": 20,
+      "passed": 20,
+      "failures": []
+    },
+    {
+      "name": "routes-preparation.test.js",
+      "total": 24,
+      "passed": 24,
+      "failures": []
+    },
+    {
+      "name": "sim-clock-rng.test.js",
+      "total": 20,
+      "passed": 20,
+      "failures": []
+    },
+    {
+      "name": "split-equivalence.test.js",
+      "total": 17,
+      "passed": 17,
+      "failures": []
+    },
+    {
+      "name": "trav-01a.test.js",
+      "total": 67,
+      "passed": 67,
+      "failures": []
+    },
+    {
+      "name": "tutorial-flags.test.js",
+      "total": 14,
+      "passed": 14,
+      "failures": []
+    }
+  ]
+}

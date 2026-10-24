@@ -1,0 +1,393 @@
+[
+  {
+    "id": "scope-001",
+    "topic": "filesystem",
+    "status": "DECIDED",
+    "statement": "Use only the E drive for project file work. E:/Zed_Idler is the master project, and E:/C2C is the user's requested folder for reusable LLM instructions and parsing exports. Quarantine material is excluded from uploading.",
+    "why": "The user explicitly restricted access to E and explained the quarantine folder's purpose.",
+    "evidence": "User instructions in the October 23 conversation.",
+    "proposed_target": "E:/Zed_Idler; E:/C2C",
+    "open_question": ""
+  },
+  {
+    "id": "scope-002",
+    "topic": "current_game_mode",
+    "status": "DECIDED",
+    "statement": "Scope the current brainstorm and follow-up design to Solo Survivor only. Camp Leader is a later option and must remain outside this work.",
+    "why": "The user explicitly excluded Camp Leader and confirmed that it becomes an option later.",
+    "evidence": "Latest user clarification; reference/wandering-tab-spec.md:308-323",
+    "proposed_target": "Solo route design only",
+    "open_question": ""
+  },
+  {
+    "id": "scope-003",
+    "topic": "task_scope",
+    "status": "DECIDED",
+    "statement": "The user authorized and approved the two idle route fixes and the first Solo preparation implementation using existing skills, equipped gear, and carrying space, with backups on E. Other brainstorm concepts remain separate design proposals.",
+    "why": "The conversation moved from brainstorming to explicit implementation instructions and approval.",
+    "evidence": "User instructions in the October 23 conversation.",
+    "proposed_target": "Completed route fixes and Solo preparation; reusable handoff in E:/C2C",
+    "open_question": "No authorization to implement the map circuit builder, hydration expansion, or new Camp Leader systems follows from this scope."
+  },
+  {
+    "id": "routes-001",
+    "topic": "existing_circuit_direction",
+    "status": "CONCEPT",
+    "statement": "The existing handoff proposes building a circuit over the Traversal map using a yellow map lens, with circuit length dependent on transport.",
+    "why": "This is an existing design foundation for the current discussion.",
+    "evidence": "DESIGN_HANDOFF.md:64",
+    "proposed_target": "Proposed reference/route-01-route-builder-concept.md",
+    "open_question": "The dedicated route-builder brief is referenced but was not found in the project inventory."
+  },
+  {
+    "id": "routes-002",
+    "topic": "existing_transport_decisions",
+    "status": "DECIDED",
+    "statement": "The handoff records bicycle range as 3 cells and electric bicycle range as 5 cells, with an electric bicycle battery charged by a fuel-burning generator.",
+    "why": "Reuse recorded transport decisions when drafting the circuit design.",
+    "evidence": "DESIGN_HANDOFF.md:57",
+    "proposed_target": "Route-builder concept and later transport model",
+    "open_question": "Clarify what range measures, foot range, vehicle range, acquisition, and return-trip accounting. Do not turn the separate foot-2-cell concept into a locked rule."
+  },
+  {
+    "id": "routes-003",
+    "topic": "biome_navigation",
+    "status": "CONCEPT",
+    "statement": "Move full biome selection into Traversal and retain a compact region selector in the Routes heading.",
+    "why": "The screenshot repeats biome context in the sidebar and route header; freed space can support run preparation.",
+    "evidence": "User asked to record the recommendation; Zombie Idler v2.html:1763-1931",
+    "proposed_target": "Browser Routes screen in both HTML entry pages; Traversal section of screens-v3.jsx",
+    "open_question": "Exact selection behavior, map-region handoff, and mobile presentation."
+  },
+  {
+    "id": "routes-004",
+    "topic": "run_preparation_sidebar",
+    "status": "CONCEPT",
+    "statement": "Use the freed Routes sidebar for foot or selected-vehicle preparation, relevant supplies, carrying capacity, and actual character readiness.",
+    "why": "Expose decisions that determine what circuit the Solo survivor can complete.",
+    "evidence": "Recorded conversation direction; Zombie Idler v2.html:1775-1855",
+    "proposed_target": "Browser Routes screen; game/items.js; game/routes.js",
+    "open_question": "What to show by travel mode and which resource rules are approved."
+  },
+  {
+    "id": "routes-005",
+    "topic": "current_route_implementation",
+    "status": "CODE",
+    "statement": "Routes still use predefined named stops rather than coordinate-based Traversal circuits. Solo preparation now affects those routes through shared preview and outcome rules; the map route-builder control remains disabled.",
+    "why": "Connecting a planned circuit to real map cells is the central implementation gap.",
+    "evidence": "game/routes.js: getRoutePreparation, startRouteRun, resolvePreparedRouteNodes; screens-v3.jsx: disabled route-mode control",
+    "proposed_target": "game/routes.js; game/world.js; screens-v3.jsx",
+    "open_question": ""
+  },
+  {
+    "id": "routes-006",
+    "topic": "shared_circuit_plan",
+    "status": "PROPOSED",
+    "statement": "Represent a planned circuit using ordered Traversal cells, explicit stop actions, a travel mode, and a return destination; execute the plan through shared rules.",
+    "why": "Connect route preparation, map geography, persistent world progress, and the run report.",
+    "evidence": "Synthesis of existing route/map code and the current brainstorm.",
+    "proposed_target": "Proposed route-builder brief; later game/routes.js, game/world.js, and screens-v3.jsx",
+    "open_question": "Connectivity, mixed travel modes, starting and return points, interruption, and repeat behavior."
+  },
+  {
+    "id": "routes-007",
+    "topic": "active_and_idle",
+    "status": "CONCEPT",
+    "statement": "Treat Active and Idle as execution choices for a circuit. Define the meaningful decisions available while present and the unattended policy defaults.",
+    "why": "Preserve the idle game's attention-at-important-moments principle.",
+    "evidence": "Recorded conversation; reference/wandering-tab-spec.md:329; reference/zed-idler-design-lead-brief.md:27-35; game/routes.js:224",
+    "proposed_target": "Route-builder concept; shared route simulation; Routes run-mode selector",
+    "open_question": "The current resolver primarily changes loot scaling. The UI's lower-risk and reduced-XP claims need explicit rules and implementation checks."
+  },
+  {
+    "id": "progression-001",
+    "topic": "existing_skill_system",
+    "status": "CODE",
+    "statement": "The game uses its existing 16 professions and central action-XP dispatcher. Prepared Solo runs award movement, avoided-encounter, successful-combat, loot, and hazard XP according to actual actions.",
+    "why": "Use existing skills and their definitions when giving route choices progression effects.",
+    "evidence": "game/stats.js: PROFESSIONS and ACTION_XP; game/routes.js: resolvePreparedRouteNodes and completeRun",
+    "proposed_target": "game/stats.js; game/routes.js",
+    "open_question": ""
+  },
+  {
+    "id": "progression-002",
+    "topic": "activity_based_growth",
+    "status": "IMPLEMENTED",
+    "statement": "Athletics affects Solo route travel duration; Combat, Athletics, weapon power, and armor affect fight readiness; Stealth and equipment noise affect avoidance. Actual resolved actions feed the existing skills.",
+    "why": "Implement the user's approved first preparation-to-outcome slice without adding new skills.",
+    "evidence": "game/routes.js: ROUTE_PREP_TABLE, getRoutePreparation, resolvePreparedRouteNodes, completeRun",
+    "proposed_target": "Route-builder concept; later game/stats.js and shared route rules",
+    "open_question": "Further repair, infrastructure, route-mastery, and transport actions are not part of this slice."
+  },
+  {
+    "id": "progression-003",
+    "topic": "current_risk_feedback",
+    "status": "SUPERSEDED",
+    "statement": "Before the preparation implementation, route success estimates were fixed by biome danger. Prepared Solo runs now use the actual survivor's skills, gear, route difficulty, and threat.",
+    "why": "Character growth currently cannot affect the displayed route probability through this estimator.",
+    "evidence": "Initial review; superseded by game/routes.js: getRoutePreparation and estimateSuccessProbability",
+    "proposed_target": "Later shared route-risk rule and Routes preview",
+    "open_question": "The new probability is per fight, conditional on detection; it is not an overall safe-return guarantee."
+  },
+  {
+    "id": "progression-004",
+    "topic": "familiarity_models",
+    "status": "CODE",
+    "statement": "Route-stop visits reveal loot information using route-local identifiers. Traversal familiarity separately tracks explored or cleared map ground.",
+    "why": "Circuit mastery must reconcile these models when route stops become real places.",
+    "evidence": "game/routes.js:103-127; game/world.js:167-172",
+    "proposed_target": "Route-builder concept; later world and POI persistence",
+    "open_question": "Which familiarity belongs to a place, an activity, or the planned route."
+  },
+  {
+    "id": "progression-005",
+    "topic": "route_improvements",
+    "status": "PROPOSED",
+    "statement": "Exploration could discover shortcuts, remove obstacles, establish caches, or improve vehicle access and circuit reliability.",
+    "why": "Give active preparation lasting benefits and a reason to return to previously explored ground.",
+    "evidence": "Assistant brainstorm; existing familiarity and circuit concepts.",
+    "proposed_target": "Route-builder concept and world-state extension",
+    "open_question": "Mastery effects, costs, permanence, and whether any mastery is required before idle use."
+  },
+  {
+    "id": "survival-001",
+    "topic": "current_route_readiness",
+    "status": "CODE",
+    "statement": "The Solo preparation panel now reads actual character level, effective skills, equipped gear, and carrying totals. Nutrition, hydration, vehicle condition, and stamina sample values remain outside this Solo preparation model.",
+    "why": "Display only implemented readiness inputs while survival mechanics remain separately scoped.",
+    "evidence": "Both HTML pages: SoloRoutePreparationPanel and SoloOperativePanel; game/routes.js: getRoutePreparation",
+    "proposed_target": "Both HTML entry pages; later shared survivor state, game/save.js, game/survival-data.js",
+    "open_question": "Define and approve shared food, hydration, stamina, and vehicle-condition mechanics before connecting them."
+  },
+  {
+    "id": "survival-002",
+    "topic": "existing_water_scope",
+    "status": "DECIDED",
+    "statement": "The existing Water design uses fishing as its initial useful action and explicitly leaves thirst, dehydration, purification, containers, and automated POI schedules outside Water v1.",
+    "why": "A hydration expansion changes the documented scope and must be introduced deliberately.",
+    "evidence": "reference/poi-framework-v1-brief.md:519-557; reference/poi-framework-v1-brief.md:632-650; reference/poi-framework-v1-brief.md:680-698",
+    "proposed_target": "Existing Water brief plus a separate proposed survival expansion",
+    "open_question": "Whether to expand now or later. Do not silently include hydration in the existing Water v1 batch."
+  },
+  {
+    "id": "survival-003",
+    "topic": "realism_and_craftable_provisions",
+    "status": "CONCEPT",
+    "statement": "The user prefers realism and proposed more craftable items to give food, water, and route preparation meaningful roles.",
+    "why": "Supply planning can create route choices and make craftable items useful.",
+    "evidence": "User's latest survival discussion; existing consumable crafting supports item output.",
+    "proposed_target": "Proposed survival/food brief; later game/items.js, game/crafting.js, game/jobs.js, game/survival-data.js, and shared saved state.",
+    "open_question": "Whether to keep a separate hydration meter; water sourcing, storage, treatment, use, and unattended behavior. Specific recipes remain proposals."
+  },
+  {
+    "id": "survival-004",
+    "topic": "hydration_removal_history",
+    "status": "SUPERSEDED",
+    "statement": "Removing hydration was an early recommendation before the user emphasized realism and additional craftable provisions.",
+    "why": "Preserve the change of direction so a later compiler does not treat removal as the settled outcome.",
+    "evidence": "October 23 conversation sequence.",
+    "proposed_target": "Decision history only",
+    "open_question": "The separate hydration mechanic remains open. Replacing the Solo panel's sample meters with actual preparation data does not settle the long-term hydration design."
+  },
+  {
+    "id": "survival-005",
+    "topic": "existing_food_decisions",
+    "status": "DECIDED",
+    "statement": "The existing handoff links food to out-of-combat recovery, edible fish items, camp food, and cooking. These are recorded design decisions, not proof of completed implementation.",
+    "why": "Keep new route-provision ideas consistent with existing food and recovery design.",
+    "evidence": "DESIGN_HANDOFF.md:32-52",
+    "proposed_target": "Relevant existing food briefs when recovered; future scoped survival proposal",
+    "open_question": "Several dedicated food and stockpile briefs named in the handoff are absent from the reviewed folder."
+  },
+  {
+    "id": "survival-006",
+    "topic": "unity_implementation_distinction",
+    "status": "CODE",
+    "statement": "The Unity copy seeds a Water Bottle item and has Eat/Drink commands that consume inventory, but the inspected command bodies do not update a persistent hydration or nutrition meter.",
+    "why": "The browser screenshot and Unity port have different partial integration; avoid claiming hydration is absent everywhere.",
+    "evidence": "unity/Assets/Editor/ItemSeeder.cs:47-51; unity/Assets/Scripts/Systems/WanderingSceneController.cs:527-540",
+    "proposed_target": "Future Unity port mapping only; current design review centers the displayed browser prototype.",
+    "open_question": "Verify the chosen port's final shared survival model before implementation."
+  },
+  {
+    "id": "constraints-001",
+    "topic": "finite_cell_loot",
+    "status": "DECIDED",
+    "statement": "Looted Traversal cells do not regrow their one-time salvage. Familiarity improves safety and yield before that one loot.",
+    "why": "A repeated circuit must respect finite world loot rather than reset emptied containers.",
+    "evidence": "reference/trav-01-traversal-slice.md:21-22; reference/playtest-findings-oct15.md:143; screens-v3.jsx:749,875",
+    "proposed_target": "Circuit repeat rules; later route and POI resolution",
+    "open_question": "Which activities are legitimately repeatable and how fishing, foraging, deliveries, or new destinations participate. Automated fishing is not presently approved."
+  },
+  {
+    "id": "constraints-002",
+    "topic": "travel_progression_limits",
+    "status": "DECIDED",
+    "statement": "Traversal Travel, Scout, and Hide XP are limited per cell per real day; stamina-limited travel is a decided concept with proposed tuning values.",
+    "why": "Route automation must not bypass existing progression limits.",
+    "evidence": "CURRENT_BATCH.md:15-16; reference/trav-01-traversal-slice.md:26-34",
+    "proposed_target": "Shared movement and action-XP rules",
+    "open_question": "How route runs participate in the limits and the approved stamina tuning."
+  },
+  {
+    "id": "constraints-003",
+    "topic": "clock_and_offline",
+    "status": "DECIDED",
+    "statement": "Follow the established online/offline consistency principle and the documented 24-real-hour progress cap when designing circuit execution.",
+    "why": "Idle circuits, supply use, and skill rewards must settle consistently.",
+    "evidence": "reference/wandering-tab-spec.md:329-334; reference/clock-01-slice.md:22-36,96-101",
+    "proposed_target": "Route execution design and later shared clock integration",
+    "open_question": "Clock conversion and other open CLOCK-01 decisions remain with that slice; no clock change is authorized here."
+  },
+  {
+    "id": "docs-001",
+    "topic": "missing_design_briefs",
+    "status": "OPEN",
+    "statement": "The handoff names route-builder, food, cooking, stockpile, and profession-XP briefs that were not found in the main project file inventory.",
+    "why": "Do not represent an absent document as reviewed or silently reconstruct it as authoritative.",
+    "evidence": "DESIGN_HANDOFF.md:64-75; scoped and case-insensitive filename inventories of E:/Zed_Idler.",
+    "proposed_target": "Proposed new route-builder draft or recovery of the original briefs; later reference/00-document-index.md update",
+    "open_question": "Recover the originals or create clearly marked drafts using the extant handoff and source evidence."
+  },
+  {
+    "id": "plan-001",
+    "topic": "recommended_next_design_task",
+    "status": "PROPOSED",
+    "statement": "The next design task can connect the implemented Solo preparation foundation to the Traversal circuit builder. First perform a visual check of the new route interface; keep survival expansion separately scoped.",
+    "why": "The map-to-route connection is foundational; it gives supplies and progression a place to operate.",
+    "evidence": "Review synthesis, preserving the user's brainstorming-only scope.",
+    "proposed_target": "Visual browser review; later route-builder concept",
+    "open_question": "Route topology, return rules, repeatable activities, and survival expansion remain design work."
+  },
+  {
+    "id": "exchange-001",
+    "topic": "llm_handoff_location",
+    "status": "DECIDED",
+    "statement": "Use E:/C2C for reusable LLM instructions and structured parsing records. Keep the actual game and canonical project documents in E:/Zed_Idler.",
+    "why": "The user explicitly requested the C2C folder on E for instructions to parse to an LLM.",
+    "evidence": "Latest user direction.",
+    "proposed_target": "E:/C2C/Zed_Idler_Routes_LLM_Instructions.md; E:/C2C/Zed_Idler_Routes_Parsing_Records.json",
+    "open_question": ""
+  },
+  {
+    "id": "prep-001",
+    "topic": "shared_preparation_model",
+    "status": "IMPLEMENTED",
+    "statement": "A shared Solo preparation calculation drives route cards, details, deployment validation, timers, and run resolution.",
+    "why": "Preparation must affect results as well as the preview.",
+    "evidence": "game/routes.js: getRoutePreparation; both HTML pages: useSoloRoutePreparation and RouteDetailPanel",
+    "proposed_target": "E:/Zed_Idler/game/routes.js",
+    "open_question": ""
+  },
+  {
+    "id": "prep-002",
+    "topic": "departure_snapshot",
+    "status": "IMPLEMENTED",
+    "statement": "Each new Solo run saves its preparation and duration at departure. Reloads and idle repeats use that snapshot, so later equipment or stat changes do not retroactively improve it.",
+    "why": "Keep the run consistent with its launch preview and prevent switching equipment at claim time.",
+    "evidence": "game/routes.js: startRouteRun, settleRouteRuns, routeRunProgress",
+    "proposed_target": "Existing zi_route_runs save records",
+    "open_question": "Restart the run to use newly changed preparation. Legacy runs without a snapshot use the compatibility fallback."
+  },
+  {
+    "id": "prep-003",
+    "topic": "travel_duration",
+    "status": "IMPLEMENTED",
+    "statement": "Athletics, carried load, and working equipment speed change the Solo route duration. This is a travel-time model, not a stamina-pool or range simulation.",
+    "why": "Use existing character and equipment data without inventing the deferred survival systems.",
+    "evidence": "game/routes.js: ROUTE_PREP_TABLE and getRoutePreparation",
+    "proposed_target": "Route timers and duration previews",
+    "open_question": "Tuning constants are initial implementation defaults; this is not a completed balance pass."
+  },
+  {
+    "id": "prep-004",
+    "topic": "avoidance_and_combat",
+    "status": "IMPLEMENTED",
+    "statement": "Prepared Solo runs roll avoidance first, then fight outcome if detected. Noise is derived from equipped working weapons and the existing quiet-boots property. The UI labels the per-fight probability explicitly.",
+    "why": "Separate avoiding danger from winning a fight and make quiet loadouts useful.",
+    "evidence": "game/routes.js: getRoutePreparation and resolvePreparedRouteNodes",
+    "proposed_target": "Solo route encounter resolution",
+    "open_question": "Route injury text remains a summary outcome; no new persistent injury, HP-loss, or durability mechanic was introduced."
+  },
+  {
+    "id": "prep-005",
+    "topic": "haul_capacity",
+    "status": "IMPLEMENTED",
+    "statement": "The existing hard carrying limit and canonical salvage-weight function determine the maximum loot that returns. Overflow is left behind with an explanation; zero extracted loot creates no Recycler material.",
+    "why": "Preserve carrying rules and make pack space affect the actual reward.",
+    "evidence": "game/routes.js: routeLootCapacity, resolvePreparedRouteNodes, claimLastRun",
+    "proposed_target": "Solo route resolution and claims",
+    "open_question": ""
+  },
+  {
+    "id": "prep-006",
+    "topic": "activity_progression",
+    "status": "IMPLEMENTED",
+    "statement": "Avoided encounters train Stealth and Athletics; only won fights emit route kills, retaining off-map metadata. Movement, loot, and hazard events use the shared XP dispatcher and existing idle multiplier.",
+    "why": "Reward the activity that occurred rather than fictitious combat.",
+    "evidence": "game/routes.js: resolvePreparedRouteNodes and completeRun; game/stats.js: ACTION_XP",
+    "proposed_target": "Existing profession tracks",
+    "open_question": ""
+  },
+  {
+    "id": "prep-007",
+    "topic": "solo_interface",
+    "status": "IMPLEMENTED",
+    "statement": "Both game entry pages show live Solo preparation, link to the existing Stockpile gear controls and Stats screen, use capacity-based deployment reasons, and report avoided, won, and lost fights plus loot left behind.",
+    "why": "Make preparation actionable and explain the run result.",
+    "evidence": "Both HTML pages: SoloRoutePreparationPanel, SoloOperativePanel, RouteDetailPanel, LastRunPanel",
+    "proposed_target": "Main game and TEST SAVE page",
+    "open_question": "The full biome-selector relocation remains a concept; no map circuit builder was implemented."
+  },
+  {
+    "id": "fix-001",
+    "topic": "idle_reward_retention",
+    "status": "IMPLEMENTED",
+    "statement": "Every unclaimed route haul survives idle repetition and reloads. Claim All banks each nonzero haul separately and prevents duplicate claims, preserving per-haul Recycler materials.",
+    "why": "The original smoke simulation found earlier rewards being overwritten.",
+    "evidence": "game/routes.js: getUnclaimedRouteRewards, completeRun, claimLastRun",
+    "proposed_target": "Existing per-slot Last Run save",
+    "open_question": ""
+  },
+  {
+    "id": "fix-002",
+    "topic": "idle_xp_rate",
+    "status": "IMPLEMENTED",
+    "statement": "Idle route actions apply the advertised 0.8 base-XP multiplier through the common dispatcher, with normal rounding and existing flat bonuses; Active keeps full base XP.",
+    "why": "Fix the mismatch between the displayed promise and actual experience awards.",
+    "evidence": "game/routes.js: ROUTE_XP_MULTIPLIERS and completeRun",
+    "proposed_target": "Both entry pages and route XP",
+    "open_question": ""
+  },
+  {
+    "id": "verification-001",
+    "topic": "automated_verification",
+    "status": "CODE",
+    "statement": "The final implementation passed 617 checks across 29 suites, including 24 preparation checks and 20 idle-reward checks. Four fresh Solo starts each completed three simulated days without harness failures or warnings.",
+    "why": "Record the actual verification scope and result.",
+    "evidence": "reports/routes-preparation-2026-10-23/TEST_RESULTS.json; SMOKE_RESULTS.json; AUDIT_RESULTS.json",
+    "proposed_target": "E:/Zed_Idler/reports/routes-preparation-2026-10-23/",
+    "open_question": "Checks used in-memory saves. Live browser rendering, clicks, touch, and controller interaction were not tested."
+  },
+  {
+    "id": "tuning-001",
+    "topic": "balance_followup",
+    "status": "OPEN",
+    "statement": "The named preparation table contains initial implementation defaults; probability-frequency checks validate calculation use, not long-term balance.",
+    "why": "Do not represent unreviewed numeric tuning as a user-locked design decision.",
+    "evidence": "game/routes.js: ROUTE_PREP_TABLE",
+    "proposed_target": "Later scoped balance review",
+    "open_question": "Review progression pacing, rewards per real hour, and loadout tradeoffs before locking final tuning."
+  },
+  {
+    "id": "visual-001",
+    "topic": "visual_review",
+    "status": "OPEN",
+    "statement": "Reload the main or TEST SAVE page and visually review the new Solo preparation, gear navigation, live updates, launch reasons, and return report.",
+    "why": "Automated simulation and source checks do not establish browser appearance or interaction quality.",
+    "evidence": "reports/routes-preparation-2026-10-23/AUDIT_RESULTS.json",
+    "proposed_target": "A future browser review",
+    "open_question": "Keep any visual-test save isolated from the real save."
+  }
+]
+

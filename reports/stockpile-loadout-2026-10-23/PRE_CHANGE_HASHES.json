@@ -1,0 +1,52 @@
+[
+  {
+    "file": "E:\\Zed_Idler\\screens-v3.jsx",
+    "backup": "E:\\Zed_Idler\\reports\\stockpile-loadout-2026-10-23\\pre-change\\project\\screens-v3.jsx",
+    "sha256": "12a6a82dc30343c227fa831a3ea60ee0b27cbb971a0f47edcf0bcde9a9665d6d"
+  },
+  {
+    "file": "E:\\Zed_Idler\\Zombie Idler v2.html",
+    "backup": "E:\\Zed_Idler\\reports\\stockpile-loadout-2026-10-23\\pre-change\\project\\Zombie Idler v2.html",
+    "sha256": "7863d88f9dff907faa1a3ac517f21b96cd936dc342c8142cca9cf031d0d826b6"
+  },
+  {
+    "file": "E:\\Zed_Idler\\Zombie Idler v2 - TEST SAVE.html",
+    "backup": "E:\\Zed_Idler\\reports\\stockpile-loadout-2026-10-23\\pre-change\\project\\Zombie Idler v2 - TEST SAVE.html",
+    "sha256": "e5a78711a1f36bdc3ea2176e26b56accc269ad79ff7bbc09d8a847bbbfc148e0"
+  },
+  {
+    "file": "E:\\Zed_Idler\\CODE_STATE.md",
+    "backup": "E:\\Zed_Idler\\reports\\stockpile-loadout-2026-10-23\\pre-change\\project\\CODE_STATE.md",
+    "sha256": "cf17c299c04e880709c98fbde4f62eb7248e0d5f37ae96e46f608927b214500a"
+  },
+  {
+    "file": "E:\\Zed_Idler\\DESIGN_HANDOFF.md",
+    "backup": "E:\\Zed_Idler\\reports\\stockpile-loadout-2026-10-23\\pre-change\\project\\DESIGN_HANDOFF.md",
+    "sha256": "14705f1ca846360b3e0214c8e085eef3c938e304c076d05b08fd85257556f01d"
+  },
+  {
+    "file": "E:\\Zed_Idler\\reference\\00-document-index.md",
+    "backup": "E:\\Zed_Idler\\reports\\stockpile-loadout-2026-10-23\\pre-change\\project\\reference\\00-document-index.md",
+    "sha256": "24e8f52500464e29ad726397cf45980e289d2cff3f86dea4814a730390bfa241"
+  },
+  {
+    "file": "E:\\Zed_Idler\\reference\\routes-preparation-implementation.md",
+    "backup": "E:\\Zed_Idler\\reports\\stockpile-loadout-2026-10-23\\pre-change\\project\\reference\\routes-preparation-implementation.md",
+    "sha256": "474e094d59baf8131263098ffcedff616c742f46512fb696fb08d8631cc1d0db"
+  },
+  {
+    "file": "E:\\Zed_Idler\\reference\\tutorial-first-session-spec.md",
+    "backup": "E:\\Zed_Idler\\reports\\stockpile-loadout-2026-10-23\\pre-change\\project\\reference\\tutorial-first-session-spec.md",
+    "sha256": "c9609be952d0ed019167486237d90fead1c8304bd7afb7f5aad5f957df7fc5f9"
+  },
+  {
+    "file": "E:/C2C/Zed_Idler_Routes_LLM_Instructions.md",
+    "backup": "E:\\Zed_Idler\\reports\\stockpile-loadout-2026-10-23\\pre-change\\C2C\\Zed_Idler_Routes_LLM_Instructions.md",
+    "sha256": "dfb4391ee38ac67329f72c18b69f48d998e9243126f1eaf025facb299422a71c"
+  },
+  {
+    "file": "E:/C2C/Zed_Idler_Routes_Parsing_Records.json",
+    "backup": "E:\\Zed_Idler\\reports\\stockpile-loadout-2026-10-23\\pre-change\\C2C\\Zed_Idler_Routes_Parsing_Records.json",
+    "sha256": "8a414776c5e9c11d2e09789f76ce6f31dbe339864f253ee793bdb606f7445880"
+  }
+]

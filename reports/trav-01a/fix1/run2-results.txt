@@ -1,0 +1,50 @@
+PASS | 6: no "Available Survivors" list in Solo | 
+PASS | 6: no Scavenge / Contracts / Training / Patrol / Raid buttons | none
+PASS | 6: no Dispatch, "Assigned" or "Expected yield" | 
+PASS | 7: Afflictions panel shows (no afflictions on a new save) and "Traversal scouts 5/5 today" | 
+PASS | 11: mouse hover shows the one-line preview (name · familiarity · danger) and opens no panel | Warehouse D3 · Explored · Danger Moderate (2/5)
+PASS | 11: Route mode toggle is visible and disabled, with its reason | 
+PASS | 11: click opens the zone panel beside the map (not a sheet) | 
+PASS | 11: panel lines Familiarity · Loot · Danger · Threats · Features | familiarity,loot,danger,threats,features
+PASS | 11: every action shows a cost or a greyed reason (own cell: Travel greyed "already here") | travel:off:You're already here. | loot:on:Once per zone · 72% safe · a failed roll hurts | scout:on:1 Traversal scout (5/5 today) · Stealth XP once per zone a day | hide:on:1 game hour · Stealth XP once per zone a day | camp:on:24 game hours · sets your rest p
+PASS | 1: each Scout spends 1 Traversal scout (4,3,2,1,0) | 4,3,2,1,0
+PASS | 1: at 0 the Scout button is greyed with the reason | No Traversal scouts left today. Refills at midnight.
+PASS | 3: five scouts of the same cell gave Stealth XP once (+5) | 0 → 5
+PASS | 1: Wandering scout charges untouched | {"heal":2,"scout":2}
+PASS | 4: Hide shows the threat level and the tier range Wandering can draw | You stay low in C3 for an hour. Threat level 1/5 (Low). Threats here: tiers F, the range Wandering can meet right now. +Stealth XP. || Threats
+Tiers F (from your last Hide)
+PASS | 5: Hide moved the world clock by 1 game hour (plus the clock's own running time) | 3835 game s over 0.39 real s
+PASS | 5: Hide names no zombie kinds or counts | 
+PASS | 9: Make camp leaves HP 30 and healsUsed 1; camp cell stored | hp 30 heals 1
+PASS | 9: a second Make camp the same day gives no Command XP | 
+PASS | 8: Loot shows its result on Traversal and does not open Routes | Something was waiting (72% safe, rolled 88). You took 13 damage — HP 17/100 — but got away
+PASS | 3: Travel out, back, out again → Athletics XP for 2 cells only (2 × 4, not 3 ×) | dir 1,0 · 2 → 10
+PASS | 8: (tutorial closed) Loot shows its result on Traversal and does not open Routes | Clean search (61% safe, rolled 33). You scavenge Warehouse D3: +3 Medical, +3 Wood, +4 Woo
+PASS | 11: a far cell opens the panel with every action greyed "Too far — move next to it." (or Locked) | true:Too far — move next to it. | true:Too far — move next to it. | true:Too far — move next to it. | true:Too far — move next to it. | true:Too far — move next to it.
+PASS | 11: controller/keyboard — Escape closes; arrow moves the highlight with a preview; Enter (confirm) opens the panel beside the map | Warehouse E3 · Explored · Danger Low (1/5)
+PASS | 11: touch tap opens the full panel as a bottom sheet | {"bottom":900,"vh":900,"panel":true}
+PASS | 11: tapping outside closes the sheet; a swipe down closes it too | 
+PASS | 11: phone-sized window opens the panel as a bottom sheet | 
+PASS | 7: Broken (first) and Injured show with icons; Injured says "play time left" | broken=💔 Broken Max HP −18%, 18% of attacks falter, +5% damage taken, 30% slower. Recovers through completed rests. | injured=🩹 Injured Combat and athletics −10%. About 90 min play time left (counts down only while the game is open). A Field Bandage treats i
+PASS | 10: (browser) no route with too little stamina found in this save; covered by the source check | not reached in UI
+PASS | No page errors (Solo run) | 
+PASS | 8: reloading a Solo save opens on Traversal (not Routes) | 
+PASS | 6: Camp Leader keeps the survivors list and the five map tabs | 🗺️ SCAVENGE / 🤝 CONTRACTS / 💪 TRAINING / 🛡️ PATROL / ⚔️ RAID
+PASS | 6: Camp Leader has no Solo afflictions panel or zone sheet | 
+PASS | No page errors (whole run) | 
+PASS | F-tut: tutorial already done in this save (skipped) | 
+PASS | F1: keyboard confirm moves focus into the panel, on the first enabled action | focus loot, first enabled loot, items travel(off),loot,scout,hide,camp,wander,close
+PASS | F1: arrow to Scout, Enter → Traversal scouts drop by 1 (no mouse used) | 5 → 4
+PASS | F4: after the action, focus stays on the same button (Scout) | 
+PASS | F2: Down cycles every panel button in order and wraps back to the start | hide,camp,wander,close,travel,loot,scout
+PASS | F2: Up goes the other way (wraps at the top too) | scout → loot
+PASS | F2/F8: exactly the focused button has the 2px #7fe0ff outline | loot
+PASS | F3: focus on greyed Travel + Enter → nothing happens; reason stays visible; panel stays open | {"off":true,"note":"You're already here."}
+PASS | F6: with focus in the panel, arrows do not move the map highlight | 2,1 / 2,1 / 2,1
+PASS | F5: Escape closes the panel; the map highlight is back on the same cell | 2,1
+PASS | F9: far zone opened by keyboard (every action greyed) → focus lands on Close | travel(off),loot(off),scout(off),hide(off),camp(off),close · focus close
+PASS | F9: Enter on Close closes the panel and keeps the highlight on that zone | 
+PASS | F7: a mouse click on the map clears panel focus; arrows then move the map highlight again | before true · after click null · hl 2,1 → 3,1
+PASS | F8: phone-size window (390×520) — focus on Close is scrolled into view | {"sheet":false,"side":true,"scroller":true,"scrolled":92,"inView":true}
+PASS | F8: phone-size window — same keyboard flow works (Scout runs, focus kept) | own cell true · 4 → 3 · focus scout · opened in side panel
+PASS | Fix 1: no page errors | 

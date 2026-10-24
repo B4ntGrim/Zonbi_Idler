@@ -1,0 +1,38 @@
+[
+  {
+    "name": "routes-preparation.test.js",
+    "total": 22,
+    "passed": 22,
+    "failures": []
+  },
+  {
+    "name": "routes-idle-rewards.test.js",
+    "total": 20,
+    "passed": 19,
+    "failures": [
+      [
+        "FAIL",
+        "Different routes preserve their individual recycler hauls",
+        "Mixed routes lost a reward"
+      ]
+    ]
+  },
+  {
+    "name": "trav-01a.test.js",
+    "total": 67,
+    "passed": 67,
+    "failures": []
+  },
+  {
+    "name": "fx3-buffs-sim-time.test.js",
+    "total": 11,
+    "passed": 11,
+    "failures": []
+  },
+  {
+    "name": "split-equivalence.test.js",
+    "total": 17,
+    "passed": 17,
+    "failures": []
+  }
+]

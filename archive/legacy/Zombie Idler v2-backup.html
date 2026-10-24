@@ -1,0 +1,2858 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Zombie Idler</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Special+Elite&family=Oswald:wght@300;400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="game-data.js"></script>
+<script src="pixel-art.js"></script>
+<script type="text/babel" src="tweaks-panel.jsx"></script>
+<script type="text/babel" src="screens-v2.jsx"></script>
+<script type="text/babel" src="screens-v2b.jsx"></script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg:        #0f0e0c;
+    --bg2:       #1a1814;
+    --bg3:       #242018;
+    --bg4:       #2e2820;
+    --border:    #3a3228;
+    --border2:   #4a4038;
+    --text:      #d4c9b0;
+    --text2:     #8a7d68;
+    --text3:     #5a5040;
+    --amber:     #c8a96e;
+    --amber2:    #e8c98e;
+    --red:       #8b3a2a;
+    --red2:      #c8612a;
+    --green:     #4caf7d;
+    --green2:    #7ab87a;
+    --blue:      #4a8ec2;
+    --purple:    #a855f7;
+    --font-title: 'Special Elite', serif;
+    --font-body:  'Oswald', sans-serif;
+    --font-mono:  'Share Tech Mono', monospace;
+  }
+
+  html, body { width: 100%; height: 100%; overflow: hidden; background: var(--bg); color: var(--text); }
+
+  #root { width: 100%; height: 100%; }
+
+  /* Texture overlays */
+  .paper-texture::before {
+    content: '';
+    position: absolute; inset: 0; pointer-events: none; z-index: 0;
+    background-image: 
+      url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+    background-size: 200px 200px;
+  }
+
+  /* Scrollbars */
+  ::-webkit-scrollbar { width: 4px; height: 4px; }
+  ::-webkit-scrollbar-track { background: var(--bg2); }
+  ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
+
+  /* Utility */
+  .font-title { font-family: var(--font-title); }
+  .font-mono  { font-family: var(--font-mono); }
+  .text-amber { color: var(--amber); }
+  .text-red   { color: var(--red2); }
+  .text-green { color: var(--green); }
+  .text-dim   { color: var(--text2); }
+  .text-dimmer{ color: var(--text3); }
+
+  /* Panels */
+  .panel {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    position: relative;
+    overflow: hidden;
+  }
+  .panel::after {
+    content: '';
+    position: absolute; inset: 0; pointer-events: none;
+    background: linear-gradient(135deg, rgba(200,169,110,0.03) 0%, transparent 50%);
+  }
+  .panel-title {
+    font-family: var(--font-title);
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--text2);
+    padding: 8px 12px 6px;
+    border-bottom: 1px solid var(--border);
+    background: var(--bg3);
+  }
+
+  /* Buttons */
+  .btn {
+    font-family: var(--font-body);
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    border: 1px solid var(--border2);
+    background: var(--bg3);
+    color: var(--text);
+    cursor: pointer;
+    padding: 8px 16px;
+    transition: all 0.15s;
+    position: relative;
+    overflow: hidden;
+  }
+  .btn:hover { border-color: var(--amber); color: var(--amber); background: var(--bg4); }
+  .btn-amber { border-color: var(--amber); color: var(--amber); }
+  .btn-amber:hover { background: rgba(200,169,110,0.12); }
+  .btn-red { border-color: var(--red); color: var(--red2); }
+  .btn-red:hover { background: rgba(139,58,42,0.15); }
+  .btn-green { border-color: var(--green); color: var(--green); }
+  .btn-green:hover { background: rgba(76,175,125,0.12); }
+  .btn-sm { font-size: 11px; padding: 5px 10px; }
+  .btn-lg { font-size: 15px; padding: 12px 28px; letter-spacing: 0.12em; }
+
+  /* Tags */
+  .tag {
+    display: inline-block;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.06em;
+    padding: 2px 7px;
+    border-radius: 2px;
+    border: 1px solid currentColor;
+  }
+
+  /* Progress bars */
+  .progress-bar {
+    height: 6px;
+    background: var(--bg4);
+    border-radius: 1px;
+    overflow: hidden;
+    position: relative;
+  }
+  .progress-fill {
+    height: 100%;
+    border-radius: 1px;
+    transition: width 0.3s ease;
+    position: relative;
+  }
+  .progress-fill::after {
+    content: '';
+    position: absolute;
+    top: 0; right: 0;
+    width: 3px; height: 100%;
+    background: rgba(255,255,255,0.4);
+  }
+
+  /* Dividers */
+  .divider {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--border), transparent);
+    margin: 8px 0;
+  }
+
+  /* Tooltip */
+  .tooltip-wrap { position: relative; }
+  .tooltip-wrap:hover .tooltip-box { opacity: 1; pointer-events: auto; }
+  .tooltip-box {
+    position: absolute; bottom: calc(100% + 6px); left: 50%; transform: translateX(-50%);
+    background: var(--bg4); border: 1px solid var(--border2);
+    padding: 8px 12px; min-width: 160px; max-width: 220px;
+    font-size: 11px; line-height: 1.5; color: var(--text2);
+    opacity: 0; pointer-events: none; transition: opacity 0.15s;
+    z-index: 9999; white-space: normal;
+  }
+
+  /* Animated ticker */
+  @keyframes tick-up { from { opacity: 0; transform: translateY(0); } to { opacity: 0; transform: translateY(-20px); } }
+  .tick-float { animation: tick-up 1.5s ease-out forwards; pointer-events: none; }
+
+  /* Threat pulse */
+  @keyframes threat-pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
+  .threat-active { animation: threat-pulse 2s ease-in-out infinite; }
+
+  /* Screen transitions */
+  @keyframes screen-in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+  .screen-enter { animation: screen-in 0.25s ease-out; }
+
+  /* Scanline effect on hover for mode cards */
+  @keyframes scanline { from { transform: translateY(-100%); } to { transform: translateY(100%); } }
+  .scanline-hover:hover .scanline-inner {
+    animation: scanline 1.5s linear infinite;
+  }
+  .scanline-inner {
+    position: absolute; inset: 0; overflow: hidden; pointer-events: none;
+    background: linear-gradient(180deg, transparent 40%, rgba(200,169,110,0.04) 50%, transparent 60%);
+  }
+
+  /* Loading bar animation */
+  @keyframes loading-fill { from { width: 0%; } to { width: 100%; } }
+
+  /* Notification badge */
+  .notif-dot {
+    width: 7px; height: 7px; border-radius: 50%;
+    background: var(--red2);
+    box-shadow: 0 0 6px var(--red2);
+    flex-shrink: 0;
+  }
+
+  /* Tab nav */
+  .tab-nav {
+    display: flex;
+    border-bottom: 1px solid var(--border);
+    background: var(--bg3);
+  }
+  .tab-btn {
+    font-family: var(--font-body);
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text2);
+    padding: 9px 16px;
+    border: none;
+    background: none;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: all 0.15s;
+    position: relative;
+    top: 1px;
+  }
+  .tab-btn:hover { color: var(--text); }
+  .tab-btn.active { color: var(--amber); border-bottom-color: var(--amber); }
+
+  /* World event banner */
+  @keyframes scroll-event { from { transform: translateX(100%); } to { transform: translateX(-100%); } }
+  .event-scroll { animation: scroll-event 18s linear infinite; white-space: nowrap; display: inline-block; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+const { useState, useEffect, useRef, useCallback } = React;
+const ZI = window.ZI;
+
+// ─── HELPERS ─────────────────────────────────────────────────────────────────
+function fmt(n) { return n >= 1000 ? (n/1000).toFixed(1)+'k' : Math.floor(n); }
+function fmtTime(mins) {
+  if (mins < 60) return `${mins}m`;
+  const h = Math.floor(mins/60), m = mins%60;
+  return m > 0 ? `${h}h ${m}m` : `${h}h`;
+}
+function clamp(v,min,max) { return Math.max(min, Math.min(max, v)); }
+
+function getNutritionLevel(val) {
+  return ZI.NUTRITION.levels.find(l => val >= l.min && val < l.max) || ZI.NUTRITION.levels[ZI.NUTRITION.levels.length-1];
+}
+function getHydrationLevel(val) {
+  return ZI.NUTRITION.hydration.find(l => val >= l.min && val < l.max) || ZI.NUTRITION.hydration[ZI.NUTRITION.hydration.length-1];
+}
+
+function ProgressBar({ value, max=100, color='var(--amber)', height=6, animated=false }) {
+  const pct = clamp((value/max)*100, 0, 100);
+  return (
+    <div className="progress-bar" style={{height}}>
+      <div className="progress-fill" style={{
+        width: `${pct}%`, background: color,
+        boxShadow: animated ? `0 0 8px ${color}` : 'none',
+      }}/>
+    </div>
+  );
+}
+
+function Tag({ children, color='var(--amber2)', bg='transparent' }) {
+  return <span className="tag" style={{color, borderColor: color, background: bg}}>{children}</span>;
+}
+
+function RiskBar({ risk }) {
+  const colors = ['','var(--green)','var(--green2)','var(--amber)','var(--red2)','var(--red)'];
+  return (
+    <div style={{display:'flex', gap:3}}>
+      {[1,2,3,4,5].map(i => (
+        <div key={i} style={{
+          width:8, height:14, borderRadius:1,
+          background: i <= risk ? colors[risk] : 'var(--bg4)',
+          opacity: i <= risk ? 1 : 0.4,
+        }}/>
+      ))}
+    </div>
+  );
+}
+
+// ─── TOP BAR ─────────────────────────────────────────────────────────────────
+function TopBar({ mode, screen, setScreen, resources, threatLevel, worldEvent }) {
+  const [time, setTime] = useState(new Date());
+  useEffect(() => {
+    const t = setInterval(() => setTime(new Date()), 1000);
+    return () => clearInterval(t);
+  }, []);
+
+  const gameDay = 47;
+  const isCamp = mode === 'camp';
+
+  return (
+    <div style={{
+      height: 44, background: 'var(--bg3)', borderBottom: '1px solid var(--border)',
+      display: 'flex', alignItems: 'center', gap: 0, flexShrink: 0, zIndex: 100, position: 'relative',
+    }}>
+      {/* Logo */}
+      <div style={{
+        padding: '0 18px', borderRight: '1px solid var(--border)',
+        display: 'flex', alignItems: 'center', gap: 8, height: '100%', cursor: 'pointer',
+      }} onClick={() => setScreen('mode-select')}>
+        <div style={{
+          fontFamily: 'var(--font-title)', fontSize: 16, color: 'var(--amber)',
+          letterSpacing: '0.05em', lineHeight: 1,
+        }}>ZOMBIE<br/><span style={{fontSize: 10, letterSpacing: '0.3em', color: 'var(--text2)'}}>IDLER</span></div>
+      </div>
+
+      {/* Mode badge */}
+      <div style={{
+        padding: '0 14px', borderRight: '1px solid var(--border)', height: '100%',
+        display: 'flex', alignItems: 'center', gap: 6,
+      }}>
+        <div style={{
+          width: 7, height: 7, borderRadius: '50%',
+          background: isCamp ? 'var(--green)' : 'var(--amber)',
+          boxShadow: `0 0 6px ${isCamp ? 'var(--green)' : 'var(--amber)'}`,
+        }}/>
+        <span style={{fontFamily:'var(--font-body)', fontSize:11, letterSpacing:'0.12em', color:'var(--text2)', textTransform:'uppercase'}}>
+          {isCamp ? 'Camp Leader' : 'Solo Survivor'}
+        </span>
+      </div>
+
+      {/* Resources row */}
+      <div style={{
+        display: 'flex', alignItems: 'center', gap: 0, flex: 1,
+        height: '100%', borderRight: '1px solid var(--border)', overflow: 'hidden',
+        padding: '0 4px',
+      }}>
+        {Object.entries(resources).slice(0,6).map(([key, val]) => (
+          <ResourceChip key={key} label={key} value={val} />
+        ))}
+      </div>
+
+      {/* Day + Threat */}
+      <div style={{
+        padding: '0 14px', borderRight: '1px solid var(--border)', height: '100%',
+        display: 'flex', alignItems: 'center', gap: 12,
+      }}>
+        <div style={{fontFamily:'var(--font-mono)', fontSize:11, color:'var(--text2)'}}>
+          DAY <span style={{color:'var(--amber)', fontWeight:'bold'}}>{gameDay}</span>
+        </div>
+        <div style={{display:'flex', alignItems:'center', gap:5}}>
+          <div className="threat-active" style={{
+            width: 8, height: 8, borderRadius: '50%',
+            background: threatLevel > 3 ? 'var(--red2)' : threatLevel > 1 ? 'var(--amber)' : 'var(--green)',
+          }}/>
+          <span style={{fontFamily:'var(--font-mono)', fontSize:10, color:'var(--text2)'}}>
+            THREAT <span style={{color: threatLevel > 3 ? 'var(--red2)' : 'var(--amber)'}}>{threatLevel}/5</span>
+          </span>
+        </div>
+      </div>
+
+      {/* Nav tabs */}
+      <div style={{display:'flex', height:'100%', borderRight:'1px solid var(--border)'}}>
+        {(isCamp ? [
+          ['camp-main','Overview'],
+          ['camp-schedule','Schedule'],
+          ['marketplace','Market'],
+          ['rmat-crafting','Crafting'],
+          ['factions','Factions'],
+          ['stat-leveling','Stats'],
+          ['hack-slash','Combat'],
+        ] : [
+          ['solo-main','Routes'],
+          ['traversal','Traversal'],
+          ['solo-schedule','Schedule'],
+          ['marketplace','Market'],
+          ['rmat-crafting','Crafting'],
+          ['factions','Factions'],
+          ['stat-leveling','Stats'],
+          ['hack-slash','Combat'],
+        ]).map(([s, label]) => (
+          <button key={s} onClick={() => setScreen(s)} style={{
+            fontFamily:'var(--font-body)', fontSize:11, letterSpacing:'0.1em', textTransform:'uppercase',
+            color: screen===s ? 'var(--amber)' : 'var(--text2)',
+            padding:'0 14px', background:'none', border:'none', cursor:'pointer',
+            borderBottom: screen===s ? '2px solid var(--amber)' : '2px solid transparent',
+            transition:'all 0.15s', position:'relative', top:1,
+          }}>{label}</button>
+        ))}
+      </div>
+
+      {/* World event ticker */}
+      {worldEvent && (
+        <div style={{
+          flex:1, overflow:'hidden', padding:'0 12px',
+          display:'flex', alignItems:'center', gap:8,
+        }}>
+          <div className="notif-dot"/>
+          <div style={{overflow:'hidden', flex:1}}>
+            <div className="event-scroll" style={{fontFamily:'var(--font-mono)', fontSize:10, color:'var(--purple)'}}>
+              ⚠ ACTIVE EVENT: {worldEvent.name} — {worldEvent.effect} ⚠
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Time */}
+      <div style={{padding:'0 14px', fontFamily:'var(--font-mono)', fontSize:11, color:'var(--text3)', flexShrink:0}}>
+        {time.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}
+      </div>
+    </div>
+  );
+}
+
+function ResourceChip({ label, value }) {
+  const colors = {
+    Food:'var(--green2)', Scrap:'var(--text2)', Ammo:'var(--amber)', Medicine:'var(--blue)',
+    Fuel:'var(--red2)', RMAT:'var(--purple)',
+  };
+  const color = colors[label] || 'var(--text2)';
+  return (
+    <div style={{
+      display:'flex', alignItems:'center', gap:5, padding:'0 10px',
+      borderRight:'1px solid var(--border)', height:'100%',
+    }}>
+      <span style={{fontFamily:'var(--font-mono)', fontSize:10, color:'var(--text3)', letterSpacing:'0.08em'}}>{label}</span>
+      <span style={{fontFamily:'var(--font-mono)', fontSize:12, color, fontWeight:'bold'}}>{fmt(value.current)}</span>
+      {value.rate > 0 && (
+        <span style={{fontFamily:'var(--font-mono)', fontSize:9, color:'var(--green)', opacity:0.8}}>+{value.rate}/m</span>
+      )}
+    </div>
+  );
+}
+
+// ─── MODE SELECT SCREEN ───────────────────────────────────────────────────────
+function ModeSelectScreen({ onSelect }) {
+  const [hovered, setHovered] = useState(null);
+
+  return (
+    <div className="screen-enter" style={{
+      width:'100%', height:'100%', display:'flex', flexDirection:'column',
+      alignItems:'center', justifyContent:'center', background:'var(--bg)',
+      position:'relative', overflow:'hidden',
+    }}>
+      {/* Background grid */}
+      <div style={{
+        position:'absolute', inset:0, opacity:0.06,
+        backgroundImage: 'linear-gradient(var(--border) 1px, transparent 1px), linear-gradient(90deg, var(--border) 1px, transparent 1px)',
+        backgroundSize: '48px 48px',
+      }}/>
+
+      {/* Title block */}
+      <div style={{textAlign:'center', marginBottom:56, position:'relative', zIndex:1}}>
+        <div style={{
+          fontFamily:'var(--font-title)', fontSize:60, lineHeight:1,
+          color:'var(--amber)', letterSpacing:'0.04em',
+          textShadow: '0 0 60px rgba(200,169,110,0.3)',
+        }}>
+          ZOMBIE IDLER
+        </div>
+        <div style={{
+          fontFamily:'var(--font-body)', fontSize:13, letterSpacing:'0.35em',
+          color:'var(--text2)', marginTop:10, textTransform:'uppercase',
+        }}>
+          Two survival fantasies. One apocalypse.
+        </div>
+        <div style={{
+          width:180, height:1, background:'linear-gradient(90deg, transparent, var(--amber), transparent)',
+          margin:'16px auto 0',
+        }}/>
+      </div>
+
+      {/* Mode cards */}
+      <div style={{display:'flex', gap:32, position:'relative', zIndex:1}}>
+        {[
+          {
+            id: 'camp',
+            title: 'CAMP LEADER',
+            subtitle: 'The Overseer',
+            desc: 'Command a fragile settlement. Automate production, assign survivors, and defend against escalating hordes.',
+            pillars: ['Base Construction','Survivor Workforce','Horde Defense','Idle Production','Long-term Optimization'],
+            color: 'var(--green)',
+            icon: (
+              <svg width="64" height="64" viewBox="0 0 64 64" fill="none">
+                <rect x="8" y="32" width="14" height="20" fill="none" stroke="currentColor" strokeWidth="1.5"/>
+                <rect x="26" y="24" width="12" height="28" fill="none" stroke="currentColor" strokeWidth="1.5"/>
+                <rect x="42" y="36" width="14" height="16" fill="none" stroke="currentColor" strokeWidth="1.5"/>
+                <line x1="4" y1="52" x2="60" y2="52" stroke="currentColor" strokeWidth="1.5"/>
+                <polyline points="4,36 15,24 28,16 36,16 48,24 60,36" fill="none" stroke="currentColor" strokeWidth="1" strokeDasharray="3 2" opacity="0.4"/>
+              </svg>
+            ),
+          },
+          {
+            id: 'solo',
+            title: 'SOLO SURVIVOR',
+            subtitle: 'The Wanderer',
+            desc: 'Traverse lethal biomes alone. Scavenge rare RMAT, repair vehicles, and extract through high-risk expeditions.',
+            pillars: ['Biome Traversal','RMAT Extraction','Gear & Vehicles','Hideout Upgrades','Risk Runs'],
+            color: 'var(--amber)',
+            icon: (
+              <svg width="64" height="64" viewBox="0 0 64 64" fill="none">
+                <circle cx="32" cy="14" r="6" fill="none" stroke="currentColor" strokeWidth="1.5"/>
+                <line x1="32" y1="20" x2="32" y2="42" stroke="currentColor" strokeWidth="2"/>
+                <line x1="20" y1="30" x2="44" y2="30" stroke="currentColor" strokeWidth="1.5"/>
+                <line x1="32" y1="42" x2="22" y2="54" stroke="currentColor" strokeWidth="1.5"/>
+                <line x1="32" y1="42" x2="42" y2="54" stroke="currentColor" strokeWidth="1.5"/>
+                <path d="M12 48 Q22 36 32 44 Q42 52 52 38" fill="none" stroke="currentColor" strokeWidth="1" strokeDasharray="3 2" opacity="0.5"/>
+              </svg>
+            ),
+          },
+        ].map(mode => (
+          <div
+            key={mode.id}
+            className="scanline-hover"
+            onMouseEnter={() => setHovered(mode.id)}
+            onMouseLeave={() => setHovered(null)}
+            onClick={() => onSelect(mode.id)}
+            style={{
+              width: 340, cursor: 'pointer', position: 'relative',
+              border: `1px solid ${hovered === mode.id ? mode.color : 'var(--border)'}`,
+              background: hovered === mode.id ? 'var(--bg3)' : 'var(--bg2)',
+              transition: 'all 0.2s', padding: 32,
+              boxShadow: hovered === mode.id ? `0 0 40px rgba(${mode.id==='camp'?'76,175,125':'200,169,110'},0.1)` : 'none',
+            }}
+          >
+            <div className="scanline-inner"/>
+            {/* Mode icon */}
+            <div style={{color: mode.color, marginBottom:20, display:'flex', justifyContent:'center'}}>
+              {mode.icon}
+            </div>
+            <div style={{fontFamily:'var(--font-title)', fontSize:28, color: mode.color, letterSpacing:'0.06em', textAlign:'center'}}>
+              {mode.title}
+            </div>
+            <div style={{fontFamily:'var(--font-body)', fontSize:12, color:'var(--text3)', letterSpacing:'0.2em', textAlign:'center', marginTop:4, marginBottom:16}}>
+              {mode.subtitle}
+            </div>
+            <div style={{
+              height:1, background:`linear-gradient(90deg, transparent, ${mode.color}, transparent)`,
+              marginBottom:16, opacity:0.4,
+            }}/>
+            <div style={{fontFamily:'var(--font-body)', fontSize:13, color:'var(--text2)', lineHeight:1.6, textAlign:'center', marginBottom:20}}>
+              {mode.desc}
+            </div>
+            <div style={{display:'flex', flexDirection:'column', gap:6}}>
+              {mode.pillars.map(p => (
+                <div key={p} style={{display:'flex', alignItems:'center', gap:8}}>
+                  <div style={{width:4, height:4, background:mode.color, flexShrink:0}}/>
+                  <span style={{fontFamily:'var(--font-body)', fontSize:12, color:'var(--text2)', letterSpacing:'0.06em'}}>{p}</span>
+                </div>
+              ))}
+            </div>
+            {hovered === mode.id && (
+              <div style={{
+                marginTop:24, display:'flex', justifyContent:'center',
+              }}>
+                <div style={{
+                  fontFamily:'var(--font-body)', fontSize:12, letterSpacing:'0.2em', textTransform:'uppercase',
+                  color: mode.color, border:`1px solid ${mode.color}`, padding:'8px 24px',
+                }}>
+                  Begin Survival →
+                </div>
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
+
+      {/* Footer */}
+      <div style={{
+        marginTop:40, fontFamily:'var(--font-mono)', fontSize:10, color:'var(--text3)',
+        letterSpacing:'0.1em', position:'relative', zIndex:1, textAlign:'center',
+      }}>
+        Day 47 · Threat Level 2 · RMAT Storm Active · Global Marketplace Online
+      </div>
+    </div>
+  );
+}
+
+// ─── CAMP MAIN SCREEN ─────────────────────────────────────────────────────────
+function CampMainScreen({ resources, setResources, threatLevel }) {
+  const [survivors, setSurvivors] = useState([
+    { id:1, name:'Mira Chen',     role:'Engineer',  class:'mechanic', lvl:8,  morale:78, nutrition:72, hydration:65, assigned:'workshop', status:'working' },
+    { id:2, name:'Buck Talon',    role:'Guard',     class:'enforcer', lvl:11, morale:60, nutrition:45, hydration:80, assigned:'watchtower', status:'working' },
+    { id:3, name:'Petra Voss',    role:'Medic',     class:'medic',    lvl:7,  morale:88, nutrition:84, hydration:78, assigned:'medtent',  status:'working' },
+    { id:4, name:'Cole Marsh',    role:'Farmer',    class:'scavenger',lvl:5,  morale:50, nutrition:30, hydration:40, assigned:'farm',     status:'hungry' },
+    { id:5, name:'Yael Strom',    role:'Scavenger', class:'ranger',   lvl:14, morale:70, nutrition:68, hydration:62, assigned:'workshop', status:'working' },
+    { id:6, name:'Felix Ortega',  role:'Engineer',  class:'mechanic', lvl:9,  morale:75, nutrition:77, hydration:70, assigned:'forge',    status:'working' },
+  ]);
+
+  const [buildings] = useState([
+    { id:'farm', name:'Farm', tier:2, output:'Food', rate:'+12/hr', status:'active', workers:1 },
+    { id:'workshop', name:'Workshop', tier:2, output:'Refined Scrap', rate:'+8/hr', status:'active', workers:2 },
+    { id:'forge', name:'Forge', tier:1, output:'Metal Bars', rate:'+4/hr', status:'active', workers:1 },
+    { id:'medtent', name:'Med Tent', tier:2, output:'Medicine', rate:'+3/hr', status:'active', workers:1 },
+    { id:'watchtower', name:'Watchtower', tier:2, output:'Threat Detect', rate:'Active', status:'active', workers:1 },
+    { id:'barracks', name:'Barracks', tier:1, output:'Morale +5%', rate:'Passive', status:'active', workers:0 },
+    { id:'recycler', name:'Recycler', tier:1, output:'Scrap Recovery', rate:'+2/hr', status:'damaged', workers:0 },
+    { id:'kitchen', name:'Kitchen', tier:2, output:'Meals', rate:'+6/hr', status:'active', workers:0 },
+  ]);
+
+  const [hordeTimer, setHordeTimer] = useState(340); // seconds until next horde
+  useEffect(() => {
+    const t = setInterval(() => setHordeTimer(prev => prev > 0 ? prev - 1 : 720), 1000);
+    return () => clearInterval(t);
+  }, []);
+
+  const [selectedSurvivor, setSelectedSurvivor] = useState(null);
+
+  const hordePct = 1 - hordeTimer/720;
+  const hordeColor = hordePct > 0.8 ? 'var(--red2)' : hordePct > 0.5 ? 'var(--amber)' : 'var(--green)';
+
+  return (
+    <div className="screen-enter" style={{display:'flex', gap:8, padding:8, height:'100%', overflow:'hidden'}}>
+      {/* Left: Survivors */}
+      <div style={{width:300, display:'flex', flexDirection:'column', gap:8, flexShrink:0}}>
+        <div className="panel" style={{flex:1, display:'flex', flexDirection:'column', overflow:'hidden'}}>
+          <div className="panel-title" style={{display:'flex', alignItems:'center', justifyContent:'space-between'}}>
+            <span>Survivors ({survivors.length}/12)</span>
+            <Tag color="var(--green2)">{survivors.filter(s=>s.status==='working').length} Active</Tag>
+          </div>
+          <div style={{flex:1, overflow:'auto', padding:8, display:'flex', flexDirection:'column', gap:6}}>
+            {survivors.map(s => {
+              const nutri = getNutritionLevel(s.nutrition);
+              const classObj = ZI.CLASSES.find(c => c.id === s.class);
+              return (
+                <div key={s.id}
+                  onClick={() => setSelectedSurvivor(selectedSurvivor?.id === s.id ? null : s)}
+                  style={{
+                    padding:'8px 10px', background: selectedSurvivor?.id===s.id ? 'var(--bg4)' : 'var(--bg3)',
+                    border: `1px solid ${selectedSurvivor?.id===s.id ? 'var(--amber)' : 'var(--border)'}`,
+                    cursor:'pointer', transition:'all 0.15s',
+                  }}>
+                  <div style={{display:'flex', alignItems:'center', gap:8, marginBottom:5}}>
+                    <div style={{
+                      width:28, height:28, borderRadius:'50%', border:`2px solid ${classObj?.color||'var(--border2)'}`,
+                      background:'var(--bg4)', display:'flex', alignItems:'center', justifyContent:'center',
+                      fontFamily:'var(--font-mono)', fontSize:12, color:classObj?.color||'var(--text2)',
+                      flexShrink:0,
+                    }}>{s.name[0]}</div>
+                    <div style={{flex:1, minWidth:0}}>
+                      <div style={{fontFamily:'var(--font-body)', fontSize:13, color:'var(--text)', fontWeight:500, whiteSpace:'nowrap', overflow:'hidden', textOverflow:'ellipsis'}}>{s.name}</div>
+                      <div style={{display:'flex', gap:5, marginTop:2}}>
+                        <Tag color="var(--text3)">{s.role}</Tag>
+                        <Tag color={classObj?.color||'var(--text2)'}>{classObj?.name||s.class}</Tag>
+                      </div>
+                    </div>
+                    <div style={{fontFamily:'var(--font-mono)', fontSize:10, color:'var(--text2)', textAlign:'right', flexShrink:0}}>
+                      Lv{s.lvl}
+                    </div>
+                  </div>
+                  <div style={{display:'grid', gridTemplateColumns:'1fr 1fr 1fr', gap:4}}>
+                    <MiniStat label="Morale" value={s.morale} color="var(--amber)"/>
+                    <MiniStat label="Nutrition" value={s.nutrition} color={nutri.color}/>
+                    <MiniStat label="Hydration" value={s.hydration} color="var(--blue)"/>
+                  </div>
+                  {s.status==='hungry' && (
+                    <div style={{marginTop:5, fontFamily:'var(--font-mono)', fontSize:9, color:'var(--red2)'}}>
+                      ⚠ {nutri.label} · Stamina {(nutri.staminaMod*100).toFixed(0)}%
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </div>
+
+      {/* Center: Buildings + Horde */}
+      <div style={{flex:1, display:'flex', flexDirection:'column', gap:8, minWidth:0, overflow:'hidden'}}>
+        {/* Horde clock */}
+        <div className="panel" style={{padding:'10px 14px', flexShrink:0}}>
+          <div style={{display:'flex', alignItems:'center', gap:12, marginBottom:8}}>
+            <div style={{fontFamily:'var(--font-title)', fontSize:14, color:'var(--red2)', letterSpacing:'0.1em', flexShrink:0}}>HORDE CLOCK</div>
+            <div style={{flex:1}}>
+              <ProgressBar value={hordePct*100} color={hordeColor} animated={hordePct > 0.7} height={8}/>
+            </div>
+            <div style={{fontFamily:'var(--font-mono)', fontSize:13, color:hordeColor, width:56, textAlign:'right', flexShrink:0}}>
+              {Math.floor(hordeTimer/60)}:{String(hordeTimer%60).padStart(2,'0')}
+            </div>
+          </div>
+          <div style={{display:'flex', gap:16, alignItems:'flex-end'}}>
+            <StatChip label="Defense Rating" value="84/100" color="var(--green)"/>
+            <StatChip label="Horde Size" value={`~${35 + threatLevel*18}`} color="var(--red2)"/>
+            <StatChip label="Ammo Reserve" value="1,240" color="var(--amber)"/>
+            <StatChip label="Turrets Online" value="2/3" color="var(--blue)"/>
+            <StatChip label="Threat Level" value={`${threatLevel}/5`} color={threatLevel>3?'var(--red2)':'var(--amber)'}/>
+            {/* PZ horde composition based on day */}
+            <div style={{marginLeft:'auto', flexShrink:0}}>
+              <div style={{fontFamily:'var(--font-mono)', fontSize:8, color:'var(--text3)', marginBottom:3}}>
+                DAY 47 COMPOSITION <span style={{fontStyle:'italic'}}>· PZ migration model</span>
+              </div>
+              <div style={{display:'flex', gap:4}}>
+                {[
+                  { label:'Shambler', pct:40, color:'var(--text2)' },
+                  { label:'Runner',   pct:30, color:'var(--amber)' },
+                  { label:'Spitter',  pct:18, color:'var(--green)' },
+                  { label:'Brute',    pct:10, color:'var(--red2)' },
+                  { label:'Mutant',   pct:2,  color:'var(--purple)' },
+                ].map(z => (
+                  <div key={z.label} className="tooltip-wrap" style={{display:'flex', flexDirection:'column', alignItems:'center', gap:2}}>
+                    <div style={{fontFamily:'var(--font-mono)', fontSize:8, color:z.color}}>{z.pct}%</div>
+                    <div style={{width:28, height:20, background:'var(--bg4)', borderRadius:1, overflow:'hidden', display:'flex', alignItems:'flex-end'}}>
+                      <div style={{width:'100%', background:z.color, height:`${z.pct*2}%`, transition:'height 0.5s'}}/>
+                    </div>
+                    <div style={{fontFamily:'var(--font-mono)', fontSize:7, color:'var(--text3)'}}>{z.label.slice(0,4)}</div>
+                    <div className="tooltip-box">{z.label}<br/>PZ: {z.label==='Shambler'?'Slow, predictable — use noise traps':z.label==='Runner'?'Sprint on sight — use obstacles':z.label==='Spitter'?'Ranged acid — force repositioning':z.label==='Brute'?'Wall breaker — target first':z.label==='Mutant'?'Apex variant — full camp alert':''}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Buildings grid */}
+        <div className="panel" style={{flex:1, display:'flex', flexDirection:'column', overflow:'hidden'}}>
+          <div className="panel-title" style={{display:'flex', alignItems:'center', justifyContent:'space-between'}}>
+            <span>Camp Infrastructure</span>
+            <button className="btn btn-sm btn-amber">+ Build</button>
+          </div>
+          <div style={{flex:1, overflow:'auto', padding:8, display:'grid', gridTemplateColumns:'repeat(auto-fill, minmax(180px, 1fr))', gap:6, alignContent:'start'}}>
+            {buildings.map(b => (
+              <BuildingCard key={b.id} building={b}/>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Right: Selected survivor detail OR resource summary */}
+      <div style={{width:260, display:'flex', flexDirection:'column', gap:8, flexShrink:0}}>
+        {selectedSurvivor ? (
+          <SurvivorDetail survivor={selectedSurvivor} onClose={() => setSelectedSurvivor(null)}/>
+        ) : (
+          <ResourceSummaryPanel resources={resources}/>
+        )}
+        <CampEventsPanel threatLevel={threatLevel}/>
+      </div>
+    </div>
+  );
+}
+
+function MiniStat({ label, value, color }) {
+  return (
+    <div>
+      <div style={{fontFamily:'var(--font-mono)', fontSize:9, color:'var(--text3)', marginBottom:2}}>{label}</div>
+      <ProgressBar value={value} color={color} height={4}/>
+    </div>
+  );
+}
+
+function StatChip({ label, value, color }) {
+  return (
+    <div>
+      <div style={{fontFamily:'var(--font-mono)', fontSize:9, color:'var(--text3)', letterSpacing:'0.08em'}}>{label}</div>
+      <div style={{fontFamily:'var(--font-mono)', fontSize:14, color, fontWeight:'bold', marginTop:1}}>{value}</div>
+    </div>
+  );
+}
+
+function BuildingCard({ building }) {
+  const statusColor = building.status==='active' ? 'var(--green)' : building.status==='damaged' ? 'var(--red2)' : 'var(--text3)';
+  return (
+    <div style={{
+      background:'var(--bg3)', border:'1px solid var(--border)', padding:'8px 10px', cursor:'pointer',
+      transition:'border-color 0.15s',
+    }}
+    onMouseEnter={e => e.currentTarget.style.borderColor='var(--amber)'}
+    onMouseLeave={e => e.currentTarget.style.borderColor='var(--border)'}
+    >
+      <div style={{display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:5}}>
+        <span style={{fontFamily:'var(--font-body)', fontSize:13, color:'var(--text)', fontWeight:500}}>{building.name}</span>
+        <span style={{fontFamily:'var(--font-mono)', fontSize:9, color:statusColor, textTransform:'uppercase'}}>{building.status}</span>
+      </div>
+      <div style={{fontFamily:'var(--font-mono)', fontSize:10, color:'var(--text2)', marginBottom:5}}>{building.output}</div>
+      <div style={{display:'flex', alignItems:'center', justifyContent:'space-between'}}>
+        <Tag color="var(--amber2)">T{building.tier}</Tag>
+        <span style={{fontFamily:'var(--font-mono)', fontSize:11, color:'var(--green)'}}>{building.rate}</span>
+      </div>
+      {building.workers > 0 && (
+        <div style={{marginTop:5, fontFamily:'var(--font-mono)', fontSize:9, color:'var(--text3)'}}>
+          {building.workers} worker{building.workers!==1?'s':''} assigned
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ─── MOODLES PANEL (PZ-inspired status effects) ────────────────────────────
+function MoodlesPanel({ survivor }) {
+  // Derive moodles from survivor stats — mirrors PZ's automatic moodle system
+  const moodles = [];
+  const nutri = getNutritionLevel(survivor.nutrition);
+  const hydration = getHydrationLevel(survivor.hydration);
+
+  // Hunger moodle (PZ: Peckish → Hungry → Very Hungry → Famished → Starving)
+  if (survivor.nutrition < 35) {
+    const lvl = survivor.nutrition < 15 ? 4 : survivor.nutrition < 25 ? 3 : 2;
+    moodles.push({ key:'hungry', icon:'🍖', label: ZI.MOODLES.Hungry.levels[lvl], color: ZI.MOODLES.Hungry.color,
+      severity: lvl, penalty: `Stamina ${(ZI.MOODLES.Hungry.staminaPenalties[lvl]*100).toFixed(0)}% · XP ${(ZI.MOODLES.Hungry.xpPenalties[lvl]*100).toFixed(0)}%`,
+      pzNote: 'PZ: Famished survivors have visibly shaking hands and reduced combat speed' });
+  }
+  if (survivor.hydration < 45) {
+    const lvl = survivor.hydration < 20 ? 3 : survivor.hydration < 32 ? 2 : 1;
+    moodles.push({ key:'thirsty', icon:'💧', label: ZI.MOODLES.Thirsty.levels[lvl], color: ZI.MOODLES.Thirsty.color,
+      severity: lvl, penalty: `Stamina ${(ZI.MOODLES.Thirsty.staminaPenalties[lvl]*100).toFixed(0)}% · Speed ${(ZI.MOODLES.Thirsty.speedPenalties[lvl]*100).toFixed(0)}%`,
+      pzNote: 'PZ: Dehydration causes blurred vision effects and rapid stamina drain' });
+  }
+  if (survivor.morale < 50) {
+    const lvl = survivor.morale < 25 ? 2 : 1;
+    moodles.push({ key:'panicked', icon:'😰', label: ZI.MOODLES.Panicked.levels[lvl], color: ZI.MOODLES.Panicked.color,
+      severity: lvl, penalty: `Accuracy ${(ZI.MOODLES.Panicked.accuracyPenalties[lvl]*100).toFixed(0)}% · Noise +${(ZI.MOODLES.Panicked.noisePenalties[lvl]*100).toFixed(0)}%`,
+      pzNote: 'PZ: Panicked survivors breathe loudly — increasing detection radius' });
+  }
+  if (survivor.status === 'hungry') {
+    moodles.push({ key:'tired', icon:'😴', label:'Tired', color: ZI.MOODLES.Tired.color,
+      severity:1, penalty:'Attack Speed -10% · Awareness -15%',
+      pzNote:'PZ: Tired survivors miss more often and react slower to threats' });
+  }
+  if (survivor.id === 4) { // Cole Marsh — show infection for demo
+    moodles.push({ key:'sick', icon:'🤢', label:'Queasy', color: ZI.MOODLES.Sick.color,
+      severity:0, penalty:'HP drain 0/hr · Stamina -5%',
+      pzNote:'PZ: Queasy can be early infection — check for bites immediately' });
+  }
+
+  if (moodles.length === 0) return (
+    <div style={{padding:'6px 8px', background:'var(--bg4)', border:'1px solid var(--border)'}}>
+      <div style={{fontFamily:'var(--font-mono)', fontSize:9, color:'var(--green)'}}>✓ No active moodles</div>
+    </div>
+  );
+
+  return (
+    <div style={{display:'flex', flexDirection:'column', gap:4}}>
+      {moodles.map(m => (
+        <div key={m.key} style={{
+          padding:'5px 8px', background:'var(--bg4)',
+          borderLeft:`3px solid ${m.color}`,
+          border:`1px solid ${m.color}33`,
+        }}>
+          <div style={{display:'flex', alignItems:'center', gap:6, marginBottom:2}}>
+            <span style={{fontSize:11}}>{m.icon}</span>
+            <span style={{fontFamily:'var(--font-body)', fontSize:12, color:m.color, fontWeight:500}}>{m.label}</span>
+            <div style={{display:'flex', gap:1, marginLeft:'auto'}}>
+              {[0,1,2,3].map(i => (
+                <div key={i} style={{
+                  width:5, height:5, borderRadius:1,
+                  background: i <= m.severity ? m.color : 'var(--border2)',
+                }}/>
+              ))}
+            </div>
+          </div>
+          <div style={{fontFamily:'var(--font-mono)', fontSize:9, color:'var(--text3)'}}>{m.penalty}</div>
+          <div style={{fontFamily:'var(--font-mono)', fontSize:8, color:'var(--text3)', marginTop:2, fontStyle:'italic', opacity:0.7}}>{m.pzNote}</div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+// ─── INFECTION TRACKER (PZ's Knox Infection logic) ─────────────────────────
+function InfectionTracker({ survivor }) {
+  // Simulate infection state
+  const infectionStates = {
+    1: null,
+    2: null,
+    3: null,
+    4: { stage: 0, hoursElapsed: 2, source: 'Laceration (25% chance)', treatable: true },
+    5: null,
+    6: null,
+  };
+  const infection = infectionStates[survivor.id];
+
+  return (
+    <div style={{marginBottom:8}}>
+      <div style={{fontFamily:'var(--font-mono)', fontSize:9, color:'var(--text3)', marginBottom:5, letterSpacing:'0.1em'}}>
+        INFECTION STATUS
+        <span style={{marginLeft:6, color:'var(--text3)', fontSize:8}}>(PZ Knox Model)</span>
+      </div>
+      {infection ? (
+        <div style={{padding:'7px 8px', background:'rgba(139,58,42,0.15)', border:'1px solid var(--red)'}}>
+          <div style={{display:'flex', alignItems:'center', gap:6, marginBottom:4}}>
+            <div className="notif-dot"/>
+            <span style={{fontFamily:'var(--font-body)', fontSize:12, color:'var(--red2)', fontWeight:500}}>
+              {ZI.INFECTION.symptoms[infection.stage]}
+            </span>
+          </div>
+          <div style={{fontFamily:'var(--font-mono)', fontSize:9, color:'var(--text3)', marginBottom:3}}>
+            Source: {infection.source} · {infection.hoursElapsed}h elapsed
+          </div>
+          {infection.treatable && (
+            <div style={{fontFamily:'var(--font-mono)', fontSize:9, color:'var(--green)'}}>
+              ✓ Medical RMAT cure available ({'<'}6h window)
+            </div>
+          )}
+          {/* Symptom progression */}
+          <div style={{display:'flex', gap:2, marginTop:5, flexWrap:'wrap'}}>
+            {ZI.INFECTION.symptoms.map((s, i) => (
+              <div key={i} style={{
+                fontFamily:'var(--font-mono)', fontSize:8, padding:'1px 5px',
+                background: i === infection.stage ? 'rgba(139,58,42,0.3)' : 'transparent',
+                color: i === infection.stage ? 'var(--red2)' : i < infection.stage ? 'var(--text3)' : 'var(--text3)',
+                border:`1px solid ${i === infection.stage ? 'var(--red)' : 'var(--border)'}`,
+              }}>{s}</div>
+            ))}
+          </div>
+          <div style={{marginTop:5, fontFamily:'var(--font-mono)', fontSize:8, color:'var(--text3)', fontStyle:'italic'}}>
+            PZ: Bite = 100% fatal. Laceration = 25%. Treat immediately with Medical RMAT.
+          </div>
+        </div>
+      ) : (
+        <div style={{padding:'5px 8px', background:'var(--bg4)', border:'1px solid var(--border)'}}>
+          <div style={{fontFamily:'var(--font-mono)', fontSize:9, color:'var(--green)'}}>
+            ✓ No active infection · Last checked: post-horde
+          </div>
+          <div style={{fontFamily:'var(--font-mono)', fontSize:8, color:'var(--text3)', marginTop:2}}>
+            Bite: 100% · Laceration: 25% · Scratch: 7% infection chance
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ─── FATIGUE TRACKER (PZ-style sleep deprivation cascade) ──────────────────
+function FatigueTracker({ hoursAwake = 14 }) {
+  const phase = ZI.FATIGUE_MODEL.phases.find(p => hoursAwake >= p.hoursAwake[0] && hoursAwake < p.hoursAwake[1])
+    || ZI.FATIGUE_MODEL.phases[ZI.FATIGUE_MODEL.phases.length - 1];
+  const pct = clamp((hoursAwake / 24) * 100, 0, 100);
+
+  return (
+    <div style={{marginBottom:8}}>
+      <div style={{display:'flex', justifyContent:'space-between', marginBottom:3}}>
+        <span style={{fontFamily:'var(--font-mono)', fontSize:9, color:'var(--text3)'}}>FATIGUE</span>
+        <span style={{fontFamily:'var(--font-mono)', fontSize:9, color:phase.color}}>{phase.level} · {hoursAwake}h awake</span>
+      </div>
+      <ProgressBar value={pct} color={phase.color} height={5} animated={hoursAwake > 20}/>
+      <div style={{fontFamily:'var(--font-mono)', fontSize:8, color:'var(--text3)', marginTop:3}}>
+        Combat {phase.combatMod >= 0 ? '+' : ''}{(phase.combatMod*100).toFixed(0)}% · XP {phase.xpMod >= 0 ? '+' : ''}{(phase.xpMod*100).toFixed(0)}%
+        <span style={{marginLeft:6, fontStyle:'italic', opacity:0.7}}>· PZ: ignored fatigue → forced blackout</span>
+      </div>
+    </div>
+  );
+}
+
+function SurvivorDetail({ survivor, onClose }) {
+  const classObj = ZI.CLASSES.find(c => c.id === survivor.class);
+  const nutri = getNutritionLevel(survivor.nutrition);
+  const hydration = getHydrationLevel(survivor.hydration);
+  const totalStaminaMod = nutri.staminaMod + hydration.staminaMod;
+  const hoursAwake = survivor.id === 2 ? 18 : survivor.id === 4 ? 16 : 10;
+
+  return (
+    <div className="panel" style={{flex:1, display:'flex', flexDirection:'column', overflow:'hidden'}}>
+      <div className="panel-title" style={{display:'flex', alignItems:'center', justifyContent:'space-between'}}>
+        <span>Survivor Profile</span>
+        <button onClick={onClose} style={{background:'none',border:'none',color:'var(--text3)',cursor:'pointer',fontSize:14,lineHeight:1}}>✕</button>
+      </div>
+      <div style={{flex:1, overflow:'auto', padding:10}}>
+        {/* Header */}
+        <div style={{display:'flex', gap:10, marginBottom:10}}>
+          <div style={{
+            width:44, height:44, borderRadius:'50%', border:`2px solid ${classObj?.color||'var(--amber)'}`,
+            background:'var(--bg4)', display:'flex', alignItems:'center', justifyContent:'center',
+            fontFamily:'var(--font-title)', fontSize:20, color:classObj?.color||'var(--amber)', flexShrink:0,
+          }}>{survivor.name[0]}</div>
+          <div>
+            <div style={{fontFamily:'var(--font-body)', fontSize:15, color:'var(--text)', fontWeight:600}}>{survivor.name}</div>
+            <div style={{fontFamily:'var(--font-body)', fontSize:11, color:'var(--text2)', letterSpacing:'0.08em'}}>
+              {survivor.role} · Lv{survivor.lvl} {classObj?.name}
+            </div>
+            <div style={{fontFamily:'var(--font-mono)', fontSize:9, color:classObj?.color||'var(--amber)', marginTop:2}}>
+              {classObj?.aura}
+            </div>
+          </div>
+        </div>
+
+        <div className="divider"/>
+
+        {/* PZ Moodles */}
+        <div style={{marginBottom:10}}>
+          <div style={{fontFamily:'var(--font-mono)', fontSize:9, color:'var(--text3)', marginBottom:5, letterSpacing:'0.1em'}}>
+            MOODLES <span style={{color:'var(--text3)', fontSize:7, fontStyle:'italic'}}>(PZ-style cascading status)</span>
+          </div>
+          <MoodlesPanel survivor={survivor}/>
+        </div>
+
+        <div className="divider"/>
+
+        {/* Nutrition + Hydration */}
+        <div style={{marginBottom:10}}>
+          <div style={{fontFamily:'var(--font-mono)', fontSize:9, color:'var(--text3)', marginBottom:5, letterSpacing:'0.1em'}}>NUTRITION & HYDRATION</div>
+          <NutritionBar label="Nutrition" value={survivor.nutrition} level={nutri}/>
+          <div style={{height:5}}/>
+          <NutritionBar label="Hydration" value={survivor.hydration} level={hydration}/>
+          <div style={{
+            marginTop:7, padding:'5px 8px', background:'var(--bg4)',
+            borderLeft:`3px solid ${totalStaminaMod >= 0 ? 'var(--green)' : 'var(--red2)'}`,
+            fontFamily:'var(--font-mono)', fontSize:9,
+            color: totalStaminaMod >= 0 ? 'var(--green)' : 'var(--red2)',
+          }}>
+            Net stamina {totalStaminaMod >= 0 ? '+' : ''}{(totalStaminaMod*100).toFixed(0)}% · Heal regen {nutri.regenMod >= 0 ? '+' : ''}{(nutri.regenMod*100).toFixed(0)}%
+          </div>
+        </div>
+
+        <div className="divider"/>
+
+        {/* Fatigue (PZ sleep model) */}
+        <div style={{marginBottom:10}}>
+          <FatigueTracker hoursAwake={hoursAwake}/>
+        </div>
+
+        <div className="divider"/>
+
+        {/* Infection tracker */}
+        <InfectionTracker survivor={survivor}/>
+
+        <div className="divider"/>
+
+        {/* Assignment */}
+        <div>
+          <div style={{fontFamily:'var(--font-mono)', fontSize:9, color:'var(--text3)', marginBottom:6}}>ASSIGNMENT</div>
+          <div style={{display:'flex', gap:5, flexWrap:'wrap'}}>
+            {ZI.BUILDINGS.slice(0,6).map(b => (
+              <button key={b.id} style={{
+                fontFamily:'var(--font-mono)', fontSize:9, padding:'3px 7px',
+                border:`1px solid ${survivor.assigned===b.id ? 'var(--amber)' : 'var(--border)'}`,
+                background: survivor.assigned===b.id ? 'rgba(200,169,110,0.1)' : 'var(--bg3)',
+                color: survivor.assigned===b.id ? 'var(--amber)' : 'var(--text2)',
+                cursor:'pointer',
+              }}>{b.name}</button>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function NutritionBar({ label, value, level }) {
+  return (
+    <div>
+      <div style={{display:'flex', justifyContent:'space-between', marginBottom:3}}>
+        <span style={{fontFamily:'var(--font-mono)', fontSize:9, color:'var(--text3)'}}>{label}</span>
+        <span style={{fontFamily:'var(--font-mono)', fontSize:9, color:level.color}}>{level.label}</span>
+      </div>
+      <ProgressBar value={value} color={level.color} height={5}/>
+    </div>
+  );
+}
+
+function ResourceSummaryPanel({ resources }) {
+  return (
+    <div className="panel" style={{display:'flex', flexDirection:'column', overflow:'hidden'}}>
+      <div className="panel-title">Resource Overview</div>
+      <div style={{padding:8, display:'flex', flexDirection:'column', gap:5}}>
+        {Object.entries(resources).map(([key, val]) => (
+          <div key={key} style={{display:'flex', alignItems:'center', gap:8}}>
+            <span style={{fontFamily:'var(--font-mono)', fontSize:10, color:'var(--text2)', width:64, flexShrink:0}}>{key}</span>
+            <div style={{flex:1}}>
+              <ProgressBar value={(val.current/val.max)*100}
+                color={key==='Food'?'var(--green2)':key==='RMAT'?'var(--purple)':key==='Ammo'?'var(--amber)':key==='Medicine'?'var(--blue)':key==='Fuel'?'var(--red2)':'var(--text2)'}
+                height={5}/>
+            </div>
+            <span style={{fontFamily:'var(--font-mono)', fontSize:11, color:'var(--text)', width:50, textAlign:'right', flexShrink:0}}>
+              {fmt(val.current)}
+            </span>
+            {val.rate > 0 && (
+              <span style={{fontFamily:'var(--font-mono)', fontSize:9, color:'var(--green)', width:40, flexShrink:0}}>+{val.rate}/m</span>
+            )}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function CampEventsPanel({ threatLevel }) {
+  const events = [
+    { time:'2m ago',  text:'Workshop II complete. Refined scrap output +40%.', color:'var(--green)' },
+    { time:'14m ago', text:'Horde probe repelled. 3 shamblers neutralized.', color:'var(--amber)' },
+    { time:'1h ago',  text:'Cole Marsh underfed. Stamina penalty active.', color:'var(--red2)' },
+    { time:'2h ago',  text:'Recycler damaged by acid spitter. Repairs needed.', color:'var(--red2)' },
+    { time:'3h ago',  text:'Hearthguard delivered 80 food rations via courier.', color:'var(--green)' },
+  ];
+  return (
+    <div className="panel" style={{flex:1, display:'flex', flexDirection:'column', overflow:'hidden'}}>
+      <div className="panel-title">Camp Log</div>
+      <div style={{flex:1, overflow:'auto', padding:8, display:'flex', flexDirection:'column', gap:5}}>
+        {events.map((e,i) => (
+          <div key={i} style={{display:'flex', gap:8, alignItems:'flex-start'}}>
+            <span style={{fontFamily:'var(--font-mono)', fontSize:9, color:'var(--text3)', flexShrink:0, marginTop:1}}>{e.time}</span>
+            <span style={{fontFamily:'var(--font-body)', fontSize:12, color:e.color, lineHeight:1.4}}>{e.text}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// ─── SOLO MAIN SCREEN ─────────────────────────────────────────────────────────
+function SoloMainScreen({ setScreen, setActiveRoute }) {
+  const [selectedBiome, setSelectedBiome] = useState('suburbia');
+  const [selectedRoute, setSelectedRoute] = useState(null);
+  const [runMode, setRunMode] = useState('active');
+
+  const filteredRoutes = ZI.ROUTES.filter(r => r.biome === selectedBiome);
+  const biome = ZI.BIOMES.find(b => b.id === selectedBiome);
+
+  const character = {
+    name: 'The Wanderer', class: 'ranger', level: 14,
+    stamina: 78, gear: 'Hunting Rifle (WM) + Hazard Suit T2',
+    vehicle: 'Reinforced Truck', vehicleCondition: 65,
+    nutrition: 74, hydration: 82,
+    attributes: { S:32, U:28, R:61, V:44, I:55, V2:38, A:49, L:35 },
+  };
+
+  const nutri = getNutritionLevel(character.nutrition);
+  const hydration = getHydrationLevel(character.hydration);
+  const totalStaminaMod = nutri.staminaMod + hydration.staminaMod;
+  const effectiveStamina = Math.round(character.stamina * (1 + totalStaminaMod));
+
+  return (
+    <div className="screen-enter" style={{display:'flex', gap:8, padding:8, height:'100%', overflow:'hidden'}}>
+      {/* Left: Character + biome select */}
+      <div style={{width:280, display:'flex', flexDirection:'column', gap:8, flexShrink:0}}>
+        {/* Character card */}
+        <div className="panel" style={{padding:12, flexShrink:0}}>
+          <div style={{display:'flex', gap:10, marginBottom:10}}>
+            <div style={{
+              width:42, height:42, borderRadius:'50%', border:'2px solid var(--amber)',
+              background:'var(--bg4)', display:'flex', alignItems:'center', justifyContent:'center',
+              fontFamily:'var(--font-title)', fontSize:20, color:'var(--amber)', flexShrink:0,
+            }}>W</div>
+            <div>
+              <div style={{fontFamily:'var(--font-body)', fontSize:15, color:'var(--text)', fontWeight:600}}>The Wanderer</div>
+              <div style={{fontFamily:'var(--font-body)', fontSize:11, color:'var(--text2)', letterSpacing:'0.1em'}}>Lv14 Ranger · Lone Operative</div>
+            </div>
+          </div>
+          {/* Nutrition */}
+          <div style={{marginBottom:8}}>
+            <div style={{display:'flex', justifyContent:'space-between', marginBottom:4}}>
+              <span style={{fontFamily:'var(--font-mono)', fontSize:9, color:'var(--text3)'}}>NUTRITION</span>
+              <span style={{fontFamily:'var(--font-mono)', fontSize:9, color:nutri.color}}>{nutri.label}</span>
+            </div>
+            <ProgressBar value={character.nutrition} color={nutri.color} height={5}/>
+            <div style={{display:'flex', justifyContent:'space-between', marginTop:5, marginBottom:2}}>
+              <span style={{fontFamily:'var(--font-mono)', fontSize:9, color:'var(--text3)'}}>HYDRATION</span>
+              <span style={{fontFamily:'var(--font-mono)', fontSize:9, color:hydration.color}}>{hydration.label}</span>
+            </div>
+            <ProgressBar value={character.hydration} color={hydration.color} height={5}/>
+          </div>
+          <div style={{
+            padding:'5px 8px', background:'var(--bg4)',
+            borderLeft:`3px solid ${totalStaminaMod >= 0 ? 'var(--green)' : 'var(--red2)'}`,
+            fontFamily:'var(--font-mono)', fontSize:10, color: totalStaminaMod >= 0 ? 'var(--green)' : 'var(--red2)',
+            marginBottom:8,
+          }}>
+            Stamina: {character.stamina} → <b>{effectiveStamina}</b> ({totalStaminaMod >= 0 ? '+' : ''}{(totalStaminaMod*100).toFixed(0)}%)
+          </div>
+          {/* SURVIVAL stats */}
+          <div style={{display:'grid', gridTemplateColumns:'1fr 1fr', gap:'4px 8px'}}>
+            {Object.entries(character.attributes).map(([k,v]) => {
+              const attr = ZI.SURVIVAL_ATTRS.find(a => a.key === k || a.key === k+'2');
+              const label = k==='V2'?'Valor':k==='V'?'Vitality':attr?.name||k;
+              return (
+                <div key={k} style={{display:'flex', gap:4, alignItems:'center'}}>
+                  <span style={{
+                    fontFamily:'var(--font-mono)', fontSize:10, color:'var(--amber)', width:10, flexShrink:0,
+                    fontWeight:'bold',
+                  }}>{k==='V2'?'V':k}</span>
+                  <div style={{flex:1}}>
+                    <ProgressBar value={v} color="var(--amber)" height={4}/>
+                  </div>
+                  <span style={{fontFamily:'var(--font-mono)', fontSize:10, color:'var(--text2)', width:22, textAlign:'right'}}>{v}</span>
+                </div>
+              );
+            })}
+          </div>
+          <div className="divider" style={{margin:'10px 0 8px'}}/>
+          <div style={{fontFamily:'var(--font-mono)', fontSize:10, color:'var(--text2)', lineHeight:1.6}}>
+            <div>🚛 {character.vehicle}</div>
+            <ProgressBar value={character.vehicleCondition} color="var(--amber)" height={4}/>
+            <div style={{marginTop:2, color:'var(--text3)'}}>Condition: {character.vehicleCondition}%</div>
+          </div>
+        </div>
+
+        {/* Biome selector */}
+        <div className="panel" style={{flex:1, display:'flex', flexDirection:'column', overflow:'hidden'}}>
+          <div className="panel-title">Select Biome</div>
+          <div style={{padding:8, display:'flex', flexDirection:'column', gap:5, overflow:'auto'}}>
+            {ZI.BIOMES.map(b => (
+              <div key={b.id}
+                onClick={() => { setSelectedBiome(b.id); setSelectedRoute(null); }}
+                style={{
+                  padding:'8px 10px', cursor:'pointer', transition:'all 0.15s',
+                  border:`1px solid ${selectedBiome===b.id ? b.color : 'var(--border)'}`,
+                  background: selectedBiome===b.id ? 'var(--bg4)' : 'var(--bg3)',
+                }}
+              >
+                <div style={{display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:3}}>
+                  <span style={{fontFamily:'var(--font-body)', fontSize:13, color: selectedBiome===b.id ? b.color : 'var(--text)' }}>{b.name}</span>
+                  <RiskBar risk={b.danger}/>
+                </div>
+                <div style={{fontFamily:'var(--font-mono)', fontSize:9, color:'var(--text3)'}}>
+                  RMAT: {b.rmat} · Tier {b.tier}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Center: Routes */}
+      <div style={{flex:1, display:'flex', flexDirection:'column', gap:8, minWidth:0, overflow:'hidden'}}>
+        {biome && (
+          <div className="panel" style={{padding:12, flexShrink:0}}>
+            <div style={{display:'flex', alignItems:'center', gap:12}}>
+              <div style={{
+                width:10, height:10, borderRadius:'50%', background:biome.color,
+                boxShadow:`0 0 8px ${biome.color}`,
+              }}/>
+              <div style={{fontFamily:'var(--font-title)', fontSize:20, color:biome.color}}>{biome.name}</div>
+              <Tag color={biome.color}>Tier {biome.tier}</Tag>
+            </div>
+            <div style={{display:'flex', gap:24, marginTop:8}}>
+              <div>
+                <div style={{fontFamily:'var(--font-mono)', fontSize:9, color:'var(--text3)', marginBottom:3}}>ZOMBIE ECOLOGY</div>
+                <div style={{fontFamily:'var(--font-mono)', fontSize:10, color:'var(--text2)'}}>{biome.zombies.slice(0,2).join(' · ')}</div>
+              </div>
+              <div>
+                <div style={{fontFamily:'var(--font-mono)', fontSize:9, color:'var(--text3)', marginBottom:3}}>HAZARDS</div>
+                <div style={{fontFamily:'var(--font-mono)', fontSize:10, color:'var(--red2)'}}>{biome.hazards.slice(0,2).join(' · ')}</div>
+              </div>
+              <div>
+                <div style={{fontFamily:'var(--font-mono)', fontSize:9, color:'var(--text3)', marginBottom:3}}>RMAT ACCESS</div>
+                <div style={{fontFamily:'var(--font-mono)', fontSize:10, color:'var(--purple)'}}>{biome.rmat}</div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Run mode selector */}
+        <div style={{display:'flex', gap:6, flexShrink:0}}>
+          {[['active','Active Run','Monitor & direct your route in real-time'],['passive','Idle Run','Automated — reduced loot, lower risk']].map(([id,label,desc]) => (
+            <div key={id} onClick={() => setRunMode(id)} style={{
+              flex:1, padding:'8px 12px', cursor:'pointer',
+              border:`1px solid ${runMode===id ? 'var(--amber)' : 'var(--border)'}`,
+              background: runMode===id ? 'var(--bg4)' : 'var(--bg3)',
+              transition:'all 0.15s',
+            }}>
+              <div style={{fontFamily:'var(--font-body)', fontSize:13, color: runMode===id ? 'var(--amber)' : 'var(--text)' }}>{label}</div>
+              <div style={{fontFamily:'var(--font-mono)', fontSize:9, color:'var(--text3)', marginTop:2}}>{desc}</div>
+            </div>
+          ))}
+        </div>
+
+        {/* Route list */}
+        <div className="panel" style={{flex:1, display:'flex', flexDirection:'column', overflow:'hidden'}}>
+          <div className="panel-title">Available Routes — {biome?.name}</div>
+          <div style={{flex:1, overflow:'auto', padding:8, display:'flex', flexDirection:'column', gap:6}}>
+            {filteredRoutes.length === 0 ? (
+              <div style={{fontFamily:'var(--font-mono)', fontSize:11, color:'var(--text3)', padding:16, textAlign:'center'}}>
+                No routes available. Upgrade gear to unlock deeper zones.
+              </div>
+            ) : filteredRoutes.map(route => (
+              <RouteCard key={route.id} route={route}
+                selected={selectedRoute?.id === route.id}
+                onClick={() => setSelectedRoute(selectedRoute?.id===route.id ? null : route)}
+              />
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Right: Route detail + launch */}
+      <div style={{width:260, display:'flex', flexDirection:'column', gap:8, flexShrink:0}}>
+        {selectedRoute ? (
+          <RouteDetailPanel
+            route={selectedRoute}
+            runMode={runMode}
+            effectiveStamina={effectiveStamina}
+            onLaunch={() => { setActiveRoute(selectedRoute); setScreen('solo-loading'); }}
+          />
+        ) : (
+          <div className="panel" style={{flex:1, display:'flex', alignItems:'center', justifyContent:'center', padding:20}}>
+            <div style={{textAlign:'center'}}>
+              <div style={{fontFamily:'var(--font-title)', fontSize:14, color:'var(--text3)', marginBottom:8}}>Select a Route</div>
+              <div style={{fontFamily:'var(--font-mono)', fontSize:10, color:'var(--text3)'}}>Choose a biome and route to see details and deployment options.</div>
+            </div>
+          </div>
+        )}
+        <SoloStatusPanel effectiveStamina={effectiveStamina}/>
+      </div>
+    </div>
+  );
+}
+
+function RouteCard({ route, selected, onClick }) {
+  const biome = ZI.BIOMES.find(b => b.id === route.biome);
+  const rmat = ZI.RMAT_TIERS[route.rmatTier];
+  return (
+    <div onClick={onClick} style={{
+      padding:'10px 12px', cursor:'pointer', transition:'all 0.15s',
+      border:`1px solid ${selected ? 'var(--amber)' : 'var(--border)'}`,
+      background: selected ? 'var(--bg4)' : 'var(--bg3)',
+    }}>
+      <div style={{display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:6}}>
+        <span style={{fontFamily:'var(--font-body)', fontSize:14, color: selected ? 'var(--amber)' : 'var(--text)', fontWeight:500}}>{route.name}</span>
+        <RiskBar risk={route.risk}/>
+      </div>
+      <div style={{display:'flex', gap:8, marginBottom:6, flexWrap:'wrap'}}>
+        <Tag color="var(--text2)">⏱ {fmtTime(route.duration*60)}</Tag>
+        <Tag color={rmat?.color||'var(--text2)'}>{rmat?.name} RMAT</Tag>
+      </div>
+      {/* Node path */}
+      <div style={{display:'flex', alignItems:'center', gap:3, flexWrap:'wrap'}}>
+        {route.nodes.map((node, i) => (
+          <React.Fragment key={i}>
+            {i > 0 && <span style={{color:'var(--text3)', fontSize:8}}>→</span>}
+            <span style={{fontFamily:'var(--font-mono)', fontSize:8, color: node==='Extraction'?'var(--green)':node==='Departure'?'var(--text2)':'var(--text3)'}}>{node}</span>
+          </React.Fragment>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// ─── NOISE METER (PZ noise mechanics) ────────────────────────────────────────
+function NoiseMeter({ route, runMode }) {
+  const vehicleNoise = ZI.VEHICLE_SYSTEMS.noiseBiome[route.biome] || ZI.VEHICLE_SYSTEMS.noiseBiome.suburbia;
+  // Base noise: vehicle engine + run mode modifier
+  const baseDb = runMode === 'passive' ? vehicleNoise.engineNoise : Math.round(vehicleNoise.engineNoise * 0.6);
+  const hearingRange = runMode === 'passive' ? vehicleNoise.hearingRange : Math.round(vehicleNoise.hearingRange * 0.5);
+  const noisePct = clamp((baseDb / 160) * 100, 0, 100);
+  const noiseColor = noisePct > 75 ? 'var(--red2)' : noisePct > 45 ? 'var(--amber)' : 'var(--green)';
+
+  return (
+    <div style={{marginBottom:10}}>
+      <div style={{fontFamily:'var(--font-mono)', fontSize:9, color:'var(--text3)', marginBottom:5, letterSpacing:'0.1em'}}>
+        NOISE PROFILE <span style={{fontStyle:'italic', color:'var(--text3)', fontSize:7}}>· PZ hearing model</span>
+      </div>
+      <div style={{display:'flex', flexDirection:'column', gap:4}}>
+        <div>
+          <div style={{display:'flex', justifyContent:'space-between', marginBottom:2}}>
+            <span style={{fontFamily:'var(--font-mono)', fontSize:9, color:'var(--text3)'}}>
+              {runMode === 'passive' ? 'Vehicle (engine on)' : 'Foot movement'}
+            </span>
+            <span style={{fontFamily:'var(--font-mono)', fontSize:9, color:noiseColor}}>{baseDb} dB</span>
+          </div>
+          <ProgressBar value={noisePct} color={noiseColor} height={5} animated={noisePct > 75}/>
+        </div>
+        <div style={{fontFamily:'var(--font-mono)', fontSize:9, color:'var(--text3)'}}>
+          Hearing range: <span style={{color:noiseColor}}>{hearingRange}m</span>
+          <span style={{marginLeft:8, fontSize:8, fontStyle:'italic'}}>{vehicleNoise.note}</span>
+        </div>
+        {runMode === 'passive' && baseDb > 100 && (
+          <div style={{padding:'4px 7px', background:'rgba(139,58,42,0.12)', border:'1px solid var(--red)', fontFamily:'var(--font-mono)', fontSize:8, color:'var(--red2)'}}>
+            ⚠ PZ rule: sustained engine noise draws migration waves. Consider foot approach at POIs.
+          </div>
+        )}
+        {/* Quick reference: key noise sources */}
+        <div style={{marginTop:2}}>
+          {[
+            { label:'Gunshot', db: 140, icon:'🔫' },
+            { label:'Running', db: 50,  icon:'🏃' },
+            { label:'Crouch',  db: 15,  icon:'🦶' },
+          ].map(n => (
+            <div key={n.label} style={{display:'flex', alignItems:'center', gap:5, marginBottom:2}}>
+              <span style={{fontSize:9}}>{n.icon}</span>
+              <span style={{fontFamily:'var(--font-mono)', fontSize:8, color:'var(--text3)', width:50}}>{n.label}</span>
+              <div style={{flex:1, height:3, background:'var(--bg4)', borderRadius:1, overflow:'hidden'}}>
+                <div style={{width:`${(n.db/160)*100}%`, height:'100%',
+                  background: n.db > 100 ? 'var(--red2)' : n.db > 60 ? 'var(--amber)' : 'var(--green)'
+                }}/>
+              </div>
+              <span style={{fontFamily:'var(--font-mono)', fontSize:8, color:'var(--text3)', width:28, textAlign:'right'}}>{n.db}dB</span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ─── WEATHER PANEL (PZ weather impact) ───────────────────────────────────────
+function WeatherPanel({ biomeId }) {
+  const weatherByBiome = {
+    mountain:  { condition: 'Fog', data: ZI.WEATHER_EFFECTS.Fog,       icon:'🌫️' },
+    suburbia:  { condition: 'Rain', data: ZI.WEATHER_EFFECTS.Rain,      icon:'🌧️' },
+    metro:     { condition: 'Acid Rain', data: ZI.WEATHER_EFFECTS.AcidRain, icon:'☠️' },
+    perimeter: { condition: 'Radiation Storm', data: ZI.WEATHER_EFFECTS.RadiationStorm, icon:'☢️' },
+  };
+  const w = weatherByBiome[biomeId] || weatherByBiome.suburbia;
+
+  const effects = Object.entries(w.data)
+    .filter(([k]) => k !== 'note')
+    .slice(0, 4);
+
+  return (
+    <div style={{marginBottom:10}}>
+      <div style={{fontFamily:'var(--font-mono)', fontSize:9, color:'var(--text3)', marginBottom:5, letterSpacing:'0.1em'}}>WEATHER CONDITIONS</div>
+      <div style={{padding:'7px 9px', background:'var(--bg4)', border:'1px solid var(--border)'}}>
+        <div style={{display:'flex', alignItems:'center', gap:6, marginBottom:5}}>
+          <span style={{fontSize:14}}>{w.icon}</span>
+          <span style={{fontFamily:'var(--font-body)', fontSize:13, color:'var(--amber)'}}>{w.condition}</span>
+        </div>
+        <div style={{display:'flex', flexDirection:'column', gap:3}}>
+          {effects.map(([key, val]) => {
+            const isGood = typeof val === 'number' && val < 0;
+            const isBad  = typeof val === 'number' && val > 0 && key !== 'rmatYield';
+            const label = key.replace(/([A-Z])/g,' $1').replace(/^./,s=>s.toUpperCase());
+            const display = typeof val === 'boolean' ? (val ? 'Active' : 'None') :
+              typeof val === 'number' ? `${val > 0 ? '+' : ''}${(val*100).toFixed(0)}%` : val;
+            return (
+              <div key={key} style={{display:'flex', justifyContent:'space-between'}}>
+                <span style={{fontFamily:'var(--font-mono)', fontSize:9, color:'var(--text3)'}}>{label}</span>
+                <span style={{fontFamily:'var(--font-mono)', fontSize:9,
+                  color: isGood ? 'var(--green)' : isBad ? 'var(--red2)' : 'var(--amber)'
+                }}>{display}</span>
+              </div>
+            );
+          })}
+        </div>
+        {w.data.note && (
+          <div style={{marginTop:5, fontFamily:'var(--font-mono)', fontSize:8, color:'var(--text3)', fontStyle:'italic', lineHeight:1.4}}>
+            {w.data.note}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+// ─── CONTAINERS PANEL (PZ loot container logic) ──────────────────────────────
+function ContainersPanel({ biomeId }) {
+  const containersByBiome = {
+    mountain:  ['Glovebox','CarTrunk','KitchenCabinet'],
+    suburbia:  ['KitchenCabinet','CarTrunk','WarehouseShelf','GunCabinet'],
+    metro:     ['WarehouseShelf','HospitalShelf','PoliceArmory','GunCabinet'],
+    perimeter: ['LabStorage','HospitalShelf','PoliceArmory'],
+  };
+  const containers = (containersByBiome[biomeId] || containersByBiome.suburbia)
+    .map(k => ({ key:k, ...ZI.LOOT_CONTAINERS[k] }));
+
+  return (
+    <div style={{marginBottom:10}}>
+      <div style={{fontFamily:'var(--font-mono)', fontSize:9, color:'var(--text3)', marginBottom:5, letterSpacing:'0.1em'}}>
+        LOOT CONTAINERS <span style={{fontSize:7, fontStyle:'italic'}}>· PZ container model</span>
+      </div>
+      <div style={{display:'flex', flexDirection:'column', gap:4}}>
+        {containers.map(c => (
+          <div key={c.key} style={{
+            padding:'5px 8px', background:'var(--bg3)', border:'1px solid var(--border)',
+            display:'flex', alignItems:'center', gap:8,
+          }}>
+            <div style={{flex:1}}>
+              <div style={{display:'flex', alignItems:'center', gap:5, marginBottom:2}}>
+                <span style={{fontFamily:'var(--font-body)', fontSize:11, color:'var(--text)'}}>
+                  {c.key.replace(/([A-Z])/g,' $1').trim()}
+                </span>
+                {c.locked && <Tag color="var(--red2)">Locked</Tag>}
+                {c.requiresKeycard && <Tag color="var(--purple)">Keycard</Tag>}
+              </div>
+              <div style={{fontFamily:'var(--font-mono)', fontSize:8, color:'var(--text3)'}}>{c.items.slice(0,2).join(' · ')}</div>
+            </div>
+            <div style={{textAlign:'right', flexShrink:0}}>
+              <div style={{fontFamily:'var(--font-mono)', fontSize:9, color:'var(--amber)'}}>{Math.round(c.baseChance*100)}% find</div>
+              {c.rmatChance > 0 && (
+                <div style={{fontFamily:'var(--font-mono)', fontSize:8, color:'var(--purple)'}}>
+                  {Math.round(c.rmatChance*100)}% RMAT
+                </div>
+              )}
+            </div>
+          </div>
+        ))}
+        <div style={{fontFamily:'var(--font-mono)', fontSize:8, color:'var(--text3)', fontStyle:'italic', lineHeight:1.5}}>
+          PZ: containers exhausted after {containers[0]?.exhaustedAfter||1} loot{(containers[0]?.exhaustedAfter||1)>1?'s':''}. Respawn in 7–30 days.
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function RouteDetailPanel({ route, runMode, effectiveStamina, onLaunch }) {
+  const biome = ZI.BIOMES.find(b => b.id === route.biome);
+  const rmat = ZI.RMAT_TIERS[route.rmatTier];
+  const staminaCost = route.duration * 8;
+  const canRun = effectiveStamina >= staminaCost;
+  const [tab, setTab] = useState('overview');
+
+  return (
+    <div className="panel" style={{flex:1, display:'flex', flexDirection:'column', overflow:'hidden'}}>
+      <div className="panel-title" style={{display:'flex', alignItems:'center', justifyContent:'space-between'}}>
+        <span>Route Details</span>
+        <RiskBar risk={route.risk}/>
+      </div>
+      {/* Mini tab bar */}
+      <div style={{display:'flex', borderBottom:'1px solid var(--border)', background:'var(--bg3)'}}>
+        {[['overview','Info'],['noise','Noise'],['loot','Loot']].map(([id,label]) => (
+          <button key={id} onClick={() => setTab(id)} style={{
+            fontFamily:'var(--font-body)', fontSize:10, letterSpacing:'0.1em',
+            color: tab===id ? 'var(--amber)' : 'var(--text3)',
+            padding:'5px 10px', background:'none', border:'none', cursor:'pointer',
+            borderBottom: tab===id ? '2px solid var(--amber)' : '2px solid transparent',
+            transition:'all 0.15s', position:'relative', top:1,
+          }}>{label}</button>
+        ))}
+      </div>
+      <div style={{flex:1, overflow:'auto', padding:10}}>
+        <div style={{fontFamily:'var(--font-title)', fontSize:17, color:'var(--amber)', marginBottom:2}}>{route.name}</div>
+        <div style={{fontFamily:'var(--font-mono)', fontSize:10, color:'var(--text2)', marginBottom:10}}>
+          {biome?.name} · Tier {biome?.tier}
+        </div>
+
+        {tab === 'overview' && (
+          <>
+            <div style={{display:'flex', flexDirection:'column', gap:5, marginBottom:10}}>
+              <InfoRow label="Duration" value={fmtTime(route.duration*60)} color="var(--text)"/>
+              <InfoRow label="RMAT Access" value={rmat?.name} color={rmat?.color}/>
+              <InfoRow label="Stamina Cost" value={`~${staminaCost}`} color={canRun?'var(--green)':'var(--red2)'}/>
+              <InfoRow label="Run Mode" value={runMode === 'active' ? 'Active' : 'Idle'} color={runMode==='active'?'var(--amber)':'var(--text2)'}/>
+              {runMode==='passive' && (
+                <div style={{fontFamily:'var(--font-mono)', fontSize:9, color:'var(--text3)', padding:'4px 6px', background:'var(--bg4)', borderLeft:'2px solid var(--text3)'}}>
+                  Idle penalty: Loot ×0.7 · XP ×0.8
+                </div>
+              )}
+            </div>
+            <div style={{marginBottom:10}}>
+              <div style={{fontFamily:'var(--font-mono)', fontSize:9, color:'var(--text3)', marginBottom:5}}>ROUTE NODES</div>
+              {route.nodes.map((node, i) => (
+                <div key={i} style={{display:'flex', alignItems:'center', gap:8, marginBottom:4}}>
+                  <div style={{
+                    width:6, height:6, borderRadius:'50%', flexShrink:0,
+                    background: node==='Extraction'?'var(--green)':node==='Departure'?'var(--amber)':'var(--border2)',
+                  }}/>
+                  <span style={{fontFamily:'var(--font-mono)', fontSize:10,
+                    color: node==='Extraction'?'var(--green)':node==='Departure'?'var(--amber)':'var(--text2)'}}>{node}</span>
+                  {i < route.nodes.length-1 && <div style={{flex:1, height:1, background:'var(--border)', marginLeft:3}}/>}
+                </div>
+              ))}
+            </div>
+            <div>
+              <div style={{fontFamily:'var(--font-mono)', fontSize:9, color:'var(--text3)', marginBottom:4}}>EXPECTED REWARDS</div>
+              <div style={{fontFamily:'var(--font-body)', fontSize:11, color:'var(--text2)', lineHeight:1.6}}>{route.reward}</div>
+            </div>
+            <WeatherPanel biomeId={route.biome}/>
+          </>
+        )}
+
+        {tab === 'noise' && (
+          <>
+            <NoiseMeter route={route} runMode={runMode}/>
+            <div style={{marginTop:8}}>
+              <div style={{fontFamily:'var(--font-mono)', fontSize:9, color:'var(--text3)', marginBottom:5}}>ZOMBIE BEHAVIOR</div>
+              <div style={{display:'flex', flexDirection:'column', gap:4}}>
+                {biome?.zombies.slice(0,3).map(z => {
+                  const name = z.split(' ')[0];
+                  const behavior = ZI.ZOMBIE_BEHAVIOR.movement[name];
+                  return (
+                    <div key={z} style={{padding:'5px 8px', background:'var(--bg3)', border:'1px solid var(--border)'}}>
+                      <div style={{display:'flex', justifyContent:'space-between', marginBottom:2}}>
+                        <span style={{fontFamily:'var(--font-body)', fontSize:11, color:'var(--red2)'}}>{z}</span>
+                        {behavior && <Tag color={behavior.sprint?'var(--red2)':'var(--amber)'}>{behavior.sprint?'SPRINTS':'WALKS'}</Tag>}
+                      </div>
+                      {behavior && <div style={{fontFamily:'var(--font-mono)', fontSize:8, color:'var(--text3)', fontStyle:'italic'}}>{behavior.note}</div>}
+                    </div>
+                  );
+                })}
+              </div>
+              <div style={{marginTop:8, padding:'6px 8px', background:'var(--bg4)', border:'1px solid var(--border)'}}>
+                <div style={{fontFamily:'var(--font-mono)', fontSize:8, color:'var(--text3)', lineHeight:1.6}}>
+                  <b style={{color:'var(--text2)'}}>Memory:</b> Zombies forget position after ~{ZI.ZOMBIE_BEHAVIOR.memory.duration_s}s<br/>
+                  <b style={{color:'var(--text2)'}}>Migration:</b> Above {ZI.ZOMBIE_BEHAVIOR.hearing.migration_threshold} in area = wave begins<br/>
+                  <span style={{fontStyle:'italic'}}>{ZI.ZOMBIE_BEHAVIOR.memory.note}</span>
+                </div>
+              </div>
+            </div>
+          </>
+        )}
+
+        {tab === 'loot' && (
+          <ContainersPanel biomeId={route.biome}/>
+        )}
+
+        {!canRun && (
+          <div style={{
+            padding:'6px 10px', background:'rgba(139,58,42,0.15)', border:'1px solid var(--red)',
+            fontFamily:'var(--font-mono)', fontSize:10, color:'var(--red2)', marginTop:8,
+          }}>
+            ⚠ Stamina too low. Eat and rest before departing.
+          </div>
+        )}
+      </div>
+      <div style={{padding:10, borderTop:'1px solid var(--border)'}}>
+        <button
+          onClick={canRun ? onLaunch : undefined}
+          className="btn btn-amber"
+          style={{ width:'100%', opacity: canRun ? 1 : 0.4, cursor: canRun ? 'pointer' : 'not-allowed' }}
+        >
+          {runMode==='active' ? '→ Deploy (Active)' : '→ Deploy (Idle)'}
+        </button>
+      </div>
+    </div>
+  );
+}
+
+function InfoRow({ label, value, color }) {
+  return (
+    <div style={{display:'flex', alignItems:'center', justifyContent:'space-between'}}>
+      <span style={{fontFamily:'var(--font-mono)', fontSize:10, color:'var(--text3)'}}>{label}</span>
+      <span style={{fontFamily:'var(--font-mono)', fontSize:11, color: color||'var(--text)'}}>{value}</span>
+    </div>
+  );
+}
+
+function SoloStatusPanel({ effectiveStamina }) {
+  return (
+    <div className="panel" style={{padding:10, flexShrink:0}}>
+      <div style={{fontFamily:'var(--font-mono)', fontSize:9, color:'var(--text3)', marginBottom:6, letterSpacing:'0.12em'}}>LAST RUN</div>
+      <div style={{fontFamily:'var(--font-body)', fontSize:11, color:'var(--text2)', lineHeight:1.6}}>
+        Crestwood Drive · 4h 20m<br/>
+        <span style={{color:'var(--green)'}}>Extracted: 3× RMAT-1, 12× Scrap, 1× Blueprint</span>
+      </div>
+    </div>
+  );
+}
+
+// ─── LOOT LOADING SCREEN ─────────────────────────────────────────────────────
+// PZ justification: in PZ, transferring items between containers and vehicles
+// takes real time proportional to item count. Heavier/bulkier items take longer.
+// Zombie Idler makes this a dedicated screen to reinforce resource weight & time cost.
+function LootLoadingScreen({ route, onComplete }) {
+  const [phase, setPhase] = useState('arriving');
+  const [loadProgress, setLoadProgress] = useState({});
+  const [lootItems] = useState([
+    { id:'l1', cat:'heavy',  name:'Reinforced Steel Panels ×4',  weight:120, container:'WarehouseShelf', timeMs:9000 },
+    { id:'l2', cat:'medium', name:'Canned Rations ×18',           weight:36,  container:'KitchenCabinet', timeMs:4500 },
+    { id:'l3', cat:'medium', name:'Advanced Toolkit',             weight:8,   container:'CarTrunk',       timeMs:3200 },
+    { id:'l4', cat:'light',  name:'RMAT-1 Mechanical Shard ×2',  weight:1,   container:'ZombiePocket',   timeMs:1800 },
+    { id:'l5', cat:'light',  name:'RMAT-1 Chemical Vial',         weight:1,   container:'LabStorage',     timeMs:1500 },
+    { id:'l6', cat:'data',   name:'Blueprint: Workshop III',      weight:0,   container:'LabStorage',     timeMs:800  },
+  ]);
+  const [completedItems, setCompletedItems] = useState(new Set());
+  const [activeItem, setActiveItem] = useState(null);
+  const [vehicleOffload, setVehicleOffload] = useState(0);
+
+  // PZ vehicle condition degradation during route
+  const vehicleCondition = { before: 65, after: 47 };
+  const vehComponents = [
+    { name:'Engine',     before: 80, after: 74, component: ZI.VEHICLE_SYSTEMS.components.Engine },
+    { name:'Tires',      before: 62, after: 42, component: ZI.VEHICLE_SYSTEMS.components.Tires },
+    { name:'Battery',    before: 90, after: 88, component: ZI.VEHICLE_SYSTEMS.components.Battery },
+    { name:'Brake Fluid',before: 75, after: 73, component: ZI.VEHICLE_SYSTEMS.components.BrakeFluid },
+  ];
+
+  // Character state after run (PZ fatigue model)
+  const runHours = route?.duration || 4;
+  const fatiguePhase = ZI.FATIGUE_MODEL.phases.find(p => (10 + runHours) >= p.hoursAwake[0] && (10 + runHours) < p.hoursAwake[1])
+    || ZI.FATIGUE_MODEL.phases[ZI.FATIGUE_MODEL.phases.length-1];
+
+  useEffect(() => {
+    if (phase !== 'unloading') return;
+    let delay = 1000;
+    lootItems.forEach((item) => {
+      setTimeout(() => {
+        setActiveItem(item.id);
+        const start = Date.now();
+        const interval = setInterval(() => {
+          const elapsed = Date.now() - start;
+          const pct = Math.min((elapsed / item.timeMs) * 100, 100);
+          setLoadProgress(p => ({ ...p, [item.id]: pct }));
+          setVehicleOffload(v => Math.min(v + 0.3, 100));
+          if (pct >= 100) {
+            clearInterval(interval);
+            setCompletedItems(prev => new Set([...prev, item.id]));
+            setActiveItem(null);
+          }
+        }, 80);
+      }, delay);
+      delay += item.timeMs + 600;
+    });
+    setTimeout(() => setPhase('complete'), delay + 1000);
+  }, [phase]);
+
+  useEffect(() => {
+    const t = setTimeout(() => setPhase('unloading'), 2400);
+    return () => clearTimeout(t);
+  }, []);
+
+  const catColors = { heavy:'var(--red2)', medium:'var(--amber)', light:'var(--purple)', data:'var(--blue)' };
+
+  return (
+    <div className="screen-enter" style={{
+      display:'flex', height:'100%', background:'var(--bg)',
+      position:'relative', overflow:'hidden',
+    }}>
+      {/* Background grid */}
+      <div style={{
+        position:'absolute', inset:0, opacity:0.03,
+        backgroundImage:'linear-gradient(var(--border) 1px,transparent 1px),linear-gradient(90deg,var(--border) 1px,transparent 1px)',
+        backgroundSize:'48px 48px', pointerEvents:'none',
+      }}/>
+
+      {/* Main content */}
+      <div style={{
+        position:'relative', zIndex:1, width:'100%',
+        display:'flex', gap:0, padding:0, overflow:'hidden',
+      }}>
+        {/* CENTER: Loot unloading */}
+        <div style={{flex:1, display:'flex', flexDirection:'column', padding:'24px 28px', overflow:'auto'}}>
+          {/* Header */}
+          <div style={{marginBottom:24}}>
+            <div style={{fontFamily:'var(--font-mono)', fontSize:10, color:'var(--text3)', letterSpacing:'0.3em', marginBottom:6}}>
+              {phase==='arriving' ? '— VEHICLE RETURNING —' : phase==='unloading' ? '— UNLOADING CARGO —' : '— EXTRACTION COMPLETE —'}
+            </div>
+            <div style={{fontFamily:'var(--font-title)', fontSize:30, color:'var(--amber)', lineHeight:1}}>
+              {route?.name || 'Crestwood Drive'}
+            </div>
+            <div style={{fontFamily:'var(--font-mono)', fontSize:11, color:'var(--text2)', marginTop:5, display:'flex', gap:12}}>
+              <span>{route?.biome ? ZI.BIOMES.find(b=>b.id===route.biome)?.name : 'Ruined Suburbia'}</span>
+              <span>·</span>
+              <span>{route?.duration || 4}h Run</span>
+              <span>·</span>
+              <span style={{color: fatiguePhase.color}}>{fatiguePhase.level} on return</span>
+            </div>
+          </div>
+
+          {/* Vehicle status bar */}
+          <div style={{
+            background:'var(--bg2)', border:'1px solid var(--border)',
+            padding:'12px 16px', marginBottom:16,
+            display:'flex', alignItems:'center', gap:16,
+          }}>
+            <div style={{fontSize:28, flexShrink:0}}>🚛</div>
+            <div style={{flex:1}}>
+              <div style={{display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:5}}>
+                <span style={{fontFamily:'var(--font-body)', fontSize:13, color:'var(--text)'}}>Reinforced Truck — Cargo Bay</span>
+                <span style={{fontFamily:'var(--font-mono)', fontSize:11, color:'var(--amber)'}}>
+                  {Math.round(vehicleOffload)}% Unloaded
+                </span>
+              </div>
+              <ProgressBar value={vehicleOffload} color="var(--amber)" animated={phase==='unloading'} height={7}/>
+            </div>
+            <div style={{textAlign:'right', flexShrink:0}}>
+              {phase === 'arriving' && (
+                <div style={{fontFamily:'var(--font-mono)', fontSize:10, color:'var(--text3)'}}>ARRIVING...</div>
+              )}
+              {phase === 'complete' && (
+                <div style={{fontFamily:'var(--font-mono)', fontSize:10, color:'var(--green)'}}>✓ UNLOADED</div>
+              )}
+            </div>
+          </div>
+
+          {/* Loot items */}
+          <div style={{display:'flex', flexDirection:'column', gap:5, marginBottom:16}}>
+            {lootItems.map(item => {
+              const isDone = completedItems.has(item.id);
+              const isActive = activeItem === item.id;
+              const pct = loadProgress[item.id] || 0;
+              const catObj = ZI.LOOT_CATEGORIES[item.cat];
+              const color = catColors[item.cat];
+              const container = ZI.LOOT_CONTAINERS[item.container];
+
+              return (
+                <div key={item.id} style={{
+                  display:'flex', alignItems:'center', gap:12,
+                  padding:'8px 14px', background:'var(--bg2)',
+                  border:`1px solid ${isDone ? 'var(--border2)' : isActive ? color : 'var(--border)'}`,
+                  transition:'all 0.3s', opacity: phase==='arriving' ? 0.5 : 1,
+                }}>
+                  <div style={{
+                    width:8, height:8, borderRadius:'50%', flexShrink:0,
+                    background: isDone ? 'var(--green)' : isActive ? color : 'var(--border2)',
+                    boxShadow: isActive ? `0 0 8px ${color}` : 'none',
+                    transition:'all 0.3s',
+                  }}/>
+                  <div style={{flex:1}}>
+                    <div style={{display:'flex', alignItems:'center', gap:8, marginBottom: (isActive||isDone) ? 3 : 0}}>
+                      <span style={{fontFamily:'var(--font-body)', fontSize:13, color: isDone?'var(--text2)':isActive?'var(--text)':'var(--text2)'}}>
+                        {item.name}
+                      </span>
+                      <Tag color={color}>{catObj?.label}</Tag>
+                      {item.weight > 0 && (
+                        <span style={{fontFamily:'var(--font-mono)', fontSize:9, color:'var(--text3)'}}>{item.weight}kg</span>
+                      )}
+                      <span style={{fontFamily:'var(--font-mono)', fontSize:8, color:'var(--text3)', marginLeft:'auto'}}>
+                        from {item.container.replace(/([A-Z])/g,' $1').trim()}
+                      </span>
+                    </div>
+                    {(isActive || isDone) && (
+                      <ProgressBar value={pct} color={isDone?'var(--green)':color} height={3} animated={isActive}/>
+                    )}
+                  </div>
+                  <div style={{
+                    fontFamily:'var(--font-mono)', fontSize:11,
+                    color: isDone?'var(--green)':isActive?color:'var(--text3)',
+                    width:64, textAlign:'right', flexShrink:0,
+                  }}>
+                    {isDone ? '✓ STORED' : isActive ? `${Math.round(pct)}%` : phase==='arriving'?'PENDING':'QUEUED'}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          {phase === 'unloading' && (
+            <div style={{
+              textAlign:'center', fontFamily:'var(--font-mono)', fontSize:9, color:'var(--text3)',
+              padding:'8px', background:'var(--bg2)', border:'1px solid var(--border)',
+            }}>
+              Unloading in progress — heavy cargo takes longer (PZ container transfer logic). Do not interrupt.
+            </div>
+          )}
+
+          {phase === 'complete' && (
+            <div style={{display:'flex', gap:10, justifyContent:'center', marginTop:8}}>
+              <button className="btn btn-amber btn-lg" onClick={onComplete}>
+                Return to Hideout →
+              </button>
+            </div>
+          )}
+        </div>
+
+        {/* RIGHT SIDEBAR: Vehicle condition + character state */}
+        <div style={{
+          width:280, borderLeft:'1px solid var(--border)', background:'var(--bg2)',
+          display:'flex', flexDirection:'column', overflow:'auto', flexShrink:0,
+        }}>
+          {/* Vehicle degradation (PZ mechanics) */}
+          <div style={{padding:'14px 14px 10px', borderBottom:'1px solid var(--border)'}}>
+            <div style={{fontFamily:'var(--font-mono)', fontSize:9, color:'var(--text3)', marginBottom:8, letterSpacing:'0.12em'}}>
+              VEHICLE CONDITION <span style={{fontSize:7, fontStyle:'italic'}}>· PZ degradation model</span>
+            </div>
+            <div style={{display:'flex', flexDirection:'column', gap:7}}>
+              {vehComponents.map(vc => {
+                const drop = vc.before - vc.after;
+                const condColor = vc.after > 70 ? 'var(--green)' : vc.after > 40 ? 'var(--amber)' : 'var(--red2)';
+                return (
+                  <div key={vc.name}>
+                    <div style={{display:'flex', justifyContent:'space-between', marginBottom:2}}>
+                      <span style={{fontFamily:'var(--font-mono)', fontSize:9, color:'var(--text2)'}}>{vc.name}</span>
+                      <span style={{fontFamily:'var(--font-mono)', fontSize:9, color:condColor}}>
+                        {vc.after}% <span style={{color:'var(--red2)', fontSize:8}}>▼{drop}</span>
+                      </span>
+                    </div>
+                    <ProgressBar value={vc.after} color={condColor} height={4}/>
+                    {vc.after < 50 && (
+                      <div style={{fontFamily:'var(--font-mono)', fontSize:8, color:'var(--red2)', marginTop:2}}>
+                        ⚠ {vc.component.failureEffect} — needs {vc.component.repairSkill}
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+            <div style={{
+              marginTop:8, padding:'5px 8px', background:'var(--bg4)',
+              borderLeft:'3px solid var(--amber)',
+              fontFamily:'var(--font-mono)', fontSize:8, color:'var(--text3)', lineHeight:1.5,
+            }}>
+              PZ rule: Tires degrade fastest off-road. Always carry a spare. Brake failure mid-escape = death.
+            </div>
+          </div>
+
+          {/* Character post-run state */}
+          <div style={{padding:'12px 14px', borderBottom:'1px solid var(--border)'}}>
+            <div style={{fontFamily:'var(--font-mono)', fontSize:9, color:'var(--text3)', marginBottom:8, letterSpacing:'0.12em'}}>
+              CHARACTER STATE <span style={{fontSize:7, fontStyle:'italic'}}>· post-run</span>
+            </div>
+            <FatigueTracker hoursAwake={10 + runHours}/>
+            <div style={{marginTop:6}}>
+              <NutritionBar label="Nutrition (depleted)" value={62} level={getNutritionLevel(62)}/>
+              <div style={{height:5}}/>
+              <NutritionBar label="Hydration (depleted)" value={48} level={getHydrationLevel(48)}/>
+            </div>
+            <div style={{
+              marginTop:8, padding:'5px 8px', background:'var(--bg4)',
+              borderLeft:'3px solid var(--amber)',
+              fontFamily:'var(--font-mono)', fontSize:8, color:'var(--text3)', lineHeight:1.5,
+            }}>
+              PZ: a {runHours}h run burns ~{Math.round(runHours * 8)} stamina. Schedule rest + meal immediately or next run suffers cascading penalties.
+            </div>
+          </div>
+
+          {/* Infection check reminder */}
+          <div style={{padding:'12px 14px'}}>
+            <div style={{fontFamily:'var(--font-mono)', fontSize:9, color:'var(--text3)', marginBottom:6, letterSpacing:'0.12em'}}>
+              POST-RUN CHECKLIST
+            </div>
+            {[
+              { ok: true,  label: 'No bite detected', note: 'PZ: check after every zombie contact' },
+              { ok: true,  label: 'No laceration wounds', note: '25% infection chance if untreated' },
+              { ok: false, label: 'Tires need repair', note: 'PZ: blowout risk on next run' },
+              { ok: true,  label: 'Gear durability OK', note: 'Acid rain caused minor corrosion' },
+              { ok: false, label: 'Eat & hydrate before sleep', note: 'PZ: sleeping while hungry slows healing' },
+            ].map((item, i) => (
+              <div key={i} style={{
+                display:'flex', alignItems:'flex-start', gap:7, marginBottom:5,
+              }}>
+                <div style={{
+                  width:14, height:14, borderRadius:2, flexShrink:0, marginTop:1,
+                  background: item.ok ? 'rgba(76,175,125,0.15)' : 'rgba(139,58,42,0.15)',
+                  border:`1px solid ${item.ok ? 'var(--green)' : 'var(--red2)'}`,
+                  display:'flex', alignItems:'center', justifyContent:'center',
+                  fontSize:8, color: item.ok ? 'var(--green)' : 'var(--red2)',
+                }}>{item.ok ? '✓' : '!'}</div>
+                <div>
+                  <div style={{fontFamily:'var(--font-body)', fontSize:11, color: item.ok?'var(--text2)':'var(--text)'}}>{item.label}</div>
+                  <div style={{fontFamily:'var(--font-mono)', fontSize:8, color:'var(--text3)', fontStyle:'italic'}}>{item.note}</div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ─── SCHEDULE SCREEN ─────────────────────────────────────────────────────────
+function ScheduleScreen({ mode }) {
+  const [tasks, setTasks] = useState([
+    { id:1, type:'rest',     label:'Rest & Recover',    duration:3,  priority:1, status:'queued', startIn:0 },
+    { id:2, type:'craft',    label:'Craft: Hazard Suit T2', duration:2, priority:2, status:'queued', startIn:3 },
+    { id:3, type:'faction',  label:'Iron March Contract', duration:4, priority:3, status:'queued', startIn:5 },
+    { id:4, type:'scavenge', label:'Scavenge: Crestwood Drive', duration:4, priority:4, status:'queued', startIn:9 },
+    { id:5, type:'train',    label:'Train: Reflex',      duration:3,  priority:5, status:'queued', startIn:13 },
+    { id:6, type:'repair',   label:'Repair: Reinforced Truck', duration:2, priority:6, status:'queued', startIn:16 },
+  ]);
+  const [dragIdx, setDragIdx] = useState(null);
+
+  const totalHours = tasks.reduce((s, t) => s + t.duration, 0);
+  const TIMELINE_HOURS = 24;
+
+  const moveUp = (idx) => {
+    if (idx === 0) return;
+    const t = [...tasks];
+    [t[idx-1], t[idx]] = [t[idx], t[idx-1]];
+    setTasks(t.map((task, i) => ({...task, priority: i+1})));
+  };
+  const moveDown = (idx) => {
+    if (idx === tasks.length-1) return;
+    const t = [...tasks];
+    [t[idx], t[idx+1]] = [t[idx+1], t[idx]];
+    setTasks(t.map((task, i) => ({...task, priority: i+1})));
+  };
+  const removeTask = (id) => setTasks(tasks.filter(t => t.id !== id));
+
+  const taskColors = {
+    rest:'var(--blue)', craft:'var(--amber)', faction:'var(--purple)',
+    scavenge:'var(--green)', train:'var(--red2)', repair:'var(--text2)',
+    assign:'var(--amber2)', trade:'var(--green2)', defend:'var(--red)',
+    extract:'var(--purple)',
+  };
+
+  // Timeline bar
+  let cursor = 0;
+  const timelineBlocks = tasks.map(task => {
+    const block = { ...task, start: cursor, widthPct: (task.duration / TIMELINE_HOURS) * 100 };
+    cursor += task.duration;
+    return block;
+  });
+
+  return (
+    <div className="screen-enter" style={{display:'flex', gap:8, padding:8, height:'100%', overflow:'hidden'}}>
+      {/* Left: Task queue */}
+      <div style={{flex:1, display:'flex', flexDirection:'column', gap:8, minWidth:0, overflow:'hidden'}}>
+        {/* Timeline */}
+        <div className="panel" style={{padding:'10px 12px', flexShrink:0}}>
+          <div style={{display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:8}}>
+            <div style={{fontFamily:'var(--font-title)', fontSize:14, color:'var(--amber)', letterSpacing:'0.1em'}}>24-HOUR SCHEDULE TIMELINE</div>
+            <div style={{fontFamily:'var(--font-mono)', fontSize:10, color: totalHours > TIMELINE_HOURS ? 'var(--red2)' : 'var(--green)'}}>
+              {totalHours}h / {TIMELINE_HOURS}h used
+            </div>
+          </div>
+          {/* Hour markers */}
+          <div style={{display:'flex', justifyContent:'space-between', marginBottom:3}}>
+            {[0,4,8,12,16,20,24].map(h => (
+              <span key={h} style={{fontFamily:'var(--font-mono)', fontSize:9, color:'var(--text3)'}}>
+                {h === 0 ? 'NOW' : `+${h}h`}
+              </span>
+            ))}
+          </div>
+          {/* Timeline bar */}
+          <div style={{height:28, background:'var(--bg4)', borderRadius:2, overflow:'hidden', display:'flex', position:'relative'}}>
+            {timelineBlocks.map((block, i) => (
+              <div key={block.id} style={{
+                width: `${block.widthPct}%`, height:'100%', flexShrink:0,
+                background: taskColors[block.type] || 'var(--text2)',
+                borderRight: '1px solid var(--bg)',
+                display:'flex', alignItems:'center', paddingLeft:4, overflow:'hidden',
+                opacity: 0.8,
+              }}>
+                <span style={{fontFamily:'var(--font-mono)', fontSize:8, color:'rgba(255,255,255,0.8)', whiteSpace:'nowrap', overflow:'hidden'}}>
+                  {block.label.split(':')[0]}
+                </span>
+              </div>
+            ))}
+            {totalHours < TIMELINE_HOURS && (
+              <div style={{flex:1, background:'var(--bg4)', borderLeft:'1px dashed var(--border2)'}}/>
+            )}
+          </div>
+          <div style={{marginTop:5, fontFamily:'var(--font-mono)', fontSize:9, color:'var(--text3)'}}>
+            Scheduled window: when you return {totalHours > 0 ? `in ~${totalHours}h` : 'now'} · Tasks execute in priority order
+          </div>
+        </div>
+
+        {/* Task list */}
+        <div className="panel" style={{flex:1, display:'flex', flexDirection:'column', overflow:'hidden'}}>
+          <div className="panel-title" style={{display:'flex', alignItems:'center', justifyContent:'space-between'}}>
+            <span>Scheduled Tasks — Priority Order</span>
+            <div style={{fontFamily:'var(--font-mono)', fontSize:9, color:'var(--text3)'}}>Drag to reorder</div>
+          </div>
+          <div style={{flex:1, overflow:'auto', padding:8, display:'flex', flexDirection:'column', gap:5}}>
+            {tasks.map((task, idx) => {
+              const color = taskColors[task.type] || 'var(--text2)';
+              const taskType = ZI.TASK_TYPES.find(t => t.id === task.type);
+              const startTime = tasks.slice(0,idx).reduce((s,t)=>s+t.duration,0);
+              return (
+                <div key={task.id} style={{
+                  display:'flex', alignItems:'center', gap:10,
+                  padding:'8px 12px', background:'var(--bg3)',
+                  border:`1px solid ${dragIdx===idx ? 'var(--amber)' : 'var(--border)'}`,
+                  cursor:'grab',
+                }}>
+                  {/* Priority number */}
+                  <div style={{
+                    width:22, height:22, borderRadius:'50%', border:`1px solid ${color}`,
+                    display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0,
+                    fontFamily:'var(--font-mono)', fontSize:10, color,
+                  }}>{idx+1}</div>
+
+                  {/* Color bar */}
+                  <div style={{width:3, height:32, background:color, borderRadius:1, flexShrink:0}}/>
+
+                  {/* Task info */}
+                  <div style={{flex:1, minWidth:0}}>
+                    <div style={{display:'flex', alignItems:'center', gap:6, marginBottom:2}}>
+                      <span style={{fontFamily:'var(--font-mono)', fontSize:9, color}}>{taskType?.icon}</span>
+                      <span style={{fontFamily:'var(--font-body)', fontSize:14, color:'var(--text)', fontWeight:500}}>{task.label}</span>
+                    </div>
+                    <div style={{display:'flex', gap:8}}>
+                      <Tag color={color}>{fmtTime(task.duration*60)}</Tag>
+                      <span style={{fontFamily:'var(--font-mono)', fontSize:9, color:'var(--text3)'}}>Starts +{startTime}h from now</span>
+                    </div>
+                  </div>
+
+                  {/* Controls */}
+                  <div style={{display:'flex', gap:3, flexShrink:0}}>
+                    <button onClick={() => moveUp(idx)} style={{
+                      background:'var(--bg4)', border:'1px solid var(--border)', color:'var(--text2)',
+                      width:22, height:22, cursor:'pointer', fontSize:10, display:'flex', alignItems:'center', justifyContent:'center',
+                    }}>↑</button>
+                    <button onClick={() => moveDown(idx)} style={{
+                      background:'var(--bg4)', border:'1px solid var(--border)', color:'var(--text2)',
+                      width:22, height:22, cursor:'pointer', fontSize:10, display:'flex', alignItems:'center', justifyContent:'center',
+                    }}>↓</button>
+                    <button onClick={() => removeTask(task.id)} style={{
+                      background:'rgba(139,58,42,0.15)', border:'1px solid var(--red)', color:'var(--red2)',
+                      width:22, height:22, cursor:'pointer', fontSize:10, display:'flex', alignItems:'center', justifyContent:'center',
+                    }}>✕</button>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </div>
+
+      {/* Right: Add task + summary */}
+      <div style={{width:280, display:'flex', flexDirection:'column', gap:8, flexShrink:0}}>
+        {/* Add task panel */}
+        <div className="panel" style={{flex:1, display:'flex', flexDirection:'column', overflow:'hidden'}}>
+          <div className="panel-title">Add Task</div>
+          <div style={{flex:1, overflow:'auto', padding:8, display:'flex', flexDirection:'column', gap:5}}>
+            {ZI.TASK_TYPES.filter(t => t.category === 'both' || t.category === (mode==='camp'?'camp':'solo')).map(taskType => {
+              const color = taskColors[taskType.id] || 'var(--text2)';
+              return (
+                <div key={taskType.id}
+                  onClick={() => setTasks(prev => [...prev, {
+                    id: Date.now(), type: taskType.id,
+                    label: taskType.name, duration: taskType.duration,
+                    priority: prev.length+1, status:'queued',
+                  }])}
+                  style={{
+                    display:'flex', alignItems:'center', gap:10, padding:'7px 10px',
+                    cursor:'pointer', background:'var(--bg3)', border:`1px solid var(--border)`,
+                    transition:'all 0.15s',
+                  }}
+                  onMouseEnter={e => e.currentTarget.style.borderColor=color}
+                  onMouseLeave={e => e.currentTarget.style.borderColor='var(--border)'}
+                >
+                  <span style={{fontSize:14}}>{taskType.icon}</span>
+                  <div style={{flex:1}}>
+                    <div style={{fontFamily:'var(--font-body)', fontSize:13, color:'var(--text)'}}>{taskType.name}</div>
+                    <div style={{fontFamily:'var(--font-mono)', fontSize:9, color:'var(--text3)'}}>{fmtTime(taskType.duration*60)}</div>
+                  </div>
+                  <span style={{fontFamily:'var(--font-mono)', fontSize:10, color}}>+ Add</span>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Schedule summary */}
+        <div className="panel" style={{padding:12, flexShrink:0}}>
+          <div style={{fontFamily:'var(--font-mono)', fontSize:9, color:'var(--text3)', marginBottom:8, letterSpacing:'0.12em'}}>SCHEDULE SUMMARY</div>
+          <div style={{display:'flex', flexDirection:'column', gap:5}}>
+            <InfoRow label="Total tasks" value={tasks.length} color="var(--text)"/>
+            <InfoRow label="Total time" value={fmtTime(totalHours*60)} color={totalHours>24?'var(--red2)':'var(--amber)'}/>
+            <InfoRow label="Completion" value={`+${totalHours}h from now`} color="var(--text2)"/>
+          </div>
+          <div style={{height:1, background:'var(--border)', margin:'10px 0'}}/>
+          <button className="btn btn-amber" style={{width:'100%', marginBottom:8}}>
+            Lock Schedule & Close App
+          </button>
+          <button className="btn" style={{width:'100%'}}>
+            Save Draft
+          </button>
+          <div style={{marginTop:8, fontFamily:'var(--font-mono)', fontSize:9, color:'var(--text3)', lineHeight:1.5}}>
+            Tasks run automatically while offline. Return in {fmtTime(totalHours*60)} to collect results.
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ─── RMAT CRAFTING SCREEN ─────────────────────────────────────────────────────
+function RmatCraftingScreen() {
+  const [selectedTier, setSelectedTier] = useState(1);
+  const [selectedRecipe, setSelectedRecipe] = useState(null);
+
+  const recipes = [
+    { id:'r1', name:'Hazard Suit T2',     tier:2, rmatType:'Chemical', rmatAmt:3,  scrap:80,  metal:40, duration:120, unlock:'Known: Iron March' },
+    { id:'r2', name:'Precision Rifle Mod', tier:2, rmatType:'Electronic', rmatAmt:2, scrap:40, metal:20, duration:60, unlock:'Lv5 Ranger' },
+    { id:'r3', name:'RMAT-2 Stabilizer',  tier:2, rmatType:'Anomalous', rmatAmt:4,  scrap:0,  metal:0,  duration:90, unlock:'Known: Concordance' },
+    { id:'r4', name:'Reinforced Pack',    tier:1, rmatType:'Mechanical', rmatAmt:1,  scrap:30, metal:10, duration:45, unlock:'Default' },
+    { id:'r5', name:'Echo Rifle',         tier:5, rmatType:'Anomalous', rmatAmt:12, scrap:200,metal:120,duration:480,unlock:'Venerated: Concordance' },
+    { id:'r6', name:'Phase-Edge Machete', tier:5, rmatType:'Anomalous', rmatAmt:8,  scrap:120,metal:80, duration:360,unlock:'Lv10 Phantom' },
+    { id:'r7', name:'Temporal Plate',     tier:5, rmatType:'Anomalous', rmatAmt:15, scrap:250,metal:150,duration:600,unlock:'Venerated: Concordance' },
+    { id:'r8', name:'Sunder Axe (Legendary)', tier:4, rmatType:'Mechanical', rmatAmt:6, scrap:150, metal:90, duration:240, unlock:'Trusted: Iron March + Lv8 Enforcer' },
+  ];
+
+  const playerRmat = { Mechanical:8, Chemical:3, Electronic:5, Medical:2, Anomalous:1 };
+  const canCraft = (r) => playerRmat[r.rmatType] >= r.rmatAmt;
+
+  return (
+    <div className="screen-enter" style={{display:'flex', gap:8, padding:8, height:'100%', overflow:'hidden'}}>
+      {/* Left: RMAT inventory */}
+      <div style={{width:240, display:'flex', flexDirection:'column', gap:8, flexShrink:0}}>
+        <div className="panel" style={{display:'flex', flexDirection:'column', overflow:'hidden'}}>
+          <div className="panel-title">RMAT Inventory</div>
+          <div style={{padding:8, display:'flex', flexDirection:'column', gap:6}}>
+            {ZI.RMAT_TYPES.map(type => (
+              <div key={type} style={{
+                padding:'7px 10px', background:'var(--bg3)', border:'1px solid var(--border)',
+                display:'flex', alignItems:'center', gap:8,
+              }}>
+                <div style={{
+                  width:8, height:8, borderRadius:'50%', flexShrink:0,
+                  background:ZI.RMAT_TIERS.find(t=>t.name!=='Trace')?.color||'var(--amber)',
+                }}/>
+                <div style={{flex:1}}>
+                  <div style={{fontFamily:'var(--font-body)', fontSize:12, color:'var(--text)'}}>{type}</div>
+                  <div style={{fontFamily:'var(--font-mono)', fontSize:9, color:'var(--text3)'}}>RMAT</div>
+                </div>
+                <span style={{fontFamily:'var(--font-mono)', fontSize:14, color:'var(--amber)', fontWeight:'bold'}}>
+                  {playerRmat[type]}
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* RMAT Tier reference */}
+        <div className="panel" style={{flex:1, display:'flex', flexDirection:'column', overflow:'hidden'}}>
+          <div className="panel-title">RMAT Tiers</div>
+          <div style={{padding:8, overflow:'auto', display:'flex', flexDirection:'column', gap:5}}>
+            {ZI.RMAT_TIERS.map(tier => (
+              <div key={tier.tier} style={{
+                padding:'6px 8px', background:'var(--bg3)',
+                border:`1px solid ${tier.tier===0?'var(--border)':tier.color+'44'}`,
+              }}>
+                <div style={{display:'flex', alignItems:'center', gap:6, marginBottom:3}}>
+                  <div style={{
+                    width:6, height:6, borderRadius:'50%', background:tier.color, flexShrink:0,
+                  }}/>
+                  <span style={{fontFamily:'var(--font-body)', fontSize:12, color:tier.color}}>T{tier.tier}: {tier.name}</span>
+                  <Tag color={tier.color}>{tier.rarity}</Tag>
+                </div>
+                <div style={{fontFamily:'var(--font-mono)', fontSize:9, color:'var(--text3)'}}>{tier.desc}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Center: Recipes */}
+      <div style={{flex:1, display:'flex', flexDirection:'column', gap:8, minWidth:0, overflow:'hidden'}}>
+        <div className="panel" style={{flex:1, display:'flex', flexDirection:'column', overflow:'hidden'}}>
+          <div className="panel-title" style={{display:'flex', alignItems:'center', gap:8}}>
+            <span>Crafting Recipes</span>
+            {/* Tier filter */}
+            <div style={{display:'flex', gap:4}}>
+              {[null,1,2,3,4,5].map(tier => (
+                <button key={tier??'all'} onClick={() => setSelectedTier(tier)} style={{
+                  fontFamily:'var(--font-mono)', fontSize:9, padding:'2px 7px',
+                  border:`1px solid ${selectedTier===tier?'var(--amber)':'var(--border)'}`,
+                  background: selectedTier===tier ? 'rgba(200,169,110,0.15)' : 'var(--bg4)',
+                  color: selectedTier===tier ? 'var(--amber)' : 'var(--text3)',
+                  cursor:'pointer',
+                }}>{tier === null ? 'All' : `T${tier}`}</button>
+              ))}
+            </div>
+          </div>
+          <div style={{flex:1, overflow:'auto', padding:8, display:'flex', flexDirection:'column', gap:6}}>
+            {recipes.filter(r => selectedTier===null || r.tier===selectedTier).map(recipe => {
+              const craftable = canCraft(recipe);
+              const rmatTier = ZI.RMAT_TIERS[recipe.tier] || ZI.RMAT_TIERS[1];
+              return (
+                <div key={recipe.id}
+                  onClick={() => setSelectedRecipe(selectedRecipe?.id===recipe.id?null:recipe)}
+                  style={{
+                    padding:'10px 12px', cursor:'pointer', transition:'all 0.15s',
+                    border:`1px solid ${selectedRecipe?.id===recipe.id?'var(--amber)':craftable?'var(--border2)':'var(--border)'}`,
+                    background: selectedRecipe?.id===recipe.id ? 'var(--bg4)' : 'var(--bg3)',
+                    opacity: craftable ? 1 : 0.65,
+                  }}>
+                  <div style={{display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:6}}>
+                    <div style={{display:'flex', alignItems:'center', gap:8}}>
+                      <span style={{fontFamily:'var(--font-body)', fontSize:14, color: craftable?'var(--text)':'var(--text2)', fontWeight:500}}>{recipe.name}</span>
+                      <Tag color={rmatTier.color}>T{recipe.tier}</Tag>
+                    </div>
+                    <div style={{display:'flex', gap:6, alignItems:'center'}}>
+                      {craftable ? (
+                        <Tag color="var(--green)" bg="rgba(76,175,125,0.1)">✓ Craftable</Tag>
+                      ) : (
+                        <Tag color="var(--red2)">✗ Need {recipe.rmatAmt - playerRmat[recipe.rmatType]} more</Tag>
+                      )}
+                    </div>
+                  </div>
+                  <div style={{display:'flex', gap:10, flexWrap:'wrap'}}>
+                    <span style={{fontFamily:'var(--font-mono)', fontSize:10, color:'var(--purple)'}}>
+                      {recipe.rmatAmt}× {recipe.rmatType} RMAT
+                    </span>
+                    {recipe.scrap > 0 && <span style={{fontFamily:'var(--font-mono)', fontSize:10, color:'var(--text2)'}}>
+                      {recipe.scrap} Scrap
+                    </span>}
+                    {recipe.metal > 0 && <span style={{fontFamily:'var(--font-mono)', fontSize:10, color:'var(--text2)'}}>
+                      {recipe.metal} Metal
+                    </span>}
+                    <span style={{fontFamily:'var(--font-mono)', fontSize:10, color:'var(--amber)'}}>
+                      ⏱ {fmtTime(recipe.duration)}
+                    </span>
+                  </div>
+                  <div style={{marginTop:4, fontFamily:'var(--font-mono)', fontSize:9, color:'var(--text3)'}}>
+                    Unlock: {recipe.unlock}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </div>
+
+      {/* Right: Recipe detail + RMAT drop rates */}
+      <div style={{width:260, display:'flex', flexDirection:'column', gap:8, flexShrink:0}}>
+        {selectedRecipe ? (
+          <RecipeDetailPanel recipe={selectedRecipe} playerRmat={playerRmat} canCraft={canCraft(selectedRecipe)}/>
+        ) : (
+          <div className="panel" style={{flex:1, display:'flex', alignItems:'center', justifyContent:'center', padding:20}}>
+            <div style={{textAlign:'center'}}>
+              <div style={{fontFamily:'var(--font-title)', fontSize:14, color:'var(--text3)', marginBottom:8}}>Select a Recipe</div>
+              <div style={{fontFamily:'var(--font-mono)', fontSize:10, color:'var(--text3)'}}>Choose a crafting recipe to see required materials and craft.</div>
+            </div>
+          </div>
+        )}
+        <RmatDropRatesPanel/>
+      </div>
+    </div>
+  );
+}
+
+function RecipeDetailPanel({ recipe, playerRmat, canCraft }) {
+  const rmatTier = ZI.RMAT_TIERS[recipe.tier] || ZI.RMAT_TIERS[1];
+  return (
+    <div className="panel" style={{flex:1, display:'flex', flexDirection:'column', overflow:'hidden'}}>
+      <div className="panel-title">Recipe Details</div>
+      <div style={{flex:1, overflow:'auto', padding:10}}>
+        <div style={{fontFamily:'var(--font-title)', fontSize:18, color:rmatTier.color, marginBottom:4}}>{recipe.name}</div>
+        <div style={{marginBottom:12, display:'flex', gap:6}}>
+          <Tag color={rmatTier.color}>Tier {recipe.tier}</Tag>
+          <Tag color="var(--text2)">{rmatTier.rarity}</Tag>
+        </div>
+        <div style={{display:'flex', flexDirection:'column', gap:5, marginBottom:12}}>
+          <InfoRow label="Craft Time" value={fmtTime(recipe.duration)} color="var(--amber)"/>
+          <InfoRow label="Unlocked By" value={recipe.unlock} color="var(--text2)"/>
+        </div>
+        <div className="divider"/>
+        <div style={{marginBottom:10}}>
+          <div style={{fontFamily:'var(--font-mono)', fontSize:9, color:'var(--text3)', marginBottom:8}}>REQUIRED MATERIALS</div>
+          <div style={{display:'flex', flexDirection:'column', gap:5}}>
+            <MaterialRow
+              label={`${recipe.rmatType} RMAT`}
+              required={recipe.rmatAmt}
+              have={playerRmat[recipe.rmatType]}
+              color="var(--purple)"
+            />
+            {recipe.scrap > 0 && <MaterialRow label="Scrap" required={recipe.scrap} have={350} color="var(--text2)"/>}
+            {recipe.metal > 0 && <MaterialRow label="Metal Bars" required={recipe.metal} have={120} color="var(--amber2)"/>}
+          </div>
+        </div>
+      </div>
+      <div style={{padding:10, borderTop:'1px solid var(--border)'}}>
+        <button
+          className={`btn ${canCraft ? 'btn-amber' : ''}`}
+          style={{width:'100%', opacity: canCraft ? 1 : 0.5, cursor: canCraft ? 'pointer' : 'not-allowed'}}
+        >
+          {canCraft ? '⚙ Craft Now' : '✗ Materials Insufficient'}
+        </button>
+      </div>
+    </div>
+  );
+}
+
+function MaterialRow({ label, required, have, color }) {
+  const ok = have >= required;
+  return (
+    <div style={{display:'flex', alignItems:'center', gap:8}}>
+      <div style={{
+        width:6, height:6, borderRadius:'50%', flexShrink:0,
+        background: ok ? 'var(--green)' : 'var(--red2)',
+      }}/>
+      <span style={{fontFamily:'var(--font-mono)', fontSize:10, color:'var(--text2)', flex:1}}>{label}</span>
+      <span style={{fontFamily:'var(--font-mono)', fontSize:11, color: ok?'var(--green)':'var(--red2)'}}>
+        {have}/{required}
+      </span>
+    </div>
+  );
+}
+
+function RmatDropRatesPanel() {
+  const [selectedZombie, setSelectedZombie] = useState('Runner');
+  const rates = ZI.RMAT_DROP_RATES[selectedZombie];
+  return (
+    <div className="panel" style={{flexShrink:0}}>
+      <div className="panel-title">RMAT Drop Rates</div>
+      <div style={{padding:8}}>
+        <div style={{display:'flex', gap:4, flexWrap:'wrap', marginBottom:8}}>
+          {Object.keys(ZI.RMAT_DROP_RATES).map(z => (
+            <button key={z} onClick={() => setSelectedZombie(z)} style={{
+              fontFamily:'var(--font-mono)', fontSize:8, padding:'2px 6px',
+              border:`1px solid ${selectedZombie===z?'var(--red2)':'var(--border)'}`,
+              background: selectedZombie===z ? 'rgba(139,58,42,0.2)' : 'var(--bg3)',
+              color: selectedZombie===z ? 'var(--red2)' : 'var(--text3)',
+              cursor:'pointer',
+            }}>{z.split(' ')[0]}</button>
+          ))}
+        </div>
+        <div style={{fontFamily:'var(--font-mono)', fontSize:10, color:'var(--text2)', marginBottom:6}}>{selectedZombie}</div>
+        <div style={{display:'flex', flexDirection:'column', gap:3}}>
+          {ZI.RMAT_TIERS.map(tier => {
+            const rateKey = `tier${tier.tier}`;
+            const rate = rates[rateKey] || 0;
+            return (
+              <div key={tier.tier} style={{display:'flex', alignItems:'center', gap:6}}>
+                <span style={{fontFamily:'var(--font-mono)', fontSize:9, color:tier.color, width:70}}>T{tier.tier} {tier.name.split('-')[0]}</span>
+                <div style={{flex:1}}>
+                  <ProgressBar value={rate} max={15} color={tier.color} height={4}/>
+                </div>
+                <span style={{fontFamily:'var(--font-mono)', fontSize:9, color:tier.color, width:28, textAlign:'right'}}>{rate}%</span>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ─── FACTIONS SCREEN ─────────────────────────────────────────────────────────
+function FactionsScreen() {
+  const [selectedFaction, setSelectedFaction] = useState('ironmarch');
+
+  const faction = ZI.FACTIONS.find(f => f.id === selectedFaction);
+  const repRankIdx = ZI.REP_RANKS.indexOf(faction.rank);
+  const repToNext = repRankIdx < ZI.REP_RANKS.length - 1 ? ZI.REP_THRESHOLDS[repRankIdx+1] - faction.rep : 0;
+  const repPct = repRankIdx < ZI.REP_RANKS.length - 1
+    ? ((faction.rep - ZI.REP_THRESHOLDS[repRankIdx]) / (ZI.REP_THRESHOLDS[repRankIdx+1] - ZI.REP_THRESHOLDS[repRankIdx])) * 100
+    : 100;
+
+  const contracts = [
+    { id:'c1', faction:'ironmarch', name:'Bunker Supply Run', type:'Courier', reward:'240 Rep + 180 Scrap', duration:'4h', risk:2, desc:'Deliver ammo crates to Iron March Bunker 7.' },
+    { id:'c2', faction:'ironmarch', name:'Elite Eliminations', type:'Combat', reward:'380 Rep + Legendary Mod', duration:'6h', risk:4, desc:'Neutralize 3 Brutes in the Metropolis grid zone.' },
+    { id:'c3', faction:'hearthguard', name:'Farm Restoration', type:'Build', reward:'220 Rep + 60 Food', duration:'3h', risk:1, desc:'Help repair the northern farmstead irrigation system.' },
+    { id:'c4', faction:'dustwalkers', name:'Black Market Haul', type:'Scavenge', reward:'160 Rep + RMAT-2 ×2', duration:'5h', risk:3, desc:'Extract goods from a contested metro POI.' },
+    { id:'c5', faction:'concordance', name:'Anomaly Survey', type:'Intel', reward:'300 Rep + Blueprint', duration:'7h', risk:4, desc:'Map RMAT anomaly nodes in the Perimeter Alpha zone.' },
+    { id:'c6', faction:'lodge', name:'Meal Delivery Run', type:'Courier', reward:'140 Rep + Hearty Meal ×4', duration:'2h', risk:1, desc:'Resupply the Lodge outpost along Route 9.' },
+  ];
+
+  const activeContracts = contracts.filter(c => c.faction === selectedFaction);
+
+  return (
+    <div className="screen-enter" style={{display:'flex', gap:8, padding:8, height:'100%', overflow:'hidden'}}>
+      {/* Left: Faction list */}
+      <div style={{width:240, display:'flex', flexDirection:'column', gap:8, flexShrink:0}}>
+        <div className="panel" style={{flex:1, display:'flex', flexDirection:'column', overflow:'hidden'}}>
+          <div className="panel-title">Factions</div>
+          <div style={{flex:1, overflow:'auto', padding:8, display:'flex', flexDirection:'column', gap:5}}>
+            {ZI.FACTIONS.map(f => {
+              const rIdx = ZI.REP_RANKS.indexOf(f.rank);
+              const fRepPct = rIdx < ZI.REP_RANKS.length - 1
+                ? ((f.rep - ZI.REP_THRESHOLDS[rIdx]) / (ZI.REP_THRESHOLDS[rIdx+1] - ZI.REP_THRESHOLDS[rIdx])) * 100
+                : 100;
+              return (
+                <div key={f.id} onClick={() => setSelectedFaction(f.id)} style={{
+                  padding:'8px 10px', cursor:'pointer', transition:'all 0.15s',
+                  border:`1px solid ${selectedFaction===f.id ? f.color : 'var(--border)'}`,
+                  background: selectedFaction===f.id ? 'var(--bg4)' : 'var(--bg3)',
+                }}>
+                  <div style={{display:'flex', alignItems:'center', gap:6, marginBottom:4}}>
+                    <div style={{width:7, height:7, borderRadius:'50%', background:f.color, flexShrink:0}}/>
+                    <span style={{fontFamily:'var(--font-body)', fontSize:13, color: selectedFaction===f.id ? f.color : 'var(--text)', fontWeight:500, flex:1}}>{f.name}</span>
+                  </div>
+                  <div style={{display:'flex', alignItems:'center', gap:6, marginBottom:4}}>
+                    <span style={{fontFamily:'var(--font-mono)', fontSize:9, color:'var(--text3)', flex:1}}>{f.rank}</span>
+                    <span style={{fontFamily:'var(--font-mono)', fontSize:9, color:f.color}}>{f.rep} REP</span>
+                  </div>
+                  <ProgressBar value={fRepPct} color={f.color} height={3}/>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </div>
+
+      {/* Center: Faction detail + contracts */}
+      <div style={{flex:1, display:'flex', flexDirection:'column', gap:8, minWidth:0, overflow:'hidden'}}>
+        {faction && (
+          <>
+            {/* Faction header */}
+            <div className="panel" style={{padding:14, flexShrink:0}}>
+              <div style={{display:'flex', alignItems:'flex-start', gap:12}}>
+                <div style={{
+                  width:48, height:48, border:`2px solid ${faction.color}`, background:'var(--bg4)',
+                  display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0,
+                  fontFamily:'var(--font-title)', fontSize:22, color:faction.color,
+                }}>
+                  {faction.name[0]}
+                </div>
+                <div style={{flex:1}}>
+                  <div style={{fontFamily:'var(--font-title)', fontSize:22, color:faction.color}}>{faction.name}</div>
+                  <div style={{fontFamily:'var(--font-body)', fontSize:11, color:'var(--text2)', letterSpacing:'0.1em', marginBottom:8}}>{faction.theme} · {faction.territory}</div>
+                  <div style={{display:'flex', gap:8, alignItems:'center'}}>
+                    <Tag color={faction.color}>{faction.rank}</Tag>
+                    <span style={{fontFamily:'var(--font-mono)', fontSize:10, color:'var(--text2)'}}>{faction.rep} / {ZI.REP_THRESHOLDS[repRankIdx+1]||'MAX'} REP</span>
+                    {repRankIdx < ZI.REP_RANKS.length-1 && (
+                      <span style={{fontFamily:'var(--font-mono)', fontSize:9, color:'var(--text3)'}}>
+                        ({repToNext} to {ZI.REP_RANKS[repRankIdx+1]})
+                      </span>
+                    )}
+                  </div>
+                </div>
+                <div style={{textAlign:'right', flexShrink:0}}>
+                  <div style={{fontFamily:'var(--font-mono)', fontSize:9, color:'var(--text3)', marginBottom:4}}>REP PROGRESS</div>
+                  <div style={{width:120}}>
+                    <ProgressBar value={repPct} color={faction.color} height={6}/>
+                  </div>
+                </div>
+              </div>
+              <div style={{marginTop:10, display:'flex', gap:6}}>
+                {faction.synergy.map(s => {
+                  const attr = ZI.SURVIVAL_ATTRS.find(a => a.key === s || a.key === s+'2');
+                  return <Tag key={s} color={faction.color}>{attr?.name||s} synergy</Tag>;
+                })}
+              </div>
+            </div>
+
+            {/* Services */}
+            <div className="panel" style={{padding:10, flexShrink:0}}>
+              <div style={{fontFamily:'var(--font-mono)', fontSize:9, color:'var(--text3)', marginBottom:6, letterSpacing:'0.12em'}}>AVAILABLE SERVICES</div>
+              <div style={{display:'flex', gap:5, flexWrap:'wrap'}}>
+                {faction.services.map(s => (
+                  <button key={s} className="btn btn-sm" style={{borderColor:`${faction.color}44`, color:'var(--text2)'}}>
+                    {s}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Contracts */}
+            <div className="panel" style={{flex:1, display:'flex', flexDirection:'column', overflow:'hidden'}}>
+              <div className="panel-title">Active Contracts</div>
+              <div style={{flex:1, overflow:'auto', padding:8, display:'flex', flexDirection:'column', gap:5}}>
+                {activeContracts.length === 0 ? (
+                  <div style={{fontFamily:'var(--font-mono)', fontSize:11, color:'var(--text3)', padding:16, textAlign:'center'}}>
+                    No contracts available. Increase reputation to unlock contracts.
+                  </div>
+                ) : activeContracts.map(contract => (
+                  <ContractCard key={contract.id} contract={contract} factionColor={faction.color}/>
+                ))}
+              </div>
+            </div>
+          </>
+        )}
+      </div>
+
+      {/* Right: Rep unlock path */}
+      <div style={{width:240, display:'flex', flexDirection:'column', gap:8, flexShrink:0}}>
+        <div className="panel" style={{flex:1, display:'flex', flexDirection:'column', overflow:'hidden'}}>
+          <div className="panel-title">Reputation Path</div>
+          <div style={{flex:1, overflow:'auto', padding:10, display:'flex', flexDirection:'column', gap:6}}>
+            {ZI.REP_RANKS.map((rank, idx) => {
+              const isCurrent = faction && rank === faction.rank;
+              const isPast = faction && ZI.REP_RANKS.indexOf(faction.rank) > idx;
+              const isFuture = faction && ZI.REP_RANKS.indexOf(faction.rank) < idx;
+              return (
+                <div key={rank} style={{
+                  padding:'7px 10px', background: isCurrent ? 'var(--bg4)' : 'var(--bg3)',
+                  border:`1px solid ${isCurrent ? (faction?.color||'var(--amber)') : isPast ? 'var(--border2)' : 'var(--border)'}`,
+                  opacity: isFuture ? 0.5 : 1,
+                }}>
+                  <div style={{display:'flex', alignItems:'center', gap:6}}>
+                    <div style={{
+                      width:8, height:8, borderRadius:'50%', flexShrink:0,
+                      background: isPast ? 'var(--green)' : isCurrent ? (faction?.color||'var(--amber)') : 'var(--border2)',
+                    }}/>
+                    <span style={{fontFamily:'var(--font-body)', fontSize:13, color: isCurrent ? (faction?.color||'var(--amber)') : isPast ? 'var(--text2)' : 'var(--text3)'}}>
+                      {rank}
+                    </span>
+                    {isCurrent && <Tag color={faction?.color||'var(--amber)'}>Current</Tag>}
+                  </div>
+                  <div style={{fontFamily:'var(--font-mono)', fontSize:9, color:'var(--text3)', marginTop:3}}>
+                    {ZI.REP_THRESHOLDS[idx]} REP required
+                  </div>
+                  {isCurrent && (
+                    <div style={{marginTop:4, fontFamily:'var(--font-mono)', fontSize:9, color:'var(--text2)'}}>
+                      Unlocks: {faction?.services?.[Math.min(idx, faction.services.length-1)]||'Services'}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function ContractCard({ contract, factionColor }) {
+  const riskColors = ['','var(--green)','var(--green2)','var(--amber)','var(--red2)','var(--red)'];
+  return (
+    <div style={{
+      padding:'10px 12px', background:'var(--bg3)',
+      border:'1px solid var(--border)', transition:'border-color 0.15s', cursor:'pointer',
+    }}
+    onMouseEnter={e => e.currentTarget.style.borderColor=factionColor}
+    onMouseLeave={e => e.currentTarget.style.borderColor='var(--border)'}
+    >
+      <div style={{display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:5}}>
+        <span style={{fontFamily:'var(--font-body)', fontSize:14, color:'var(--text)', fontWeight:500}}>{contract.name}</span>
+        <Tag color={riskColors[contract.risk]}>Risk {contract.risk}/5</Tag>
+      </div>
+      <div style={{fontFamily:'var(--font-body)', fontSize:11, color:'var(--text2)', marginBottom:6, lineHeight:1.4}}>
+        {contract.desc}
+      </div>
+      <div style={{display:'flex', gap:8, alignItems:'center', justifyContent:'space-between'}}>
+        <div style={{display:'flex', gap:6}}>
+          <Tag color="var(--text2)">{contract.type}</Tag>
+          <Tag color="var(--amber)">⏱ {contract.duration}</Tag>
+        </div>
+        <div style={{fontFamily:'var(--font-mono)', fontSize:10, color:'var(--green)'}}>
+          {contract.reward}
+        </div>
+      </div>
+      <div style={{marginTop:6, display:'flex', justifyContent:'flex-end'}}>
+        <button className="btn btn-sm btn-green">Accept Contract</button>
+      </div>
+    </div>
+  );
+}
+
+// ─── MARKETPLACE SCREEN ───────────────────────────────────────────────────────
+function MarketplaceScreen() {
+  const [tab, setTab] = useState('buy');
+  const [filter, setFilter] = useState('All');
+  const [auctionItems] = useState([
+    { id:'a1', name:'Sunder Pulse Axe', type:'Legendary', tier:4, current:3200, bids:12, timeLeft:'2h 14m', seller:'IronDefender_77', color:'var(--amber)' },
+    { id:'a2', name:'RMAT-4 Anomalous ×3', type:'RMAT', tier:4, current:5400, bids:8, timeLeft:'45m', seller:'Concordance_Trader', color:'var(--purple)' },
+    { id:'a3', name:'Blueprint: Anomaly Forge', type:'Blueprint', tier:5, current:8900, bids:21, timeLeft:'6h 30m', seller:'ShadowBroker_K', color:'var(--purple)' },
+    { id:'a4', name:'Temporal Plate (T5 Exotic)', type:'Exotic', tier:5, current:14200, bids:5, timeLeft:'1h 02m', seller:'Dustwalker_Pro', color:'var(--purple)' },
+  ]);
+
+  const types = ['All', 'RMAT', 'Weapon', 'Armor', 'Blueprint', 'Legendary', 'Consumable'];
+  const filtered = filter === 'All' ? ZI.MARKET_ITEMS : ZI.MARKET_ITEMS.filter(i => i.type === filter);
+
+  return (
+    <div className="screen-enter" style={{display:'flex', flexDirection:'column', gap:8, padding:8, height:'100%', overflow:'hidden'}}>
+      {/* Header with tabs */}
+      <div style={{display:'flex', gap:8, alignItems:'center', flexShrink:0}}>
+        <div style={{fontFamily:'var(--font-title)', fontSize:20, color:'var(--amber)', letterSpacing:'0.08em'}}>
+          Global Marketplace
+        </div>
+        <div style={{flex:1}}/>
+        <div style={{fontFamily:'var(--font-mono)', fontSize:10, color:'var(--text3)', padding:'4px 10px', background:'var(--bg3)', border:'1px solid var(--border)'}}>
+          🟢 Live · {47 + Math.floor(Math.random()*10)} players online
+        </div>
+        <div style={{fontFamily:'var(--font-mono)', fontSize:10, color:'var(--purple)', padding:'4px 10px', background:'rgba(168,85,247,0.1)', border:'1px solid var(--purple)44'}}>
+          ⚠ RMAT Storm: RMAT prices ↑ 40%
+        </div>
+      </div>
+
+      <div style={{display:'flex', gap:8, flex:1, minHeight:0, overflow:'hidden'}}>
+        {/* Left: Browse + Auction */}
+        <div style={{flex:1, display:'flex', flexDirection:'column', gap:8, minWidth:0, overflow:'hidden'}}>
+          {/* Tab bar */}
+          <div className="panel" style={{flexShrink:0}}>
+            <div className="tab-nav">
+              {[['buy','Buy'],['sell','Sell'],['auction','Live Auction'],['history','My History']].map(([id,label])=>(
+                <button key={id} className={`tab-btn ${tab===id?'active':''}`} onClick={() => setTab(id)}>{label}</button>
+              ))}
+            </div>
+          </div>
+
+          {tab === 'auction' ? (
+            <div className="panel" style={{flex:1, display:'flex', flexDirection:'column', overflow:'hidden'}}>
+              <div className="panel-title" style={{display:'flex', alignItems:'center', gap:8}}>
+                <span>Live Auction House</span>
+                <div className="notif-dot"/>
+                <span style={{fontFamily:'var(--font-mono)', fontSize:9, color:'var(--text3)'}}>Updates in real time</span>
+              </div>
+              <div style={{flex:1, overflow:'auto', padding:8, display:'flex', flexDirection:'column', gap:6}}>
+                {auctionItems.map(item => (
+                  <div key={item.id} style={{
+                    padding:'12px 14px', background:'var(--bg3)',
+                    border:`1px solid ${item.color}44`,
+                    transition:'border-color 0.15s', cursor:'pointer',
+                  }}
+                  onMouseEnter={e => e.currentTarget.style.borderColor=item.color}
+                  onMouseLeave={e => e.currentTarget.style.borderColor=`${item.color}44`}
+                  >
+                    <div style={{display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:6}}>
+                      <div style={{display:'flex', gap:8, alignItems:'center'}}>
+                        <span style={{fontFamily:'var(--font-body)', fontSize:16, color:item.color, fontWeight:600}}>{item.name}</span>
+                        <Tag color={item.color}>T{item.tier}</Tag>
+                        <Tag color="var(--text3)">{item.type}</Tag>
+                      </div>
+                      <div style={{textAlign:'right'}}>
+                        <div style={{fontFamily:'var(--font-mono)', fontSize:18, color:'var(--amber)', fontWeight:'bold'}}>{item.current.toLocaleString()} ₵</div>
+                        <div style={{fontFamily:'var(--font-mono)', fontSize:9, color:'var(--text3)'}}>{item.bids} bids</div>
+                      </div>
+                    </div>
+                    <div style={{display:'flex', alignItems:'center', justifyContent:'space-between'}}>
+                      <div style={{fontFamily:'var(--font-mono)', fontSize:10, color:'var(--text3)'}}>
+                        Seller: <span style={{color:'var(--text2)'}}>{item.seller}</span>
+                      </div>
+                      <div style={{display:'flex', gap:8, alignItems:'center'}}>
+                        <div style={{fontFamily:'var(--font-mono)', fontSize:10, color: parseInt(item.timeLeft) < 1 ? 'var(--red2)' : 'var(--amber)'}}>
+                          ⏱ {item.timeLeft} remaining
+                        </div>
+                        <button className="btn btn-sm btn-amber">Place Bid</button>
+                        <button className="btn btn-sm">Buy Now</button>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ) : tab === 'buy' ? (
+            <div className="panel" style={{flex:1, display:'flex', flexDirection:'column', overflow:'hidden'}}>
+              <div style={{padding:'6px 10px', background:'var(--bg3)', borderBottom:'1px solid var(--border)', display:'flex', gap:5, flexWrap:'wrap'}}>
+                {types.map(t => (
+                  <button key={t} onClick={() => setFilter(t)} style={{
+                    fontFamily:'var(--font-mono)', fontSize:9, padding:'2px 7px',
+                    border:`1px solid ${filter===t?'var(--amber)':'var(--border)'}`,
+                    background: filter===t ? 'rgba(200,169,110,0.12)' : 'var(--bg4)',
+                    color: filter===t ? 'var(--amber)' : 'var(--text3)',
+                    cursor:'pointer',
+                  }}>{t}</button>
+                ))}
+              </div>
+              <div style={{flex:1, overflow:'auto', padding:0}}>
+                {/* Table header */}
+                <div style={{
+                  display:'grid', gridTemplateColumns:'1fr auto auto auto auto auto',
+                  padding:'5px 12px', background:'var(--bg3)',
+                  borderBottom:'1px solid var(--border)',
+                  gap:12,
+                }}>
+                  {['Item','Type','Tier','Price','Supply','Demand'].map(h => (
+                    <span key={h} style={{fontFamily:'var(--font-mono)', fontSize:9, color:'var(--text3)', letterSpacing:'0.08em'}}>{h}</span>
+                  ))}
+                </div>
+                {filtered.map(item => {
+                  const supplyColor = item.supply > 60 ? 'var(--green2)' : item.supply > 30 ? 'var(--amber)' : 'var(--red2)';
+                  const demandColor = item.demand > 80 ? 'var(--red2)' : item.demand > 50 ? 'var(--amber)' : 'var(--green2)';
+                  return (
+                    <div key={item.id} style={{
+                      display:'grid', gridTemplateColumns:'1fr auto auto auto auto auto',
+                      padding:'8px 12px', borderBottom:'1px solid var(--border)',
+                      gap:12, alignItems:'center', cursor:'pointer', transition:'background 0.1s',
+                    }}
+                    onMouseEnter={e => e.currentTarget.style.background='var(--bg4)'}
+                    onMouseLeave={e => e.currentTarget.style.background='transparent'}
+                    >
+                      <span style={{fontFamily:'var(--font-body)', fontSize:13, color:'var(--text)'}}>{item.name}</span>
+                      <Tag color="var(--text3)">{item.type}</Tag>
+                      <Tag color={ZI.RMAT_TIERS[item.tier]?.color||'var(--text2)'}>T{item.tier}</Tag>
+                      <span style={{fontFamily:'var(--font-mono)', fontSize:12, color:'var(--amber)', textAlign:'right'}}>{item.basePrice} ₵</span>
+                      <span style={{fontFamily:'var(--font-mono)', fontSize:11, color:supplyColor, textAlign:'right'}}>{item.supply}%</span>
+                      <div style={{display:'flex', alignItems:'center', gap:6}}>
+                        <span style={{fontFamily:'var(--font-mono)', fontSize:11, color:demandColor}}>{item.demand}%</span>
+                        <button className="btn btn-sm btn-amber" onClick={e => e.stopPropagation()}>Buy</button>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          ) : (
+            <div className="panel" style={{flex:1, display:'flex', alignItems:'center', justifyContent:'center'}}>
+              <div style={{fontFamily:'var(--font-mono)', fontSize:11, color:'var(--text3)'}}>{tab === 'sell' ? 'Drag items from inventory to list them.' : 'No trade history yet.'}</div>
+            </div>
+          )}
+        </div>
+
+        {/* Right: Market stats */}
+        <div style={{width:240, display:'flex', flexDirection:'column', gap:8, flexShrink:0}}>
+          <div className="panel" style={{padding:10, flexShrink:0}}>
+            <div style={{fontFamily:'var(--font-mono)', fontSize:9, color:'var(--text3)', marginBottom:8, letterSpacing:'0.12em'}}>MARKET EVENTS</div>
+            {ZI.WORLD_EVENTS.map(e => (
+              <div key={e.id} style={{
+                padding:'6px 8px', marginBottom:5,
+                background: e.active ? `${e.color}18` : 'var(--bg3)',
+                border:`1px solid ${e.active ? e.color : 'var(--border)'}`,
+              }}>
+                <div style={{display:'flex', gap:6, alignItems:'center', marginBottom:2}}>
+                  {e.active && <div className="notif-dot"/>}
+                  <span style={{fontFamily:'var(--font-body)', fontSize:12, color:e.active?e.color:'var(--text2)'}}>{e.name}</span>
+                  <Tag color={e.active?e.color:'var(--text3)'}>{e.duration}h</Tag>
+                </div>
+                <div style={{fontFamily:'var(--font-mono)', fontSize:8, color:'var(--text3)', lineHeight:1.5}}>{e.effect}</div>
+              </div>
+            ))}
+          </div>
+          <div className="panel" style={{flex:1, padding:10}}>
+            <div style={{fontFamily:'var(--font-mono)', fontSize:9, color:'var(--text3)', marginBottom:8, letterSpacing:'0.12em'}}>YOUR WALLET</div>
+            <div style={{fontFamily:'var(--font-title)', fontSize:32, color:'var(--amber)', marginBottom:4}}>4,820 ₵</div>
+            <div style={{fontFamily:'var(--font-mono)', fontSize:10, color:'var(--text3)'}}>Available credits</div>
+            <div className="divider"/>
+            <InfoRow label="Pending sales" value="2 items" color="var(--text2)"/>
+            <InfoRow label="Active bids" value="1 bid" color="var(--amber)"/>
+            <InfoRow label="Today's trades" value="3 completed" color="var(--green)"/>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ─── MAIN APP ─────────────────────────────────────────────────────────────────
+function App() {
+  const { TweaksPanel, useTweaks } = window;
+
+  const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
+    "accentColor": "#705729",
+    "darkMode": true,
+    "threatLevel": 5,
+    "showAnimations": true,
+    "resourceRates": true
+  }/*EDITMODE-END*/;
+
+  const [tweaks, setTweak] = useTweaks(TWEAK_DEFAULTS);
+
+  const [screen, setScreen] = useState('mode-select');
+  const [mode, setMode] = useState(null);
+  const [activeRoute, setActiveRoute] = useState(null);
+
+  const [resources, setResources] = useState({
+    Food:     { current: 320,  max: 500, rate: 12 },
+    Scrap:    { current: 1840, max: 3000, rate: 8 },
+    Ammo:     { current: 1240, max: 2000, rate: 0 },
+    Medicine: { current: 84,   max: 200,  rate: 3 },
+    Fuel:     { current: 210,  max: 400,  rate: 0 },
+    RMAT:     { current: 19,   max: 100,  rate: 0 },
+  });
+
+  // Idle tick
+  useEffect(() => {
+    if (!mode || !tweaks.resourceRates) return;
+    const t = setInterval(() => {
+      setResources(prev => {
+        const next = { ...prev };
+        Object.keys(next).forEach(k => {
+          if (next[k].rate > 0) {
+            next[k] = { ...next[k], current: Math.min(next[k].current + next[k].rate / 60, next[k].max) };
+          }
+        });
+        return next;
+      });
+    }, 1000);
+    return () => clearInterval(t);
+  }, [mode, tweaks.resourceRates]);
+
+  const worldEvent = ZI.WORLD_EVENTS.find(e => e.active);
+
+  const handleModeSelect = (m) => {
+    setMode(m);
+    setScreen(m === 'camp' ? 'camp-main' : 'solo-main');
+  };
+
+  const renderScreen = () => {
+    switch (screen) {
+      case 'mode-select':   return <ModeSelectScreen onSelect={handleModeSelect}/>;
+      case 'camp-main':     return <CampMainScreen resources={resources} setResources={setResources} threatLevel={tweaks.threatLevel}/>;
+      case 'solo-main':     return <SoloMainScreen setScreen={setScreen} setActiveRoute={setActiveRoute}/>;
+      case 'solo-loading':  return <LootLoadingScreen route={activeRoute} onComplete={() => setScreen('solo-main')}/>;
+      case 'camp-schedule': return <ScheduleScreenV2 mode="camp"/>;
+      case 'solo-schedule': return <ScheduleScreenV2 mode="solo"/>;
+      case 'rmat-crafting': return <RmatCraftingScreen/>;
+      case 'factions':      return <FactionsScreen/>;
+      case 'marketplace':   return <MarketplaceScreenV2/>;
+      case 'stat-leveling': return <StatLevelingScreen/>;
+      case 'traversal':     return <TraversalScreen route={activeRoute || ZI.ROUTES[1]}/>;
+      case 'hack-slash':    return <HackSlashScreen activity={mode==='camp'?'contracts':'scavenge'}/>;
+      default:              return <ModeSelectScreen onSelect={handleModeSelect}/>;
+    }
+  };
+
+  return (
+    <div style={{width:'100%', height:'100%', display:'flex', flexDirection:'column', overflow:'hidden'}}>
+      {screen !== 'mode-select' && (
+        <TopBar
+          mode={mode}
+          screen={screen}
+          setScreen={setScreen}
+          resources={resources}
+          threatLevel={tweaks.threatLevel}
+          worldEvent={worldEvent}
+        />
+      )}
+      <div style={{flex:1, overflow:'hidden', position:'relative'}}>
+        {renderScreen()}
+      </div>
+
+      {TweaksPanel && (
+        <TweaksPanel>
+          <TweakColor label="Accent Color" value={tweaks.accentColor} onChange={v => setTweak('accentColor', v)}/>
+          <TweakSlider label="Threat Level" min={1} max={5} step={1} value={tweaks.threatLevel} onChange={v => setTweak('threatLevel', v)}/>
+          <TweakToggle label="Live Resource Ticks" value={tweaks.resourceRates} onChange={v => setTweak('resourceRates', v)}/>
+          <TweakToggle label="Animations" value={tweaks.showAnimations} onChange={v => setTweak('showAnimations', v)}/>
+        </TweaksPanel>
+      )}
+    </div>
+  );
+}
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(<App/>);
+</script>
+</body>
+</html>

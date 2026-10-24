@@ -1,0 +1,23 @@
+key,en,es,fr,de,pt-BR,ja,ko,zh-Hans
+ui.play,Play,Jugar,Jouer,Spielen,Jogar,プレイ,플레이,开始
+ui.settings,Settings,Ajustes,Paramètres,Einstellungen,Configurações,設定,설정,设置
+ui.back,Back,Atrás,Retour,Zurück,Voltar,戻る,뒤로,返回
+ui.next,Next,Siguiente,Suivant,Weiter,Próximo,次へ,다음,下一步
+ui.confirm,Confirm,Confirmar,Confirmer,Bestätigen,Confirmar,確認,확인,确认
+ui.cancel,Cancel,Cancelar,Annuler,Abbrechen,Cancelar,キャンセル,취소,取消
+tutorial.next,Next,Siguiente,Suivant,Weiter,Próximo,次へ,다음,下一步
+tutorial.finish,Got it!,¡Entendido!,Compris !,Verstanden!,Entendi!,了解！,알겠어요!,明白了！
+tutorial.skip,Skip,Saltar,Passer,Überspringen,Pular,スキップ,건너뛰기,跳过
+mode.camp,Camp Leader,Líder del Campamento,Chef de Camp,Lageranführer,Líder do Acampamento,キャンプリーダー,캠프 리더,营地领袖
+mode.solo,Solo Survivor,Superviviente Solitario,Survivant Solo,Einzelüberlebender,Sobrevivente Solo,ソロサバイバー,솔로 생존자,独行幸存者
+wandering.title,Wandering,Vagando,Errance,Umherwandern,Vagueando,放浪,방랑,游荡
+recycler.title,Recycler,Reciclador,Recycleur,Recycler,Reciclador,リサイクラー,재활용기,回收器
+marketplace.title,Marketplace,Mercado,Marché,Marktplatz,Mercado,マーケット,시장,市场
+factions.title,Factions,Facciones,Factions,Fraktionen,Facções,派閥,파벌,派系
+contracts.title,Contracts,Contratos,Contrats,Verträge,Contratos,契約,계약,合约
+contracts.count.one,{0} contract,{0} contrato,{0} contrat,{0} Vertrag,{0} contrato,{0}件の契約,{0}개의 계약,{0} 份合约
+contracts.count.other,{0} contracts,{0} contratos,{0} contrats,{0} Verträge,{0} contratos,{0}件の契約,{0}개의 계약,{0} 份合约
+credits.amount,{0} cr,{0} cr,{0} cr,{0} Cr,{0} cr,{0}クレジット,{0} 크레딧,{0} 信用点
+quota.warning,Daily limit approaching,Límite diario cercano,Limite quotidienne proche,Tageslimit fast erreicht,Limite diário próximo,1日の上限に近づいています,일일 한도 임박,接近每日上限
+quota.exhausted,Daily limit reached,Límite diario alcanzado,Limite quotidienne atteinte,Tageslimit erreicht,Limite diário atingido,1日の上限に達しました,일일 한도 도달,已达每日上限
+session.locked,Session open on another device,Sesión abierta en otro dispositivo,Session ouverte sur un autre appareil,Sitzung auf anderem Gerät offen,Sessão aberta em outro dispositivo,別のデバイスでセッションが開いています,다른 기기에서 세션이 열려 있습니다,会话已在另一设备上打开

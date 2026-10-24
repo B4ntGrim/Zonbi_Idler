@@ -1,0 +1,140 @@
+# Zed Idler — FX1 HP Floor and Downed (Slice Brief)
+
+**Status:** Slice `[PROPOSED]`. U1, U5, U6, U7 `[DECIDED Oct 10]`. The batch draft in Section 7 goes to Code only after Sam locks it.
+**Replaces:** the FX1 section of `gameplay-fix-batches-proposal.md` §3 (that file stays as the planning record).
+**Inputs:** `h1-findings-decisions-oct10.md` Q1 · `gameplay-fix-batches-proposal.md` U1 · `r1-fx1-readiness-review.md` §3–§4 (Code, Oct 10).
+**Tags:** `[DECIDED]` locked by Sam · `[PROPOSED]` draft · `[OPEN]` needs a decision or fact · `[CODE]` a fact about the current build
+
+---
+
+## 1. Next slice
+
+One rule for low HP: **HP never falls below 1, and reaching 1 HP from any damage source means the survivor is Downed.** Downed then runs the existing path: heal → revive → Forced Retreat to Base rest.
+
+*Why now:* it is first in the batch order (`gameplay-fix-batches-proposal.md` §3). H2 cannot start until it closes (U3), because HP below 1 fails D7 validity in every run. It also resolves the HP drain bug (U7), which is one of the items blocking R1 closure and the POI framework.
+
+---
+
+## 2. Decided constraints
+
+| # | Rule | Why |
+|---|---|---|
+| **Q1** `[DECIDED Oct 10]` | Survivor HP never falls below 1, in any state (Downed, Forced Retreat, Base rest, recovery), in watched play, offline catch-up and headless simulation | A survivor at 0 HP who is still "alive" is a broken state. Every system that reads HP would need a special case for it |
+| **U5** `[DECIDED Oct 10]` | **Reaching 1 HP from any damage source triggers Downed.** That covers fights, policy hits, failed ventures and any other path that lowers HP. Damage that would take HP below 1 is absorbed and HP stays at 1. **Supersedes U1's trigger wording** ("when damage would take HP to 0 or below"). Lethal damage still Downs, and so does a hit that leaves exactly 1 HP | Before this, only fights could Down. Other damage stopped at 1 and the survivor kept wandering, untouchable by anything except the next fight. That is a free-risk window (for example, venturing at 1 HP costs nothing). One trigger for every source also matches Batch 3B's "one canonical path" for Forced Retreat |
+| **U6** `[DECIDED Oct 10]` | On the hit that Downs the survivor, the log shows the attack's **full damage** (for example "hits you for 12" while HP goes from 12 to 1) | The log reports the attack and the HP bar reports the result. Shrinking the number would make Downed look like a weaker hit than it was |
+| **U7** `[DECIDED Oct 10]` | **The HP drain bug is this defect.** Sam reclassified his Oct 8 report: the symptom was HP dropping below 1 on the way into Downed. It is fixed by FX1 and is no longer a separate bug. R1 item R-f is settled by FX1 | Sam observed the symptom, and his report is the source of truth for what he saw |
+
+**Unchanged:** maximum HP; heal and revive amounts (a heal while Downed sets HP to 1 + the heal amount, `[CODE]` `active.js:441`); the rest rate; the resume gate (80% HP **and** stress < 50); Batch 3B Forced Retreat consequences (haul loss, kept items, Breaking resets stress to 60 and Downed does not); the save format and save version.
+
+---
+
+## 3. What changes for the player
+
+| Situation | Before FX1 `[CODE]` | After FX1 |
+|---|---|---|
+| A fight deals lethal damage | HP stored as 0; rest starts from 0 | HP 1; Downed; rest starts from 1 (15.8 min to 80% instead of 16) |
+| A fight leaves exactly 1 HP | Survivor keeps fighting at 1 HP | Downed |
+| A policy hit brings HP to 1 | HP held at 1; survivor keeps wandering | Downed: a heal charge is spent if one is available, otherwise Forced Retreat |
+| A failed venture brings HP to 1 | HP held at 1; survivor keeps wandering | Downed, as above |
+| HP is 1 and more damage arrives | Depends on the source | Cannot happen outside the Downed path: the survivor is healed, revived or already retreating |
+
+**Watch for (balance, not a bug):** heal charges will be spent more often, because policy hits and ventures can now trigger the heal. Forced Retreats from those sources are new. H2 will measure both; this slice does not tune them.
+
+---
+
+## 4. Open facts for Code (batch step 1)
+
+These are implementation facts. Design does not guess them (rules §8). Code answers with file:line evidence and stops if an answer changes the plan.
+
+- **TQ-FX1a** List every code path that lowers survivor HP, including screen-only paths (Code's review names `wandering.js:326` fight, `wandering.js:425` policy hit, `active.js:225` failed venture, `screens-v3.jsx:886` screen getaway). For each: does it reach the Downed path after FX1?
+- **TQ-FX1b** Can the existing Downed handling (heal → revive → `forcedRetreat`) be called from the policy-hit and venture paths without changing `combat.js` or the separate hack-and-slash mode? If not, what is the smallest shared function?
+- **TQ-FX1c** Can anything lower HP while the survivor is in Forced Retreat or Base rest? Expected: no.
+- **TQ-FX1d** Is the screen getaway (`screens-v3.jsx:886`) a gameplay write that the shared rules should own (related to FX4), or display only? Report it; do not move it in FX1 unless it is needed to trigger Downed.
+
+---
+
+## 5. Parked and out
+
+| Item | Where it goes |
+|---|---|
+| FX2 per-return cap, FX3 buffs, FX4 shared attributes | Their own batches, in order |
+| H2 and the Scenario B HP-side change | H2 draft; Scenario B is being brainstormed separately |
+| Tuning heal charges or Forced Retreat frequency | After H2 reports |
+| Code's two-tab follower hypothesis (review §3) | **Not a batch.** Kept as an observation in the browser check (Section 7, V3). If HP still falls with an empty log after FX1, Code raises a Design Handoff |
+| R1 closure | Separate; may share FX1's browser session for check 31 |
+
+---
+
+## 6. Spec impact (when FX1 closes)
+
+**`wandering-tab-spec.md` §13.8, the "HP minimum" paragraph, becomes:**
+
+> **HP floor and Downed `[DECIDED Oct 10, Q1, U5, U6]`:** survivor HP never falls below **1**, in any state (Downed, Forced Retreat, Base rest, recovery), in watched play, offline catch-up and headless simulation. **Reaching 1 HP from any damage source triggers Downed** (fights, policy hits, failed ventures and any other path); damage beyond that is absorbed. Downed resolves by heal, then revive, then Forced Retreat. The log shows the full damage of the hit that Downs the survivor. Maximum HP and healing rules are unchanged.
+
+**Same section, Batch 3B note, first bullet:** after "Downed with no successful Heal/revive" add "(Downed = HP reaches 1 from any damage source, U5)".
+
+**`gameplay-fix-batches-proposal.md`:** FX1 row and section point here; C6 notes U7.
+
+---
+
+## 7. Proposed batch — draft `CURRENT_BATCH.md`
+
+> Draft for Sam to lock. Contract format per `CLAUDE_CODE_RULES.md` §17.
+
+### BATCH FX1 — HP floor and Downed
+
+**Goal.** HP never falls below 1. Reaching 1 HP from any damage source triggers the existing Downed path. No other gameplay change.
+
+**Decided behavior** (all `[DECIDED Oct 10]`)
+1. Every HP write stores a value ≥ 1 (Q1).
+2. When damage from any source brings HP to 1, by being absorbed at the floor or by landing on exactly 1, the survivor is Downed. Downed runs heal → revive → Forced Retreat, unchanged (U5).
+3. Lethal fight damage: `state.hp = Math.max(1, res.hpLeft)` at `wandering.js:326`, then Downed (review §4).
+4. Policy hits and failed ventures that bring HP to 1 call the same Downed handling as fights (U5; route per TQ-FX1b).
+5. The log line for the Downing hit shows the attack's full damage (U6). No log wording change.
+6. Base rest starts from `restStartHp` = 1.
+7. Unchanged: max HP, heal and revive amounts, rest rate, the resume gate, Batch 3B consequences, save keys, save version.
+
+**Likely files.** `game/wandering.js` (fight write, policy hit) · `game/active.js` (venture failure, possibly a shared Downed helper) · new `tests/fx1-downed-hp.test.js` · `tests/sim-clock-rng.test.js` (authorized edit only) · `CODE_STATE.md`. **Not** `game/combat.js` and not the separate hack-and-slash mode.
+
+**Steps**
+- **Step 0, baseline:** all 15 suites; a preserved copy of the current build for the differential; hashes of the files above.
+- **Step 1, investigation:** answer TQ-FX1a–d. **Stop and report** if any HP-lowering path is not listed in the review, or if routing a source into Downed needs a change outside the likely files.
+- **Step 2:** implement behaviors 1–6.
+- **Step 3:** add the tests below; run the full regression.
+
+**Acceptance checks** (new suite `tests/fx1-downed-hp.test.js`)
+1. Lethal fight, no heal and no revive, 15+ seeds: outcome `forcedRetreat`, cause `downed`, `hp === 1`, `restStartHp === 1`, `restAt === 'base'`.
+2. Lethal fight with a heal charge: outcome `healed`, HP = 1 + heal. With a revive item: outcome `revived`.
+3. A fight hit that leaves exactly 1 HP: Downed (same outcomes as 1 and 2).
+4. A policy hit that brings HP to 1: Downed. With a heal charge, the charge is spent and HP = 1 + heal; without one, Forced Retreat with cause `downed`.
+5. A failed venture that brings HP to 1: same as 4. The pending discovery is recorded as `left behind (forced retreat)` only if one is still pending.
+6. Rest from 1 HP resumes at the exact boundary: 80% HP at ⌈79 / rate⌉, with stress < 50 still required.
+7. Chunk equivalence: 1-second, uneven and bulk processing through a Downed retreat and Base rest give identical results.
+8. Invariant: HP ≥ 1 at every event and every chunk end over a 24 h multi-seed run, for all four policies.
+9. No HP loss while in Forced Retreat or Base rest (TQ-FX1c).
+10. The Downing hit's log line shows the attack's full damage, not HP lost.
+11. Old save: a run saved mid-rest with `hp: 0` and `restStartHp: 0` loads and finishes rest normally, with no migration and no version change.
+
+**Authorized test edit (the only one).** `sim-clock-rng` test 11: HP bound 0–100 → **1–100**, and its DH1 INFO note is removed. This tightens the test.
+
+**Differential against the preserved build: allowed differences, declared in advance**
+- After a Downed fight, HP and `restStartHp` are 1 instead of 0; Base rest is about 12 s shorter.
+- Fights that end at exactly 1 HP, and policy hits or failed ventures that reach 1 HP, now Down: a heal charge is spent, or the run ends in a Forced Retreat.
+- Later events in an affected run shift in time.
+- **Any other difference is a stop condition.**
+
+**Explicitly out.** FX2, FX3, FX4, Q3, H2, Scenario B, R1 closure, `combat.js`, the separate hack-and-slash mode, heal or retreat tuning, a fix for the two-tab follower display, save keys, save version.
+
+**Required verification**
+- **V1:** all 15 suites plus the new suite; `r1` ×20 with a frozen clock and ×5 with a 5 ms delay. Checks 20 and 26 must be **checked, never edited**. U5 widens the trigger beyond Code's dry run, so if either check changes, stop and report.
+- **V2:** `sim-clock-rng` ×5 with identical output.
+- **V3, browser (TEST SAVE only; apply the standing precondition from the Oct 10 handoff §2 before any H1-or-later build runs in the real-game preview):** record the real-save fingerprint; in **one tab only**, reach a Downed state and confirm HP shows 1 and the log shows full damage; let Base rest run and confirm HP only rises. *Observation, not a pass condition:* if HP falls on screen with an empty log at any point, note the tab and frame count and raise a Design Handoff. Confirm the fingerprint is unchanged. R1 check 31 may run in the same session.
+- **Closing line:** `FX1 HP FLOOR: CLOSED` or `NOT CLOSED`, with the differential summary.
+
+---
+
+## 8. Patterns used (for Sam)
+
+- **Clamp versus trigger.** A clamp (`Math.max(1, …)`) only stops a bad number. A trigger decides what the number means. The old code clamped in five places and triggered in one, so the same 1 HP meant different things depending on where the damage came from. U5 gives the floor one meaning everywhere.
+- **Declared differential.** Before the change, Code writes down every difference the fix is allowed to cause. Anything else is a regression by definition. This is how a small fix stays small.
+- **Watch for:** a rule that removes an exploit usually moves pressure somewhere else. Here the pressure moves to heal charges. If H2 shows survivors burning charges on policy hits, the answer is tuning (cheaper kits, softer policy hits), not undoing the floor.

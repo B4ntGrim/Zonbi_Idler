@@ -1,0 +1,1 @@
+Retired Oct 22. See CREATIVE_DIRECTION_RULES.md.

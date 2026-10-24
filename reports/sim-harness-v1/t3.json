@@ -1,0 +1,94 @@
+[
+ {
+  "start": "A",
+  "hours": 1,
+  "exact": true,
+  "offline": {
+   "hp": 80,
+   "stress": 71.643,
+   "scroll": 3972,
+   "carried": 0,
+   "loot": 88,
+   "resting": true,
+   "kills": 141
+  },
+  "watched": {
+   "hp": 80,
+   "stress": 71.643,
+   "scroll": 3972,
+   "carried": 0,
+   "loot": 88,
+   "resting": true,
+   "kills": 141
+  }
+ },
+ {
+  "start": "A",
+  "hours": 24,
+  "exact": false,
+  "offline": {
+   "hp": 80,
+   "stress": 73.52,
+   "scroll": 4857.999,
+   "carried": 0,
+   "loot": 106,
+   "resting": true,
+   "kills": 172
+  },
+  "watched": {
+   "hp": 80,
+   "stress": 73.405,
+   "scroll": 4857.999,
+   "carried": 0,
+   "loot": 106,
+   "resting": true,
+   "kills": 172
+  }
+ },
+ {
+  "start": "B-bat",
+  "hours": 1,
+  "exact": false,
+  "offline": {
+   "hp": 19,
+   "stress": 61.767,
+   "scroll": 3637.86,
+   "carried": 0,
+   "loot": 85,
+   "resting": true,
+   "kills": 178
+  },
+  "watched": {
+   "hp": 17.333,
+   "stress": 61.739,
+   "scroll": 3637.86,
+   "carried": 0,
+   "loot": 85,
+   "resting": true,
+   "kills": 178
+  }
+ },
+ {
+  "start": "B-bat",
+  "hours": 24,
+  "exact": false,
+  "offline": {
+   "hp": 80,
+   "stress": 73.74,
+   "scroll": 5594.526,
+   "carried": 0,
+   "loot": 120,
+   "resting": true,
+   "kills": 262
+  },
+  "watched": {
+   "hp": 80,
+   "stress": 73.367,
+   "scroll": 5594.526,
+   "carried": 0,
+   "loot": 120,
+   "resting": true,
+   "kills": 262
+  }
+ }
+]

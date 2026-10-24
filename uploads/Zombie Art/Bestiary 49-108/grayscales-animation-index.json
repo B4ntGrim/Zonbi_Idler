@@ -1,0 +1,170 @@
+[
+  {
+    "Name": "075-phantasm-grayscales",
+    "SheetSize": [
+      1254,
+      1254
+    ],
+    "FrameSize": [
+      627,
+      627
+    ],
+    "Keyframes": 4,
+    "PlaybackFrames": 6,
+    "Sequence": [
+      0,
+      1,
+      2,
+      3,
+      2,
+      1
+    ],
+    "FrameDurationMilliseconds": 300,
+    "LoopDurationMilliseconds": 1800,
+    "LoopForever": true,
+    "GIF": "animations/075-phantasm-grayscales.gif",
+    "Sheet": "animations/075-phantasm-grayscales-sheet.png",
+    "Frames": [
+      {
+        "Index": 0,
+        "SourceRectangle": [
+          0,
+          0,
+          627,
+          627
+        ],
+        "RegistrationOffset": [
+          14,
+          -19
+        ],
+        "File": "075-phantasm-grayscales/frame-01.png"
+      },
+      {
+        "Index": 1,
+        "SourceRectangle": [
+          627,
+          0,
+          627,
+          627
+        ],
+        "RegistrationOffset": [
+          48,
+          -19
+        ],
+        "File": "075-phantasm-grayscales/frame-02.png"
+      },
+      {
+        "Index": 2,
+        "SourceRectangle": [
+          0,
+          627,
+          627,
+          627
+        ],
+        "RegistrationOffset": [
+          14,
+          -2
+        ],
+        "File": "075-phantasm-grayscales/frame-03.png"
+      },
+      {
+        "Index": 3,
+        "SourceRectangle": [
+          627,
+          627,
+          627,
+          627
+        ],
+        "RegistrationOffset": [
+          49,
+          -2
+        ],
+        "File": "075-phantasm-grayscales/frame-04.png"
+      }
+    ]
+  },
+  {
+    "Name": "090-surgical-grayscales",
+    "SheetSize": [
+      1254,
+      1254
+    ],
+    "FrameSize": [
+      627,
+      627
+    ],
+    "Keyframes": 4,
+    "PlaybackFrames": 6,
+    "Sequence": [
+      0,
+      1,
+      2,
+      3,
+      2,
+      1
+    ],
+    "FrameDurationMilliseconds": 300,
+    "LoopDurationMilliseconds": 1800,
+    "LoopForever": true,
+    "GIF": "animations/090-surgical-grayscales.gif",
+    "Sheet": "animations/090-surgical-grayscales-sheet.png",
+    "Frames": [
+      {
+        "Index": 0,
+        "SourceRectangle": [
+          0,
+          0,
+          627,
+          627
+        ],
+        "RegistrationOffset": [
+          -20,
+          27
+        ],
+        "File": "090-surgical-grayscales/frame-01.png"
+      },
+      {
+        "Index": 1,
+        "SourceRectangle": [
+          627,
+          0,
+          627,
+          627
+        ],
+        "RegistrationOffset": [
+          -20,
+          27
+        ],
+        "File": "090-surgical-grayscales/frame-02.png"
+      },
+      {
+        "Index": 2,
+        "SourceRectangle": [
+          0,
+          627,
+          627,
+          627
+        ],
+        "RegistrationOffset": [
+          -20,
+          27
+        ],
+        "File": "090-surgical-grayscales/frame-03.png"
+      },
+      {
+        "Index": 3,
+        "SourceRectangle": [
+          627,
+          627,
+          627,
+          627
+        ],
+        "RegistrationOffset": [
+          -20,
+          27
+        ],
+        "File": "090-surgical-grayscales/frame-04.png"
+      }
+    ]
+  }
+]

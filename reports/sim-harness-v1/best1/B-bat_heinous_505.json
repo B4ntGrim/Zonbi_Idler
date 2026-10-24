@@ -1,0 +1,1224 @@
+{
+ "kills": 1834,
+ "maxRestMs": 63290400,
+ "downed": 701,
+ "downedHealed": 1054,
+ "start": "B-bat",
+ "weapon": "bat",
+ "policy": "heinous",
+ "seed": 505,
+ "days": 30,
+ "returnEveryH": 8,
+ "fixtures": [
+  "First Traversal visit: start square picked as the Traversal screen does (screens-v3.jsx ~703)",
+  "Heinous unlocked (D4 fixture)"
+ ],
+ "headless": [
+  {
+   "day": 0.333,
+   "moveSpeed": 3,
+   "healPct": 21
+  },
+  {
+   "day": 0.667,
+   "moveSpeed": 3,
+   "healPct": 27
+  },
+  {
+   "day": 1,
+   "moveSpeed": 3,
+   "healPct": 28
+  },
+  {
+   "day": 1.333,
+   "moveSpeed": 3,
+   "healPct": 28
+  },
+  {
+   "day": 1.667,
+   "moveSpeed": 3,
+   "healPct": 30
+  },
+  {
+   "day": 2,
+   "moveSpeed": 3,
+   "healPct": 30
+  },
+  {
+   "day": 2.333,
+   "moveSpeed": 3,
+   "healPct": 30
+  },
+  {
+   "day": 2.667,
+   "moveSpeed": 3,
+   "healPct": 30
+  },
+  {
+   "day": 3,
+   "moveSpeed": 3,
+   "healPct": 32
+  },
+  {
+   "day": 3.333,
+   "moveSpeed": 3,
+   "healPct": 31
+  },
+  {
+   "day": 3.667,
+   "moveSpeed": 3,
+   "healPct": 31
+  },
+  {
+   "day": 4,
+   "moveSpeed": 3,
+   "healPct": 31
+  },
+  {
+   "day": 4.333,
+   "moveSpeed": 3,
+   "healPct": 32
+  },
+  {
+   "day": 4.667,
+   "moveSpeed": 3,
+   "healPct": 33
+  },
+  {
+   "day": 5,
+   "moveSpeed": 3,
+   "healPct": 32
+  },
+  {
+   "day": 5.333,
+   "moveSpeed": 3,
+   "healPct": 33
+  },
+  {
+   "day": 5.667,
+   "moveSpeed": 3,
+   "healPct": 34
+  },
+  {
+   "day": 6,
+   "moveSpeed": 3,
+   "healPct": 36
+  },
+  {
+   "day": 6.333,
+   "moveSpeed": 3,
+   "healPct": 36
+  },
+  {
+   "day": 6.667,
+   "moveSpeed": 3,
+   "healPct": 37
+  },
+  {
+   "day": 7,
+   "moveSpeed": 3,
+   "healPct": 38
+  },
+  {
+   "day": 7.333,
+   "moveSpeed": 3,
+   "healPct": 38
+  },
+  {
+   "day": 7.667,
+   "moveSpeed": 3,
+   "healPct": 38
+  },
+  {
+   "day": 8,
+   "moveSpeed": 3,
+   "healPct": 38
+  },
+  {
+   "day": 8.333,
+   "moveSpeed": 3,
+   "healPct": 40
+  },
+  {
+   "day": 8.667,
+   "moveSpeed": 3,
+   "healPct": 39
+  },
+  {
+   "day": 9,
+   "moveSpeed": 3,
+   "healPct": 40
+  },
+  {
+   "day": 9.333,
+   "moveSpeed": 3,
+   "healPct": 40
+  },
+  {
+   "day": 9.667,
+   "moveSpeed": 3,
+   "healPct": 43
+  },
+  {
+   "day": 10,
+   "moveSpeed": 3,
+   "healPct": 44
+  },
+  {
+   "day": 10.333,
+   "moveSpeed": 3,
+   "healPct": 43
+  },
+  {
+   "day": 10.667,
+   "moveSpeed": 3,
+   "healPct": 43
+  },
+  {
+   "day": 11,
+   "moveSpeed": 3,
+   "healPct": 45
+  },
+  {
+   "day": 11.333,
+   "moveSpeed": 3,
+   "healPct": 44
+  },
+  {
+   "day": 11.667,
+   "moveSpeed": 3,
+   "healPct": 44
+  },
+  {
+   "day": 12,
+   "moveSpeed": 3,
+   "healPct": 45
+  },
+  {
+   "day": 12.333,
+   "moveSpeed": 3,
+   "healPct": 45
+  },
+  {
+   "day": 12.667,
+   "moveSpeed": 3,
+   "healPct": 46
+  },
+  {
+   "day": 13,
+   "moveSpeed": 3,
+   "healPct": 46
+  },
+  {
+   "day": 13.333,
+   "moveSpeed": 3,
+   "healPct": 46
+  },
+  {
+   "day": 13.667,
+   "moveSpeed": 3,
+   "healPct": 46
+  },
+  {
+   "day": 14,
+   "moveSpeed": 3,
+   "healPct": 49
+  },
+  {
+   "day": 14.333,
+   "moveSpeed": 3,
+   "healPct": 48
+  },
+  {
+   "day": 14.667,
+   "moveSpeed": 3,
+   "healPct": 48
+  },
+  {
+   "day": 15,
+   "moveSpeed": 3,
+   "healPct": 49
+  },
+  {
+   "day": 15.333,
+   "moveSpeed": 3,
+   "healPct": 49
+  },
+  {
+   "day": 15.667,
+   "moveSpeed": 3,
+   "healPct": 49
+  },
+  {
+   "day": 16,
+   "moveSpeed": 3,
+   "healPct": 49
+  },
+  {
+   "day": 16.333,
+   "moveSpeed": 3,
+   "healPct": 50
+  },
+  {
+   "day": 16.667,
+   "moveSpeed": 3,
+   "healPct": 52
+  },
+  {
+   "day": 17,
+   "moveSpeed": 3,
+   "healPct": 52
+  },
+  {
+   "day": 17.333,
+   "moveSpeed": 3,
+   "healPct": 51
+  },
+  {
+   "day": 17.667,
+   "moveSpeed": 3,
+   "healPct": 51
+  },
+  {
+   "day": 18,
+   "moveSpeed": 3,
+   "healPct": 51
+  },
+  {
+   "day": 18.333,
+   "moveSpeed": 3,
+   "healPct": 51
+  },
+  {
+   "day": 18.667,
+   "moveSpeed": 3,
+   "healPct": 55
+  },
+  {
+   "day": 19,
+   "moveSpeed": 3,
+   "healPct": 52
+  },
+  {
+   "day": 19.333,
+   "moveSpeed": 3,
+   "healPct": 52
+  },
+  {
+   "day": 19.667,
+   "moveSpeed": 3,
+   "healPct": 52
+  },
+  {
+   "day": 20,
+   "moveSpeed": 3,
+   "healPct": 56
+  },
+  {
+   "day": 20.333,
+   "moveSpeed": 3,
+   "healPct": 58
+  },
+  {
+   "day": 20.667,
+   "moveSpeed": 3,
+   "healPct": 56
+  },
+  {
+   "day": 21,
+   "moveSpeed": 3,
+   "healPct": 58
+  },
+  {
+   "day": 21.333,
+   "moveSpeed": 3,
+   "healPct": 57
+  },
+  {
+   "day": 21.667,
+   "moveSpeed": 3,
+   "healPct": 57
+  },
+  {
+   "day": 22,
+   "moveSpeed": 3,
+   "healPct": 57
+  },
+  {
+   "day": 22.333,
+   "moveSpeed": 3,
+   "healPct": 57
+  },
+  {
+   "day": 22.667,
+   "moveSpeed": 3,
+   "healPct": 60
+  },
+  {
+   "day": 23,
+   "moveSpeed": 3,
+   "healPct": 58
+  },
+  {
+   "day": 23.333,
+   "moveSpeed": 3,
+   "healPct": 58
+  },
+  {
+   "day": 23.667,
+   "moveSpeed": 3,
+   "healPct": 58
+  },
+  {
+   "day": 24,
+   "moveSpeed": 3,
+   "healPct": 60
+  },
+  {
+   "day": 24.333,
+   "moveSpeed": 3,
+   "healPct": 60
+  },
+  {
+   "day": 24.667,
+   "moveSpeed": 3,
+   "healPct": 60
+  },
+  {
+   "day": 25,
+   "moveSpeed": 3,
+   "healPct": 60
+  },
+  {
+   "day": 25.333,
+   "moveSpeed": 3,
+   "healPct": 61
+  },
+  {
+   "day": 25.667,
+   "moveSpeed": 3,
+   "healPct": 63
+  },
+  {
+   "day": 26,
+   "moveSpeed": 3,
+   "healPct": 64
+  },
+  {
+   "day": 26.333,
+   "moveSpeed": 3,
+   "healPct": 63
+  },
+  {
+   "day": 26.667,
+   "moveSpeed": 3,
+   "healPct": 63
+  },
+  {
+   "day": 27,
+   "moveSpeed": 3,
+   "healPct": 63
+  },
+  {
+   "day": 27.333,
+   "moveSpeed": 3,
+   "healPct": 63
+  },
+  {
+   "day": 27.667,
+   "moveSpeed": 3,
+   "healPct": 64
+  },
+  {
+   "day": 28,
+   "moveSpeed": 3,
+   "healPct": 67
+  },
+  {
+   "day": 28.333,
+   "moveSpeed": 3,
+   "healPct": 66
+  },
+  {
+   "day": 28.667,
+   "moveSpeed": 3,
+   "healPct": 66
+  },
+  {
+   "day": 29,
+   "moveSpeed": 3,
+   "healPct": 69
+  },
+  {
+   "day": 29.333,
+   "moveSpeed": 3,
+   "healPct": 66
+  },
+  {
+   "day": 29.667,
+   "moveSpeed": 3,
+   "healPct": 66
+  },
+  {
+   "day": 30,
+   "moveSpeed": 3,
+   "healPct": 70
+  }
+ ],
+ "checks": {
+  "startOk": true,
+  "startsClaim": true
+ },
+ "fails": [],
+ "warns": [],
+ "info": {
+  "restMs": 2549006678,
+  "waitMs": 27798000
+ },
+ "firstDowningDay": 0.333,
+ "jester": {
+  "waitStartT": 1790501002000,
+  "meetT": 1790528800000,
+  "meetDay": 0.333,
+  "result": {
+   "ok": true,
+   "weapon": "bat"
+  },
+  "kitBefore": {
+   "handmade_pouch": 0,
+   "scout_kit": 0,
+   "medkit": 0,
+   "fort_medkit": 0,
+   "old_padded_jacket": 0
+  },
+  "kitAfter": {
+   "handmade_pouch": 1,
+   "scout_kit": 1,
+   "medkit": 0,
+   "fort_medkit": 1,
+   "old_padded_jacket": 1
+  },
+  "waitMs": 27798000,
+  "weaponEquipped": "bat",
+  "record": {
+   "v": 1,
+   "eligible": true,
+   "met": true,
+   "phase": "done",
+   "trade": {
+    "haul": [
+     "[null,\"Stench Walker salvage\",0,10]",
+     "[null,\"Damp Lurker salvage\",1,12]",
+     "[null,\"Simple Shambler salvage\",2,10]",
+     "[null,\"Simple Shambler salvage\",3,10]",
+     "[null,\"Damp Lurker salvage\",4,12]",
+     "[null,\"Ambush a convoy haul\",5,12]",
+     "[null,\"Stench Walker salvage\",6,10]",
+     "[null,\"Simple Shambler salvage\",7,10]",
+     "[null,\"Damp Lurker salvage\",8,12]"
+    ],
+    "names": [
+     "Stench Walker salvage",
+     "Damp Lurker salvage",
+     "Simple Shambler salvage",
+     "Simple Shambler salvage",
+     "Damp Lurker salvage",
+     "Ambush a convoy haul",
+     "Stench Walker salvage",
+     "Simple Shambler salvage",
+     "Damp Lurker salvage"
+    ],
+    "carried": [],
+    "carriedBefore": "[]",
+    "downAt": 1790500054000,
+    "down": {
+     "gx": 6,
+     "gy": 5
+    }
+   },
+   "camp": {
+    "gx": 7,
+    "gy": 2
+   },
+   "grantMode": "meeting",
+   "weapon": "bat",
+   "inFlight": null,
+   "stayDays": 5,
+   "meetAt": 1790528800000
+  }
+ },
+ "events": {
+  "withdrawn": 26,
+  "forcedRetreat": 700,
+  "breaking": 0,
+  "jesterDisplacement": 1,
+  "resumed": 726
+ },
+ "heals": {
+  "total": 1320,
+  "whileResting": 0
+ },
+ "stressOnlyRestMs": 1872712540,
+ "trap": {
+  "cycles": 726,
+  "emptyCycles": 103,
+  "maxEmptyStreak": 4
+ },
+ "daily": [
+  {
+   "day": 1,
+   "hp": 80,
+   "stress": 73.41,
+   "kills": 124,
+   "distM": 2086,
+   "materials": 0,
+   "wanderLoot": 53,
+   "stash": 1,
+   "rmat": 0,
+   "charXp": 0,
+   "charges": {
+    "heal": 0,
+    "scout": 2
+   },
+   "resting": true,
+   "carried": 0
+  },
+  {
+   "day": 2,
+   "hp": 80,
+   "stress": 73.24,
+   "kills": 134,
+   "distM": 2303,
+   "materials": 0,
+   "wanderLoot": 57,
+   "stash": 1,
+   "rmat": 0,
+   "charXp": 0,
+   "charges": {
+    "heal": 0,
+    "scout": 2
+   },
+   "resting": true,
+   "carried": 0
+  },
+  {
+   "day": 3,
+   "hp": 18.12,
+   "stress": 69.4,
+   "kills": 162,
+   "distM": 2872,
+   "materials": 0,
+   "wanderLoot": 69,
+   "stash": 1,
+   "rmat": 0,
+   "charXp": 0,
+   "charges": {
+    "heal": 0,
+    "scout": 2
+   },
+   "resting": true,
+   "carried": 0
+  },
+  {
+   "day": 4,
+   "hp": 80,
+   "stress": 71.46,
+   "kills": 178,
+   "distM": 3225,
+   "materials": 0,
+   "wanderLoot": 78,
+   "stash": 1,
+   "rmat": 0,
+   "charXp": 0,
+   "charges": {
+    "heal": 0,
+    "scout": 2
+   },
+   "resting": true,
+   "carried": 0
+  },
+  {
+   "day": 5,
+   "hp": 80,
+   "stress": 72.61,
+   "kills": 207,
+   "distM": 3798,
+   "materials": 0,
+   "wanderLoot": 89,
+   "stash": 1,
+   "rmat": 0,
+   "charXp": 0,
+   "charges": {
+    "heal": 0,
+    "scout": 2
+   },
+   "resting": true,
+   "carried": 0
+  },
+  {
+   "day": 6,
+   "hp": 80,
+   "stress": 72.58,
+   "kills": 273,
+   "distM": 4943,
+   "materials": 0,
+   "wanderLoot": 128,
+   "stash": 1,
+   "rmat": 0,
+   "charXp": 0,
+   "charges": {
+    "heal": 0,
+    "scout": 2
+   },
+   "resting": true,
+   "carried": 0
+  },
+  {
+   "day": 7,
+   "hp": 3.12,
+   "stress": 68.46,
+   "kills": 323,
+   "distM": 6064,
+   "materials": 0,
+   "wanderLoot": 153,
+   "stash": 1,
+   "rmat": 0,
+   "charXp": 0,
+   "charges": {
+    "heal": 0,
+    "scout": 2
+   },
+   "resting": true,
+   "carried": 0
+  },
+  {
+   "day": 8,
+   "hp": 80,
+   "stress": 70.4,
+   "kills": 349,
+   "distM": 6638,
+   "materials": 0,
+   "wanderLoot": 169,
+   "stash": 1,
+   "rmat": 0,
+   "charXp": 0,
+   "charges": {
+    "heal": 0,
+    "scout": 2
+   },
+   "resting": true,
+   "carried": 0
+  },
+  {
+   "day": 9,
+   "hp": 80,
+   "stress": 72.56,
+   "kills": 417,
+   "distM": 7918,
+   "materials": 0,
+   "wanderLoot": 202,
+   "stash": 1,
+   "rmat": 0,
+   "charXp": 0,
+   "charges": {
+    "heal": 0,
+    "scout": 2
+   },
+   "resting": true,
+   "carried": 0
+  },
+  {
+   "day": 10,
+   "hp": 25.82,
+   "stress": 68.24,
+   "kills": 487,
+   "distM": 9232,
+   "materials": 0,
+   "wanderLoot": 238,
+   "stash": 1,
+   "rmat": 0,
+   "charXp": 0,
+   "charges": {
+    "heal": 0,
+    "scout": 2
+   },
+   "resting": true,
+   "carried": 0
+  },
+  {
+   "day": 11,
+   "hp": 41.06,
+   "stress": 69.63,
+   "kills": 557,
+   "distM": 10571,
+   "materials": 0,
+   "wanderLoot": 271,
+   "stash": 1,
+   "rmat": 0,
+   "charXp": 0,
+   "charges": {
+    "heal": 0,
+    "scout": 2
+   },
+   "resting": true,
+   "carried": 0
+  },
+  {
+   "day": 12,
+   "hp": 80,
+   "stress": 71.68,
+   "kills": 637,
+   "distM": 12218,
+   "materials": 0,
+   "wanderLoot": 306,
+   "stash": 1,
+   "rmat": 0,
+   "charXp": 0,
+   "charges": {
+    "heal": 0,
+    "scout": 2
+   },
+   "resting": true,
+   "carried": 0
+  },
+  {
+   "day": 13,
+   "hp": 80,
+   "stress": 73.49,
+   "kills": 675,
+   "distM": 12860,
+   "materials": 0,
+   "wanderLoot": 326,
+   "stash": 1,
+   "rmat": 0,
+   "charXp": 0,
+   "charges": {
+    "heal": 0,
+    "scout": 2
+   },
+   "resting": true,
+   "carried": 0
+  },
+  {
+   "day": 14,
+   "hp": 44.22,
+   "stress": 69.6,
+   "kills": 708,
+   "distM": 13591,
+   "materials": 0,
+   "wanderLoot": 342,
+   "stash": 1,
+   "rmat": 0,
+   "charXp": 0,
+   "charges": {
+    "heal": 0,
+    "scout": 2
+   },
+   "resting": true,
+   "carried": 0
+  },
+  {
+   "day": 15,
+   "hp": 80,
+   "stress": 71.18,
+   "kills": 762,
+   "distM": 14684,
+   "materials": 0,
+   "wanderLoot": 368,
+   "stash": 1,
+   "rmat": 0,
+   "charXp": 0,
+   "charges": {
+    "heal": 0,
+    "scout": 2
+   },
+   "resting": true,
+   "carried": 0
+  },
+  {
+   "day": 16,
+   "hp": 80,
+   "stress": 73.01,
+   "kills": 797,
+   "distM": 15425,
+   "materials": 0,
+   "wanderLoot": 389,
+   "stash": 1,
+   "rmat": 0,
+   "charXp": 0,
+   "charges": {
+    "heal": 0,
+    "scout": 2
+   },
+   "resting": true,
+   "carried": 0
+  },
+  {
+   "day": 17,
+   "hp": 37.82,
+   "stress": 68.77,
+   "kills": 856,
+   "distM": 16667,
+   "materials": 0,
+   "wanderLoot": 416,
+   "stash": 1,
+   "rmat": 0,
+   "charXp": 0,
+   "charges": {
+    "heal": 0,
+    "scout": 2
+   },
+   "resting": true,
+   "carried": 0
+  },
+  {
+   "day": 18,
+   "hp": 80,
+   "stress": 70.53,
+   "kills": 896,
+   "distM": 17472,
+   "materials": 0,
+   "wanderLoot": 435,
+   "stash": 1,
+   "rmat": 0,
+   "charXp": 0,
+   "charges": {
+    "heal": 0,
+    "scout": 2
+   },
+   "resting": true,
+   "carried": 0
+  },
+  {
+   "day": 19,
+   "hp": 80,
+   "stress": 71.99,
+   "kills": 963,
+   "distM": 18770,
+   "materials": 0,
+   "wanderLoot": 465,
+   "stash": 1,
+   "rmat": 0,
+   "charXp": 0,
+   "charges": {
+    "heal": 0,
+    "scout": 2
+   },
+   "resting": true,
+   "carried": 0
+  },
+  {
+   "day": 20,
+   "hp": 73.52,
+   "stress": 68.5,
+   "kills": 1024,
+   "distM": 20040,
+   "materials": 0,
+   "wanderLoot": 494,
+   "stash": 1,
+   "rmat": 0,
+   "charXp": 0,
+   "charges": {
+    "heal": 0,
+    "scout": 2
+   },
+   "resting": true,
+   "carried": 0
+  },
+  {
+   "day": 21,
+   "hp": 4.12,
+   "stress": 69.44,
+   "kills": 1134,
+   "distM": 22280,
+   "materials": 0,
+   "wanderLoot": 545,
+   "stash": 1,
+   "rmat": 0,
+   "charXp": 0,
+   "charges": {
+    "heal": 0,
+    "scout": 2
+   },
+   "resting": true,
+   "carried": 0
+  },
+  {
+   "day": 22,
+   "hp": 80,
+   "stress": 71.15,
+   "kills": 1179,
+   "distM": 23134,
+   "materials": 0,
+   "wanderLoot": 567,
+   "stash": 1,
+   "rmat": 0,
+   "charXp": 0,
+   "charges": {
+    "heal": 0,
+    "scout": 2
+   },
+   "resting": true,
+   "carried": 0
+  },
+  {
+   "day": 23,
+   "hp": 80,
+   "stress": 72.61,
+   "kills": 1245,
+   "distM": 24428,
+   "materials": 0,
+   "wanderLoot": 601,
+   "stash": 1,
+   "rmat": 0,
+   "charXp": 0,
+   "charges": {
+    "heal": 0,
+    "scout": 2
+   },
+   "resting": true,
+   "carried": 0
+  },
+  {
+   "day": 24,
+   "hp": 67.02,
+   "stress": 74.99,
+   "kills": 1298,
+   "distM": 25427,
+   "materials": 0,
+   "wanderLoot": 626,
+   "stash": 1,
+   "rmat": 0,
+   "charXp": 0,
+   "charges": {
+    "heal": 0,
+    "scout": 2
+   },
+   "resting": true,
+   "carried": 0
+  },
+  {
+   "day": 25,
+   "hp": 80,
+   "stress": 71.64,
+   "kills": 1350,
+   "distM": 26504,
+   "materials": 0,
+   "wanderLoot": 650,
+   "stash": 1,
+   "rmat": 0,
+   "charXp": 0,
+   "charges": {
+    "heal": 0,
+    "scout": 2
+   },
+   "resting": true,
+   "carried": 0
+  },
+  {
+   "day": 26,
+   "hp": 23.62,
+   "stress": 67.15,
+   "kills": 1435,
+   "distM": 27962,
+   "materials": 0,
+   "wanderLoot": 690,
+   "stash": 1,
+   "rmat": 0,
+   "charXp": 0,
+   "charges": {
+    "heal": 1,
+    "scout": 2
+   },
+   "resting": true,
+   "carried": 0
+  },
+  {
+   "day": 27,
+   "hp": 80,
+   "stress": 72.4,
+   "kills": 1539,
+   "distM": 30043,
+   "materials": 0,
+   "wanderLoot": 738,
+   "stash": 1,
+   "rmat": 0,
+   "charXp": 0,
+   "charges": {
+    "heal": 0,
+    "scout": 2
+   },
+   "resting": true,
+   "carried": 0
+  },
+  {
+   "day": 28,
+   "hp": 27.82,
+   "stress": 67.88,
+   "kills": 1625,
+   "distM": 31701,
+   "materials": 0,
+   "wanderLoot": 778,
+   "stash": 1,
+   "rmat": 0,
+   "charXp": 0,
+   "charges": {
+    "heal": 0,
+    "scout": 2
+   },
+   "resting": true,
+   "carried": 0
+  },
+  {
+   "day": 29,
+   "hp": 71.38,
+   "stress": 68.99,
+   "kills": 1723,
+   "distM": 33747,
+   "materials": 0,
+   "wanderLoot": 824,
+   "stash": 1,
+   "rmat": 0,
+   "charXp": 0,
+   "charges": {
+    "heal": 0,
+    "scout": 2
+   },
+   "resting": true,
+   "carried": 0
+  },
+  {
+   "day": 30,
+   "hp": 35.84,
+   "stress": 64.22,
+   "kills": 1834,
+   "distM": 35759,
+   "materials": 0,
+   "wanderLoot": 873,
+   "stash": 1,
+   "rmat": 0,
+   "charXp": 0,
+   "charges": {
+    "heal": 0,
+    "scout": 2
+   },
+   "resting": true,
+   "carried": 0
+  }
+ ],
+ "returns": 90,
+ "drainTicks": 0,
+ "snapshot": null,
+ "travStart": {
+  "gx": 6,
+  "gy": 5,
+  "name": "Mall G6",
+  "biome": "suburbia"
+ },
+ "startState": {
+  "kit": {
+   "handmade_pouch": 0,
+   "scout_kit": 0,
+   "medkit": 0,
+   "fort_medkit": 0,
+   "old_padded_jacket": 0
+  },
+  "kitGiven": false,
+  "jester": {
+   "v": 1,
+   "eligible": true,
+   "met": false,
+   "phase": null
+  },
+  "loadout": {
+   "primary": null,
+   "secondary": null,
+   "melee": null,
+   "helmet": null,
+   "mask": null,
+   "vest": null,
+   "gloves": null,
+   "boots": null,
+   "backpack": null,
+   "rig": null,
+   "consumable1": null,
+   "consumable2": null,
+   "consumable3": null,
+   "throwable": null,
+   "back": null,
+   "trinket": null,
+   "belt": null
+  },
+  "capacity": 0
+ },
+ "end": {
+  "kit": {
+   "handmade_pouch": 1,
+   "scout_kit": 1,
+   "medkit": 0,
+   "fort_medkit": 1,
+   "old_padded_jacket": 1
+  },
+  "jester": {
+   "v": 1,
+   "eligible": true,
+   "met": true,
+   "phase": "done",
+   "trade": {
+    "haul": [
+     "[null,\"Stench Walker salvage\",0,10]",
+     "[null,\"Damp Lurker salvage\",1,12]",
+     "[null,\"Simple Shambler salvage\",2,10]",
+     "[null,\"Simple Shambler salvage\",3,10]",
+     "[null,\"Damp Lurker salvage\",4,12]",
+     "[null,\"Ambush a convoy haul\",5,12]",
+     "[null,\"Stench Walker salvage\",6,10]",
+     "[null,\"Simple Shambler salvage\",7,10]",
+     "[null,\"Damp Lurker salvage\",8,12]"
+    ],
+    "names": [
+     "Stench Walker salvage",
+     "Damp Lurker salvage",
+     "Simple Shambler salvage",
+     "Simple Shambler salvage",
+     "Damp Lurker salvage",
+     "Ambush a convoy haul",
+     "Stench Walker salvage",
+     "Simple Shambler salvage",
+     "Damp Lurker salvage"
+    ],
+    "carried": [],
+    "carriedBefore": "[]",
+    "downAt": 1790500054000,
+    "down": {
+     "gx": 6,
+     "gy": 5
+    }
+   },
+   "camp": {
+    "gx": 7,
+    "gy": 2
+   },
+   "grantMode": "meeting",
+   "weapon": "bat",
+   "inFlight": null,
+   "stayDays": 5,
+   "meetAt": 1790528800000
+  },
+  "kitGiven": true
+ },
+ "runaway": {
+  "materials": null,
+  "wanderLoot": 3.67,
+  "stash": 1,
+  "rmat": null,
+  "charXp": null
+ },
+ "runawayFlags": [
+  "wanderLoot"
+ ],
+ "result": "OK",
+ "storeHash": "c351dcc8d448ab6d",
+ "recordHash": "48a879390d7a4169",
+ "wallMs": 5293
+}

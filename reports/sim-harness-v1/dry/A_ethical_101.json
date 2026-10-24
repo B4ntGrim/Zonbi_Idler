@@ -1,0 +1,219 @@
+{
+ "kills": 606,
+ "maxRestMs": 948000,
+ "downed": 210,
+ "downedHealed": 387,
+ "start": "A",
+ "weapon": null,
+ "policy": "ethical",
+ "seed": 101,
+ "days": 3,
+ "returnEveryH": 8,
+ "fixtures": [
+  "H2-a: Jester record eligible:false (skipped tutorial); zi_starter_kit_given=true with no kit items (kit forfeited)",
+  "First Traversal visit: start square picked as the Traversal screen does (screens-v3.jsx ~703)"
+ ],
+ "headless": [
+  {
+   "day": 0.333,
+   "moveSpeed": 3,
+   "healPct": 28
+  },
+  {
+   "day": 0.667,
+   "moveSpeed": 3,
+   "healPct": 31
+  },
+  {
+   "day": 1,
+   "moveSpeed": 3,
+   "healPct": 34
+  },
+  {
+   "day": 1.333,
+   "moveSpeed": 3,
+   "healPct": 37
+  },
+  {
+   "day": 1.667,
+   "moveSpeed": 3,
+   "healPct": 39
+  },
+  {
+   "day": 2,
+   "moveSpeed": 3,
+   "healPct": 42
+  },
+  {
+   "day": 2.333,
+   "moveSpeed": 3,
+   "healPct": 43
+  },
+  {
+   "day": 2.667,
+   "moveSpeed": 3,
+   "healPct": 44
+  },
+  {
+   "day": 3,
+   "moveSpeed": 3,
+   "healPct": 46
+  }
+ ],
+ "checks": {
+  "startOk": true,
+  "startsClaim": true
+ },
+ "fails": [],
+ "warns": [],
+ "info": {
+  "restMs": 249862716,
+  "waitMs": 0
+ },
+ "firstDowningDay": 0.333,
+ "jester": null,
+ "events": {
+  "withdrawn": 72,
+  "forcedRetreat": 210,
+  "breaking": 0,
+  "jesterDisplacement": 0,
+  "resumed": 281
+ },
+ "heals": {
+  "total": 485,
+  "whileResting": 0
+ },
+ "stressOnlyRestMs": 0,
+ "trap": {
+  "cycles": 281,
+  "emptyCycles": 48,
+  "maxEmptyStreak": 3
+ },
+ "daily": [
+  {
+   "day": 1,
+   "hp": 42.69,
+   "stress": 94.2,
+   "kills": 217,
+   "distM": 5332,
+   "materials": 0,
+   "wanderLoot": 145,
+   "stash": 0,
+   "rmat": 0,
+   "charXp": 0,
+   "charges": {
+    "heal": 0,
+    "scout": 2
+   },
+   "resting": true,
+   "carried": 0
+  },
+  {
+   "day": 2,
+   "hp": 27.43,
+   "stress": 78,
+   "kills": 407,
+   "distM": 10698,
+   "materials": 0,
+   "wanderLoot": 263,
+   "stash": 0,
+   "rmat": 0,
+   "charXp": 0,
+   "charges": {
+    "heal": 0,
+    "scout": 2
+   },
+   "resting": true,
+   "carried": 0
+  },
+  {
+   "day": 3,
+   "hp": 67.65,
+   "stress": 81.96,
+   "kills": 606,
+   "distM": 16517,
+   "materials": 0,
+   "wanderLoot": 383,
+   "stash": 0,
+   "rmat": 0,
+   "charXp": 0,
+   "charges": {
+    "heal": 0,
+    "scout": 2
+   },
+   "resting": true,
+   "carried": 0
+  }
+ ],
+ "returns": 9,
+ "drainTicks": 0,
+ "snapshot": null,
+ "travStart": {
+  "gx": 4,
+  "gy": 0,
+  "name": "Residential E1",
+  "biome": "suburbia"
+ },
+ "startState": {
+  "kit": {
+   "handmade_pouch": 0,
+   "scout_kit": 0,
+   "medkit": 0,
+   "fort_medkit": 0,
+   "old_padded_jacket": 0
+  },
+  "kitGiven": true,
+  "jester": {
+   "v": 1,
+   "eligible": false,
+   "met": false,
+   "phase": null,
+   "h2Fixture": "H2-a skipped tutorial"
+  },
+  "loadout": {
+   "primary": null,
+   "secondary": null,
+   "melee": null,
+   "helmet": null,
+   "mask": null,
+   "vest": null,
+   "gloves": null,
+   "boots": null,
+   "backpack": null,
+   "rig": null,
+   "consumable1": null,
+   "consumable2": null,
+   "consumable3": null,
+   "throwable": null,
+   "back": null,
+   "trinket": null,
+   "belt": null
+  },
+  "capacity": 0
+ },
+ "walkGroups": 5,
+ "brokenEntries": 8,
+ "end": {
+  "kit": {
+   "handmade_pouch": 0,
+   "scout_kit": 0,
+   "medkit": 0,
+   "fort_medkit": 0,
+   "old_padded_jacket": 0
+  },
+  "jester": {
+   "v": 1,
+   "eligible": false,
+   "met": false,
+   "phase": null,
+   "h2Fixture": "H2-a skipped tutorial"
+  },
+  "kitGiven": true
+ },
+ "runaway": {},
+ "runawayFlags": [],
+ "result": "OK",
+ "storeHash": "5784a2d9f52cc0d3",
+ "recordHash": "50f7c124c7be4550",
+ "wallMs": 495
+}

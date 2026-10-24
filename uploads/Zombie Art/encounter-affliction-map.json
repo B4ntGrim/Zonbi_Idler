@@ -1,0 +1,1466 @@
+{
+  "title": "Zed Idler — Generated Zombie Encounter Affliction Mapping",
+  "date": "2026-10-24",
+  "status": "Design proposal; no game data or runtime behavior changed",
+  "scope": {
+    "expanded_artwork": 60,
+    "original_artwork": 12,
+    "total": 72
+  },
+  "interpretation": "Afflictions possessed by the zombie are fixed/optional enemy traits. Effects inflicted on the survivor and encounter are listed separately. Structural traits and noise are not automatically survivor statuses.",
+  "source_precedence": [
+    "The supplied image prompts determine the artwork's existing tier and visual identity.",
+    "Use named records in the current bestiary-data.js to anchor existing enemy identities and resolve original runtime IDs.",
+    "Enemy_Mechanics TypesTraits supplies candidate trait tier bands. Named bestiary examples already contain lower-tier exceptions.",
+    "A new lower-tier version is explicitly marked minor/proposed. It must not silently inherit the entire full-tier effect.",
+    "Conflicting source mechanics, proc rates, durations, damage and immunity scope require a separate balance decision; this mapping sets no new numeric combat values."
+  ],
+  "source_files": [
+    {
+      "path": "E:/Zed_Idler/bestiary-data.js",
+      "role": "Current named roster, tier intent, mechanics and original runtime IDs"
+    },
+    {
+      "path": "E:/Zed_Idler/uploads/zombie_types.xlsx",
+      "sheet": "Tier Legend",
+      "range": "A1:C9",
+      "role": "Tier purpose reference"
+    },
+    {
+      "path": "E:/Zed_Idler/uploads/Enemy_Mechanics.xlsx",
+      "sheet": "TypesTraits",
+      "range": "A1:I74",
+      "role": "Trait names, candidate tier bands and qualitative mechanics"
+    },
+    {
+      "path": "E:/Zed_Idler/uploads/Enemy_Mechanics.xlsx",
+      "sheet": "AffixesMods",
+      "range": "A1:D70",
+      "role": "Affliction descriptions and cautions; numerical values not adopted"
+    },
+    {
+      "path": "C:/Users/Samuel/.codex/.chatgpt-projects/g-p-6ac13e53ed8c819181cd711c64d27081/output/bestiary-49-108/prompts.md",
+      "role": "Expanded art briefs"
+    },
+    {
+      "path": "C:/Users/Samuel/.codex/.chatgpt-projects/g-p-6ac13e53ed8c819181cd711c64d27081/output/zombie-art/prompts.md",
+      "role": "Original art briefs"
+    }
+  ],
+  "tier_policy": [
+    {
+      "tier": "F",
+      "rule": "Tutorial bodies and cosmetic conditions. At most one minor contact/passive hazard. No severe infection, hard control or surprise elemental aura.",
+      "examples": "Damp, Soiled, Clothed; proposed Frail."
+    },
+    {
+      "tier": "E",
+      "rule": "One clear new threat. Use explicitly reduced variants for mechanics whose full versions belong later. No optional random combat traits in this set.",
+      "examples": "One alarm, pounce, short dash, small electrical hit, localized armor or mild mold contact."
+    },
+    {
+      "tier": "D",
+      "rule": "One primary mechanic with an obvious counter; a modest supporting passive is acceptable.",
+      "examples": "Frostbite slow, light sensitivity, barbs, ranged bone attacks and limited burrowing/acid variants."
+    },
+    {
+      "tier": "C",
+      "rule": "Combine a primary threat with its visible support traits. Add a second mechanic only when it has a separate tell.",
+      "examples": "Immolation, Conductive, Acid Vomit + Oozing, Chrome Dome and Grayscales."
+    },
+    {
+      "tier": "B",
+      "rule": "Two complementary combat problems. Choose at most one compatible optional trait at spawn and display it.",
+      "examples": "Armor + heavy attacks, chains + control, dash + fire, acid + a warned pressure sac."
+    },
+    {
+      "tier": "A",
+      "rule": "Larger threats with several authored identity traits. At most one optional trait; retain a usable counter.",
+      "examples": "Giant + armor + fire, toxic bulk, repeated dash, burrow ambush and surgical infection."
+    },
+    {
+      "tier": "S",
+      "rule": "Authored miniboss combinations and clear special attacks. Choose optional variants before combat. Mid-fight changes require an explicit mutation/phase mechanic.",
+      "examples": "Four-arm blade guard, furnace armor, dimensional phasing, prison control and elite freezing specials."
+    },
+    {
+      "tier": "BOSS",
+      "rule": "Scripted forms and phase-specific afflictions. Show immunity and every form change. Avoid applying the full combined list at once.",
+      "examples": "Numbness on the chained boss, exposed neural core, fire blade, plasma sphere, regeneration and separate Apex forms."
+    }
+  ],
+  "global_rules": [
+    "A row's optional traits are alternatives, not an instruction to apply every trait. Normal B/A encounters select at most one. S variants select at encounter setup.",
+    "Any optional trait requires a matching visible overlay or animation before it can roll. If its tell is absent, it is unavailable for that artwork.",
+    "Treat armor as one layer for the same material. Thicker Armor replaces Armored when listed as a replacement.",
+    "Numbness is authored disable immunity, not a blanket boss property or random high-tier roll. It does not grant damage immunity.",
+    "A visor or helmet does not grant Chrome Dome. A complete sealed metal head does.",
+    "A leap or levitating key pose does not by itself grant Trap Sidestep or universal trap immunity.",
+    "Immolation, Frostbite and Conductive indicate elemental attacks. Electrical damage does not automatically stun, and ordinary cold hits do not automatically freeze.",
+    "Poison, Burn, Chill and contamination require their own mechanics and feedback. Colors alone cannot add a new damage/status type.",
+    "The source Sharp trait has both damage-only and Bleed interpretations. Bleed applications here are proposed and remain conditional on selecting that interpretation.",
+    "Grayscales is a petrifying infection. Ghostlike shimmer is not an alternate definition of Grayscales.",
+    "Thorns returns melee damage; Bleed is not automatically added. Barbed armor in the Warden counter column refers to player equipment.",
+    "Repeated control needs a visible recovery interval/protection. Do not translate a Stun-locker label into indefinite loss of control.",
+    "No rates, durations, damage multipliers, resistance percentages, spawn weights or status cure recipes are newly balanced here.",
+    "Expanded prompt IDs 49–108 are artwork/reference IDs. This document does not claim those entries already exist in the 45-record runtime roster."
+  ],
+  "expanded": [
+    {
+      "prompt_id": 49,
+      "name": "Soggy Slump",
+      "tier": "F",
+      "artwork_path": "E:/Zed_Idler/uploads/Zombie Art/Bestiary 49-108/049-soggy-slump.png",
+      "fixed_zombie_traits": [
+        "Damp",
+        "Soiled"
+      ],
+      "optional_compatible_traits": [],
+      "possible_effects_on_survivor_or_encounter": [
+        "Minor filth/contact contamination"
+      ],
+      "visual_evidence": "Wet rags and falling droplets.",
+      "counterplay": "Blunt attacks or range.",
+      "design_note": "Use the existing Damp Lurker tutorial treatment. Wetness does not grant an electric attack.",
+      "status": "proposed encounter mapping"
+    },
+    {
+      "prompt_id": 50,
+      "name": "Ashen Wanderer",
+      "tier": "F",
+      "artwork_path": "E:/Zed_Idler/uploads/Zombie Art/Bestiary 49-108/050-ashen-wanderer.png",
+      "fixed_zombie_traits": [
+        "Charred appearance (cosmetic)"
+      ],
+      "optional_compatible_traits": [],
+      "possible_effects_on_survivor_or_encounter": [],
+      "visual_evidence": "Ash-grey skin, burnt cloth and faint shoulder smoke.",
+      "counterplay": "Ordinary melee or range.",
+      "design_note": "No active Immolation or burning aura at F. Smoke is a visual condition.",
+      "status": "proposed encounter mapping"
+    },
+    {
+      "prompt_id": 51,
+      "name": "Lumbering Courier",
+      "tier": "F",
+      "artwork_path": "E:/Zed_Idler/uploads/Zombie Art/Bestiary 49-108/051-lumbering-courier.png",
+      "fixed_zombie_traits": [
+        "Clothed"
+      ],
+      "optional_compatible_traits": [],
+      "possible_effects_on_survivor_or_encounter": [],
+      "visual_evidence": "Torn mailbag, loose straps and worn clothing.",
+      "counterplay": "Ordinary melee.",
+      "design_note": "The bag identifies the courier. Stuffed Pockets and bonus loot are not automatically granted.",
+      "status": "proposed encounter mapping"
+    },
+    {
+      "prompt_id": 52,
+      "name": "Tangled Drifter",
+      "tier": "F",
+      "artwork_path": "E:/Zed_Idler/uploads/Zombie Art/Bestiary 49-108/052-tangled-drifter.png",
+      "fixed_zombie_traits": [
+        "Clothed",
+        "Soiled"
+      ],
+      "optional_compatible_traits": [],
+      "possible_effects_on_survivor_or_encounter": [],
+      "visual_evidence": "Loose rope and wire around the body.",
+      "counterplay": "Ordinary melee.",
+      "design_note": "Bindings are cosmetic at F. They do not grant Shackle, stun-locking or trap immunity.",
+      "status": "proposed encounter mapping"
+    },
+    {
+      "prompt_id": 53,
+      "name": "Frail Husk",
+      "tier": "F",
+      "artwork_path": "E:/Zed_Idler/uploads/Zombie Art/Bestiary 49-108/053-frail-husk.png",
+      "fixed_zombie_traits": [
+        "Frail (proposed minor modifier)"
+      ],
+      "optional_compatible_traits": [],
+      "possible_effects_on_survivor_or_encounter": [],
+      "visual_evidence": "Extremely thin frame and exposed ribs.",
+      "counterplay": "Ordinary melee.",
+      "design_note": "Frail means a brittle enemy body. It does not cause a Weakness status on the survivor.",
+      "status": "proposed encounter mapping"
+    },
+    {
+      "prompt_id": 54,
+      "name": "Siren Stumper",
+      "tier": "E",
+      "artwork_path": "E:/Zed_Idler/uploads/Zombie Art/Bestiary 49-108/054-siren-stumper.png",
+      "fixed_zombie_traits": [
+        "Signal Imp (minor proposed variant)"
+      ],
+      "optional_compatible_traits": [],
+      "possible_effects_on_survivor_or_encounter": [
+        "Area noise escalation"
+      ],
+      "visual_evidence": "Broken red-glowing megaphone.",
+      "counterplay": "Interrupt or defeat before the call completes.",
+      "design_note": "E introduces one bounded alarm. Full horde calls and group-buff combinations belong to stronger variants. Noise is an encounter effect, not a survivor affliction.",
+      "status": "proposed encounter mapping"
+    },
+    {
+      "prompt_id": 55,
+      "name": "Cinder Runner",
+      "tier": "E",
+      "artwork_path": "E:/Zed_Idler/uploads/Zombie Art/Bestiary 49-108/055-cinder-runner.png",
+      "fixed_zombie_traits": [
+        "Dash (minor proposed variant)"
+      ],
+      "optional_compatible_traits": [],
+      "possible_effects_on_survivor_or_encounter": [],
+      "visual_evidence": "Low running stride and ember trail.",
+      "counterplay": "Distance, interception and well-timed traps.",
+      "design_note": "One short dash. Embers remain cosmetic at E; no continuous fire trail, Immolation aura or guaranteed first strike.",
+      "status": "proposed encounter mapping"
+    },
+    {
+      "prompt_id": 56,
+      "name": "Muck Lurker",
+      "tier": "E",
+      "artwork_path": "E:/Zed_Idler/uploads/Zombie Art/Bestiary 49-108/056-muck-lurker.png",
+      "fixed_zombie_traits": [
+        "Creeper (minor proposed variant)",
+        "Damp"
+      ],
+      "optional_compatible_traits": [],
+      "possible_effects_on_survivor_or_encounter": [],
+      "visual_evidence": "Low crawl, swamp sludge and dripping limbs.",
+      "counterplay": "Awareness and range.",
+      "design_note": "Introduce the low ambush approach. Do not add poison, contamination and stealth bonuses simultaneously.",
+      "status": "proposed encounter mapping"
+    },
+    {
+      "prompt_id": 57,
+      "name": "Hollow Leaper",
+      "tier": "E",
+      "artwork_path": "E:/Zed_Idler/uploads/Zombie Art/Bestiary 49-108/057-hollow-leaper.png",
+      "fixed_zombie_traits": [
+        "Dextrous (minor proposed variant)"
+      ],
+      "optional_compatible_traits": [],
+      "possible_effects_on_survivor_or_encounter": [],
+      "visual_evidence": "Lean airborne pounce and lightweight cloth.",
+      "counterplay": "Interrupt the landing or use a net.",
+      "design_note": "One readable pounce. Airborne art alone does not grant blanket floor-trap immunity.",
+      "status": "proposed encounter mapping"
+    },
+    {
+      "prompt_id": 58,
+      "name": "Rusted Guard",
+      "tier": "E",
+      "artwork_path": "E:/Zed_Idler/uploads/Zombie Art/Bestiary 49-108/058-rusted-guard.png",
+      "fixed_zombie_traits": [
+        "Light Plating (proposed minor modifier)"
+      ],
+      "optional_compatible_traits": [],
+      "possible_effects_on_survivor_or_encounter": [],
+      "visual_evidence": "Orange-rusted chest plate with exposed limbs.",
+      "counterplay": "Target uncovered areas or use blunt attacks.",
+      "design_note": "Localized defense only. Full Armored blade/firearm resistance is a later mechanic.",
+      "status": "proposed encounter mapping"
+    },
+    {
+      "prompt_id": 59,
+      "name": "Spore Carrier",
+      "tier": "E",
+      "artwork_path": "E:/Zed_Idler/uploads/Zombie Art/Bestiary 49-108/059-spore-carrier.png",
+      "fixed_zombie_traits": [
+        "Moldy"
+      ],
+      "optional_compatible_traits": [],
+      "possible_effects_on_survivor_or_encounter": [
+        "Minor contact contamination"
+      ],
+      "visual_evidence": "Bulging fungal growths on the shoulders and back.",
+      "counterplay": "Range and avoiding contact.",
+      "design_note": "Use the low-intensity Moldy treatment. Full Fungei-layden spore clouds, hallucination and swarm combinations are withheld.",
+      "status": "proposed encounter mapping"
+    },
+    {
+      "prompt_id": 60,
+      "name": "Static Shuffler",
+      "tier": "E",
+      "artwork_path": "E:/Zed_Idler/uploads/Zombie Art/Bestiary 49-108/060-static-shuffler.png",
+      "fixed_zombie_traits": [
+        "Conductive (minor proposed variant)"
+      ],
+      "optional_compatible_traits": [],
+      "possible_effects_on_survivor_or_encounter": [
+        "Small telegraphed electrical hit"
+      ],
+      "visual_evidence": "A few electric-blue fingertip sparks.",
+      "counterplay": "Spacing and insulation.",
+      "design_note": "No repeated reactive burst, chain lightning or stun-lock. The minor version is a proposed E introduction.",
+      "status": "proposed encounter mapping"
+    },
+    {
+      "prompt_id": 61,
+      "name": "Goo Vomiter",
+      "tier": "D",
+      "artwork_path": "E:/Zed_Idler/uploads/Zombie Art/Bestiary 49-108/061-goo-vomiter.png",
+      "fixed_zombie_traits": [
+        "Acid Vomit (minor proposed variant)"
+      ],
+      "optional_compatible_traits": [],
+      "possible_effects_on_survivor_or_encounter": [
+        "Mild acid/corrosion damage over time"
+      ],
+      "visual_evidence": "Translucent green stomach and drooling mouth.",
+      "counterplay": "Strafe the projectile and use appropriate protection.",
+      "design_note": "Single small spit with one damage-over-time effect. Full spray, persistent pools and Hazardous combinations are reserved for C or higher.",
+      "status": "proposed encounter mapping"
+    },
+    {
+      "prompt_id": 62,
+      "name": "Shatter-Bone Bruiser",
+      "tier": "D",
+      "artwork_path": "E:/Zed_Idler/uploads/Zombie Art/Bestiary 49-108/062-shatter-bone-bruiser.png",
+      "fixed_zombie_traits": [
+        "Heavy",
+        "Tough Skin (minor proposed variant)"
+      ],
+      "optional_compatible_traits": [],
+      "possible_effects_on_survivor_or_encounter": [],
+      "visual_evidence": "Enlarged bone-covered arms.",
+      "counterplay": "Blunt attacks and recovery-window punishes.",
+      "design_note": "Heavy already has a D-tier precedent. Bone protection is modest. Do not infer automatic Bash stuns or Numbness.",
+      "status": "proposed encounter mapping"
+    },
+    {
+      "prompt_id": 63,
+      "name": "Grave Digger",
+      "tier": "D",
+      "artwork_path": "E:/Zed_Idler/uploads/Zombie Art/Bestiary 49-108/063-grave-digger.png",
+      "fixed_zombie_traits": [
+        "Soiled",
+        "Burrower (minor proposed variant)"
+      ],
+      "optional_compatible_traits": [],
+      "possible_effects_on_survivor_or_encounter": [],
+      "visual_evidence": "Broken shovel, grave dirt and digging posture.",
+      "counterplay": "Watch the disturbed earth and punish resurfacing.",
+      "design_note": "Short, visible digging reposition only. Full unseen rear ambushes are withheld at D.",
+      "status": "proposed encounter mapping"
+    },
+    {
+      "prompt_id": 64,
+      "name": "Wire-Bound Crawler",
+      "tier": "D",
+      "artwork_path": "E:/Zed_Idler/uploads/Zombie Art/Bestiary 49-108/064-wire-bound-crawler.png",
+      "fixed_zombie_traits": [
+        "Thorns (minor proposed variant)"
+      ],
+      "optional_compatible_traits": [],
+      "possible_effects_on_survivor_or_encounter": [
+        "Limited melee damage return"
+      ],
+      "visual_evidence": "Tight coils of barbed wire.",
+      "counterplay": "Range or blunt attacks.",
+      "design_note": "Wire can punish close contact. It does not automatically grant Shackle or Stun-locker. Damage return is not automatically Bleed.",
+      "status": "proposed encounter mapping"
+    },
+    {
+      "prompt_id": 65,
+      "name": "Frost Smite",
+      "tier": "D",
+      "artwork_path": "E:/Zed_Idler/uploads/Zombie Art/Bestiary 49-108/065-frost-smite.png",
+      "fixed_zombie_traits": [
+        "Frostbite"
+      ],
+      "optional_compatible_traits": [
+        "Damp"
+      ],
+      "possible_effects_on_survivor_or_encounter": [
+        "Chill / movement and attack slow"
+      ],
+      "visual_evidence": "White frost crystals and cold vapor.",
+      "counterplay": "Fire, blunt attacks and cold resistance.",
+      "design_note": "Use the existing D-tier Frostbitten Shuffler precedent. No hard freeze at this tier.",
+      "status": "proposed encounter mapping"
+    },
+    {
+      "prompt_id": 66,
+      "name": "Flash-Blind Stalker",
+      "tier": "D",
+      "artwork_path": "E:/Zed_Idler/uploads/Zombie Art/Bestiary 49-108/066-flash-blind-stalker.png",
+      "fixed_zombie_traits": [
+        "Light Sensitive"
+      ],
+      "optional_compatible_traits": [],
+      "possible_effects_on_survivor_or_encounter": [],
+      "visual_evidence": "Cowering posture and an arm shielding the face.",
+      "counterplay": "Bright light or UV.",
+      "design_note": "Light sensitivity weakens the zombie. The zombie does not inflict Blind simply because its own eyes are light-sensitive.",
+      "status": "proposed encounter mapping"
+    },
+    {
+      "prompt_id": 67,
+      "name": "Decay Launcher",
+      "tier": "D",
+      "artwork_path": "E:/Zed_Idler/uploads/Zombie Art/Bestiary 49-108/067-decay-launcher.png",
+      "fixed_zombie_traits": [
+        "Ranged",
+        "Sharp"
+      ],
+      "optional_compatible_traits": [],
+      "possible_effects_on_survivor_or_encounter": [
+        "Bleed buildup if the Sharp status interpretation is adopted"
+      ],
+      "visual_evidence": "Raised jagged bone projectile.",
+      "counterplay": "Cover and lateral movement.",
+      "design_note": "The existing D-tier Sharp sniper supports the ranged identity. Sharp's damage-only and Bleed definitions conflict in the source sheets; Bleed is an explicit proposal.",
+      "status": "proposed encounter mapping"
+    },
+    {
+      "prompt_id": 68,
+      "name": "Riot Pacifier",
+      "tier": "C",
+      "artwork_path": "E:/Zed_Idler/uploads/Zombie Art/Bestiary 49-108/068-riot-pacifier.png",
+      "fixed_zombie_traits": [
+        "Shield Guard (proposed modifier)",
+        "Tough Skin"
+      ],
+      "optional_compatible_traits": [],
+      "possible_effects_on_survivor_or_encounter": [],
+      "visual_evidence": "Dented riot shield, helmet and exposed flanks.",
+      "counterplay": "Flank, disarm the shield or use blunt attacks.",
+      "design_note": "Directional guard rather than full Armored immunity. The C-tier defense remains readable and bypassable.",
+      "status": "proposed encounter mapping"
+    },
+    {
+      "prompt_id": 69,
+      "name": "Thermite Walker",
+      "tier": "C",
+      "artwork_path": "E:/Zed_Idler/uploads/Zombie Art/Bestiary 49-108/069-thermite-walker.png",
+      "fixed_zombie_traits": [
+        "Immolation"
+      ],
+      "optional_compatible_traits": [],
+      "possible_effects_on_survivor_or_encounter": [
+        "Burn"
+      ],
+      "visual_evidence": "White-yellow chemical flame streams.",
+      "counterplay": "Water/foam, distance and fire protection.",
+      "design_note": "C-tier Immolation already exists in the original bestiary. No silent damage-reflection trait unless spikes and a separate Thorns tell are added.",
+      "status": "proposed encounter mapping"
+    },
+    {
+      "prompt_id": 70,
+      "name": "Plague Matron",
+      "tier": "C",
+      "artwork_path": "E:/Zed_Idler/uploads/Zombie Art/Bestiary 49-108/070-plague-matron.png",
+      "fixed_zombie_traits": [
+        "Maggot Ridden (minor proposed variant)",
+        "Clothed"
+      ],
+      "optional_compatible_traits": [],
+      "possible_effects_on_survivor_or_encounter": [
+        "Contact contamination from larvae"
+      ],
+      "visual_evidence": "Tattered robes, infested torso and crawling larvae.",
+      "counterplay": "Area attacks and distance.",
+      "design_note": "One small larval swarm mechanic. Full Hermit multi-hit attacks and Wretched intimidation are withheld.",
+      "status": "proposed encounter mapping"
+    },
+    {
+      "prompt_id": 71,
+      "name": "Volt Surger",
+      "tier": "C",
+      "artwork_path": "E:/Zed_Idler/uploads/Zombie Art/Bestiary 49-108/071-volt-surger.png",
+      "fixed_zombie_traits": [
+        "Conductive"
+      ],
+      "optional_compatible_traits": [
+        "Damp"
+      ],
+      "possible_effects_on_survivor_or_encounter": [
+        "Electrical damage"
+      ],
+      "visual_evidence": "Visible torso ring of electricity and conductive fittings.",
+      "counterplay": "Insulation and spacing.",
+      "design_note": "Use the existing C-tier Shock Conductor precedent. Electrical damage does not automatically add a stun. Damp requires a visible wet overlay when selected.",
+      "status": "proposed encounter mapping"
+    },
+    {
+      "prompt_id": 72,
+      "name": "Slag Enforcer",
+      "tier": "C",
+      "artwork_path": "E:/Zed_Idler/uploads/Zombie Art/Bestiary 49-108/072-slag-enforcer.png",
+      "fixed_zombie_traits": [
+        "Heavy",
+        "Tough Skin"
+      ],
+      "optional_compatible_traits": [
+        "Immolation"
+      ],
+      "possible_effects_on_survivor_or_encounter": [
+        "Burn only when Immolation is active"
+      ],
+      "visual_evidence": "Dark slag plates with orange cracks.",
+      "counterplay": "Blunt attacks and exposed seams.",
+      "design_note": "Tough Skin gives the C version a defense without the full B-tier Armored package. Activate flames and a hazard icon before adding Immolation.",
+      "status": "proposed encounter mapping"
+    },
+    {
+      "prompt_id": 73,
+      "name": "Corrosive Bloat",
+      "tier": "C",
+      "artwork_path": "E:/Zed_Idler/uploads/Zombie Art/Bestiary 49-108/073-corrosive-bloat.png",
+      "fixed_zombie_traits": [
+        "Acid Vomit",
+        "Oozing",
+        "Hazardous"
+      ],
+      "optional_compatible_traits": [],
+      "possible_effects_on_survivor_or_encounter": [
+        "Acid/corrosion damage over time",
+        "Contact contamination"
+      ],
+      "visual_evidence": "Bright yellow-green fluid leaking from joints.",
+      "counterplay": "Strafe, range and chemical protection.",
+      "design_note": "A C-tier Acid Spitter analogue. Acid burn is chemical damage and does not imply a separate fire-element aura.",
+      "status": "proposed encounter mapping"
+    },
+    {
+      "prompt_id": 74,
+      "name": "Leaping Strangle-Imp",
+      "tier": "C",
+      "artwork_path": "E:/Zed_Idler/uploads/Zombie Art/Bestiary 49-108/074-leaping-strangle-imp.png",
+      "fixed_zombie_traits": [
+        "Dash",
+        "Sharp"
+      ],
+      "optional_compatible_traits": [],
+      "possible_effects_on_survivor_or_encounter": [
+        "Bleed buildup if Sharp uses the proposed status behavior"
+      ],
+      "visual_evidence": "Outstretched claws and aggressive airborne lunge.",
+      "counterplay": "Interception, reach and timing.",
+      "design_note": "A clear lunge plus claw threat. No floor-trap immunity from a single airborne frame.",
+      "status": "proposed encounter mapping"
+    },
+    {
+      "prompt_id": 75,
+      "name": "Phantasm Walker",
+      "tier": "C",
+      "artwork_path": "E:/Zed_Idler/uploads/Zombie Art/Bestiary 49-108/075-phantasm-walker.png",
+      "fixed_zombie_traits": [
+        "Grayscales",
+        "Tough Skin"
+      ],
+      "optional_compatible_traits": [],
+      "possible_effects_on_survivor_or_encounter": [
+        "Petrifying Grayscales infection"
+      ],
+      "visual_evidence": "Pale cyan-grey body and shimmering outline.",
+      "counterplay": "Prevent contact; use the established surgeon cure for Grayscales.",
+      "design_note": "ART CUE REQUIRED: add visible grey scale plaques before using the infection mechanic. Shimmer alone does not establish petrification, intangibility or damage immunity.",
+      "status": "proposed encounter mapping"
+    },
+    {
+      "prompt_id": 76,
+      "name": "Exoskeleton Remnant",
+      "tier": "B",
+      "artwork_path": "E:/Zed_Idler/uploads/Zombie Art/Bestiary 49-108/076-exoskeleton-remnant.png",
+      "fixed_zombie_traits": [
+        "Armored",
+        "Heavy"
+      ],
+      "optional_compatible_traits": [
+        "Heavy Hitter"
+      ],
+      "possible_effects_on_survivor_or_encounter": [],
+      "visual_evidence": "Military exoskeleton, pistons and metal limbs.",
+      "counterplay": "Blunt or armor-piercing attacks; target joints.",
+      "design_note": "The mechanical frame supports physical defense. It does not automatically imply Conductive shocks.",
+      "status": "proposed encounter mapping"
+    },
+    {
+      "prompt_id": 77,
+      "name": "Blight Screamer",
+      "tier": "B",
+      "artwork_path": "E:/Zed_Idler/uploads/Zombie Art/Bestiary 49-108/077-blight-screamer.png",
+      "fixed_zombie_traits": [
+        "Signal Imp",
+        "Battle Cry"
+      ],
+      "optional_compatible_traits": [
+        "Wretched"
+      ],
+      "possible_effects_on_survivor_or_encounter": [
+        "Area noise escalation",
+        "Intimidation damage debuff only if Wretched is selected"
+      ],
+      "visual_evidence": "Distended shrieking jaw and sound-wave pixels.",
+      "counterplay": "Interrupt the shriek and prioritize the caller.",
+      "design_note": "Noise plus group support is the B-tier combination. Wretched needs a distinct debuff cue. Do not add an unrelated infection because the name includes Blight.",
+      "status": "proposed encounter mapping"
+    },
+    {
+      "prompt_id": 78,
+      "name": "Needle-Limb Freak",
+      "tier": "B",
+      "artwork_path": "E:/Zed_Idler/uploads/Zombie Art/Bestiary 49-108/078-needle-limb-freak.png",
+      "fixed_zombie_traits": [
+        "Sharp",
+        "Tough Skin"
+      ],
+      "optional_compatible_traits": [
+        "Nimble"
+      ],
+      "possible_effects_on_survivor_or_encounter": [
+        "Bleed buildup if Sharp uses the proposed status behavior"
+      ],
+      "visual_evidence": "Long needle-like bone forearms.",
+      "counterplay": "Range, traps and avoiding the stabbing line.",
+      "design_note": "Bone blades support the Sharp family. Extra limbs, regenerative flesh and elemental damage are not inferred.",
+      "status": "proposed encounter mapping"
+    },
+    {
+      "prompt_id": 79,
+      "name": "Gloom Assassin",
+      "tier": "B",
+      "artwork_path": "E:/Zed_Idler/uploads/Zombie Art/Bestiary 49-108/079-gloom-assassin.png",
+      "fixed_zombie_traits": [
+        "Sneak",
+        "Creeper"
+      ],
+      "optional_compatible_traits": [
+        "Accelerated Dash",
+        "Battle Hunger"
+      ],
+      "possible_effects_on_survivor_or_encounter": [],
+      "visual_evidence": "Low crouch and shadow-absorbing rags.",
+      "counterplay": "Awareness, area reveal and interception.",
+      "design_note": "Choose at most one optional trait. Stealth affects detection and never grants permanent invulnerability.",
+      "status": "proposed encounter mapping"
+    },
+    {
+      "prompt_id": 80,
+      "name": "Chain-Whip Warden",
+      "tier": "B",
+      "artwork_path": "E:/Zed_Idler/uploads/Zombie Art/Bestiary 49-108/080-chain-whip-warden.png",
+      "fixed_zombie_traits": [
+        "Shackle",
+        "Stun-locker",
+        "Heavy"
+      ],
+      "optional_compatible_traits": [],
+      "possible_effects_on_survivor_or_encounter": [
+        "Entangle",
+        "Brief stagger/stun",
+        "Stress or scare on qualifying hits"
+      ],
+      "visual_evidence": "Spiked chain whip, wrist restraints and heavy stance.",
+      "counterplay": "Reach, spacing and the established barbed-armor counter.",
+      "design_note": "The original B-tier Warden is the precedent. Apply control recovery protection so repeated hits cannot create an endless stun chain.",
+      "status": "proposed encounter mapping"
+    },
+    {
+      "prompt_id": 81,
+      "name": "Caustic Mortar",
+      "tier": "B",
+      "artwork_path": "E:/Zed_Idler/uploads/Zombie Art/Bestiary 49-108/081-caustic-mortar.png",
+      "fixed_zombie_traits": [
+        "Acid Vomit",
+        "Oozing",
+        "Ranged"
+      ],
+      "optional_compatible_traits": [
+        "Pressurized"
+      ],
+      "possible_effects_on_survivor_or_encounter": [
+        "Acid/corrosion damage over time",
+        "Contact contamination"
+      ],
+      "visual_evidence": "Swollen dorsal reservoir and an arcing fluid attack.",
+      "counterplay": "Move after the launch tell and avoid the landing area.",
+      "design_note": "Pressurized is optional only with an additional visible pressure pulse and rupture warning. A large sac alone does not make the enemy explode.",
+      "status": "proposed encounter mapping"
+    },
+    {
+      "prompt_id": 82,
+      "name": "Cryo Executioner",
+      "tier": "B",
+      "artwork_path": "E:/Zed_Idler/uploads/Zombie Art/Bestiary 49-108/082-cryo-executioner.png",
+      "fixed_zombie_traits": [
+        "Frostbite",
+        "Heavy",
+        "Weapon Wielder"
+      ],
+      "optional_compatible_traits": [
+        "Sharp"
+      ],
+      "possible_effects_on_survivor_or_encounter": [
+        "Chill / slow",
+        "Bleed buildup only if Sharp is selected"
+      ],
+      "visual_evidence": "Large ice-encrusted cleaver and frost-covered body.",
+      "counterplay": "Disarm, cold protection and attack recovery windows.",
+      "design_note": "A cleaver adds the held-weapon counter. Any Sharp roll needs a separate readable blade/bleed cue. No routine hard freeze.",
+      "status": "proposed encounter mapping"
+    },
+    {
+      "prompt_id": 83,
+      "name": "Napalm Stalker",
+      "tier": "B",
+      "artwork_path": "E:/Zed_Idler/uploads/Zombie Art/Bestiary 49-108/083-napalm-stalker.png",
+      "fixed_zombie_traits": [
+        "Immolation",
+        "Dash"
+      ],
+      "optional_compatible_traits": [
+        "Blood Frenzy"
+      ],
+      "possible_effects_on_survivor_or_encounter": [
+        "Burn"
+      ],
+      "visual_evidence": "Forward sprint with a blazing trailing fire path.",
+      "counterplay": "Spacing, fire protection and intercepting the dash.",
+      "design_note": "If Blood Frenzy is selected, show a clear rage transition. Do not add Heavy to the fast runner package.",
+      "status": "proposed encounter mapping"
+    },
+    {
+      "prompt_id": 84,
+      "name": "Centipede Host",
+      "tier": "A",
+      "artwork_path": "E:/Zed_Idler/uploads/Zombie Art/Bestiary 49-108/084-centipede-host.png",
+      "fixed_zombie_traits": [
+        "Hexapod (proposed locomotion variant)",
+        "Tough Skin",
+        "Unpredictable"
+      ],
+      "optional_compatible_traits": [
+        "Sharp"
+      ],
+      "possible_effects_on_survivor_or_encounter": [
+        "Bleed buildup only if Sharp is selected"
+      ],
+      "visual_evidence": "Segmented lower limbs beneath the humanoid torso.",
+      "counterplay": "Reach, flank attacks and limb targeting.",
+      "design_note": "The image uses multiple walking legs. The source Hexapod describes a six-arm guard wall. Keep that distinction explicit rather than silently granting the full guard mechanic.",
+      "status": "proposed encounter mapping"
+    },
+    {
+      "prompt_id": 85,
+      "name": "Apex Hunter",
+      "tier": "A",
+      "artwork_path": "E:/Zed_Idler/uploads/Zombie Art/Bestiary 49-108/085-apex-hunter.png",
+      "fixed_zombie_traits": [
+        "Accelerated Dash",
+        "Sprint",
+        "Battle Hunger"
+      ],
+      "optional_compatible_traits": [
+        "Sharp",
+        "Blood Frenzy"
+      ],
+      "possible_effects_on_survivor_or_encounter": [
+        "Bleed buildup only if Sharp is selected"
+      ],
+      "visual_evidence": "Long claws, repeated dash afterimages and forward acceleration.",
+      "counterplay": "First-strike interception, reach and predictable choke points.",
+      "design_note": "Choose at most one optional trait. Battle Hunger improves the enemy's accuracy rather than afflicting the player.",
+      "status": "proposed encounter mapping"
+    },
+    {
+      "prompt_id": 86,
+      "name": "Slag Titan",
+      "tier": "A",
+      "artwork_path": "E:/Zed_Idler/uploads/Zombie Art/Bestiary 49-108/086-slag-titan.png",
+      "fixed_zombie_traits": [
+        "Giant",
+        "Heavy",
+        "Armored",
+        "Immolation"
+      ],
+      "optional_compatible_traits": [],
+      "possible_effects_on_survivor_or_encounter": [
+        "Burn"
+      ],
+      "visual_evidence": "Huge molten-slag body with glowing fissures.",
+      "counterplay": "Blunt or armor-piercing attacks, fire protection and recovery windows.",
+      "design_note": "Four identity tags create two clear problems: physical bulk and close-range heat. No random Numbness.",
+      "status": "proposed encounter mapping"
+    },
+    {
+      "prompt_id": 87,
+      "name": "Toxic Behemoth",
+      "tier": "A",
+      "artwork_path": "E:/Zed_Idler/uploads/Zombie Art/Bestiary 49-108/087-toxic-behemoth.png",
+      "fixed_zombie_traits": [
+        "Giant",
+        "Toxic Gas",
+        "Hazardous"
+      ],
+      "optional_compatible_traits": [
+        "Oozing"
+      ],
+      "possible_effects_on_survivor_or_encounter": [
+        "Poison / gas damage over time",
+        "Stress",
+        "Contact contamination only if Oozing is selected"
+      ],
+      "visual_evidence": "Bulky body within dense green gas.",
+      "counterplay": "Distance, breathing protection and appropriate fire ignition.",
+      "design_note": "The gas identity is primary. Do not also add a piercing explosion without a pressure tell.",
+      "status": "proposed encounter mapping"
+    },
+    {
+      "prompt_id": 88,
+      "name": "Bio-Electric Monstrosity",
+      "tier": "A",
+      "artwork_path": "E:/Zed_Idler/uploads/Zombie Art/Bestiary 49-108/088-bio-electric-monstrosity.png",
+      "fixed_zombie_traits": [
+        "Conductive",
+        "Heavy Hitter"
+      ],
+      "optional_compatible_traits": [
+        "Strong"
+      ],
+      "possible_effects_on_survivor_or_encounter": [
+        "Electrical damage"
+      ],
+      "visual_evidence": "Yellow-white arcs over exposed muscles.",
+      "counterplay": "Insulation and range.",
+      "design_note": "Strong adds regeneration only when a healing pulse/reforming-tissue cue is displayed. No automatic stun or shock immunity.",
+      "status": "proposed encounter mapping"
+    },
+    {
+      "prompt_id": 89,
+      "name": "Subterranean Stalker",
+      "tier": "A",
+      "artwork_path": "E:/Zed_Idler/uploads/Zombie Art/Bestiary 49-108/089-subterranean-stalker.png",
+      "fixed_zombie_traits": [
+        "Burrower",
+        "Sneak",
+        "Sharp"
+      ],
+      "optional_compatible_traits": [
+        "Tough Skin"
+      ],
+      "possible_effects_on_survivor_or_encounter": [
+        "Bleed buildup if Sharp uses the proposed status behavior"
+      ],
+      "visual_evidence": "Half-submerged body, disturbed earth and razor mandibles.",
+      "counterplay": "Awareness, prediction and the resurfacing window.",
+      "design_note": "Full A-tier burrow-and-ambush behavior is appropriate. Underground avoidance is temporary and tied to the burrow state.",
+      "status": "proposed encounter mapping"
+    },
+    {
+      "prompt_id": 90,
+      "name": "Surgical Abomination",
+      "tier": "A",
+      "artwork_path": "E:/Zed_Idler/uploads/Zombie Art/Bestiary 49-108/090-surgical-abomination.png",
+      "fixed_zombie_traits": [
+        "Grayscales",
+        "Weapon Wielder",
+        "Sharp"
+      ],
+      "optional_compatible_traits": [],
+      "possible_effects_on_survivor_or_encounter": [
+        "Petrifying Grayscales infection",
+        "Bleed buildup if Sharp uses the proposed status behavior"
+      ],
+      "visual_evidence": "Grafted scalpels, steel implements and grey flesh.",
+      "counterplay": "Avoid contact; disarm tools; use the established Grayscales cure.",
+      "design_note": "ART CUE REQUIRED: visible scale plaques must identify the infection independently of the surgical tools. Tools do not automatically imply regeneration.",
+      "status": "proposed encounter mapping"
+    },
+    {
+      "prompt_id": 91,
+      "name": "Dread Dreadnought",
+      "tier": "A",
+      "artwork_path": "E:/Zed_Idler/uploads/Zombie Art/Bestiary 49-108/091-dread-dreadnought.png",
+      "fixed_zombie_traits": [
+        "Armored",
+        "Heavy",
+        "Heavy Hitter"
+      ],
+      "optional_compatible_traits": [
+        "Thicker Armor (replaces Armored)"
+      ],
+      "possible_effects_on_survivor_or_encounter": [],
+      "visual_evidence": "Overlapping composite plating and integrated weapon scraps.",
+      "counterplay": "Armor-piercing or blunt attacks; target gaps.",
+      "design_note": "Thicker Armor replaces the ordinary armor trait. Avoid double-counting the same plating. No automatic headshot immunity without a sealed head.",
+      "status": "proposed encounter mapping"
+    },
+    {
+      "prompt_id": 92,
+      "name": "Marrow Collector",
+      "tier": "S",
+      "artwork_path": "E:/Zed_Idler/uploads/Zombie Art/Bestiary 49-108/092-marrow-collector.png",
+      "fixed_zombie_traits": [
+        "Quadruped",
+        "Sharp",
+        "Unpredictable"
+      ],
+      "optional_compatible_traits": [
+        "Thorns"
+      ],
+      "possible_effects_on_survivor_or_encounter": [
+        "Bleed buildup if Sharp uses the proposed status behavior",
+        "Melee damage return only if Thorns is selected"
+      ],
+      "visual_evidence": "Low four-limb stance with long bone blades.",
+      "counterplay": "Flank, use reach and strike during committed sweeps.",
+      "design_note": "Select the optional trait at encounter setup. Bone blades do not turn this four-limb design into an eight-limb wall.",
+      "status": "proposed encounter mapping"
+    },
+    {
+      "prompt_id": 93,
+      "name": "Inferno Engine",
+      "tier": "S",
+      "artwork_path": "E:/Zed_Idler/uploads/Zombie Art/Bestiary 49-108/093-inferno-engine.png",
+      "fixed_zombie_traits": [
+        "Immolation",
+        "Armored",
+        "Heavy"
+      ],
+      "optional_compatible_traits": [
+        "Thorns"
+      ],
+      "possible_effects_on_survivor_or_encounter": [
+        "Burn",
+        "Melee damage return only if Thorns is selected"
+      ],
+      "visual_evidence": "Black spiked iron, furnace glow and heat effects.",
+      "counterplay": "Fire protection, armor counters and range.",
+      "design_note": "Spikes visibly support Thorns. Keep fire damage and reflected melee damage distinct in the encounter display.",
+      "status": "proposed encounter mapping"
+    },
+    {
+      "prompt_id": 94,
+      "name": "Void Phantom",
+      "tier": "S",
+      "artwork_path": "E:/Zed_Idler/uploads/Zombie Art/Bestiary 49-108/094-void-phantom.png",
+      "fixed_zombie_traits": [
+        "Sneak",
+        "Phase Shift (proposed scripted mechanic)",
+        "Unpredictable"
+      ],
+      "optional_compatible_traits": [],
+      "possible_effects_on_survivor_or_encounter": [],
+      "visual_evidence": "Violet distortion and faint duplicate afterimages.",
+      "counterplay": "Reveal, track the real silhouette and attack during the solid phase.",
+      "design_note": "Phasing has a visible start and end. No permanent invulnerability, petrification or hidden curse is assigned.",
+      "status": "proposed encounter mapping"
+    },
+    {
+      "prompt_id": 95,
+      "name": "Grave Overlord",
+      "tier": "S",
+      "artwork_path": "E:/Zed_Idler/uploads/Zombie Art/Bestiary 49-108/095-grave-overlord.png",
+      "fixed_zombie_traits": [
+        "Wretched",
+        "Battle Cry",
+        "Pack Leader"
+      ],
+      "optional_compatible_traits": [],
+      "possible_effects_on_survivor_or_encounter": [
+        "Intimidation / reduced outgoing damage"
+      ],
+      "visual_evidence": "Necrotic crown, burial robes and a summoning hand.",
+      "counterplay": "Interrupt support actions and use area damage on the escort.",
+      "design_note": "An authored command-and-escort encounter. A crown does not justify unrelated elemental damage.",
+      "status": "proposed encounter mapping"
+    },
+    {
+      "prompt_id": 96,
+      "name": "Epitaph Warden",
+      "tier": "S",
+      "artwork_path": "E:/Zed_Idler/uploads/Zombie Art/Bestiary 49-108/096-epitaph-warden.png",
+      "fixed_zombie_traits": [
+        "Thicker Armor",
+        "Heavy",
+        "Shackle",
+        "Stun-locker"
+      ],
+      "optional_compatible_traits": [],
+      "possible_effects_on_survivor_or_encounter": [
+        "Entangle",
+        "Brief stagger/stun",
+        "Stress or scare on qualifying hits"
+      ],
+      "visual_evidence": "Black-iron prison plates, chains and red optics.",
+      "counterplay": "Armor counters, reach and control-recovery protection.",
+      "design_note": "A stronger Warden package. Red optics are a tell, not evidence of fire damage or disable immunity.",
+      "status": "proposed encounter mapping"
+    },
+    {
+      "prompt_id": 97,
+      "name": "Toxin Sovereign",
+      "tier": "S",
+      "artwork_path": "E:/Zed_Idler/uploads/Zombie Art/Bestiary 49-108/097-toxin-sovereign.png",
+      "fixed_zombie_traits": [
+        "Toxic Gas",
+        "Hazardous",
+        "Oozing"
+      ],
+      "optional_compatible_traits": [
+        "Pressurized"
+      ],
+      "possible_effects_on_survivor_or_encounter": [
+        "Poison / gas damage over time",
+        "Stress",
+        "Contact contamination"
+      ],
+      "visual_evidence": "Ruined hazmat layers, green reactor core and pressurized fumes.",
+      "counterplay": "Breathing protection, distance and reactor recovery windows.",
+      "design_note": "Pressurized requires a dedicated rupture warning. Do not assume every reactor attack causes an explosion.",
+      "status": "proposed encounter mapping"
+    },
+    {
+      "prompt_id": 98,
+      "name": "Storm Caller",
+      "tier": "S",
+      "artwork_path": "E:/Zed_Idler/uploads/Zombie Art/Bestiary 49-108/098-storm-caller.png",
+      "fixed_zombie_traits": [
+        "Conductive",
+        "Ranged",
+        "Airborne (proposed scripted state)"
+      ],
+      "optional_compatible_traits": [],
+      "possible_effects_on_survivor_or_encounter": [
+        "Electrical damage"
+      ],
+      "visual_evidence": "Slight levitation and a blue plasma vortex.",
+      "counterplay": "Insulation and gaps in the electrical pattern.",
+      "design_note": "Airborne protection applies only to floor contact during that state. Nets, ranged attacks and every other trap are not automatically negated.",
+      "status": "proposed encounter mapping"
+    },
+    {
+      "prompt_id": 99,
+      "name": "Glacial Leviathan",
+      "tier": "S",
+      "artwork_path": "E:/Zed_Idler/uploads/Zombie Art/Bestiary 49-108/099-glacial-leviathan.png",
+      "fixed_zombie_traits": [
+        "Frostbite",
+        "Giant",
+        "Thicker Armor",
+        "Heavy"
+      ],
+      "optional_compatible_traits": [],
+      "possible_effects_on_survivor_or_encounter": [
+        "Chill / slow",
+        "Brief Freeze only on a proposed telegraphed special"
+      ],
+      "visual_evidence": "Thick blue plates and giant ice-spike fists.",
+      "counterplay": "Cold protection, armor counters and recovery windows.",
+      "design_note": "Freeze is an elite special proposal, not the default effect of every cold hit. Provide a recovery interval.",
+      "status": "proposed encounter mapping"
+    },
+    {
+      "prompt_id": 100,
+      "name": "The Iron Titan",
+      "tier": "BOSS",
+      "artwork_path": "E:/Zed_Idler/uploads/Zombie Art/Bestiary 49-108/100-the-iron-titan.png",
+      "fixed_zombie_traits": [
+        "Chained",
+        "Heavy",
+        "Thicker Armor",
+        "Numbness",
+        "Bash"
+      ],
+      "optional_compatible_traits": [],
+      "possible_effects_on_survivor_or_encounter": [
+        "Stagger/stun on the telegraphed Bash"
+      ],
+      "visual_evidence": "Industrial hydraulics, broken golden chains and enormous fists.",
+      "counterplay": "Armor counters, sustained damage and avoiding the heavy swing.",
+      "design_note": "Numbness is an authored boss trait inherited from the Chained Behemoth concept. Display disable immunity explicitly. It does not mean damage immunity.",
+      "status": "proposed encounter mapping"
+    },
+    {
+      "prompt_id": 101,
+      "name": "The Hivemind Core",
+      "tier": "BOSS",
+      "artwork_path": "E:/Zed_Idler/uploads/Zombie Art/Bestiary 49-108/101-the-hivemind-core.png",
+      "fixed_zombie_traits": [
+        "Octopod",
+        "Rebis",
+        "Oozing",
+        "Grapple (proposed Shackle variant)"
+      ],
+      "optional_compatible_traits": [],
+      "possible_effects_on_survivor_or_encounter": [
+        "Entangle from a telegraphed grab",
+        "Contact contamination"
+      ],
+      "visual_evidence": "Eight neural tentacles around a pulsing organic core.",
+      "counterplay": "Sever/disable a committed tentacle and attack the exposed core.",
+      "design_note": "Red core light does not mean fire or electricity. Mutation changes are signalled between authored phases.",
+      "status": "proposed encounter mapping"
+    },
+    {
+      "prompt_id": 102,
+      "name": "The Ash Emperor",
+      "tier": "BOSS",
+      "artwork_path": "E:/Zed_Idler/uploads/Zombie Art/Bestiary 49-108/102-the-ash-emperor.png",
+      "fixed_zombie_traits": [
+        "Immolation",
+        "Weapon Wielder"
+      ],
+      "optional_compatible_traits": [],
+      "possible_effects_on_survivor_or_encounter": [
+        "Burn"
+      ],
+      "visual_evidence": "Liquid-fire blade, burning mantle and cracked magma underfoot.",
+      "counterplay": "Fire protection, blade recovery windows and spacing.",
+      "design_note": "Use fire-themed phases. Magma is a local hazard. No separate Bleed, poison or permanent curse is inferred.",
+      "status": "proposed encounter mapping"
+    },
+    {
+      "prompt_id": 103,
+      "name": "The Void Harbinger",
+      "tier": "BOSS",
+      "artwork_path": "E:/Zed_Idler/uploads/Zombie Art/Bestiary 49-108/103-the-void-harbinger.png",
+      "fixed_zombie_traits": [
+        "Rebis",
+        "Hybrid-Limbed",
+        "Unpredictable",
+        "Phase Shift (proposed scripted mechanic)"
+      ],
+      "optional_compatible_traits": [],
+      "possible_effects_on_survivor_or_encounter": [],
+      "visual_evidence": "Shifting geometric body and visible dimensional distortion.",
+      "counterplay": "Track the current form and exploit the solid phase.",
+      "design_note": "State changes alter attack patterns. Spatial damage, permanent curses and new status systems remain unassigned.",
+      "status": "proposed encounter mapping"
+    },
+    {
+      "prompt_id": 104,
+      "name": "The Undying Goliath",
+      "tier": "BOSS",
+      "artwork_path": "E:/Zed_Idler/uploads/Zombie Art/Bestiary 49-108/104-the-undying-goliath.png",
+      "fixed_zombie_traits": [
+        "Giant",
+        "Strong",
+        "Immolation"
+      ],
+      "optional_compatible_traits": [],
+      "possible_effects_on_survivor_or_encounter": [
+        "Burn"
+      ],
+      "visual_evidence": "Regenerating torn flesh under green flames.",
+      "counterplay": "Interrupt the healing window and use fire protection.",
+      "design_note": "Green fire is still fire. Poison, radiation and Corruption are not granted by its color.",
+      "status": "proposed encounter mapping"
+    },
+    {
+      "prompt_id": 105,
+      "name": "The Storm Sovereign",
+      "tier": "BOSS",
+      "artwork_path": "E:/Zed_Idler/uploads/Zombie Art/Bestiary 49-108/105-the-storm-sovereign.png",
+      "fixed_zombie_traits": [
+        "Conductive",
+        "Ranged"
+      ],
+      "optional_compatible_traits": [],
+      "possible_effects_on_survivor_or_encounter": [
+        "Electrical damage"
+      ],
+      "visual_evidence": "A massive crackling plasma sphere.",
+      "counterplay": "Insulation and sphere charge/release windows.",
+      "design_note": "The sphere is an authored boss attack. Stun and Numbness are not automatically bundled with electrical damage.",
+      "status": "proposed encounter mapping"
+    },
+    {
+      "prompt_id": 106,
+      "name": "The Plague Archon",
+      "tier": "BOSS",
+      "artwork_path": "E:/Zed_Idler/uploads/Zombie Art/Bestiary 49-108/106-the-plague-archon.png",
+      "fixed_zombie_traits": [
+        "Toxic Gas",
+        "Fungei-layden",
+        "Hazardous"
+      ],
+      "optional_compatible_traits": [],
+      "possible_effects_on_survivor_or_encounter": [
+        "Poison / gas damage over time",
+        "Contact contamination",
+        "Stress"
+      ],
+      "visual_evidence": "Rolling plague mist and visible spore swarms.",
+      "counterplay": "Breathing protection, clearing space and targeting exposed windows.",
+      "design_note": "Share the poison damage budget between mist and spores. Do not silently multiply damage by counting the same cloud twice. Hallucination is not selected.",
+      "status": "proposed encounter mapping"
+    },
+    {
+      "prompt_id": 107,
+      "name": "The Sub-Zero Colossus",
+      "tier": "BOSS",
+      "artwork_path": "E:/Zed_Idler/uploads/Zombie Art/Bestiary 49-108/107-the-sub-zero-colossus.png",
+      "fixed_zombie_traits": [
+        "Giant",
+        "Frostbite",
+        "Thicker Armor",
+        "Heavy"
+      ],
+      "optional_compatible_traits": [],
+      "possible_effects_on_survivor_or_encounter": [
+        "Chill / slow",
+        "Brief Freeze only on a proposed telegraphed special"
+      ],
+      "visual_evidence": "Crystallized air, blizzard aura and massive ice plates.",
+      "counterplay": "Cold protection and the gaps after blizzard attacks.",
+      "design_note": "Phase-based freezing with a recovery interval. Ice armor does not imply Numbness or universal disable immunity.",
+      "status": "proposed encounter mapping"
+    },
+    {
+      "prompt_id": 108,
+      "name": "The Apex Prime",
+      "tier": "BOSS",
+      "artwork_path": "E:/Zed_Idler/uploads/Zombie Art/Bestiary 49-108/108-the-apex-prime.png",
+      "fixed_zombie_traits": [
+        "Hybrid-Limbed",
+        "Armored",
+        "Accelerated Dash",
+        "Rebis"
+      ],
+      "optional_compatible_traits": [
+        "Sharp (pursuit phase)",
+        "Heavy Hitter (bastion phase)",
+        "Blood Frenzy (unstable phase)"
+      ],
+      "possible_effects_on_survivor_or_encounter": [
+        "Bleed buildup only during the Sharp pursuit form"
+      ],
+      "visual_evidence": "Sleek armored mutation, changing limbs and distinct form transitions.",
+      "counterplay": "Respond to the active form: intercept pursuit, pierce bastion armor, punish mutation transitions.",
+      "design_note": "Use authored forms rather than all traits at once. Pursuit: Dash + Sharp. Bastion: Armored + Heavy Hitter. Unstable: Hybrid-Limbed + Rebis, with a signalled Blood Frenzy transition.",
+      "status": "proposed encounter mapping"
+    }
+  ],
+  "original": [
+    {
+      "artwork_name": "Audio Distractor",
+      "tier": "E",
+      "existing_runtime_bestiary_id": 5,
+      "existing_runtime_bestiary_name": "Jingle Skirts",
+      "artwork_path": "C:/Users/Samuel/.codex/.chatgpt-projects/g-p-6ac13e53ed8c819181cd711c64d27081/output/zombie-art/01-audio-distractor.png",
+      "fixed_zombie_traits": [
+        "Jingle Skirt",
+        "Noise Maker"
+      ],
+      "optional_compatible_traits": [],
+      "possible_effects_on_survivor_or_encounter": [
+        "Area noise escalation"
+      ],
+      "visual_evidence": "Polished copper/steel pans and linked metal armor.",
+      "design_note": "Minor audio threat that becomes dangerous if ignored. Armor shine does not grant Conductive.",
+      "status": "proposed art-to-existing-roster match"
+    },
+    {
+      "artwork_name": "Battle Cry Leader",
+      "tier": "E",
+      "existing_runtime_bestiary_id": 6,
+      "existing_runtime_bestiary_name": "Pack Caller",
+      "artwork_path": "C:/Users/Samuel/.codex/.chatgpt-projects/g-p-6ac13e53ed8c819181cd711c64d27081/output/zombie-art/02-battle-cry-leader.png",
+      "fixed_zombie_traits": [
+        "Pack Leader",
+        "Battle Cry"
+      ],
+      "optional_compatible_traits": [],
+      "possible_effects_on_survivor_or_encounter": [],
+      "visual_evidence": "Horned skull mask, crimson sash and chest-thumping roar.",
+      "design_note": "Keep the early escort/buff mechanic readable. Wretched's player damage debuff belongs to a later leader package.",
+      "status": "proposed art-to-existing-roster match"
+    },
+    {
+      "artwork_name": "Anti-Trap Runner",
+      "tier": "D",
+      "existing_runtime_bestiary_id": 12,
+      "existing_runtime_bestiary_name": "Sidestepper",
+      "artwork_path": "C:/Users/Samuel/.codex/.chatgpt-projects/g-p-6ac13e53ed8c819181cd711c64d27081/output/zombie-art/03-anti-trap-runner.png",
+      "fixed_zombie_traits": [
+        "Dash",
+        "Nimble",
+        "Trap Sidestep"
+      ],
+      "optional_compatible_traits": [],
+      "possible_effects_on_survivor_or_encounter": [],
+      "visual_evidence": "Reflective visor, airborne feet and attached speed streaks.",
+      "design_note": "The supplied design explicitly grants floor-trap avoidance. It does not grant immunity to every form of control.",
+      "status": "proposed art-to-existing-roster match"
+    },
+    {
+      "artwork_name": "Frozen Heavy",
+      "tier": "D",
+      "existing_runtime_bestiary_id": 9,
+      "existing_runtime_bestiary_name": "Frostbitten Shuffler",
+      "artwork_path": "C:/Users/Samuel/.codex/.chatgpt-projects/g-p-6ac13e53ed8c819181cd711c64d27081/output/zombie-art/04-frozen-heavy.png",
+      "fixed_zombie_traits": [
+        "Frostbite",
+        "Heavy",
+        "Damp"
+      ],
+      "optional_compatible_traits": [],
+      "possible_effects_on_survivor_or_encounter": [
+        "Chill / slow"
+      ],
+      "visual_evidence": "Thick blue ice over arctic clothing and cold foot fog.",
+      "design_note": "Existing D-tier elemental introduction. No routine hard Freeze.",
+      "status": "proposed art-to-existing-roster match"
+    },
+    {
+      "artwork_name": "Domehead Scrap Heavy",
+      "tier": "C",
+      "existing_runtime_bestiary_id": 14,
+      "existing_runtime_bestiary_name": "Chrome Dome Bruiser",
+      "artwork_path": "C:/Users/Samuel/.codex/.chatgpt-projects/g-p-6ac13e53ed8c819181cd711c64d27081/output/zombie-art/05-domehead-scrap-heavy.png",
+      "fixed_zombie_traits": [
+        "Chrome Dome",
+        "Beefy",
+        "Tough Skin"
+      ],
+      "optional_compatible_traits": [],
+      "possible_effects_on_survivor_or_encounter": [],
+      "visual_evidence": "Completely sealed metal head and heavy scrap plating.",
+      "design_note": "Headshot immunity is specific to the head. Body attacks still work.",
+      "status": "proposed art-to-existing-roster match"
+    },
+    {
+      "artwork_name": "Acid Sprayer",
+      "tier": "C",
+      "existing_runtime_bestiary_id": 16,
+      "existing_runtime_bestiary_name": "Acid Spitter",
+      "artwork_path": "C:/Users/Samuel/.codex/.chatgpt-projects/g-p-6ac13e53ed8c819181cd711c64d27081/output/zombie-art/06-acid-sprayer.png",
+      "fixed_zombie_traits": [
+        "Acid Vomit",
+        "Oozing",
+        "Hazardous"
+      ],
+      "optional_compatible_traits": [],
+      "possible_effects_on_survivor_or_encounter": [
+        "Acid/corrosion damage over time",
+        "Contact contamination"
+      ],
+      "visual_evidence": "Glowing green stomach, extended jaw and cone spray.",
+      "design_note": "Chemical burn does not imply a separate fire-element aura.",
+      "status": "proposed art-to-existing-roster match"
+    },
+    {
+      "artwork_name": "Barbed Shackler",
+      "tier": "B",
+      "existing_runtime_bestiary_id": 25,
+      "existing_runtime_bestiary_name": "Stun-Locker Warden",
+      "artwork_path": "C:/Users/Samuel/.codex/.chatgpt-projects/g-p-6ac13e53ed8c819181cd711c64d27081/output/zombie-art/07-barbed-shackler.png",
+      "fixed_zombie_traits": [
+        "Shackle",
+        "Stun-locker",
+        "Heavy"
+      ],
+      "optional_compatible_traits": [
+        "Thorns"
+      ],
+      "possible_effects_on_survivor_or_encounter": [
+        "Entangle",
+        "Brief stagger/stun",
+        "Stress or scare on qualifying hits"
+      ],
+      "visual_evidence": "Iron collar, trailing shackles and barbed plates.",
+      "design_note": "Barbed armor is a player counter in the source. A separate enemy Thorns trait is only a proposed art-supported option.",
+      "status": "proposed art-to-existing-roster match"
+    },
+    {
+      "artwork_name": "Obsidian Bladewall",
+      "tier": "B",
+      "existing_runtime_bestiary_id": 29,
+      "existing_runtime_bestiary_name": "Quadruped Grappler",
+      "artwork_path": "C:/Users/Samuel/.codex/.chatgpt-projects/g-p-6ac13e53ed8c819181cd711c64d27081/output/zombie-art/08-obsidian-bladewall.png",
+      "fixed_zombie_traits": [
+        "Quadruped",
+        "Sharp"
+      ],
+      "optional_compatible_traits": [],
+      "possible_effects_on_survivor_or_encounter": [
+        "Bleed buildup if Sharp uses the proposed status behavior"
+      ],
+      "visual_evidence": "Four arms with four serrated obsidian blades.",
+      "design_note": "A four-arm wall belongs to the quadruped family. The earlier prompt's eight-limb wording is incompatible with this image.",
+      "status": "proposed art-to-existing-roster match"
+    },
+    {
+      "artwork_name": "Burrower",
+      "tier": "A",
+      "existing_runtime_bestiary_id": 35,
+      "existing_runtime_bestiary_name": "Burrower Ambusher",
+      "artwork_path": "C:/Users/Samuel/.codex/.chatgpt-projects/g-p-6ac13e53ed8c819181cd711c64d27081/output/zombie-art/09-burrower.png",
+      "fixed_zombie_traits": [
+        "Burrower",
+        "Sneak"
+      ],
+      "optional_compatible_traits": [
+        "Sharp"
+      ],
+      "possible_effects_on_survivor_or_encounter": [
+        "Bleed buildup only if Sharp is selected"
+      ],
+      "visual_evidence": "Soil-toned scale plates, digging claws and a dirt eruption.",
+      "design_note": "Use existing named A-tier identity. The workbook and runtime use different IDs for some original names; this ID is from bestiary-data.js.",
+      "status": "proposed art-to-existing-roster match"
+    },
+    {
+      "artwork_name": "Volatile Biomass",
+      "tier": "A",
+      "existing_runtime_bestiary_id": 36,
+      "existing_runtime_bestiary_name": "Pressurized Bloat",
+      "artwork_path": "C:/Users/Samuel/.codex/.chatgpt-projects/g-p-6ac13e53ed8c819181cd711c64d27081/output/zombie-art/10-volatile-biomass.png",
+      "fixed_zombie_traits": [
+        "Pressurized",
+        "Hazardous",
+        "Heavy"
+      ],
+      "optional_compatible_traits": [],
+      "possible_effects_on_survivor_or_encounter": [
+        "Explosion/shrapnel damage",
+        "Stress"
+      ],
+      "visual_evidence": "Taut yellow translucent sacs and a pressure pulse.",
+      "design_note": "Explosion trigger belongs to Pressurized. Color alone does not grant poison.",
+      "status": "proposed art-to-existing-roster match"
+    },
+    {
+      "artwork_name": "Unstable Mutation",
+      "tier": "S",
+      "existing_runtime_bestiary_id": 44,
+      "existing_runtime_bestiary_name": "Rebis Specimen",
+      "artwork_path": "C:/Users/Samuel/.codex/.chatgpt-projects/g-p-6ac13e53ed8c819181cd711c64d27081/output/zombie-art/11-unstable-mutation.png",
+      "fixed_zombie_traits": [
+        "Rebis",
+        "Hybrid-Limbed"
+      ],
+      "optional_compatible_traits": [],
+      "possible_effects_on_survivor_or_encounter": [
+        "Burn in the fire form",
+        "Chill in the cold form"
+      ],
+      "visual_evidence": "Swirling reforming biomass transitions between red-orange and blue-grey.",
+      "design_note": "Alternate the elemental package with clear transitions. Do not stack every possible elemental affliction.",
+      "status": "proposed art-to-existing-roster match"
+    },
+    {
+      "artwork_name": "Unbound Boss",
+      "tier": "BOSS",
+      "existing_runtime_bestiary_id": 45,
+      "existing_runtime_bestiary_name": "Chained Behemoth",
+      "artwork_path": "C:/Users/Samuel/.codex/.chatgpt-projects/g-p-6ac13e53ed8c819181cd711c64d27081/output/zombie-art/12-unbound-boss.png",
+      "fixed_zombie_traits": [
+        "Chained",
+        "Heavy",
+        "Numbness"
+      ],
+      "optional_compatible_traits": [],
+      "possible_effects_on_survivor_or_encounter": [],
+      "visual_evidence": "Broken oversized gold and silver chains around an unarmored brute.",
+      "design_note": "Disable immunity is explicit. Keep this version unarmored; gold chains are restraints and loot cues.",
+      "status": "proposed art-to-existing-roster match"
+    }
+  ]
+}

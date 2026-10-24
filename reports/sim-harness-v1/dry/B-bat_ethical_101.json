@@ -1,0 +1,310 @@
+{
+ "kills": 572,
+ "maxRestMs": 948000,
+ "downed": 184,
+ "downedHealed": 331,
+ "start": "B-bat",
+ "weapon": "bat",
+ "policy": "ethical",
+ "seed": 101,
+ "days": 3,
+ "returnEveryH": 8,
+ "fixtures": [
+  "First Traversal visit: start square picked as the Traversal screen does (screens-v3.jsx ~703)"
+ ],
+ "headless": [
+  {
+   "day": 0.333,
+   "moveSpeed": 3,
+   "healPct": 21
+  },
+  {
+   "day": 0.667,
+   "moveSpeed": 3,
+   "healPct": 28
+  },
+  {
+   "day": 1,
+   "moveSpeed": 3,
+   "healPct": 32
+  },
+  {
+   "day": 1.333,
+   "moveSpeed": 3,
+   "healPct": 34
+  },
+  {
+   "day": 1.667,
+   "moveSpeed": 3,
+   "healPct": 38
+  },
+  {
+   "day": 2,
+   "moveSpeed": 3,
+   "healPct": 40
+  },
+  {
+   "day": 2.333,
+   "moveSpeed": 3,
+   "healPct": 42
+  },
+  {
+   "day": 2.667,
+   "moveSpeed": 3,
+   "healPct": 43
+  },
+  {
+   "day": 3,
+   "moveSpeed": 3,
+   "healPct": 45
+  }
+ ],
+ "checks": {
+  "startOk": true,
+  "startsClaim": true
+ },
+ "fails": [],
+ "warns": [],
+ "info": {
+  "restMs": 222293171,
+  "waitMs": 27072000
+ },
+ "firstDowningDay": 0.333,
+ "jester": {
+  "waitStartT": 1790501728000,
+  "meetT": 1790528800000,
+  "meetDay": 0.333,
+  "result": {
+   "ok": true,
+   "weapon": "bat"
+  },
+  "kitBefore": {
+   "handmade_pouch": 0,
+   "scout_kit": 0,
+   "medkit": 0,
+   "fort_medkit": 0,
+   "old_padded_jacket": 0
+  },
+  "kitAfter": {
+   "handmade_pouch": 1,
+   "scout_kit": 1,
+   "medkit": 0,
+   "fort_medkit": 1,
+   "old_padded_jacket": 1
+  },
+  "waitMs": 27072000,
+  "weaponEquipped": "bat",
+  "record": {
+   "v": 1,
+   "eligible": true,
+   "met": true,
+   "phase": "done",
+   "trade": {
+    "haul": [
+     "[null,\"Damp Lurker salvage\",6,12]",
+     "[null,\"Stench Walker salvage\",7,10]",
+     "[null,\"Simple Shambler salvage\",8,10]",
+     "[null,\"Damp Lurker salvage\",9,12]",
+     "[null,\"Simple Shambler salvage\",10,10]"
+    ],
+    "names": [
+     "Damp Lurker salvage",
+     "Stench Walker salvage",
+     "Simple Shambler salvage",
+     "Damp Lurker salvage",
+     "Simple Shambler salvage"
+    ],
+    "carried": [],
+    "carriedBefore": "[]",
+    "downAt": 1790500780000,
+    "down": {
+     "gx": 4,
+     "gy": 0
+    }
+   },
+   "camp": {
+    "gx": 7,
+    "gy": 1
+   },
+   "grantMode": "meeting",
+   "weapon": "bat",
+   "inFlight": null,
+   "stayDays": 5,
+   "meetAt": 1790528800000
+  }
+ },
+ "events": {
+  "withdrawn": 85,
+  "forcedRetreat": 183,
+  "breaking": 0,
+  "jesterDisplacement": 1,
+  "resumed": 268
+ },
+ "heals": {
+  "total": 440,
+  "whileResting": 0
+ },
+ "stressOnlyRestMs": 0,
+ "trap": {
+  "cycles": 268,
+  "emptyCycles": 63,
+  "maxEmptyStreak": 3
+ },
+ "daily": [
+  {
+   "day": 1,
+   "hp": 32.61,
+   "stress": 72.77,
+   "kills": 172,
+   "distM": 4092,
+   "materials": 0,
+   "wanderLoot": 93,
+   "stash": 1,
+   "rmat": 0,
+   "charXp": 0,
+   "charges": {
+    "heal": 0,
+    "scout": 2
+   },
+   "resting": true,
+   "carried": 0
+  },
+  {
+   "day": 2,
+   "hp": 18.3,
+   "stress": 91.01,
+   "kills": 370,
+   "distM": 9465,
+   "materials": 0,
+   "wanderLoot": 199,
+   "stash": 1,
+   "rmat": 0,
+   "charXp": 0,
+   "charges": {
+    "heal": 1,
+    "scout": 2
+   },
+   "resting": true,
+   "carried": 0
+  },
+  {
+   "day": 3,
+   "hp": 27.36,
+   "stress": 78.12,
+   "kills": 572,
+   "distM": 15351,
+   "materials": 0,
+   "wanderLoot": 311,
+   "stash": 1,
+   "rmat": 0,
+   "charXp": 0,
+   "charges": {
+    "heal": 0,
+    "scout": 2
+   },
+   "resting": true,
+   "carried": 0
+  }
+ ],
+ "returns": 9,
+ "drainTicks": 1,
+ "snapshot": null,
+ "travStart": {
+  "gx": 4,
+  "gy": 0,
+  "name": "Residential E1",
+  "biome": "suburbia"
+ },
+ "startState": {
+  "kit": {
+   "handmade_pouch": 0,
+   "scout_kit": 0,
+   "medkit": 0,
+   "fort_medkit": 0,
+   "old_padded_jacket": 0
+  },
+  "kitGiven": false,
+  "jester": {
+   "v": 1,
+   "eligible": true,
+   "met": false,
+   "phase": null
+  },
+  "loadout": {
+   "primary": null,
+   "secondary": null,
+   "melee": null,
+   "helmet": null,
+   "mask": null,
+   "vest": null,
+   "gloves": null,
+   "boots": null,
+   "backpack": null,
+   "rig": null,
+   "consumable1": null,
+   "consumable2": null,
+   "consumable3": null,
+   "throwable": null,
+   "back": null,
+   "trinket": null,
+   "belt": null
+  },
+  "capacity": 0
+ },
+ "walkGroups": 4,
+ "brokenEntries": 4,
+ "end": {
+  "kit": {
+   "handmade_pouch": 1,
+   "scout_kit": 1,
+   "medkit": 0,
+   "fort_medkit": 1,
+   "old_padded_jacket": 1
+  },
+  "jester": {
+   "v": 1,
+   "eligible": true,
+   "met": true,
+   "phase": "done",
+   "trade": {
+    "haul": [
+     "[null,\"Damp Lurker salvage\",6,12]",
+     "[null,\"Stench Walker salvage\",7,10]",
+     "[null,\"Simple Shambler salvage\",8,10]",
+     "[null,\"Damp Lurker salvage\",9,12]",
+     "[null,\"Simple Shambler salvage\",10,10]"
+    ],
+    "names": [
+     "Damp Lurker salvage",
+     "Stench Walker salvage",
+     "Simple Shambler salvage",
+     "Damp Lurker salvage",
+     "Simple Shambler salvage"
+    ],
+    "carried": [],
+    "carriedBefore": "[]",
+    "downAt": 1790500780000,
+    "down": {
+     "gx": 4,
+     "gy": 0
+    }
+   },
+   "camp": {
+    "gx": 7,
+    "gy": 1
+   },
+   "grantMode": "meeting",
+   "weapon": "bat",
+   "inFlight": null,
+   "stayDays": 5,
+   "meetAt": 1790528800000
+  },
+  "kitGiven": true
+ },
+ "runaway": {},
+ "runawayFlags": [],
+ "result": "OK",
+ "storeHash": "d8a729ad934d51e3",
+ "recordHash": "8e73951b27746155",
+ "wallMs": 554
+}

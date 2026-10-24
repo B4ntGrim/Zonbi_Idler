@@ -1,0 +1,194 @@
+# CODE_STATE — current implementation facts
+
+- Stress is stored as an exact integer number of units (1 unit = 1/5.184×10¹² of a point; key `zi_stress`, field `u`). The ×1.15 overload rate and one-off stress events round to this unit; there is no saved fractional remainder.
+- Batch R1 (Retreat Rules) is wired in `game/active.js` (bottom section): `WanderSim._ruleCheck` runs at the top of every walking segment and at the end of each chunk; `_msToRule` makes the stress-rule threshold an exact boundary; `_holdStep` runs HOLD; `_restStep` ends rest only at HP ≥ 80% AND stress < 50 (both exact ms). `advance(state, dt, away, rng, events, { watching })` — default unwatched; `WanderEngine.liveStep` passes `ZI.retreatWatching()` (real screen element laid out + page visible). A chunk > `watchMaxLagMs` (2 s) is catch-up and never watching. A saved HOLD from another page load (`hold.session`) is converted to a withdrawal on the first advance. Rest location is `state.restAt` ('checkpoint' | 'base'); rate via `ZI.restStressPerDay(restAt)` → `restBed()`. Tests: `tests/r1.test.js`.
+- Save schema: **v8 (BAL-A, Oct 20: `zi_injury` → `zi_injury_v2` one-time conversion, D7b; new keys `zi_broken`, `zi_trav_return`, `zi_walk_groups`)**. v7 (tutorial follow-up: `zi_tut_progress`, registered last in `game/active.js` as previous + 1). v6 (R1: `zi_retreat_rules`; run fields `retreatSnoozes`, `retreatHold`, `withdrawCauses`). v5 (Batch 3B). v5 adds a pickup sequence (`seq`) to Wandering haul entries and `pickupSeq` to the run; older entries get it from saved order starting at 0.
+- Forced Retreat has one entry point: `ZI.forcedRetreat(state, cause, rng)` in `game/active.js` (cause 'downed'; 'breaking' is no longer produced since BAL-A — max stress makes the survivor Broken). Since BAL-A it also moves the survivor home on the map (`movedHome`). The old out-of-heals `WanderSim._retreat` and the 10% Breaking loss were removed.
+- Tutorial-done flags (`zi_trav_tutorial_done`, `zi_wander_tut_done`, `zi_craft_tut_done`) are per save (tutorial spec 9.1/9.2): part of each slot snapshot, absent in a new save. Read with `ZI.tutDone(key)` ('1' or legacy 'true' = finished), write with `ZI.setTutDone(key)` ('1'). Each screen's "?" is `window.TutStepMenu` (step list → open any single step). Tests: `tests/tutorial-flags.test.js`.
+- Tutorial step progress: `zi_tut_progress` (per save, JSON list of step ids; new save `[]`). Ids are permanent keys in `ZI.TUT_STEP_IDS` (game/save.js): traversal 4, wandering 7 (`wandering.<tut>`), crafting 3. API: `ZI.getTutProgress()`, `ZI.markTutSteps(ids)`, `ZI.tutStepsDone(ids)`. `setTutDone` writes the flag and the screen's ids; `tutDone` is true from the flag or from all of the screen's ids. v7 migration fills ids from the old flags (data only; flags kept). Adding a step id to a finished screen makes `tutDone` false for it unless the flag is set — decide per screen when the six tab tutorials/revisions land.
+- Every "?" (`TutStepMenu`) is bottom-right (Traversal inset 14, Wandering/Crafting 12). A new file opens on Traversal via `zi_fresh_start` (game/save.js → app `screen` init). Stats: SURVIVAL Attributes, Weather and Zombie Index panels show `<PreviewTag/>` (screens-v2.jsx).
+- FX5 (Oct 15, CLOSED): `WS._restStep` (`game/active.js`) first checks whether HP is above the rest curve (a heal landed while resting) and, if so, restarts the curve: `restStartHp = hp`, `restElapsedMs = 0`. Before FX5 the rest step rebuilt HP from `restStartHp` and erased heals. Tests: `tests/fx5-medkit-heal.test.js`; browser: `tools/browser-check/fx5-checks.js`. JD1a CLOSED Oct 15 (real-save fingerprint passed).
+- H2 harness (Oct 15): `tools/sim-harness/h2.js` (runner; `node tools/sim-harness/h2.js <root> dry|full`) and `h2-tests.js` (17 acceptance checks). A return = fresh evaluation of all game scripts against the saved storage, then one engine tick per simulated second until `_carryMs` is 0. The Jester switch is turned on only in the harness's in-memory copy of `active.js`. A new save has no `zi_trav_pos` until the Traversal screen picks one (screens-v3.jsx 703–712); without it Jester camp placement skips (`noPosition`). Fight Downings call `_downed(state, rng, null)` (wandering.js 335), so they are not recorded in the away summary.
+- Test runner note: suites expect `readFile`/`log`; `tests/qa-helper.js` `fp()` hashes keys in storage order, so it can change when only key order changes — compare a sorted-key fingerprint too.
+
+## H1 audit — clock and rolls (sim harness brief A1, A2; step-0 line numbers)
+
+Clock rule (A1): every rule and every deterministic record reads `ZI.now()`. Real time stays only for session ids, `savedAt`, the reload-resume window and simulation locking.
+
+| File:line (step 0) | Function | Purpose | Clock | Reason |
+|---|---|---|---|---|
+| jobs.js:44 | `ZI.now` | the clock itself | moves to core.js | core loads first; jobs no longer defines it |
+| wandering.js:14, 27 | `getCmdWindow`, `cmdResetInMs` | 24 h command window | ZI.now | rule |
+| wandering.js:142, 150 | `policyCooldownLeftMs`, `setPolicy` | policy-switch cooldown | ZI.now | rule |
+| wandering.js:254 | `WanderEngine.start` interval | decay housekeeping | ZI.now | rule (decay) |
+| wandering.js:259, 262 | `tick`, `liveStep` default `now` | elapsed time (dt) | ZI.now | rule |
+| wandering.js:266-272 | `WanderEngine._lead` | simulation lock | **real time** | A1 exemption (simulation locking) |
+| wandering.js:267 | `_lead` session fallback | session id | **real time** | A1 exemption (session id) |
+| wandering.js:315 | `step` buffs | `combatBuffsAt(_simNow)` | simulated (`_simNow`) | unchanged; the fallback `Date.now()` is unreachable once `_simNow` is seeded |
+| wandering.js:372 | `advance` | `_simNow` re-anchor to wall clock | **removed** | A1a: advance() reads no clock |
+| stats.js:293, 296 | `skillDecayState`, `skillIdleDays` | decay stamps, idle days | ZI.now | rule |
+| stats.js:315, 339, 365 | `getDecayClock`, `settleSkillDecay`, `_maybeSettleOnRead` | decay clock | ZI.now | rule |
+| stats.js:369, 370 | `getInjury`, `setInjury` | injury expiry | ZI.now | rule |
+| items.js:322 | `getActiveBuffs` | buff expiry (evade, XP) | ZI.now | rule; G1 (two buff clocks) not fixed |
+| items.js:333 | `addBuff` | buff from/until | ZI.now | rule |
+| items.js:630 | `reportCarryRefusal` | UI message stamp | real time (unchanged) | not read by a rule or a deterministic record |
+| factions.js:172 | `repApply` | last-offense stamp | ZI.now | rule (forgiveness reads it) |
+| factions.js:178 | `settleRepForgiveness` | forgiveness elapsed time | ZI.now | rule; G3 (1 day per settle) not fixed |
+| economy.js:29 | `toRecyclerItem` | Recycler entry id | ZI.now + roll hook `'ids'` | deterministic record |
+| economy.js:36 | `toRecyclerItem` | `bankedAt` (sort) | ZI.now | deterministic record |
+| routes.js:94 | `tryDiscoverVehicle` | vehicle found-at stamp | ZI.now | deterministic record |
+| bootstrap.js:69 | load-time decay wrapper | decay `lastActiveUtc` | ZI.now | rule |
+| save.js:154 | `_boot` | decay-clock creation | ZI.now | rule |
+| save.js:72, 93 | `_writeSlot` etc. | `savedAt` | **real time** | A1 exemption |
+| save.js:99, 138 | resume | reload-resume window | **real time** | A1 exemption |
+| active.js:599 | `ZI._session` | session id | **real time** | A1 exemption |
+
+Out of scope, unchanged (D3): core.js world clock (34-49; no in-scope rule reads it), camp.js, jobs.js job ids, routes.js 162-269, fort.js, factions.js:98 (contracts).
+
+**Rolls (A2, A3).** The Wandering simulation already receives one injectable `rng` (WanderEngine.rng; live `null` → `Math.random`; tests `ZI.seededRng(seed)`), passed through `advance` → `step`, combat, the evade roll and vehicle discovery. It is unchanged. The only in-scope `Math.random()` outside it is the Recycler id (economy.js:29), which goes through `ZI.roll('ids')`. `rng || Math.random` fallbacks in combat.js:27, stats.js:273, wandering.js:106, 199, active.js:117, 666, 772 and routes.js:91 stay as they are (only reached when no rng is passed). Session ids keep `Math.random` (exemption). Out of scope: world.js:112, fort.js:142, 151, routes.js:231-238, camp.js, jobs.js:80.
+
+**C1-C13 (feasibility review, Oct 9), carried over.** C3: rules run headless with an in-memory storage shim; the only DOM read is `retreatWatching()` (active.js:609). C5: `DIFFICULTY_TABLE` has only `normal: { fortAttackHp }`; no in-scope system reads difficulty. C8: 24 h cap at wandering.js:281 (`WanderEngine._run`), not in `advance()`. C9: `advance()` stops after 200 steps or the 100,000 guard; the remainder is saved in `_carryMs` and resumed by the next call. C10: no permanent run end; HP floors at 1; Downed and Breaking go through `ZI.forcedRetreat`. C11: only r1 checks 20 and 26 (x2) depend on the exact seeded sequence. C13: see the watching list (step 8).
+
+## H1 implementation facts (Oct 9)
+
+**Clock.** `ZI.clockNow()` (game/core.js) is the one gameplay and deterministic-record clock: real time unless a clock is installed with `ZI.installClock(fn)`, or provided before load as `ZI._installedClock` (a harness does this so load-time settles use simulated time too). `ZI.now()` (game/jobs.js) returns the same clock. Rule code calls `ZI.clockNow()` because the load-time replay in game/bootstrap.js hides `ZI.now` before old line 1650, as the legacy file never defined it earlier. `ZI.now` is **not** in the replay's `ALWAYS` list and stays hidden, to keep the replay faithful to legacy load order. `ZI.clockNow()` is never hidden, so rule code works at every load stage. (Corrected Oct 10, TQ7: adding `now` to `ALWAYS` was tested in isolation and changes no current result; an earlier note claiming 16 changed results was wrong. Those failures came from a name collision with the world clock's `ZI._clock`.)
+**Rolls.** `ZI.roll(system)` (game/core.js): live = `Math.random()`; `ZI.installRolls(masterSeed)` gives each system its own `ZI.seededRng` stream (seed = masterSeed XOR FNV-1a(system)). Used by: `toRecyclerItem` id (`'ids'`). The Wandering `rng` is unchanged.
+**`_simNow` contract.** `WanderEngine._run` seeds `_simNow = now − (window + carried time)`: the previous `lastTickAt` in every uncapped case; after a capped absence the window ends at now, as before. `advance()` reads no clock and moves `_simNow` by every consumed millisecond, including rest (`_restStep`, the legacy rest branch) and HOLD. If `_simNow` is missing it starts from `lastTickAt` (or 0). The 2 s re-anchor is gone.
+**Real time kept (A1 exemptions):** simulation lock (`WanderEngine._lead`, `realNow`), session ids, `savedAt`, the reload-resume window, and the UI stamp in `reportCarryRefusal`.
+
+### Verified bounds (D7)
+| Value | Rule | Bound |
+|---|---|---|
+| Skill level | `statLevel` stops at 50 (stats.js) | 1–50 |
+| Skill XP | `addStatXp` adds only positive amounts; decay sets `floor + above × (1 − rate × days)` (stats.js `settleSkillDecay`) | **finite only**: no rule stops XP going below the floor or 0 when `rate × days > 1` (listed for Sam) |
+| Base charges | spent only while > 0; refill sets `baseChargeMax()` (active.js `spendCharge`, `refillBaseCharges`) | 0–`baseChargeMax` |
+| Kit charges | spent from > 0; an empty kit is removed (active.js `spendCharge`) | 1–`kitFull` while the kit exists |
+| Durability | `applyWear` and `itemDurability` clamp (items.js) | 0–max |
+| HP | most paths floor at 1, but base rest after a Downed forced retreat starts from `restStartHp = 0` | **0–100** (observed 0.0999; pre-existing; Design Handoff) |
+| Stress | `_setStressU` clamps integer units (active.js) | 0–max × `STRESS_UNITS` |
+
+### Watching list (A4) — behavior that differs when watching or when the Wandering screen is open
+| Where | Behavior |
+|---|---|
+| active.js `WS._ruleCheck` | watching: a retreat rule opens the HOLD prompt; unwatched: withdraws at once |
+| active.js `WS._holdStep` | not watching (or a HOLD from another session): HOLD is cancelled into a withdrawal |
+| wandering.js `advance` | watching only when the chunk is ≤ `watchMaxLagMs` (2 s); bigger chunks are catch-up |
+| wandering.js `WanderEngine._lead` | a watching tab takes the simulation lock from a background tab |
+| wandering.js `WanderEngine._run` | live beats use a fresh away summary (not accumulated); background ticks accumulate `awaySummary` |
+| wandering.js `WanderEngine.tick` | returns at once while `ZI.wanderMounted` (the screen drives `liveStep` instead) |
+| active.js `retreatWatching` | requires the real screen element laid out and the page visible (DOM read) |
+| screens-v3.jsx `syncWanderState` (~1692) | **screen-only gameplay write**: `hp`, `kills`, `xp`, `mats`, `healsUsed`, `moveSpeed`, `healPct` pushed into the run. `moveSpeed` comes from gear speed, buffs and stims; `healPct` from First Aid level. Never written while unwatched (defaults 3 and 25) |
+| screens-v3.jsx `setWanderScroll` (two sites) | screen-only write of the run's distance |
+| screens-v3.jsx `ZI.addBuff` (four sites), `ZI.setPolicy`, `ZI.drainWanderLog` | screen-only actions |
+| screens-v3.jsx stim timer (`now0 < stimUntil`) | screen-only, real time, feeds `moveSpeed` |
+Empirically (feasibility review): before the first HOLD, watched and unwatched run state is identical.
+
+### H1 status (Oct 10)
+- All 14 existing suites plus `tests/sim-clock-rng.test.js`: 434/434. `r1` ×20 frozen clock and ×5 with a 5 ms delay: check 15 passes in all 25 runs.
+- Browser save isolation **PASSED** (Sam, Chrome, Oct 10) on the **local H1 build** at `http://127.0.0.1:8080`: `storage ok`, `shimActive true`, banner shown, `h1Build true`. Real-save fingerprint 1883847335 before and after 1–2 minutes of TEST SAVE play including Wandering (29 real keys, 29 game keys, both unchanged); test keys rose 11 → 24.
+- **Still required before the Claude Design preview runs H1:** that preview (origin `https://019defa1-…claudeusercontent.com`) runs the pre-H1 build (`h1Build: false`, Oct 10). Before the real-game preview runs any H1 build: record the real-save fingerprint in the TEST SAVE preview frame, sync, confirm `h1Build: true` and `shimActive: true`, and confirm the fingerprint is unchanged before and after TEST SAVE play.
+
+## FX1 implementation facts (Oct 10)
+- HP floor: the fight write in `WanderSim.resolveEncounter` stores `Math.max(1, res.hpLeft)`. Every survivor HP write now stores ≥ 1 (fight, policy hit, venture, Fort attack, Traversal loot, heal, revive, rest).
+- One Downed path: `ZI.WanderSim._downed(state, rng, away)` in `game/wandering.js` — heal (base → med kit) → revive consumable → `ZI.forcedRetreat(state, 'downed', rng)`; records the retreat on `away` when given (null for a venture chosen on screen). Callers: the fight path (when the fight isn't won **or** leaves HP at 1), the policy-hit branch of `advance()` (HP brought to 1), and the failed-venture branch of `ZI.resolvePrompt` (HP brought to 1; the ambush is skipped after a Forced Retreat).
+- Not callers (U25, U26): `ZI.fortAttack` (`game/fort.js`) and the Traversal loot failure (`screens-v3.jsx` ~886). Both floor HP at 1 and never Down. Neither file changed.
+- Policy-hit Downed is logged as a `policy` event (fields `downed`, `fr`) so the existing screen shows it; no screen change.
+- `restStartHp` after a Downed Forced Retreat is 1 (rest from 1 to 80 HP = 948,000 ms at 5 HP/min).
+- Tests: new `tests/fx1-downed-hp.test.js` (12 checks). Authorized edits: `sim-clock-rng` test 11 HP bound 1–100 (DH1 INFO note removed); `r1` check 28 gained a third scenario (load 116%, heals 2, seed 31).
+- No save keys, migrations or save version changed.
+
+## FX2 implementation facts (Oct 10)
+- Per-return cap: `WanderEngine._run` computes `pending = min(offlineCapSec × 1000, newMs + _carryMs)` before processing. The new part (`min(pending, newMs)`) is passed to `advance()` as `dt`; the rest stays in `_carryMs`. Anything beyond the cap is discarded (U2). `_simNow` is seeded as `now − pending` (H1 A1a unchanged).
+- Invariant: at the start of every engine run, waiting time (new + carried) ≤ 24 h. `_carryMs` and `lastTickAt` are used only in `game/wandering.js` (`_run`, `advance`); the screen writes `lastTickAt` once when a run restarts (`screens-v3.jsx` ~2502, unchanged).
+- No new saved field (P1): discarded time is not stored. Side effect: `_carryMs` is now set before `advance()` runs, so it appears earlier in the saved run JSON (field order only; values identical).
+- Tests: new `tests/fx2-return-cap.test.js` (8 checks; processed time measured by wrapping `advance()` and summing `_simNow` movement). Authorized edit: `sim-clock-rng` test 10c is now a PASS check (second-return backlog ≤ 24 h; was an INFO reading of 47.99 h).
+- No save keys, migrations or save version changed.
+
+## Oct 10 Design display fix (applied from Claude Design's sync)
+- `screens-v3.jsx`: HP readout and bar now step down with each replayed enemy strike (`hpLag`, `hpShown`). Display only: `playerHp` and every `syncWanderState` / `wanderAct` / save write still use the real engine HP; `hpShown` appears only in the HP text, the `ProgressBar` and the Current Survivor `InfoRow`.
+- Hashes (sha256, 12): `screens-v3.jsx` 68fa8f3da4df → 6c4695474113 · `Zombie Idler v2.html` 5112a7eba005 → c5567f9e2879 · `Zombie Idler v2 - TEST SAVE.html` 09f2cb1cb882 → ff2de90ecf77 (both HTML: `screens-v3.jsx?v=` cache-buster only) · `CURRENT_BATCH.md` → CB1 locked · `DESIGN_HANDOFF.md`, `reference/starter-weapons-cb1-slice.md` updated.
+- No `game/*.js` or test file changed (checked against the Oct 10 package manifest). All 17 suites pass; r1 ×5 and sim-clock-rng ×5 identical. The suites don't load the screen file; the display fix is verified by the browser check.
+- Known limit (Design, §4): a heal top-up in the same beat briefly shows the post-heal value plus unreplayed damage, then steps down to the healed value.
+- Oct 10: a faster HP-bar slide (0.08 s) was tried at Sam's request and reverted the same day (no visible difference). The three files are back to Claude Design's sync versions.
+
+## CB1 implementation facts (Oct 10)
+- Weapon specials (item fields): `heavySwingPct` (after the survivor attacks, chance to lose its next attack), `staggerPct` (on a hit, chance the target loses its next attack), `escapeBonus` (added to `escapeChance`, inside its 5–90 clamp; not added to combat evasion). `resolveLoadoutStats` reports the strongest equipped value of each.
+- Mechanics live in `STAT_FORMULAS.resolveAttack` via per-fight `_skipNext` flags on the fight's own stat-block copies; a lost attack logs `{ result: 'skip' }`. Rolls for a special are drawn only when it is above 0, so fighters without specials keep identical sequences. `combat.js` unchanged; camp siege defenders unaffected.
+- Items: Nail Bat 28 dmg / 3 kg / heavy swing 30; Iron Knuckles 16 dmg / stagger 25; Pocket Knife `pocket_knife` 16 dmg / escape +30 / loot +5 / 0.5 kg / common / no recipe.
+- `wandering.js` passes `heavySwingPct` / `staggerPct` into the Wandering fight's stat block.
+- Tests: new `tests/cb1-starter-weapons.test.js` (7 checks). Authorized edit (Sam, Oct 10): `split-equivalence` `DATA_CHANGED` gains `CRAFT_RECIPES` (the Iron Knuckles recipe lore copies the item description).
+- Known existing behavior: the grouped "too heavy" log row can sit at a different position in the event list for different chunk sizes (Batch 3A grouping); game state is identical.
+
+## FX3 implementation facts (Oct 10)
+- One buff clock: `ZI.buffMoment()` returns the moment being processed (`ZI._buffMomentFn`) or the game clock. Set by `WanderSim.advance()` (`state._simNow`, restored in `finally`), `_settleJobs` (each job's finish time) and `settleRouteRuns` (each run's finish time).
+- `getActiveBuffs()` filters by `from ≤ moment < until` (a buff without `from` counts from any time) and never writes. `combatBuffsAt(t)` unchanged.
+- Cleanup is `ZI._pruneBuffs()`: keeps every buff whose `until` is after the earliest moment any catch-up may still process (Wandering run `_simNow`, bounded by now − 24 h; active jobs' finish; route runs' finish). Called by `addBuff` and at the end of `WanderEngine._run`.
+- XP same-track refresh ends the old buff at the refresh moment (`until = now`) instead of deleting it.
+- Tests: new `tests/fx3-buffs-sim-time.test.js` (11 checks). Authorized edits: `sim-clock-rng` test 4 comment; `split-equivalence` `CHANGED_FN` (+`_settleJobs`, `settleRouteRuns`) and `ADDED` (+`_buffMomentFn`, `buffMoment`, `_pruneBuffs`).
+
+## FX4 implementation facts (Oct 12–13)
+- `ZI.SurvivorRules` (items.js) owns survivor speed and heal strength. `moveSpeed(state)` = PACE[state.moveMode || 'walk'] (Walk 3; Jog 3 + 0.6 × conditioning; Run 3 + 1.3 × conditioning; conditioning 3–10 from effective Athletics) × gear speed ÷ 100 × (1 + Σ active speedPct ÷ 100). `healPct()` = `firstAidHealPercent(effectiveLevel('firstAid'))`.
+- `WanderSim.advance` recomputes `state.moveSpeed` every step (a per-step copy, never an input); `msToSpeedChange` makes speed-buff start/end exact segment boundaries. Overload still applies on top in the walker.
+- Pace is saved as `moveMode` in the run (absent = Walk). The screen reads the rules and writes only the pace choice. Speed consumables use `addBuff({ speedPct, durationSec })`; a new one ends the running one.
+- `healPct` and stored `moveSpeed` in old saves are ignored; no migration.
+- Tests: new `tests/fx4-shared-attributes.test.js` (10 checks). Authorized edit: `split-equivalence` `ADDED` + `SurvivorRules`.
+- Existing, not FX4: React border/borderLeft style warning in `RmatCraftingScreen` (inline in the HTML).
+
+## RB1 implementation facts (Oct 13)
+- Run Back (More actions) calls `wanderAct(s => wanderRetreatPress(s))`: the R1 withdrawal to the last checkpoint with one getaway roll (on the first press), then rest. It no longer teleports, clears the encounter or resets the pace. Label shows `⏪ Run Back · Nm` while withdrawing.
+- The main-bar retreat button is the policy control: `↩ Auto-retreat: HP x% · Stress y · Load z%` (rules switched off are left out; `Off` when none), `↩ Withdrawing Nm` while withdrawing; it opens the R1 rules panel. The manual `↩ Retreat` and `⚙ Retreat Rules` buttons are gone.
+- Distance-bar checkpoints are `div` markers; nothing on the screen calls `setWanderScroll` (the function remains in `wandering.js`).
+- Tests: new `tests/rb1-retreat-controls.test.js` (7 checks). No authorized test edits. Headless browser checks: `tools/browser-check/`.
+
+## RB2 implementation facts (Oct 13)
+- The Wandering screen has no retreat button and no retreat-rules editor; Run Back (More actions) is the only call to `wanderRetreatPress`. `ActiveControls` no longer reads or writes the rules.
+- While resting, the scene's status shows `Retreats at HP x% · stress y · load z%` from `getRetreatRules()` (rules switched off are left out; "Automatic retreat is off" when all are off), element `[data-retreat-line]`.
+- The rules code (`RETREAT_RULES_TABLE`, `get/setRetreatRules`, `retreatRulesTrue`) is unchanged. Editing is parked for the shop.
+- Tests: new `tests/rb2-retreat-layout.test.js` (4 checks); RB1 checks 5 and 6 rewritten (authorized). Browser script: `tools/browser-check/rb2-checks.js`.
+
+## JD1a implementation facts (Oct 13)
+- `ZI.Jester` (active.js) owns the first meeting. `TABLE.firstMeetingOn` is **false** (code default; never stored). Record `zi_jester = { v, eligible, met, phase, … }`; kit receipt stays `zi_starter_kit_given`.
+- New save: `onNewSave()` (eligible only if the switch is on; kit only if off). Boot: `onLoad()` (legacy → `eligible:false, migrated:true` + `ensureStarterKit()`; eligible + switch off → B5 `fallback()`; finishes interrupted `trading`/`granting`/`weaponPending`).
+- First Downing (switch on, eligible): `WanderSim._downed` → `Jester.firstDowning` → `campSquare` (Chebyshev 3, 4, 5, 2, 1 in the 8 × 6 sector; not locked/contested/Fort/Fallow/Home; reachable by 8-neighbour moves over non-locked squares in the sector; else the Downing square if safe; else null = E1, ordinary Forced Retreat) → trade (run haul + `zi_carried`, never story items, never stash/loadout) → rest at `restAt:'camp'` (Bedroll). After rest, `advance()` waits (`jesterWait`) with no events.
+- `Jester.meet(weaponId)` (for JD1b) grants jacket/pouch (empty slot else stash), weapon (melee, else stash), scout kit + 2 rations (carried), Fort-bound Med Kit (stash); sets the kit flag; rolls `stayDays` 3–5 once; `meetAt` = game clock; `campActive(t)` uses 86,400,000 ms days.
+- `Jester.chooseOwedWeapon(weaponId)` (for JD1b) after a B5 fallback. Multi-store steps write an intent first (`inFlight` with an inventory signature) and are safe to redo.
+- Items: `old_padded_jacket` (vest, armor 4, 2 kg, 2 pockets), `fort_medkit` (story, 1 kg). `hasMedKit`/`takeMedKit` take `fort_medkit` first.
+- Tests: `tests/jd1a-first-displacement.test.js` (28). Browser script: `tools/browser-check/jd1a-checks.js`.
+
+## BEST1 implementation facts (Oct 17; Option A approved by Sam) — CLOSED Oct 17 (Sam's hands-on TEST SAVE check passed)
+- `ZI._bgZombie` (`game/wandering.js`) now also returns the picked bestiary record's existing `bestiaryId` (= `id`), `tier` and `armor` (missing armor → 0). The pool and the single rng draw are unchanged, so enemy picks are identical for any seed. `spd`, `traits`, `base` are intentionally NOT carried (bestiary speed is on a different scale from `escapeEnemyResist`; separate design decision).
+- Effects: `enemyStatBlock` now applies bestiary armor in Wandering fights (19 of 45 records have armor > 0; tiers 0–1 are all 0); fight events carry `bestiaryId` and `tier`; the Wandering screen resolves the displayed record by id (duplicated names Trapper Zed 20/38 and Battle Cry General 22/39 now show their own record).
+- Codex boundary: `ZI.WANDER_SIM_TABLE.codexFromWandering = false` gates the existing `ZI.discoverZombie` call in `WanderSim.resolveEncounter`. Wandering does not unlock Codex entries or award Discovery XP until Sam approves Option B (set the key to `true`; no code change).
+- No save-format change (the encounter object is transient). File hash before: `wandering.js 20d20e48f196be4a`; after: `dfcdfdfa41988ba5`.
+- Tests: new `tests/best1-enemy-identity.test.js` (16 checks; BEST1-11/12 are conditional on the Codex flag). Browser check: `tools/browser-check/best1-checks.js` (TEST SAVE page; ids 20, 38, 22, 39, 1, 14). split-equivalence does not cover this area (`_bgZombie`, `WanderSim`, `WANDER_SIM_TABLE` were already allow-listed), so the BEST1 suite is the regression guard.
+- H2 baselines: `reports/sim-harness-v1/dry/` (Oct 15) untouched; `legacy-oct17/` = full matrix on the unmodified Oct 17 build; `best1/` = the same matrix after BEST1.
+
+## BAL-A implementation facts (Oct 20) — walk home and Broken (CURRENT_BATCH.md; slice brief §2, §3, §3a)
+- Map position changes made by the game (sent home, instant return) are announced with `ZI._notifyTravPos()`; screens subscribe with `ZI.onTravPosChange(fn)` (returns an unsubscribe). Any new code that writes `zi_trav_pos` outside a player action must call it.
+- HP displays use `ZI.maxHp()`, never a literal 100.
+- **Data tables** (end of `game/active.js`): `ZI.WALK_HOME_TABLE` (pursuers, groups), `ZI.BROKEN_TABLE`, `ZI.INJURY_TABLE`; `ACTIVE_TABLE.load.overloadStressMult` = 2.
+- **Max HP:** `ZI.maxHp()` (base 100; ×0.82 while Broken). Every HP rule, rest target, heal amount and the HUD read it; `WANDER_REST_TABLE.maxHp` stays the base value.
+- **Broken:** `zi_broken` `{ on, rests, since }`. `ZI.enterBroken` replaces both Breaking → Forced Retreat paths (`_afterSegment`, `_holdStep`; a HOLD stays open). Penalties: attack skip (`resolveAttack` `atk.attackLossPct`, roll only when set), damage taken (`def.dmgTakenPct`), speed (`SurvivorRules.moveSpeed`). Release: `ZI.onRestCompleted` → `brokenRestCompleted` on every completed automatic rest (checkpoint, base, camp); 1 in 6, the third rest rolls first; forced after the third failed roll with `_brokenDurabilityCost`. `_restStep` now takes `rng`.
+- **Retreat rules:** the stress rule is skipped in `retreatRulesTrue`; `_msToRule` returns Infinity; `_restNeedMs` is HP only. Settings fields are kept in saves.
+- **Walk back (rule 5):** in `WanderSim.advance`, while `state.withdrawing`, the encounter, policy and discovery timers are frozen (not reset). `WanderSim._walkHomeStart` runs once per walk (`state.walkHomeRolled`, cleared in `endRunState`): group meeting (`_walkGroupMeet`, cap per local real day in `zi_walk_groups`), then pursuers (`_walkPursuers`, dedicated resolver; Downed path via `_downed`; no XP, loot, kill or wear). Hostile send-home: `ZI.sendHomeHostile` (Base rest, not a Downing).
+- **Home and return:** `ZI.homeCell()` (camp, else start); `_sendHomeOnMap` saves `zi_trav_return` unless already home; `_returnFromHome` at the end of a Base rest; `clearTravReturn` on Traversal travel and Make camp (`screens-v3.jsx`) and the Jester relocation (`_finishTrade`).
+- **Injury:** `zi_injury_v2` `{ skills, pct, remainingMs, source }`. `ZI.applyInjury` (1.5 h; re-injury = max(left, 1.5 h)), `setInjury` = legacy alias (Fort). Countdown only in `ZI.injuryCreditTick`, called from the engine's 1-s interval while the page is visible (≤ 5 s credit per tick; session-memory `_injLastCredit`). Extension `injuryOnDamage` (+30 s/HP, cap 3 h) only when `ZI._injPresent` (set by `WanderEngine._run` for one-tick windows on a visible page). Cures: `ZI.tryBandageCure` (Field Bandage in pockets or a consumable slot; also heals 30) — run after every engine window and on injury; `ZI.cureInjury` is the interface for Batch B's Rest roll. Make camp no longer treats the injury. **Named parity exception:** injury countdown and extension depend on page visibility, not on simulated time.
+- **Parity fix:** `flushTooHeavy` now runs right after the step that queued it (encounter, policy, prompt), not at a chunk-dependent segment end.
+- **UI (`screens-v3.jsx`):** status icons beside the survivor name (`data-status-icons`, Broken then Injured, `title` tooltips); HP text/bar use `ZI.maxHp()`; new log kinds `broken`, `brokenReleased`, `walkGroup`, `pursuer`, `returned`, `injuryTreated` (always kept); stress-gate and "encounters can still happen" wording removed. HTML version stamps bumped for the 5 changed scripts.
+- **Harness:** `h2.js` counts pursuer Downings, Broken entries and group meetings.
+- **Tests:** new `tests/bal-a-walk-home-broken.test.js` (50 checks); 12 suites updated with `BAL-A (authorized, Oct 19)` notes. All 26 suites: 502/502.
+- **Backup:** originals of every changed file in `archive/pre-bal-a-oct20/`.
+
+
+## TRAV-01a implementation facts (Oct 21) — honest Traversal buttons (CURRENT_BATCH.md rev 1; slice T1, T2, T4, T5, T10, T13–T17)
+- **Traversal scout pool** (separate from Wandering's `zi_charges`): `ZI.TRAVERSAL_TABLE.scoutChargesPerDay = 5` (`ZI.TRAVERSAL_SCOUT_CHARGES_PER_DAY`), key `zi_trav_scout` `{ day, left }` (`game/stats.js`, end). `ZI.getTravScouts()` never writes; a stored day that is not today reads as full, so any number of missed midnights refills once. `ZI.spendTravScout()` → `{ ok, left, max, reason }`. Day key = `ZI._localDayKey(ZI.clockNow())` (real day, local midnight).
+- **Daily XP limits:** `ZI.travEmitOnce(kind, cellKey, actionId, scale)` grants XP only the first time per real day; key `zi_trav_xp_day` `{ day, done }`. Kinds: `scout` / `hide` / `travel` per cell (`'gx,gy'`), `camp` once per day overall (`'any'`). `ZI.travXpAvailable(kind, cellKey)` reads it. XP amounts unchanged (`ACTION_XP` scout 5 Stealth; sneak 6 Stealth + 2 Athletics; move ×2 = 4 Athletics; camp 10 Command).
+- **Hide:** `ZI.hideThreats(cell, state?)` → `{ threatLevel, dangerLabel, tiers, range }`; `ZI.wanderDrawableTiers(state?)` mirrors `_bgZombie` + `rollEncounter` (lap = floor(scroll/100) + Push On boost; rank ≤ min(7, floor(lap/1.5)); only tiers present in `BESTIARY`). `ZI.TRAVERSAL_TABLE.hideGameHours = 1` (`ZI.TRAV_HIDE_GAME_HOURS`), applied with `ZI.passTime`. Cells still hold no zombie lists; no Codex "sighted" flag (deferred to the tier-band batch). Helpers `ZI.TIER_ORDER`, `ZI.THREAT_LABELS`, `ZI.tierLabelShort` (`game/world.js`, end).
+- **Make camp** (screens-v3.jsx `doAction('camp')`): no longer sets HP to max or `healsUsed` to 0. Still stores `zi_trav_camp`, clears a saved return, `passTime(24)`; Command XP once per real day.
+- **Traversal screen, Solo vs Camp Leader:** `isCampMode = ZI.getActiveSlot().mode === 'camp'`. Camp Leader renders the pre-batch survivors list, map-type tabs, right column (Assigned, Expected yield, Dispatch) and adjacent-cell modal byte-for-byte. Solo renders: Afflictions panel (`[data-trav="afflictions"]`, Broken then Injured, Wandering header icons, Injured "play time left") with "Traversal scouts n/5 today"; a preview bar (hover/highlight one-liner + disabled Route mode toggle "Route builder coming soon"); the zone details panel (`renderZonePanel`) beside the map, or as a bottom sheet (`[data-trav="sheet"]`) when the last pointer was touch/pen or the window is < 760 px wide.
+- **Zone panel:** opened by click, tap or confirm on any cell; lines Familiarity (`ZI.cellFamiliarity`), Loot (`lootSafeChance` and 2–3 supplies of 2–(5 + 2 × RMAT tier), or "Looted"), Danger, Threats (last Hide this session), Features (Fort, Fallow Ground, camp, start). Actions Travel/Loot/Scout/Hide/Make camp each show a cost or a greyed reason ("Too far — move next to it.", "Locked zone.", "You're already here.", "Already looted.", the scout-pool reason, the Fallow camp reason). `doAction` itself refuses far or locked cells. In Solo the Fort is entered from the panel ("Approach the palisade") instead of a direct click.
+- **Controller / keyboard (Solo Traversal):** arrows or D-pad move a highlight (preview shown), Enter / Space / A confirms, Escape / B closes. Gamepad polled every 120 ms via `navigator.getGamepads`.
+- **Tutorial:** after Loot, the last step points at Wandering (`setTutTarget('wandering')`); the Routes target entry still exists but nothing uses it.
+- **HTML pages (both):** a Solo resume boots on `'traversal'` (was `'solo-main'`); Routes Deploy is `disabled={!canRun}` with a title and a visible reason. Cache-bust versions bumped for `game/world.js`, `game/stats.js`, `screens-v3.jsx`.
+- **Save:** version unchanged (v8). New keys `zi_trav_scout`, `zi_trav_xp_day` (both `zi_*`, so per slot). Missing keys = full pool / nothing earned. `zi_trav_scouted` is still written by Scout and still has no reader.
+- **Tests:** new `tests/trav-01a.test.js` (57 checks). Edit: `split-equivalence` `ADDED` + the 16 TRAV-01a symbols (labelled). Browser: `tools/browser-check/trav01a-checks.js` (33 checks; results and screenshots in `reports/trav-01a/`). All 27 suites: 662/662. Backup: `archive/pre-trav01a-oct21/build/`.

@@ -1,0 +1,149 @@
+# Survivor System — Full Design Specification
+
+---
+
+## 1. Stat Range
+
+All survivor stats use a **1–100 scale**.
+
+| Property | Value |
+|---|---|
+| Minimum | 1 (baseline, untrained) |
+| Maximum | 100 (fully mastered) |
+| Starting Value | Defined per character type |
+
+---
+
+## 2. Character Types
+
+| # | Character Type | Primary Role |
+|---|---|---|
+| 1 | Scavenger | Material gathering |
+| 2 | Fighter | Melee combat |
+| 3 | Medic | Healing & recovery |
+| 4 | Scholar | XP gain & research |
+| 5 | Engineer | Building & repair |
+| 6 | Sniper | Ranged combat |
+| 7 | Scout | Reconnaissance & speed |
+| 8 | Chemist | Crafting consumables |
+| 9 | Mechanic | Vehicle & gear repair |
+| 10 | Tactician | Team coordination & buffs |
+| 11 | Hunter | Tracking & survival food |
+| 12 | Smuggler | Marketplace discounts & black market |
+| 13 | Soldier | Balanced combat & defense |
+| 14 | Hacker | Electronics & security bypass |
+| 15 | Cook | Food crafting & stamina buffs |
+| 16 | Preacher | Morale & survivor motivation |
+| 17 | Brawler | Close-quarters raw damage |
+| 18 | Trapper | Zone control & zombie slowing |
+| 19 | Drifter | Traversal speed & stealth |
+| 20 | Farmer | Resource regeneration |
+| 21 | Arsonist | Fire-based area damage |
+| 22 | Medic Veteran | Advanced surgery & revival |
+| 23 | Demolitionist | Explosives & breach combat |
+| 24 | Guard | Camp defense & perimeter control |
+| 25 | Trader | Marketplace negotiation bonus |
+| 26 | Athlete | Endurance & stamina recovery |
+| 27 | Survivalist | All-rounder wilderness skills |
+| 28 | Sharpshooter | Critical hit & precision ranged |
+| 29 | Quartermaster | Inventory & supply management |
+| 30 | Shadow | Stealth, ambush & critical initiative |
+
+---
+
+## 3. Stat Definitions
+
+| Stat | Range | Description |
+|---|---|---|
+| Strength | 1–100 | Melee damage, carry capacity |
+| Agility | 1–100 | Movement speed, initiative chance |
+| Endurance | 1–100 | HP pool, stamina recovery |
+| Intellect | 1–100 | XP gain rate, crafting efficiency |
+| Scavenging | 1–100 | Loot quality, material find rate |
+| Combat | 1–100 | Attack accuracy, critical hit chance |
+| Survival | 1–100 | Resistance to weather, hunger, injury |
+
+---
+
+## 4. Leveling Formula
+
+```
+XP Required = (Level × 100) + (Level² × 10)
+```
+
+### Breakdown Table
+
+| Level | XP Required | Total XP Accumulated |
+|---|---|---|
+| 1 | 110 | 110 |
+| 5 | 750 | 2,150 |
+| 10 | 2,000 | 7,150 |
+| 20 | 6,000 | 30,700 |
+| 30 | 12,000 | 80,700 |
+| 50 | 30,000 | 443,350 |
+| 75 | 63,750 | 1,481,600 |
+| 100 | 110,000 | 3,787,850 |
+
+### Formula Logic
+- **Early levels (1–20):** Fast progression to keep players engaged
+- **Mid levels (21–60):** Meaningful slowdown as stats mature
+- **Late levels (61–100):** Steep but achievable; mastery feels earned
+
+---
+
+## 5. Perk Unlock System
+
+Perks unlock at every **prime number level**.
+
+### Perk Unlock Levels (1–100)
+
+```
+2, 3, 5, 7, 11, 13, 17, 19, 23, 29,
+31, 37, 41, 43, 47, 53, 59, 61, 67, 71,
+73, 79, 83, 89, 97
+```
+
+**Total perk unlocks from level 1–100: 25**
+
+### Perk System Rules
+
+| Property | Value |
+|---|---|
+| Total available perks (1–100) | 25 |
+| Perk selection | Player chooses from 3 random options per unlock |
+| Perk categories | Combat, Survival, Crafting, Traversal, Social |
+| Perk stacking | Allowed up to 3 times per perk |
+| Perk reset | Allowed once per character lifetime |
+
+### Perk Unlock Frequency
+
+| Level Range | Perk Unlocks | Avg. Levels Between Unlocks |
+|---|---|---|
+| 1–20 | 8 | ~2.5 |
+| 21–50 | 9 | ~3.3 |
+| 51–100 | 8 | ~6.3 |
+
+> Early game unlocks perks frequently to establish build identity.
+> Late game unlocks are rarer, making each choice more significant.
+
+---
+
+## 6. Integration Notes
+
+### For Claude Code
+- Implement `SurvivorStats.cs` with int fields clamped to `[1, 100]`
+- Implement `LevelSystem.cs` using formula: `(level * 100) + (Mathf.Pow(level, 2) * 10)`
+- Implement `PerkSystem.cs` with prime number detection for unlock triggers
+- Implement `CharacterType.cs` as an enum with all 30 types defined
+- Use `ScriptableObject` per character type to define starting stat values
+- Fire `OnPerkUnlocked` event when level hits a prime number
+- Fire `OnLevelUp` event each time XP threshold is crossed
+- Fire `OnCharacterTypeAssigned` on survivor creation to apply type bonuses
+
+### For Claude Design
+- Stat bars display as 1–100 filled progress bars
+- Perk unlock screen appears automatically at prime number levels
+- Perk selection UI shows 3 randomized options with descriptions
+- Level progress bar shows XP toward next prime and next level separately
+- Character type selector displays all 30 types with role descriptions on creation screen
+- Each character type card shows its primary role and stat bonus preview

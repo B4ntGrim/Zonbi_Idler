@@ -1,0 +1,62 @@
+1c1
+< # Zed Idler — Document Index (updated Oct 23)
+---
+> # Zed Idler — Document Index (updated Oct 24)
+40c40,47
+< | `clock-01-slice.md` | CLOCK-01: continuous clock, "Year X, Day Y, Time" calendar (364-day years), Hide +12 game hours with a cap, Make camp to 06:00 once per real day, 24 real-hour offline cap, online/offline equivalence within 1 game minute; draft batch | **Active slice.** CL1–CL8 `[DECIDED Oct 23]`; O1–O6 open (Hide cap, rate, pre-dawn camp, calendar vs credit, injury units, HTML pages) |
+---
+> | `clock-01-slice.md` | CLOCK-01: continuous clock, "Year X, Day Y, Time" calendar (364-day years), Hide +12 game hours (2 per real day), Make camp to 06:00 of the next calendar day once per real day, 24 real-hour offline credit cap with the calendar showing the full absence, injury treatment in play time, both HTML pages | **Active batch.** CL1–CL8 `[DECIDED Oct 23]`; O1–O6 `[DECIDED Oct 24]`; issued as `CURRENT_BATCH.md` Oct 24 |
+> | `routes-preparation-implementation.md` | Solo route preparation (skills, gear, carrying space → duration, fight/avoid odds, loot cap); idle haul and XP fixes; Routes → Stockpile Gear & Loadout link. §0 decision record and `ROUTE_PREP_TABLE` | **Implemented Oct 23.** Decision record added and starting values `[DECIDED Oct 24]` |
+> | `food-01-nutrition-slice.md` | FOOD-01 nutrition and HP recovery; draft batch | Slice draft. O1, O2, O4, O5, O7–O10 `[DECIDED Oct 21]`; O3 (pacing) and O6 (Code facts) open. Copied from the claude.ai Project Oct 24 |
+> | `food-01-sim-oct21.md` | FOOD-01 design model (`food_sim.py`, `fish_sim.py`) | Evidence for FOOD-01. Copied Oct 24 |
+> | `stats-01-profession-xp-slice.md` | STATS-01 Profession XP reorder and type scale | Decisions locked Oct 20–21; Code facts (save key, UI reference size) open. Copied Oct 24 |
+> | `stock-01-stockpile-concept.md` | STOCK-01 Stockpile screen concept (Recycler · Storage · Food proposed) | Concept. **Conflict Oct 24:** code now has Recycler · Storage · Gear & Loadout (see `reports/stockpile-loadout-2026-10-23/STOCKPILE_LINK_REPORT.md`). Copied Oct 24 |
+> | `route-01-route-builder-concept.md` | ROUTE-01 route builder over Traversal (circuits, transport ladder) | Concept; after TRAV-01b and CLOCK-01. Copied Oct 24 |
+> | `slice-retreat-broken-batch-a-draft.md` | BAL-A slice: walk home and Broken (Batches A–C plan) | BAL-A LOCKED Oct 19; implemented Oct 20. Copied Oct 24 |
+45a53,81
+> | `balance-03-screening-oct17.md` | BALANCE-03 first screening (MS/EN/ST models) | Planning record. Copied from the claude.ai Project Oct 24 |
+> | `balance-03-round2-oct17.md` | Round 2: Sam's Oct 17 directions (kill-heal parts superseded Oct 21) | Planning record. Copied from the claude.ai Project Oct 24 |
+> | `balance-03-round3-oct18.md` | Round 3: active-time levers | Planning record. Copied from the claude.ai Project Oct 24 |
+> | `balance-03-round4-oct18.md` | Round 4: Option C heal-then-retreat | Planning record. Copied from the claude.ai Project Oct 24 |
+> | `balance-03-round5-oct18.md` | Round 5: what moves field time | Planning record. Copied from the claude.ai Project Oct 24 |
+> | `balance-03-round6-oct18.md` | Round 6: stress scale × pacing × refill (superseded for healing) | Planning record. Copied from the claude.ai Project Oct 24 |
+> | `balance-03-round7-plan-oct18.md` | Round 7 plan: consumable-only healing | Planning record. Copied from the claude.ai Project Oct 24 |
+> | `balance-03-round7-phaseA-oct18.md` | Round 7 Phase A: no healing items | Planning record. Copied from the claude.ai Project Oct 24 |
+> | `balance-03-round7-phaseB-proposal-oct18.md` | Round 7 Phase B: Medkit recipe proposal | Planning record. Copied from the claude.ai Project Oct 24 |
+> | `balance-03-round7-phaseB-plan-v2-oct18.md` | Round 7 Phase B plan v2: carrying, activities, materials | Planning record. Copied from the claude.ai Project Oct 24 |
+> | `balance-03-round7-phaseB-results-oct18.md` | Round 7 Phase B results and inventory policy | Planning record. Copied from the claude.ai Project Oct 24 |
+> | `balance-03-round7-phaseB2-oct18.md` | Round 7 Phase B2: travel, crafting, loot damage, skipper pouch | Planning record. Copied from the claude.ai Project Oct 24 |
+> | `balance-03-idle-source-plan-oct18.md` | Idle material source plan | Planning record. Copied from the claude.ai Project Oct 24 |
+> | `balance-03-idle-source-results-oct18.md` | Idle source results; solo Scavenging proposal | Planning record. Copied from the claude.ai Project Oct 24 |
+> | `balance-03-broken-model-oct18.md` | Broken model simulation | Planning record. Copied from the claude.ai Project Oct 24 |
+> | `balance-03-gear-progression-oct18.md` | Gear progression and repairs; policy-event finding | Planning record. Copied from the claude.ai Project Oct 24 |
+> | `balance-03-retreat-layers-oct19.md` | Walk home and layers round | Planning record. Copied from the claude.ai Project Oct 24 |
+> | `balance-03-confirmation-oct19.md` | Confirmation of Sam's Oct 19 defaults | Planning record. Copied from the claude.ai Project Oct 24 |
+> | `balance-03-round8-regen-oct21.md` | Round 8: pacing with regen; curse rerun; plan for Code's H2 rerun | Planning record. Copied from the claude.ai Project Oct 24 |
+> | `defect-camp-schedule-clock-oct18.md` | Defect DC-1: camp schedule accrues game hours from the wall clock (CLOCK-01 CL6 changes the cap to real hours) | Planning record. Copied from the claude.ai Project Oct 24 |
+> | `best1-pre-balance-03-plan.md` | BEST1 patch plan and BALANCE-03 experiment plan | Planning record. Copied from the claude.ai Project Oct 24 |
+> | `best1-implementation-report.md` | BEST1 implementation report (CLOSED Oct 17) | Planning record. Copied from the claude.ai Project Oct 24 |
+> | `post-stress-01-next-batch-recommendation.md` | Recommendation that led to BEST1 | Planning record. Copied from the claude.ai Project Oct 24 |
+> | `balance-02-early-game-findings.md` | BALANCE-02 early-game difficulty investigation | Planning record. Copied from the claude.ai Project Oct 24 |
+> | `bestiary-01-enemy-identity-findings.md` | BESTIARY-01 enemy identity and armor findings | Planning record. Copied from the claude.ai Project Oct 24 |
+> | `stress-01-stress-economy-investigation.md` | STRESS-01 stress economy investigation | Planning record. Copied from the claude.ai Project Oct 24 |
+> | `combat-balance-investigation-oct17.md` | Zombie accuracy × tier escalation | Planning record. Copied from the claude.ai Project Oct 24 |
+> | `zombie-accuracy-sim-oct17.md` | Zombie accuracy test | Planning record. Copied from the claude.ai Project Oct 24 |
+> | `h2-dry-run-report.md` | H2 step-3 dry run report (Oct 15) | Planning record. Copied from the claude.ai Project Oct 24 |
+54a91,93
+> | `food-02-cooking-concept.md` | FOOD-02 cooking: pot bonus, idle cooking, 5/day food stress cap, Legendary Lunch Pail | Until FOOD-01 closes and STOCK-01 is scheduled. Copied Oct 24 |
+> | `djinn-fishing-concept.md` | The djinn fishing secret: wish of three items, curse (Hunted + Hollow), Endured reward | Until the Water POI fishing loop ships and FOOD-01 closes. Copied Oct 24 |
+> | `ammo-12-ammunition-loadout-draft.md` | AMMO-12 team draft; Player Intent Preservation Invariant; LR1 shared loadout resolver `[DECIDED Oct 16]` | Weapons Phase 6. Copied Oct 24 |
+98a138,140
+> | `reports/stockpile-loadout-2026-10-23/` | Routes → Stockpile Gear & Loadout link: scripts, backups, tests (617/617), `STOCKPILE_LINK_REPORT.md` (written Oct 24) |
+> | `reports/docs-oct24/` | Oct 24 docs session: pre-change copies |
+> | `reports/h2-full-2026-10-24/` | Full 30-day H2 matrix (80 runs) for BAL-A closure; source snapshot and results |
+193a236,243
+> 
+> ## Oct 24: Document sync, CLOCK-01 lock, handoff rules
+> 
+> | Record | Status |
+> |---|---|
+> | 39 Project-only documents | Copied from the claude.ai Project to `reference/`, `reference/parked/` and `archive/` (`design-handoff-oct16.md`). Not copied: `claude/trav-01a-current-batch.md` (older than `archive/trav-01a-batch.md`) and `claude/best1-draft/best1-enemy-identity.test.js` (superseded by `tests/best1-enemy-identity.test.js`) |
+> | `CURRENT_BATCH.md` | CLOCK-01 (locked Oct 24). TRAV-01a contract archived as `archive/trav-01a-batch.md` |
+> | `handoff/to-cloud/` | New rule (Sam, Oct 24): every working file or script that leaves this computer for the cloud, or that Claude writes or runs here, is duplicated under `handoff/to-cloud/<date>/` with a MANIFEST. `E:\C2C` is the exchange folder with ChatGPT |
