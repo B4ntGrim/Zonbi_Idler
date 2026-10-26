@@ -191,7 +191,7 @@
 
 **Consequence:** the live progress on the TEST SAVE was overwritten when Continue was pressed and cannot be recovered from the files.
 
-**Fix direction `[PROPOSED]`, for Sam to approve before Code changes anything:** (1) Continue on the **active** file keeps live progress (write the snapshot first, or skip the restore); (2) autosave the active slot on a timer and on page hide/unload; (3) regression test: close, reopen, Continue preserves every `zi_*` key except those catch-up legitimately changes.
+**Fix `[DECIDED Oct 26, Sam]`:** (1) **Continue keeps live progress:** when the chosen file is the active file, resume from the live `zi_*` keys (write the snapshot first, or skip the restore); loading a different file still restores that file. (2) **Autosave** the active slot about every **60 s** `[DECIDED starting value]` and on page hide or unload. (3) **Regression test:** close, reopen and Continue preserve every `zi_*` key except those offline catch-up legitimately changes; catch-up then runs (24 h cap). Priority: first batch, ahead of other work. Draft contract: `pf15-save-continue-slice.md`. Until it ships: press **Save** before closing.
 
 ## PF16 — Wandering animation too simple (Sam, Oct 26) → ANIM-01
 

@@ -31,7 +31,7 @@ Make every Traversal action honest: each button has a clear effect, a limit, and
 | T13 | **Zone details panel (§3a) approved**, including select-not-hover and the Route mode toggle | `[DECIDED Oct 21]` Sam |
 | T11 | **Proposals P1–P7 accepted** (below) | `[DECIDED Oct 21]` Sam |
 | T12 | **Making camp speeds up checkpoint rest (PF4):** resting at the camp cell recovers stress at the Cot rate (30 a day instead of 20); camp rest uses camp food; the bonus applies only at the camp cell and only for rest the gate requires; the injury still needs its cure; camp rest is its own stress-relief source | `[DECIDED Oct 21]` Sam |
-| T18 | **Travel costs stamina** (stops daily walk-everything XP farming). Solo survivor gets a stamina pool; starting values `[PROPOSED]`: max 100 (+1 per Athletics level), 5 per cell, regen 10 per real hour, full on Make camp. Details in `DESIGN_HANDOFF.md` | `[DECIDED Oct 22]` Sam (concept) |
+| ~~T18~~ | ~~**Travel costs stamina**~~ **Superseded Oct 26 (Sam): dropped.** TRAV-02 is the only travel limit (no stamina meter, FOOD-01 ST1). Original: (stops daily walk-everything XP farming). Solo survivor gets a stamina pool; starting values `[PROPOSED]`: max 100 (+1 per Athletics level), 5 per cell, regen 10 per real hour, full on Make camp. Details in `DESIGN_HANDOFF.md` | `[DECIDED Oct 22]` Sam (concept) |
 | T19 | **Drifts** `[CONCEPT]` give Scout a lasting effect: zombie groups cross a row or column from a grid edge; Scout reveals drifts in its row and column; Scout XP only for a newly revealed drift. Waits on the tier-band batch and CLOCK-01 | `[CONCEPT Oct 22]` Sam |
 
 ## 2a. TRAV-02 daily movement cap and Camp Leader assignment (Oct 26)
@@ -41,9 +41,11 @@ Make every Traversal action honest: each button has a clear effect, a limit, and
 | TRAV-02 | **Square-by-square Traversal movement is capped per real day by transport,** using ROUTE-01 R3: foot 2, bike 3, electric bike 5, vehicle 8+ (starting value). Resets each real day at local midnight, like scout charges (T1) | `[DECIDED Oct 26]` | Limits travel per day by transport |
 | TRAV-02a | **Tutorial exemption:** uncapped until Fallow Ground is turned in | `[DECIDED Oct 26]` | The first Fort is 2–3 squares away; the first session must reach it, clear Fallow and return in 20–30 minutes |
 | TRAV-02b | **Forced retreat, Run Back and other emergency withdrawals never count** against the cap. Circuit travel follows the circuit rules (C1–C21) | `[DECIDED Oct 26, PM]` | A spent cap must never strand the survivor (no dead ends) |
+| TRAV-02c | **Footwear (on foot only):** sneakers +1 square a day, light, wear out fast; military boots no extra squares, but camps made while wearing them recover stress at the Bunk rate (40 a day) instead of the Cot rate (T12), and last much longer; barefoot or worn-out footwear −1 square a day. Bikes and vehicles ignore footwear | `[DECIDED Oct 26]`; values `[PROPOSED]` | Gear shapes the day without a second meter; reuses the Boots slot, durability and camp rest rates |
+| TRAV-02d | **Stacking and floor:** season modifiers (SEASON-01: summer +1, winter −1) stack with footwear; the daily cap never falls below **1 square** | `[DECIDED Oct 26]` | No dead ends |
 | CL-assign | **Camp Leader assignment:** select an available survivor, then click a Traversal cell to assign that survivor's job there. T5 unchanged: the section stays hidden in Solo | `[CONCEPT Oct 26]` | Micromanage what each survivor does for the camp |
 
-**Conflict `[OPEN]` (for Sam):** T18 (`[DECIDED Oct 22]`, concept) limits travel with a **stamina pool** (5 per cell, regen 10 per real hour). FOOD-01 ST1 (Oct 26) says there is **no separate stamina meter**, and TRAV-02 now caps travel per day. Three rules limit the same thing. Options: drop T18 in favour of TRAV-02; or keep T18 and drop TRAV-02; or make T18's cost nutrition (ST2). Recommendation: drop T18; TRAV-02 is simpler to read and test.
+**Resolved Oct 26 (evening):** T18 dropped; TRAV-02 is the only travel limit.
 
 ## 3. Proposed details (P1–P7 accepted Oct 21, T11)
 

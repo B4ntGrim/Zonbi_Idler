@@ -1,6 +1,6 @@
-# Design handoff — Oct 26 (evening)
+# Design handoff — Oct 26 (late evening)
 
-**Replaces:** the Oct 26 morning handoff, archived as `archive/design-handoff-oct26-am.md`.
+**Replaces:** the Oct 26 evening handoff, archived as `archive/design-handoff-oct26-evening.md` (morning one in `archive/design-handoff-oct26-am.md`).
 **Active batch:** `CURRENT_BATCH.md` = **CLOCK-01** (unchanged). **PF15 comes first** once Sam approves the fix direction.
 **Source:** Google Docs "Zed Idler — Code Instructions Oct 26 — Addendum 3, 4, 5, 5b, 6, 6b", applied Oct 26 evening.
 
@@ -12,13 +12,16 @@
 - **TRAV-02:** daily Traversal movement cap by transport (2 / 3 / 5 / 8+), free until Fallow Ground is turned in; emergency withdrawals never count.
 - **Codex "In development" tab:** developer-only. **ANIM-01:** richer Wandering animation (display only), after CLOCK-01 and BIOME-01. **Camp Leader assignment:** concept.
 
+- **Late evening (Addenda 7–9c):** PF15 fix approved (draft batch `pf15-save-continue-slice.md`) · T18 travel stamina dropped · footwear adjusts the movement cap on foot (sneakers +1, military boots better camps, worn-out −1), floor of 1 square · SEASON-01 (a real week per season, two bonuses and two minuses each) · biome hazards for Mountain (with mild onboarding), Suburbia and City; Perimeter proposed.
+
 ## 2. Files changed
 `food-01-nutrition-slice.md` · `parked/food-02-cooking-concept.md` · `balance-03-round8-regen-oct21.md` · `wandering-design-audit.md` · `sim-harness-v1-brief.md` · `wandering-tab-spec.md` (§14.3, §14.4) · `weapons-development-directive.md` · `wandering-fort-scene.md` (§12.2a) · `trav-01-traversal-slice.md` (§2a) · `route-01-route-builder-concept.md` (R3) · `tutorial-first-session-spec.md` (§5) · `concordance-introduction-concept.md` (§2a) · `playtest-findings-oct15.md` (PF14–PF16) · `slice-retreat-broken-batch-a-draft.md` · `00-document-index.md` · `reports/level-12/LEVEL12_REPORT.md` · `reports/docs-oct26/` (PM pre-change copies, script, report) · this file; `archive/design-handoff-oct26-am.md`.
 
 ## 3. Open questions
 **Sam (urgent):**
-- **PF15 fix direction:** approve (1) Continue on the active file keeps live progress, (2) autosave on a timer and on page hide, (3) a close-and-reopen regression test. Until fixed, press **Save** in the top bar before closing, or progress is lost on Continue.
-- **T18 vs TRAV-02 vs ST1:** three rules limit travel. Recommendation: drop T18 (travel stamina).
+- **PF15 vs CLOCK-01 order:** ship PF15 first (recommended), or close CLOCK-01's manual checks first. Until PF15 ships, press **Save** before closing.
+- **Hazard counters:** the city and Perimeter counters only drop from Concordance fights. Add basic counters for everyone (the existing NBC Gas Mask; a basic suit or anti-radiation medicine)?
+- **Debriefed Perimeter:** confirm the hazard row (radiation, corrosive storms, hazmat suit, Crystallized RMAT); recorded as proposed.
 
 **Sam (other):**
 - BAL-A closure: Broken gear, injury timer and the Solo-save T5 check, on a fresh test save after PF15; the 30-day H2 run; BAL-A scope note §4.
@@ -29,11 +32,11 @@
 - Tier-band batch: Sam's data to parse, then the slice's open decisions.
 - STOCK-01 tab set: proposed Recycler · Storage · Food vs the built Recycler · Storage · Gear & Loadout.
 - Route noise vs PF13 noise 0–4 (reuse one scale).
-- Carried: TRAV-01a 7-step smoke test; FOOD-02 C1–C6; djinn P10–P16 and curse values; RMAT as main currency beyond the Shop (Shop currency decided RMAT, Oct 25); ROUTE-01 transport sourcing; Rig pocket ratio (proposed 0.5); D2 travel stamina numbers.
+- Carried: TRAV-01a 7-step smoke test; FOOD-02 C1–C6; djinn P10–P16 and curse values; RMAT as main currency beyond the Shop (Shop currency decided RMAT, Oct 25); ROUTE-01 transport sourcing; Rig pocket ratio (proposed 0.5).
 
 **Code:** CLOCK-01 step 1 (rescaled durations); FOOD-01 O6 facts; STATS-01 save key and UI reference size; BALANCE-03 round 8 rerun; Stockpile one-second polling (mobile).
 
 **Code (read-only first):** PF15 fingerprint test and fix proposal · W-3 (salvage weights and callers, rarity tiers incl. "relic", walk/jog/run constants) · FOOD-01 O6 with ST3 · round 8 rerun (90 s base, three-meals target) · ANIM-01 current-sway report · whether the test save should have a Jester starter weapon.
 
 ## 4. Next step
-Sam approves the PF15 fix direction; Code fixes it before other batch work. Then a fresh test save for the remaining BAL-A checks.
+Issue `pf15-save-continue-slice.md` as the next batch once Sam sets its order with CLOCK-01. Sam approves the PF15 fix direction; Code fixes it before other batch work. Then a fresh test save for the remaining BAL-A checks.

@@ -68,6 +68,20 @@ These are draft ideas only. Add hazard data fields and hooks, but do not balance
 - Metropolis City, Toxic Air: slow stress build-up and health drain in dense cells. A crafted mask in the Mask slot cancels it.
 - The Debriefed Perimeter, Radiation and Corrosive Storms: radiation slowly builds up and lowers max health until treated. Storms wear down gear durability fast and push the survivor to take shelter.
 
+### Biome hazards — decisions (Sam, Oct 26 evening)
+
+The four bullets above are **superseded** by this table where they differ. Framework `[DECIDED Oct 26]`: each biome has a main hazard, a counter (gear or supplies) and an upside; hazards cost stress, HP or resources over time, never instant death; seasons (SEASON-01) may strengthen or weaken them.
+
+| Biome | Hazard | Counter | Upside | Tag |
+|---|---|---|---|---|
+| Mountain Country (tutorial biome) | **Day:** heat and humidity drain nutrition faster. **Night** (C6c, 22:00–06:00): cold costs stress or HP (replaces the draft's "stamina drain"; stamina dropped, ST1) | Day: sun hat or light clothing, carrying water or fish. Night: making camp or warm clothing | High ground: scouting reveals more | `[DECIDED Oct 26]`; values `[PROPOSED]` |
+| | **Onboarding:** the day-heat drain stays mild (or off) until Fallow Ground is turned in, like TRAV-02a | | | `[DECIDED Oct 26]` |
+| Ruined Suburbia | Picked clean and collapsing: loot searches find less; a failed search can injure (debris, glass, falling ceilings). Keeps the draft's "scouting shows safe structures" | Gloves and a helmet reduce the injury chance | Fences, sheds and garages: stealth and escapes easier | `[DECIDED Oct 26]`; values `[PROPOSED]` |
+| Metropolis City | Smoke from burning buildings costs HP over time (the draft's Toxic Air); noise draws larger zombie groups (PF13 noise 0–4) | Concordance respirator (CI14) blocks smoke; stealth and quiet weapons keep groups smaller | Richest loot: electronics and higher-tier materials | `[DECIDED Oct 26]`; values `[PROPOSED]` |
+| The Debriefed Perimeter (endgame, outer edge) | Radiation builds slowly and lowers max HP until treated. Corrosive storms come and go: gear wears fast; the survivor seeks shelter | Hazmat suit (CI14) blocks radiation; a medical item treats it. Shelter (camp or building), military boots and better camps help in storms | Only source of Crystallized RMAT (already "Perimeter-exclusive" in code) | **`[PROPOSED]` — Sam to confirm** (presented by voice Oct 26; Sam's reply covered the mountain question) |
+
+**Conflict `[OPEN]` (for Sam):** the city and Perimeter counters are Concordance gear that drops only when a survivor **defeats** a survey team (CI14/CI15: only hostile or Heinous players fight them; hazmat suit 4%). Non-hostile players would have no counter, which breaks the Hazard Counters pillar ("each hazard has a gear or consumable counter"). The code already has an **NBC Gas Mask** (`game/items.js`, Mask slot, "Required for toxic zones"). Recommendation: a craftable or findable basic counter for every hazard (gas mask for smoke; a basic protective suit or anti-radiation medicine for the Perimeter), with the Concordance items as the better versions.
+
 ## Biome loot bias \[PROPOSED\]
 
 Riskier cells give better loot, so the extra danger of traversing them pays off. These are draft ideas only. Add the data fields and hooks, but do not tune the numbers until they're approved.
