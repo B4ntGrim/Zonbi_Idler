@@ -871,7 +871,10 @@ window.SatelliteTraversalScreen = function SatelliteTraversalScreen({ setScreen,
     if (!isHereCell(cell) && !isAdjCell(cell)) { setActionResult({ tone:'warn', text:'Too far — move next to it.' }); return; }
     if (id === 'camp' && !campCooldown.available) { setActionResult({ tone:'warn', text:`Make Camp is ready in ${shortWait(campCooldown.remainingMs)}.` }); return; }
     if (id === 'hide' && hideUses.left <= 0) { setActionResult({ tone:'warn', text:`Hide is ready in ${shortWait(Math.max(0, hideUses.nextAt - ZI.clockNow()))}.` }); return; }
-    if (id === 'travel') {
+    if (id.indexOf('infiltrate-') === 0) {
+      const result = ZI.resolveInfiltration(cell, id);
+      res = { tone: result.tone || (result.ok ? 'good' : 'warn'), text: result.message };
+    } else if (id === 'travel') {
       const p = ZI.zoneFromCell(cell); setPos(p); writeJ('zi_trav_pos', p);
       ZI.clearTravReturn && ZI.clearTravReturn(); // BAL-A D1: the player's own move replaces any saved return
       const xpT = ZI.travEmitOnce('travel', ck, 'move', 2); // TRAV-01a T14: Athletics XP once per cell per real day
@@ -1016,7 +1019,7 @@ window.SatelliteTraversalScreen = function SatelliteTraversalScreen({ setScreen,
       { id:'scout',  icon:'👁', label:'Scout',     reason: far || (ts.left <= 0 ? 'No Traversal scouts left today. Refills at midnight.' : null), cost: `1 Traversal scout (${ts.left}/${ts.max} today) · ${xpNote('scout', 'Stealth')}` },
       { id:'hide',   icon:'◌', label:'Hide',      reason: far || (hideUses.left <= 0 ? `Ready in ${shortWait(Math.max(0, hideUses.nextAt - ZI.clockNow()))}.` : null), cost: `${ZI.TRAVERSAL_TABLE.hideGameHours} game hours · ${hideUses.left}/${hideUses.max} uses left · each returns after 24h · ${xpNote('hide', 'Stealth')}` },
       { id:'camp',   icon:'⛺', label:'Make Camp', reason: far || (!ZI.canCampAt(c) ? "You can't make camp here while Fallow Ground is in progress." : !campCooldown.available ? `Ready in ${shortWait(campCooldown.remainingMs)}.` : null), cost: `Until 06:00 next game day · 24h refill after use · sets your rest point · ${xpNote('camp', 'Command')}` },
-    ];
+    ].concat((ZI.infiltrationOptions ? ZI.infiltrationOptions(c) : []).map(a => ({ ...a, reason: far || a.reason })));
   };
   const panelItems = (c) => {
     if (!c) return [];
@@ -1052,6 +1055,7 @@ window.SatelliteTraversalScreen = function SatelliteTraversalScreen({ setScreen,
     const toneColor = { good:'var(--green)', warn:'var(--amber)', info:'#7fe0ff' };
     const fam = ZI.cellFamiliarity(c.gx, c.gy), chance = ZI.lootSafeChance(c), tier = c.rmatTier || 0, ts = ZI.getTravScouts();
     const start = readJ('zi_trav_start', null), seen = hideSeen[key];
+    const intel = ZI.getInfiltrationIntel && ZI.getInfiltrationIntel();
     const feats = [ZI.isFortCell(c) && '🏰 Fort', ZI.isFallowCell(c) && '🌾 Fallow Ground', camp && camp.gx === c.gx && camp.gy === c.gy && '⛺ Your camp', start && start.gx === c.gx && start.gy === c.gy && '◎ Starting zone'].filter(Boolean);
     const far = locked ? 'Locked zone.' : (!here && !adj) ? 'Too far — move next to it.' : null;
     const acts = zoneActs(c);
@@ -1075,6 +1079,7 @@ window.SatelliteTraversalScreen = function SatelliteTraversalScreen({ setScreen,
         {line('Loot', looted[key] ? 'Looted' : `${chance}% safe · 2–3 supplies, 2–${5 + 2 * tier} each`, looted[key] ? 'var(--text3)' : 'var(--text)', 'loot')}
         {line('Danger', `${ZI.THREAT_LABELS[Math.min(5, c.threatLevel || 0)]} (${c.threatLevel || 0}/5)`, (c.threatLevel || 0) > 3 ? 'var(--red2)' : 'var(--amber)', 'danger')}
         {line('Threats', seen ? `Tiers ${seen.range} (from your last Hide)` : 'Unknown — Hide here to learn', seen ? 'var(--text)' : 'var(--text3)', 'threats')}
+        {intel && intel.gx === c.gx && intel.gy === c.gy && line('Intel', `Survey team reported near ${intel.coord}`, '#7fe0ff', 'faction-intel')}
         {line('Features', feats.length ? feats.join(' · ') : 'None', 'var(--text)', 'features')}
         <div className="divider"/>
         <div style={{ display:'flex', flexDirection:'column', gap:5 }}>
