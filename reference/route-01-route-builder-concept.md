@@ -18,7 +18,7 @@
 |---|---|---|
 | R1 | **Circuit = ends next to or on its start cell.** The survivor loops it while idle | A loop never strands the survivor and repeats cleanly offline |
 | R2 | Routes follow existing movement: one cell at a time to any of the 8 neighbours; locked cells can't be added | Reuses Traversal movement (JD1a facts) |
-| R3 | **Route length by transport:** foot 2, **bike 3** `[DECIDED Oct 21]`, **electric bike 5** `[DECIDED Oct 21]` (quicker, quieter, faster), vehicle 8+ (starting value) | Each step up is a clear upgrade; values live in the data table |
+| R3 | **Route length by transport** (also the daily Traversal movement cap, TRAV-02, Oct 26; emergency withdrawals exempt): foot 2, **bike 3** `[DECIDED Oct 21]`, **electric bike 5** `[DECIDED Oct 21]` (quicker, quieter, faster), vehicle 8+ (starting value) | Each step up is a clear upgrade; values live in the data table |
 | R3a | **Electric bike is quieter:** fewer encounters on its route (starting value −25%), and it needs **charge** | Quiet is what makes it worth the step from 3 to 5 cells |
 | R3b | **The electric bike runs on a battery item.** Batteries are recharged by a **generator that burns fuel**, fuel's second job | `[DECIDED Oct 21]` Sam |
 | R4 | **Vehicles use fuel.** Fuel finally gets a job (it had none) | Systems touching each other; solves the resources-bar gap |

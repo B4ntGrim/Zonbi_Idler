@@ -169,3 +169,30 @@
 **Director's proposal `[PROPOSED]`:** actions make noise (Scout quiet, Hide silent, Travel moderate, Loot loud, Make camp loud and lasting); the zone's zombie kinds react by their traits (runners chase movement, hearing-led kinds come to noise, ambushers hit camps); outcomes reuse existing systems (Wandering fight, damage and stress, camp broken). Counterplay: Scout and Hide information, familiarity lowers pushback, Stealth lowers noise. Applies only to Traversal actions the player chooses, never to idle Wandering.
 
 **Depends on:** zones owning their zombies (tier-band batch). Designed together with TRAV-01b (familiarity is the reward side, pushback the risk side). Numbers only after a simulation audit.
+
+## PF14 — BAL-A / TRAV-01a smoke test (Sam, Oct 26, TEST SAVE, Camp Leader mode)
+
+| Check | Result |
+|---|---|
+| Walk home | **PASS.** Walked to the checkpoint, one getaway roll (14 vs 27%), haul banked, rest started on its own with the ≥ 80% gate |
+| Broken gear | **NOT RUN.** No Melee weapon on this save. `[OPEN]` Check whether this save went through the Jester and should have a starter weapon (U17/U29) |
+| Codex unlock from Wandering | **Not a defect (correction).** Fought types stayed ????, but B6 (Option B) was decided only on Oct 26 and is not built: `WANDER_SIM_TABLE.codexFromWandering` is still `false` (`game/wandering.js:315`, gate at :327). Expected until the B6 batch. Not a BAL-A blocker |
+| Codex "In development" tab | **Finding.** Shows all 60 entries (F–SS) and clicking reveals tier submenus. **Decided Oct 26:** developer-only tool, hidden in player builds behind a developer flag |
+| Scout (TRAV-01a) | **PASS.** 5 charges; "4/5 today"; repeat shows "XP already earned today" |
+| Hide (TRAV-01a) | **PASS.** Threat tiers F–E; 2 uses a rolling 24 h (CLOCK-01 O1, decided Oct 24); XP once a day |
+| Camp Leader section | **PASS in Camp Leader mode.** Re-check that it is hidden on a Solo save (T5) |
+| Injury timer | **NOT COMPLETED** (blocked by PF15) |
+
+## PF15 — Progress reverts on reopen (CRITICAL defect, Oct 26) `[CODE finding, read-only]`
+
+**What Sam saw:** after closing and reopening the TEST SAVE, the tutorial played again, no offline catch-up, the old starter kit (pouch, med kit, scout kit) sat unequipped, scout charges were full again.
+
+**Cause found (read-only, Oct 26):** the save-files screen's **▶ Continue** button calls `ZI.loadSlot` (`Zombie Idler v2.html:809, 857`), which runs `ZI._restore(snapshot)` (`game/save.js` `loadSlot`, `_restore`): it **deletes every live `zi_*` key and replaces them with the slot's stored snapshot**. That snapshot is written only when the file is created (`startNewInSlot` → `_writeSlot`) or when the player presses Save in the top bar (`saveToActiveSlot`). There is **no autosave**. So unless Save was pressed, Continue reverts the save to its creation state: fresh starter kit (Jester `onNewSave`), empty tutorial progress, full charges, empty Codex, the clock of that moment (so nothing to catch up).
+
+**Consequence:** the live progress on the TEST SAVE was overwritten when Continue was pressed and cannot be recovered from the files.
+
+**Fix direction `[PROPOSED]`, for Sam to approve before Code changes anything:** (1) Continue on the **active** file keeps live progress (write the snapshot first, or skip the restore); (2) autosave the active slot on a timer and on page hide/unload; (3) regression test: close, reopen, Continue preserves every `zi_*` key except those catch-up legitimately changes.
+
+## PF16 — Wandering animation too simple (Sam, Oct 26) → ANIM-01
+
+**ANIM-01 `[DECIDED Oct 26; details PROPOSED]`:** replace the back-and-forth sway with (1) a walk cycle by pace (walk slow, jog bouncy, run leaning), (2) event reactions (flinch, swing, burst on a kill), (3) load and state (heavy load shortens stride, low HP limps, high stress glances around), (4) resting idles (sitting, map, eating). Display only: reads shared state and events, never writes them (spec §9, FX4); watched and offline results identical; no new prompts. Order: 1 and 2 first. Slice after CLOCK-01 and BIOME-01; Code first reports read-only how the current sway is drawn.

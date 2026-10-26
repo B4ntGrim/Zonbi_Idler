@@ -62,3 +62,6 @@ Already known, to confirm and extend; nothing here is decided:
 - All equipped weapons' damage is summed into one number. Per-weapon XP needs a rule for "which weapon fought."
 - The draft's own Phase A list (§10) covers items, stacks, wear and destruction, inventory, save versioning, encounter lifecycle, escape classification, RNG streams, two-tab ownership and CB1 tests.
 - W2 adds one item: how the Combat skill gains XP today (`ACTION_XP`, `emitAction`, decay and earned floors) so a mastery sub-track can feed it.
+
+## Candidate for a later phase `[CONCEPT, PARKED]` (Sam, Oct 26)
+- **Gem socketing:** gemstones are valuable and light (real-world weight, W-1) and may later be socketed into weapons. Not scheduled; take up in a later weapons phase after the conflict check (§3).

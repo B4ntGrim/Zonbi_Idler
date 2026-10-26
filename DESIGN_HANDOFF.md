@@ -1,37 +1,31 @@
-# Design handoff — Oct 26
+# Design handoff — Oct 26 (evening)
 
-**Replaces:** the Oct 25–26 handoff, archived as `archive/design-handoff-oct25-26.md` (its decisions stay recorded in the documents; open items carried below).
-**Active batch:** `CURRENT_BATCH.md` = **CLOCK-01** (unchanged).
-**Source:** Google Docs "Zed Idler — Code Instructions Oct 26", "… Addendum" and "… Addendum 2", applied Oct 26 afternoon.
+**Replaces:** the Oct 26 morning handoff, archived as `archive/design-handoff-oct26-am.md`.
+**Active batch:** `CURRENT_BATCH.md` = **CLOCK-01** (unchanged). **PF15 comes first** once Sam approves the fix direction.
+**Source:** Google Docs "Zed Idler — Code Instructions Oct 26 — Addendum 3, 4, 5, 5b, 6, 6b", applied Oct 26 evening.
 
-## 1. Decisions made (Sam, Oct 26)
-- **BAL-A B1–B6** (`slice-retreat-broken-batch-a-draft.md` §3b): Downings per km is the main target, field time ≥ about 50% as guardrail · rule 5 closed · raise T0 durability for an 8 h absence (later batch) · automatic repair `[PARKED]` · Broken mild for now · Codex Option B (BEST1 dependency met).
-- **FOOD-01 F1–F18, O3a/O3c, ST1–ST2** (`food-01-nutrition-slice.md` §3b): top bar shows real values · auto-eat lowest value first, comfort food above stress 70, Shop unlock for variety first · fruit values and Foraging unlocks (5 / 10 / 12) as variants of existing encounters · comfort food (raisins −3, oranges −2, cola −5) · empty cans, background finds, the last can at 0.02% once per save · hidden "number one" achievement (waits on FOOD-02) · one healing path · five food groups (concept) · Well Nourished buff and icon · lunch bag 6 / pack 12 / cooler 28 meals · 60 s encounter pacing with familiarity scaling · stamina is the hunger state's combat effect (no separate meter). F6 parked. NB1 layered bar `[PROPOSED]` until Sam sees the mock-up.
-- **MS1–MS2:** Fallow Ground turn-in is the first milestone; one-time chapter card "Chapter One: Fallow Ground". Sealed Crate beat kept; the elder is not the Elder Jester; name open. MS3 proposed.
-- **Concordance CI1–CI13** (`concordance-introduction-concept.md`).
-- Earlier today (already applied): circuit decisions C10–C21.
+## 1. Decisions made (Sam, Oct 26 afternoon)
+- **Conflicts settled:** encounter pacing base **90 s** (familiarity 60 / 90 / 135 s) · food comfort cap stays **5 per real day** · Well Nourished counts per **real day** · target **about three meals a real day** (mechanics open) · background finds **one per 90 s** · character XP **banks on every return**, watched or away · MS3 uses a **Fallow-clear proxy**, H2 scope unchanged.
+- **Weight:** W-1 real-world weights per item type; rarity never changes weight (supersedes value-driven salvage weight). W-2 load above 50% of capacity slows movement by pace (walk −1%, jog −1.5%, run −2% per kg, proposed). Gem socketing parked for weapons.
+- **Concordance CI14–CI18:** drop table (respirator 12%, sample case 7%, hazmat suit 4%, dart gun 1.5%, field scanner 0.5%; no pity counter) · repeat survey teams · frequency by distance (≈6 / 2 / 1 a day) · sample case +25% medical finds · identity (infection research; cure in public, control in private).
+- **Fort:** the elder is **Elder Jerry**; dialogue tree (first draft) in Fort brief §12.2a.
+- **TRAV-02:** daily Traversal movement cap by transport (2 / 3 / 5 / 8+), free until Fallow Ground is turned in; emergency withdrawals never count.
+- **Codex "In development" tab:** developer-only. **ANIM-01:** richer Wandering animation (display only), after CLOCK-01 and BIOME-01. **Camp Leader assignment:** concept.
 
 ## 2. Files changed
-- `reference/slice-retreat-broken-batch-a-draft.md` (§3b) · `reference/food-01-nutrition-slice.md` (§3b, P6, §4) · `reference/parked/food-02-cooking-concept.md` (§1b) · `reference/wandering-tab-spec.md` (§2.3 note, 13.4, 13.8, 14.1) · `reference/wandering-fort-scene.md` (§12.2) · `reference/tutorial-first-session-spec.md` (Beat 8) · `reference/sim-harness-v1-brief.md` (§12) · `reference/wandering-design-audit.md` (§6) · `reference/balance-03-round8-regen-oct21.md` (§6) · new `reference/concordance-introduction-concept.md` · `reference/00-document-index.md`.
-- `reports/level-12/LEVEL12_REPORT.md` (new) · `reports/docs-oct26/` (pre-change copies, scripts, report) · this file; `archive/design-handoff-oct25-26.md`.
+`food-01-nutrition-slice.md` · `parked/food-02-cooking-concept.md` · `balance-03-round8-regen-oct21.md` · `wandering-design-audit.md` · `sim-harness-v1-brief.md` · `wandering-tab-spec.md` (§14.3, §14.4) · `weapons-development-directive.md` · `wandering-fort-scene.md` (§12.2a) · `trav-01-traversal-slice.md` (§2a) · `route-01-route-builder-concept.md` (R3) · `tutorial-first-session-spec.md` (§5) · `concordance-introduction-concept.md` (§2a) · `playtest-findings-oct15.md` (PF14–PF16) · `slice-retreat-broken-batch-a-draft.md` · `00-document-index.md` · `reports/level-12/LEVEL12_REPORT.md` · `reports/docs-oct26/` (PM pre-change copies, script, report) · this file; `archive/design-handoff-oct26-am.md`.
 
 ## 3. Open questions
-**Sam — conflicts found while applying (Oct 26):**
-- **Pacing O3a:** 60 s chosen; round 8 recommended 90 s because 60 s gives about 21–24% steady-state field time, under the band. Keep 60 s for the rerun, or move the base to 90 s?
-- **F5 food stress cap:** −10 per day (Oct 26) vs **5 per real day** decided and audited Oct 21 (FOOD-02 §1a, §2b; the Lunch Pail raises it to 8). Which stands?
-- **F15 day unit:** a game day is 24 real minutes, so "3 food groups in one game day" is unreachable at about 11 meals a real day. Use a real day (or rolling 24 real hours)?
-- **F11 find rate:** one per 10 game minutes = one per 10 real seconds, about 8,600 metal and XP grants a real day. Pick a rarer rate in the economy audit.
-- **MS3:** H2 excludes Fort scenes (D3), so it can't see the milestone without a scope change or a proxy.
-- **Level-12:** character XP banks only from the Downed overlay button (`screens-v3.jsx:2736`). Decide where it should bank (recommended: every return and offline settlement). See `reports/level-12/LEVEL12_REPORT.md`.
+**Sam (urgent):**
+- **PF15 fix direction:** approve (1) Continue on the active file keeps live progress, (2) autosave on a timer and on page hide, (3) a close-and-reopen regression test. Until fixed, press **Save** in the top bar before closing, or progress is lost on Continue.
+- **T18 vs TRAV-02 vs ST1:** three rules limit travel. Recommendation: drop T18 (travel stamina).
 
-**Sam — other open:**
-- BAL-A closure: TEST SAVE smoke test (reminder 6 PM today); the 30-day H2 run; review of the BAL-A report scope note §4. Audit notes in BAL-A §3b (Broken release about 58% forced; injury parity exception).
-- NB1 nutrition bar: see the mock-up, then lock.
-- Elder's name; Concordance CI4 modifiers, scene text, CI6 gear item.
-- Circuit questions 15–24; C21 depends on FOOD-01 auto-eat.
-- Fish rarity split (80 / 17 / 3, proposed).
-
-**Carried from earlier handoffs (Sam):**
+**Sam (other):**
+- BAL-A closure: Broken gear, injury timer and the Solo-save T5 check, on a fresh test save after PF15; the 30-day H2 run; BAL-A scope note §4.
+- Codex unlocks from Wandering need the B6 batch (`codexFromWandering = true`); the smoke-test "fail" was expected.
+- Meals-target mechanics (after the round 8 rerun); then resize the food containers.
+- NB1 nutrition bar mock-up; CI14 item stats and weights; Concordance CI4 modifiers and scene text.
+- Circuit questions 15–24; C21 depends on FOOD-01 auto-eat; fish rarity split.
 - Tier-band batch: Sam's data to parse, then the slice's open decisions.
 - STOCK-01 tab set: proposed Recycler · Storage · Food vs the built Recycler · Storage · Gear & Loadout.
 - Route noise vs PF13 noise 0–4 (reuse one scale).
@@ -39,5 +33,7 @@
 
 **Code:** CLOCK-01 step 1 (rescaled durations); FOOD-01 O6 facts; STATS-01 save key and UI reference size; BALANCE-03 round 8 rerun; Stockpile one-second polling (mobile).
 
+**Code (read-only first):** PF15 fingerprint test and fix proposal · W-3 (salvage weights and callers, rarity tiers incl. "relic", walk/jog/run constants) · FOOD-01 O6 with ST3 · round 8 rerun (90 s base, three-meals target) · ANIM-01 current-sway report · whether the test save should have a Jester starter weapon.
+
 ## 4. Next step
-Sam settles the four conflicts above (pacing, food cap, day unit, find rate), runs the smoke test, then the 30-day H2 run closes BAL-A. Code's next read-only items: FOOD-01 O6 (with ST3) and the round 8 rerun with the Oct 26 inputs.
+Sam approves the PF15 fix direction; Code fixes it before other batch work. Then a fresh test save for the remaining BAL-A checks.

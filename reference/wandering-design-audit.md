@@ -83,5 +83,5 @@ Still open from Section 2: A to E, the returned med kit, and the story beat choi
 |---|---|---|
 | CI11 Diplomat tiers for the Concordance crate | low < 10, mid 10–19, high 20+; Criminal +5 per tier | Sam asked to keep it open for playtest |
 | F12 Scavenging XP per background find | `[OPEN]` | Frequent finds could inflate Scavenging and stop its decay |
-| F11 background find rate | proposed one per 10 game minutes (= 10 real seconds) | Six times the encounter rate; about 8,600 metal a real day of Wandering |
-| O3a pacing | 60 s (round 8 recommended 90 s) | Steady-state field time at 60 s is under the band |
+| F11 background find rate | about one per 90 s (decided Oct 26 PM) | Check metal and Scavenging XP per real day (about 960 finds) |
+| O3a pacing | 90 s base (decided Oct 26 PM; familiarity 60 / 90 / 135 s) | Confirm with the round 8 rerun |

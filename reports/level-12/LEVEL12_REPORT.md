@@ -17,3 +17,5 @@ No code was changed.
 
 ## 4. Decision for Sam
 Where should character XP be banked? Options: (a) on every return, retreat and offline settlement, through the XP bus (`ZI.emitAction`); (b) continuously as earned. Recommendation: (a), so watched and offline play bank the same way (parity, H1). Code fix goes in a batch after Sam decides.
+
+**Decided Oct 26 (PM), Sam:** character XP is banked automatically on every return from a run (retreat, forced retreat, Downed and offline settlement), the same watched or away, through the XP bus. Code fix goes in a batch.

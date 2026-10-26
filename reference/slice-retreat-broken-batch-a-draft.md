@@ -128,6 +128,8 @@ The slice turns those results into rules, in **three batches** (Sam, Oct 19):
 
 **Still needed to close BAL-A:** Sam's TEST SAVE smoke test; the 30-day H2 run; Sam's review of the BAL-A report scope note §4.
 
+**Smoke test, Oct 26 (PF14):** walk home PASS; Broken gear and the injury timer not run; the Codex result is not a BAL-A defect (B6 isn't built yet). The run was stopped by PF15, a critical save defect (Continue reverts progress). **BAL-A stays NOT CLOSED** until PF15 is fixed and the remaining checks run on a fresh test save.
+
 **Audit notes (Oct 26, for Sam):**
 - Broken release at 1 in 6 per rest means about 58% of Broken spells end in the forced release (with 5–10% durability loss). Check that against B5 "mild" in the playtest.
 - The injury timer's online/offline difference (O5/O6) is the one named parity exception. The 30-day run must treat it as such, or the comparison fails.

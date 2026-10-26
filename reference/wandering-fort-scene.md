@@ -322,7 +322,7 @@ Before the Factions page opens, NPCs from locked factions appear as **unnamed gr
 
 **Confirmed:** the quest is named **Fallow Ground** · a survivor turned away without an offering stays locked out of the Factions page until they return and succeed, with the diplomat and command checks as the way in · gear wear, stress, injury size and healing time will be tuned by playtesting · the Camp Leader version of the Fort is parked for later.
 
-**Remaining (content work):** write the full dialogue tree for the gate, the elder and the quest turn-in; write the story beat that follows the turn-in; design the event that introduces the Concordance.
+**Remaining (content work):** ~~write the full dialogue tree for the gate, the elder and the quest turn-in; write the story beat that follows the turn-in; design the event that introduces the Concordance.~~ All three done Oct 26: dialogue tree §12.2a, Sealed Crate §12.2, Concordance `concordance-introduction-concept.md`.
 
 ---
 
@@ -375,10 +375,36 @@ ELDER: "That mark is not ours. Somebody built this. Find out who."
 - **B. The Escort.** The elder asks the survivor to escort a trader to the Lodge. Introduces the neutral broker first; slower link to the Concordance.
 - **C. The Patrol.** An Iron March patrol arrives at the gate as the survivor turns in the quest. Raises the stakes at once, but introduces a third faction before the second.
 
-~~`[OPEN]` Which beat, and the elder's name.~~ **Oct 26 (Sam):** keep "The Sealed Crate" as drafted `[DECIDED Oct 26]`. The elder and the Elder Jester are different people; **the elder's name stays `[OPEN]`**.
+~~`[OPEN]` Which beat, and the elder's name.~~ **Oct 26 (Sam):** keep "The Sealed Crate" as drafted `[DECIDED Oct 26]`. The elder and the Elder Jester are different people; **the elder is Elder Jerry** `[DECIDED Oct 26, PM]` (closes the name item).
 - **MS1 `[DECIDED Oct 26]`:** turning in Fallow Ground is the first story milestone.
 - **MS2 `[DECIDED Oct 26]`:** after the turn-in, a chapter card shows once: title "Chapter One: Fallow Ground", 2–3 story lines from this beat, a summary (days survived, cells cleared, kills, policy), the hook line, a Continue button. The survivor keeps working behind it; it closes itself after a timer `[PROPOSED 20 s]`. *Why:* the one moment that earns the player's attention (rules §4.5).
 - Step 5's "Concordance introduction event" is now designed as a concept: `concordance-introduction-concept.md` (CI1–CI13, Oct 26).
+
+### 12.2a Dialogue tree `[DECIDED Oct 26, Sam; first-draft text, may be polished]`
+
+Text lives in data (terminal style, original). The elder is **Elder Jerry**.
+
+**1. Gate**
+- Guard opening: "Far enough. Nobody comes past the pikes without a reason. What do you have that we want?"
+- Offer med kit: "Medicine. That's worth more than gold out here. Wait here." (offering terms, §12.1)
+- Diplomat pass: "You talk like someone who's bargained before. Fine. The elder decides." Fail: "Words are cheap. Come back with something real."
+- Command pass: "You've got nerve. Jerry might like that." Fail: "Don't push me, stranger."
+- Leave: "Smart."
+- Attack: confirmation "This cannot be undone. The Hearthguard will be hostile."
+
+**2. Meeting Jerry**
+- Offering terms: "So you're the one with the medicine. I'm Jerry. I keep this place fed. There's a field south of here, Fallow Ground, crawling with the dead. Clear it and you've got a seat at our table."
+- Harder terms (check): "You talked your way in. Talk's fine, but work's better. Clear the south field, and clear it well."
+- Accept: "Good. Come back when it's done. We'll know."
+- Decline: "Your choice. The gate opens again when you're ready." The quest stays available (no dead end).
+
+**3. Turn-in:** the §12.2 Sealed Crate beat, with Jerry. Closing line: "That mark is not ours. Somebody built this. Find out who."
+
+**4. Refusals and the hostile path**
+- Return after being turned away: "You again. Pockets still empty?"
+- Heinous, later visit: "We've heard what you are. Turn around before the pikes find you." No quest.
+- Successful attack: a horn sounds. Jerry from the tower: "He had a daughter. Remember that, when you come asking for anything." Heinous unlocks; Hearthguard Hostile (§10.4).
+- Failed attack: "We don't kill strangers. Don't make that our rule." The survivor is driven off wounded (§11.3, §12.6 #3).
 
 ### 12.3 Extra gear wear near the Fort after an attack
 

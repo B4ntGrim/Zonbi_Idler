@@ -240,4 +240,4 @@ Each is documented here only; none is implemented in this slice. Each needs Sam'
 
 Report per run whether MS1 (turning in Fallow Ground) is reached, game days to reach it, and Downings and retreats before it. A run that never reaches it is flagged as a possible dead end.
 
-**Conflict `[OPEN]`:** H2 scope (D3) excludes Fort scenes ("No Fallow Ground quest"). MS3 needs a scope change, or a proxy such as "cells cleared and distance at which the Fallow Ground goal would be met". Sam to choose when the next harness batch is drafted.
+**Proxy `[DECIDED Oct 26, PM]`:** H2 scope D3 stays unchanged (no Fort scenes). MS3 reports whether the survivor becomes strong enough to clear the Fallow Ground cell (its clear target) and game days to get there. The real turn-in is tested with players.

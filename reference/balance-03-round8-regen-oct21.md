@@ -69,7 +69,7 @@ Steady state (days 3–7, after the first day's fresh stress budget is spent): 6
 - **Scouting (added Oct 21):** report the real base discovery chance and scouts per day, then the cursed-scouting loss with the decided guards (fade 20 / 10 / 5, floor 80%, story/quest/Fort exempt). Code's real base chance **replaces** the 30 / 50 / 70% test values in `scout_sim.py`.
 - **Then:** the curse on days 3–5 at the best pacing, with the decided "Endured" reward (about 3,600 at full course), and report net Endurance XP over the curse against uncursed.
 - **Stop and report** if any decided rule can't be modelled in memory.
-- **Oct 26 inputs (FOOD-01 O3a–O3c):** Sam set a 60 s base with familiarity scaling (about 40 / 60 / 90 s) as the starting value. Include 60 s and 90 s bases in the grid, report steady-state days 3–7 separately, and report Downings per km (B1, the main target) and rations per day (for F18 container sizes).
+- **Oct 26 inputs (FOOD-01 O3a–O3c):** Sam set a 60 s base, then **moved it to 90 s (Oct 26 PM)** with familiarity scaling about 60 / 90 / 135 s. Also report what food mechanics reach about three meals a real day (meals target). Include 60 s and 90 s bases in the grid, report steady-state days 3–7 separately, and report Downings per km (B1, the main target) and rations per day (for F18 container sizes).
 
 ## 7. Reflection: improving Endurance XP and "deprivation gains" (for the Endurance slice)
 

@@ -34,6 +34,17 @@ Make every Traversal action honest: each button has a clear effect, a limit, and
 | T18 | **Travel costs stamina** (stops daily walk-everything XP farming). Solo survivor gets a stamina pool; starting values `[PROPOSED]`: max 100 (+1 per Athletics level), 5 per cell, regen 10 per real hour, full on Make camp. Details in `DESIGN_HANDOFF.md` | `[DECIDED Oct 22]` Sam (concept) |
 | T19 | **Drifts** `[CONCEPT]` give Scout a lasting effect: zombie groups cross a row or column from a grid edge; Scout reveals drifts in its row and column; Scout XP only for a newly revealed drift. Waits on the tier-band batch and CLOCK-01 | `[CONCEPT Oct 22]` Sam |
 
+## 2a. TRAV-02 daily movement cap and Camp Leader assignment (Oct 26)
+
+| # | Rule | Tag | Why |
+|---|---|---|---|
+| TRAV-02 | **Square-by-square Traversal movement is capped per real day by transport,** using ROUTE-01 R3: foot 2, bike 3, electric bike 5, vehicle 8+ (starting value). Resets each real day at local midnight, like scout charges (T1) | `[DECIDED Oct 26]` | Limits travel per day by transport |
+| TRAV-02a | **Tutorial exemption:** uncapped until Fallow Ground is turned in | `[DECIDED Oct 26]` | The first Fort is 2–3 squares away; the first session must reach it, clear Fallow and return in 20–30 minutes |
+| TRAV-02b | **Forced retreat, Run Back and other emergency withdrawals never count** against the cap. Circuit travel follows the circuit rules (C1–C21) | `[DECIDED Oct 26, PM]` | A spent cap must never strand the survivor (no dead ends) |
+| CL-assign | **Camp Leader assignment:** select an available survivor, then click a Traversal cell to assign that survivor's job there. T5 unchanged: the section stays hidden in Solo | `[CONCEPT Oct 26]` | Micromanage what each survivor does for the camp |
+
+**Conflict `[OPEN]` (for Sam):** T18 (`[DECIDED Oct 22]`, concept) limits travel with a **stamina pool** (5 per cell, regen 10 per real hour). FOOD-01 ST1 (Oct 26) says there is **no separate stamina meter**, and TRAV-02 now caps travel per day. Three rules limit the same thing. Options: drop T18 in favour of TRAV-02; or keep T18 and drop TRAV-02; or make T18's cost nutrition (ST2). Recommendation: drop T18; TRAV-02 is simpler to read and test.
+
 ## 3. Proposed details (P1–P7 accepted Oct 21, T11)
 
 | # | Detail | Why |

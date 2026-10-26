@@ -657,7 +657,7 @@ Base weight capacity with no carriers: **15 kg** `[PROPOSED]`. A rucksack brings
 
 ### 14.3 Item sizes `[PROPOSED]`
 
-> **Batch 3A `[DECIDED Oct 5]`:** Haul entry — 0 pockets; weight from the canonical salvage-weight helper shared with the Recycler (`ZI.salvageWeight`), stored on the entry at pickup. Side effect accepted: valuable entries are heavy.
+> **Batch 3A `[DECIDED Oct 5]`:** Haul entry — 0 pockets; weight from the canonical salvage-weight helper shared with the Recycler (`ZI.salvageWeight`), stored on the entry at pickup. Side effect accepted: valuable entries are heavy. **Superseded Oct 26 (W-1, Sam):** every item has its own real-world weight per item type in the data table (e.g. aluminium can about 0.02 kg, gemstone about 0.05 kg `[PROPOSED]`); rarity never changes weight. Code reports current `ZI.salvageWeight` values and callers first (W-3).
 
 | Item | Pockets |
 |---|---|
@@ -674,6 +674,7 @@ Base weight capacity with no carriers: **15 kg** `[PROPOSED]`. A rucksack brings
 > **Batch 3A `[DECIDED Oct 5]` — replaces the overload paragraph below:**
 > - A pickup is allowed when the resulting load is ≤ 125% of capacity, refused if it would exceed 125%. Entries are picked up whole or not at all. Refused loot is left behind, logged once, and reported as `left behind (too heavy)` (one grouped row with a count).
 > - Movement: ×1.00 up to 100%, linear to ×0.75 at 125% (110% → ×0.90, 120% → ×0.80). Above 125% without a pickup, movement stays clamped at ×0.75.
+> - **Oct 26 (W-2, Sam) `[DECIDED]`, values `[PROPOSED]`:** load up to 50% of capacity costs no speed; above that each extra kg slows movement by pace (walk −1%, jog −1.5%, run −2% per kg). The 125% pickup limit stays. `[OPEN]` How W-2 replaces or combines with the line above: Code reports the walk/jog/run constants first (W-3).
 > - Stress: while load is strictly above 100%, positive stress gains are ×1.15. Recovery, negative changes and the Breaking reset are not multiplied. Overload is a load rule, not a policy multiplier. It never triggers a Forced Retreat and does not change its consequence.
 
 - Extra heal and scout charges come from kits carried in pockets, so charges compete with other items for space.

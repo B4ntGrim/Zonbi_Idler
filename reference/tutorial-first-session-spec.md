@@ -137,6 +137,8 @@ The player should now have: chosen a policy, met a discovery prompt, seen a retu
 
 ## 5. Fort placement rule `[DECIDED concept, PROPOSED specifics]`
 
+> **Oct 26 (TRAV-02a) `[DECIDED]`:** the daily Traversal movement cap does not apply until Fallow Ground is turned in, so the first session can reach the Fort, clear Fallow Ground and return.
+
 - The start position is random per world (`[CODE]` "Every outbreak drops you somewhere new").
 - The first Fort is placed **inside the starting map view**, **2 to 3 cells** (Chebyshev distance) from the start, on an unlocked Traversal square with **at least one unlocked neighbour** for the Fallow cell, chosen deterministically from the world seed `[DECIDED Oct 1]`. Claude Design reports the start view size so the rule fits it.
 - It must be reachable without passing a locked or contested cell. If the offset lands on a locked cell, choose the nearest valid cell and record it in the save.

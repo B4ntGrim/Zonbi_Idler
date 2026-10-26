@@ -30,7 +30,7 @@ Recorded in `food-01-nutrition-slice.md` §3b; listed here so this slice picks t
 - **F13** dishes beat ingredients through nutrition plus a bonus (e.g. raw potato about 5; steak and potatoes about 35 plus comfort or a short buff) `[PROPOSED]`. Fits C6.
 - **F14** food-group numbers are set in this slice.
 - **F17** the variety-first auto-eat Shop unlock sits beside "Cook greatest to least".
-- **Conflict `[OPEN]`:** F5 (Oct 26) says food comfort is capped at −10 a day; §1a decided 5 per real day (audited in §2b). Sam to confirm which stands.
+- **Resolved Oct 26 (PM):** the food comfort cap stays **5 per real day** (§1a); F5's −10 wording is superseded.
 
 ## 2. Proposed rules `[PROPOSED]`
 
