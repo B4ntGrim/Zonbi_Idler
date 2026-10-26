@@ -62,6 +62,7 @@ ZI.NODE_META = {
     r.hasVehicle  = r.nodes.some(n => ZI.routeNodeType(n) === 'vehicle');
     r.vehicleWear = r.hasVehicle ? Math.round(8 + r.risk * 4) : 0; // % condition loss
     r.staminaCost = r.duration * 8;
+    r.duration /= 10; // CLOCK-01 T9: preserve each route's real duration at the slower game clock.
   });
 })();
 
@@ -207,7 +208,7 @@ ZI.getRoutePreparation=function(route,threatLevel){
   const travelMultiplier=clamp((1+loadRatio*T.loadTravelPenalty)/
     (Math.max(10,gear.speed)/100)/(1+(skills.athletics-1)*T.athleticsTravelPerLevel),
     T.minTravelMultiplier,T.maxTravelMultiplier);
-  const durationHours=Math.max(1,route.duration||1)*travelMultiplier;
+  const durationHours=Math.max(0.1,route.duration||0.1)*travelMultiplier;
   const freeKg=Math.max(0,carry.hardLimitKg-carry.rawLoadKg);
   const maxLoot=ZI.routeLootCapacity(freeKg);
   return {
@@ -272,7 +273,7 @@ ZI.resolvePreparedRouteNodes=function(route,mode,preparation){
 
 // ─── LIVE ROUTE RUNS (continuous progress along the node chain) ──────────────
 // A route run takes route.duration in-game hours, on the shared game clock (game/core.js):
-// 1 in-game hour = ZI.REAL_MS_PER_GAME_HOUR (6 real seconds).
+// 1 in-game hour = ZI.REAL_MS_PER_GAME_HOUR (60 real seconds).
 ZI.ROUTE_RUN_KEY = 'zi_route_runs';
 ZI.GAME_HOUR_MS = ZI.REAL_MS_PER_GAME_HOUR;
 ZI._readRouteRuns = function() {
@@ -284,7 +285,7 @@ ZI.startRouteRun = function(route, squadIds, mode, threatLevel, autoRepeat) {
   const preparation = ZI.routeUsesSoloPreparation(squadIds) ? ZI.getRoutePreparation(route, threatLevel) : null;
   if (preparation && !preparation.canDeploy) return { ok: false, reason: preparation.blockedReason };
   const runs = ZI._readRouteRuns();
-  runs[route.id] = { startedAt: Date.now(), durationMs: preparation ? preparation.durationMs : Math.max(1, route.duration) * ZI.GAME_HOUR_MS,
+  runs[route.id] = { startedAt: ZI.clockNow(), durationMs: preparation ? preparation.durationMs : Math.max(0.1, route.duration) * ZI.GAME_HOUR_MS,
     squadIds: (squadIds || []).slice(), mode, threatLevel: threatLevel || 0, autoRepeat: !!autoRepeat, preparation };
   ZI._saveRouteRuns(runs);
   return { ok: true, preparation };
@@ -295,13 +296,17 @@ ZI.setRouteRunRepeat = function(routeId, on) {
 };
 // Settle-on-read: finished runs resolve into Last Run; auto-repeat restarts them
 // from their finish time so offline repeats chain correctly.
-ZI.settleRouteRuns = function() {
-  const runs = ZI._readRouteRuns(); const now = Date.now(); let changed = false;
+ZI.settleRouteRuns = function(offlineWindow) {
+  const runs = ZI._readRouteRuns(); const now = offlineWindow ? offlineWindow.to : ZI.clockNow(); let changed = false;
   Object.entries(runs).forEach(([id, r]) => {
     const route = (ZI.ROUTES || []).find(x => x.id === id);
     if (!route) { delete runs[id]; changed = true; return; }
+    // Bound by the actual number due, rather than silently stopping after 50.
+    // The shared load window already caps the credited absence at 24 real hours.
+    if (!(r.durationMs > 0) || !Number.isFinite(r.durationMs) || !Number.isFinite(r.startedAt)) { delete runs[id]; changed = true; return; }
+    const due = Math.max(0, Math.floor((now - r.startedAt) / r.durationMs));
     let guard = 0;
-    while (runs[id] && now >= runs[id].startedAt + runs[id].durationMs && guard < 50) {
+    while (runs[id] && now >= runs[id].startedAt + runs[id].durationMs && guard < due) {
       guard++; changed = true;
       const done = runs[id];
       const endAt = done.startedAt + done.durationMs;
@@ -311,6 +316,9 @@ ZI.settleRouteRuns = function() {
       else delete runs[id];
     }
   });
+  if (offlineWindow && offlineWindow.discardedMs > 0) {
+    Object.values(runs).forEach(r => { if (Number.isFinite(r.startedAt)) { r.startedAt += offlineWindow.discardedMs; changed = true; } });
+  }
   if (changed) ZI._saveRouteRuns(runs);
   return runs;
 };
@@ -318,7 +326,7 @@ ZI.settleRouteRuns = function() {
 ZI.routeRunProgress = function(routeId) {
   const r = ZI.settleRouteRuns()[routeId];
   if (!r) return null;
-  const elapsed = Math.max(0, Date.now() - r.startedAt);
+  const elapsed = Math.max(0, ZI.clockNow() - r.startedAt);
   return { pct: Math.min(1, elapsed / r.durationMs), remainingMs: Math.max(0, r.durationMs - elapsed),
     elapsedMs: elapsed, durationMs: r.durationMs, autoRepeat: r.autoRepeat, mode: r.mode, preparation: r.preparation || null };
 };
@@ -397,7 +405,7 @@ ZI.completeRun = function(route, squadIds, mode, threatLevel, preparation) {
     nodes: route.nodes.slice(), squadIds: (squadIds || []).slice(), mode,
     time: hrs >= 1 ? `${Math.round(hrs * 10) / 10}h` : `${Math.round(hrs * 60)}m`,
     loot: r.loot, vehicleWear: r.vehicleWear, losses: r.losses,
-    log: r.log, preparation: r.preparation || null, outcomes: r.outcomes || null, claimed: false, at: Date.now(),
+    log: r.log, preparation: r.preparation || null, outcomes: r.outcomes || null, claimed: false, at: ZI.buffMoment(),
     unclaimedHauls: pending.hauls.concat([{ name: `${route.name} haul`, value: r.loot, rarity: 'Common' }]),
   };
   ZI.setLastRun(summary);

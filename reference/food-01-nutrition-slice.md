@@ -54,7 +54,7 @@ Give food a job. HP recovery in the field costs nutrition, and a free auto-eat p
 | P3 | **Out-of-combat recovery**, set as time to full HP (starting value 60 s) | Stays correct if max HP grows later |
 | P4 | **No in-combat recovery** in this slice | Fights stay dangerous; the model shows it only lengthens runs and costs more food |
 | P5 | Three states: **Fed ≥ 40 · Hungry 1–39 · Starving 0**. Recovery ×1 · ×0.5 · ×0.1 | Starving is slow, never zero, so a Downed survivor always recovers (no dead end) |
-| P6 | **Basic auto-eat, free and on by default.** Below the threshold, the survivor eats from the Food slot | The policy decides; nothing waits on the player |
+| P6 | **Basic auto-eat, free and on by default.** Below the threshold, the survivor eats from the Food slot (order and containers: F2, F5, F17, F18, Oct 26) | The policy decides; nothing waits on the player |
 | P7 | Walking drains a small amount of nutrition per field hour | Food matters even on quiet runs |
 | P8 | Shop items sell **efficiency only** (eat while walking, auto-forage), never basic auto-eat or food | Business-model rule 5.1 |
 
@@ -81,12 +81,61 @@ Give food a job. HP recovery in the field costs nutrition, and a free auto-eat p
 
 ---
 
+## 3b. Decisions (Sam, Oct 26)
+
+Recorded from Sam's voice sessions of Oct 26 (instruction docs "Zed Idler — Code Instructions Oct 26", Addendum and Addendum 2). Values are starting values unless marked otherwise.
+
+### Top bar, auto-eat and fruit
+| # | Rule | Tag | Why |
+|---|---|---|---|
+| F1 | **Top bar:** Nutrition shows this slice's meter (0–100) with Fed / Hungry / Starving; Medicine shows heal charges (kit + base). Any bar value with no system is hidden until one uses it. Display form: NB1 | `[DECIDED Oct 26]` | The bar must not show dead numbers |
+| F2 | **Auto-eat eats the lowest-value food first.** The policy text says so; each meal is logged; a low-food warning shows on the Nutrition bar under 2 meals left. Nothing waits on the player | `[DECIDED Oct 26]` | Saves the good food; fair warning without a prompt |
+| F3 | **Fruit nutrition:** apple 8, orange 8, grapes 6, raisins 8. Raisins are made by drying grapes (a simple recipe; FOOD-02 stays parked) | `[DECIDED Oct 26, starting values]` | Drying mainly buys shelf life |
+| F4 | **Foraging finds** are variants of the existing "Abandoned farm" (Ethical) and "Undefended field" (Immoral) encounters (spec §2.3): orchard and vineyard. Unlock by Foraging level: apples 5, oranges 10, grapes 12. Finds appear in the log; higher Foraging finds more fruit | `[DECIDED Oct 26]` | Reuse before inventing (rules §4.3) |
+
+### Comfort food, cola and cans
+| # | Rule | Tag | Why |
+|---|---|---|---|
+| F5 | **Comfort food:** foods may carry a comfort value that lowers stress when eaten. Raisins −3, oranges −2, apples and grapes 0. Auto-eat picks comfort food first when stress is above 70; otherwise F2. **Daily cap: see the F5-cap conflict in §4** (−10 per day said Oct 26; 5 per real day decided Oct 21) | `[DECIDED Oct 26, testing values]`; cap `[OPEN]` | Ties to spec §13.8 comfort food |
+| F6 | Oranges may later reduce sickness or infection risk. Not built until a sickness system exists | `[CONCEPT, PARKED]` | — |
+| F7 | **Cola:** comfort food, −5 stress, 2 nutrition. Found only, never crafted. Rare roadside find (gas stations, stalled trucks, the "Broken-down vehicle" encounter and roadside policy events), about 2% on a successful search. Auto-eat uses it only when stress is above 70 | `[DECIDED Oct 26, testing values]` | A treat, not a meal |
+| F8 | **Empty can:** the usual find at vending machines and trash bins. Scrap; banks to the Recycler as aluminium | `[DECIDED Oct 26]` | Makes the sealed can mean something |
+| F9 | **Easter egg "The last can":** **0.02%** per vending-machine find (supersedes 0.5%), at most once per save. A sealed can (cola). Original log line, e.g. "One can left. You save it for later." Homage only: no brand names or quoted text from any book (rules §4.7) | `[DECIDED Oct 26, testing values]` | Finds are common, so 0.02% lands after roughly 14 hours of Wandering |
+| F10 | **Hidden achievement "Can I get a number one?":** a burger, fries and a cola eaten within one game hour. Hidden until earned. Burger and fries carry both Food and Component tags. Inactive until FOOD-02 adds burgers and fries. *Watch:* a game hour is one real minute, so this needs manual eating or a deliberate auto-eat sequence | `[DECIDED Oct 26]` | — |
+| F11 | **Background scavenging finds:** vending machines and trash bins are common background finds, not POIs or prompts. They resolve on their own as a log line. Each gives one piece of metal (aluminium scrap, weight only, banks via the Recycler). Frequency **`[OPEN]`, see F11-rate in §4** (proposed about one per 10 game minutes) | `[DECIDED Oct 26]` | Idle-friendly; attention stays on rare moments (rules §4.5) |
+| F12 | **Scavenging XP:** each find grants a small amount of Scavenging XP through `ZI.emitAction` and resets Scavenging's decay clock (spec 3.3). Amount `[OPEN]`, listed in `wandering-design-audit.md` §6 | `[DECIDED Oct 26]` | Frequent finds could inflate Scavenging |
+
+### Food groups, variety and containers
+| # | Rule | Tag | Why |
+|---|---|---|---|
+| F13 | **One healing path:** food never heals HP directly. Food fills the meter; nutrition pays for out-of-combat recovery (P2/P3). Cooked dishes are worth more than their ingredients through more nutrition plus a bonus (e.g. raw potato about 5; steak and potatoes about 35 plus comfort or a short buff, `[PROPOSED]`, FOOD-02) | `[DECIDED Oct 26]` | A second heal path would duplicate med kits and drift (rules §4.3) |
+| F14 | **Food groups:** every food item carries one group tag. Staples (potatoes, bread, rations): high nutrition, no extras. Protein (meat, fish): small recovery boost. Produce (fruit, vegetables): lighter; oranges link to F6. Dairy (mostly preserved: powdered milk, hard cheese, canned butter): slows nutrition drain for a while. Treats (cola, raisins): low nutrition, lower stress (F5). Numbers wait for FOOD-02 | `[CONCEPT Oct 26]` | Gives food a second dimension besides how filling it is |
+| F15 | **Variety bonus "Well Nourished":** 3 groups eaten in one day: +5% damage, +5 max HP; all 5: +10% damage, +10 max HP; recalculated each day. Uses the shared buff store and simulation time (FX3). **Day unit `[OPEN]`, see F15-day in §4** | `[DECIDED Oct 26]`; values `[PROPOSED]` | Sam's priority: a varied diet makes a stronger survivor |
+| F16 | **Wandering icon:** Well Nourished shows in the BAL-A status-icon row: an icon while active, five dots (one per group, filled when eaten that day), tap or hover for the bonus and time left | `[DECIDED Oct 26]` | — |
+| F17 | **Auto-eat order:** default stays cheapest first (F2), with the F5 comfort rule above stress 70. A Shop unlock (RMAT) switches to variety first (a missing group first, then cheapest). Auto-eat draws from the Food slot's container | `[DECIDED Oct 26]` | Sells convenience, not relief (lead brief 5.1; P8) |
+| F18 | **Food containers** go in the Food slot with a food-carrier tag. Capacity is total meals plus a cap on food types; stacks inside have no limit. Lunch bag: 6 meals, up to 4 types, 0.3 kg, early craft or find. Lunch pack: 12 meals, up to 6 types, 0.8 kg, mid craft. Cooler: 28 meals, up to 9 types, top tier, later craft; slows spoilage once spoilage exists; weight `[PROPOSED about 5 kg]`. No container: 1 stack, as today. Other consumables keep the normal stack rule (spec 14.8 #2). Not to be confused with the Legendary Lunch Pail (FOOD-02 §2b-i), a Trinket | `[DECIDED Oct 26]` | Sized to about half a day, one day and 2.5 days at about 11 meals a real day, so food stays a planning limit for 24 h circuits (C12, C21). The lunch bag can't hold all 5 groups |
+
+### Pacing, stamina and the bar (closes O3)
+| # | Rule | Tag | Why |
+|---|---|---|---|
+| O3a | **Base pacing: 60 s average between Wandering encounters** (code today: `WANDER_SIM_TABLE.encounterEverySec: 6`). Data-table value | `[DECIDED Oct 26, starting value]` | Round 8: about 31% field time, 2.9 Downings and 10.7 rations a day over 7 days |
+| O3b | **Familiarity scaling** (`ZI.cellFamiliarity`, spec 13.8): uncleared about 40 s, explored 60 s, cleared about 90 s | `[PROPOSED]` | Dangerous ground feels busy, home ground calm |
+| O3c | **Confirmation:** Code's round 8 rerun in H2 (round 8 §6) with O3a/O3b, plus Sam's smoke test for feel. Re-check F18 container sizes against the measured rations per day | `[DECIDED Oct 26]` | — |
+| ST1 | **No separate stamina meter.** Stamina is the combat effect of the hunger states (P5). Fed: normal attack speed and evasion. Hungry: −25% attack speed, slightly lower evasion. Starving: −40% attack speed, lower evasion again | `[DECIDED Oct 26]`; values `[PROPOSED]` (Sam suggested −25 to −30%) | One food number; food now matters in fights |
+| ST2 | Spec 13.4's "stamina or nutrition" route cost reads as nutrition; "stamina" wording superseded | `[DECIDED Oct 26]` | Follows ST1 |
+| NB1 | **One layered bar** (top bar and Wandering): green fill = nutrition 0–100; blue layer = nutrition the carried food would add; outline colour = hunger state (normal / amber / red when the ST1 penalty applies) | **`[PROPOSED]` until Sam sees the mock-up** (Sam asked to see it before locking) | One place to read food, supply and penalty |
+
+**Conflict note on O3a `[OPEN]` (for Sam):** round 8 §3 recommended **90 s**, because 60 s drops to about **21–24% field time in steady state (days 3–7)**, under the 25% band, and the model omits failed ventures, which lower field time further. Sam chose 60 s on Oct 26 with familiarity scaling. Options: keep 60 s and let the rerun decide; or move the base to 90 s with the same familiarity shape (about 60 / 90 / 135 s). B1 now makes Downings per km the main target, which the rerun should report too.
+
 ## 4. Open decisions
 
 | # | Question | Recommendation |
 |---|---|---|
-| O3 | **Encounter pacing.** Food cost follows pacing | Design pre-screen (BALANCE-03 round 8, Oct 21): about **90 s average** between encounters hits the field-time band with decided stress values; food demand about **10 rations a day**. Awaiting Code's H2 rerun |
-| O6 `[CODE]` | Does a nutrition or stamina value exist today? What does a ration do? Current field HP recovery rate and its file? | Code answers in step 1 |
+| ~~O3~~ | ~~**Encounter pacing.**~~ **Decided Oct 26 as O3a–O3c (§3b).** See the conflict note there: round 8 recommended 90 s; Sam chose 60 s with familiarity scaling | — |
+| O6 `[CODE]` | Does a nutrition or stamina value exist today? What does a ration do? Current field HP recovery rate and its file? **Extended Oct 26 (ST3):** does an attack-speed stat exist, where does evasion come from (gear bonuses and anything else), and can attack speed take a multiplier? Stop and report if a stamina system already exists with different rules | Code answers in step 1 |
+| F5-cap `[OPEN]` | **Conflict:** F5 says food comfort is capped at −10 stress per day; FOOD-02 §1a decided (Oct 21) **5 per real day**, audited in FOOD-02 §2b, with the Legendary Lunch Pail raising it to 8 | Keep the audited 5 per real day (the −10 broke nothing yet only because it isn't built); Sam to confirm |
+| F15-day `[OPEN]` | **Day unit for Well Nourished.** A game day is 24 real minutes; at about 11 meals a real day the survivor eats about 0.2 meals per game day, so 3 groups in one game day is unreachable | Count groups over one real day (or a rolling 24 real hours), the unit the food stress cap uses; Sam to confirm |
+| F11-rate `[OPEN]` | **Background find rate.** About one per 10 game minutes is one per 10 real seconds, six times the decided 60 s encounter gap: about 8,600 metal and XP grants per real day of Wandering | Set it in the economy audit (`wandering-design-audit.md` §6); a rate near one per encounter or rarer is likely |
 
 ---
 

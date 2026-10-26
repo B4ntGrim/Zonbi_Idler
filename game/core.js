@@ -44,11 +44,43 @@ ZI.SPLASH = { MIN_S:25, MAX_S:30, FADE_S:2, SCALE_END:1.08, PAN:0.03, DIM:0.55 }
 ZI.getReducedGore = function() { try { return localStorage.getItem('zi_reduced_gore') === '1'; } catch (e) { return false; } };
 ZI.setReducedGore = function(v) { try { localStorage.setItem('zi_reduced_gore', v ? '1' : '0'); } catch (e) {} };
 
-// ─── GLOBAL GAME CLOCK (one shared rate: 1 game hour = 6 real seconds) ───────
+// ─── GLOBAL GAME CLOCK (one shared rate: 1 game hour = 1 real minute) ────────
 // Oct 16 (Sam): every game-time system reads this one rate — the world clock, the header clock, crafting and build
 // timers, the camp schedule and route runs (ZI.GAME_HOUR_MS in game/routes.js). Change it here to retune them all.
-ZI.REAL_MS_PER_GAME_HOUR = 6000;
-ZI.GAME_DAY_MS = 24 * ZI.REAL_MS_PER_GAME_HOUR; // one game day in real ms (2.4 real minutes). Skill decay stays on real days (Sam, Oct 16).
+ZI.REAL_MS_PER_GAME_HOUR = 60000;
+ZI.GAME_DAY_MS = 24 * ZI.REAL_MS_PER_GAME_HOUR; // one game day in real ms (24 real minutes). Skill decay stays on real days (Sam, Oct 16).
+ZI.OFFLINE_LAST_SEEN_KEY = 'zi_offline_last_seen';
+ZI.OFFLINE_CAP_MS = 24 * 60 * 60 * 1000;
+ZI._offlineWindow = null;
+ZI._inferOfflineLastSeen = function(now) {
+  const marks = [];
+  const read = key => { try { return JSON.parse(localStorage.getItem(key) || 'null'); } catch (e) { return null; } };
+  const schedule = read('zi_schedule');
+  (schedule && schedule.assignments || []).forEach(a => marks.push(Number(a.lastTick || a.since)));
+  const jobs = read('zi_jobs');
+  (jobs && jobs.jobs || []).forEach(j => { if (j.status === 'active' && j.startedAt != null) marks.push(Number(j.startedAt)); });
+  const wander = read('zi_wander_run'); if (wander && wander.lastTickAt != null) marks.push(Number(wander.lastTickAt));
+  const routes = read('zi_route_runs');
+  Object.values(routes || {}).forEach(r => { if (r && r.startedAt != null) marks.push(Number(r.startedAt)); });
+  const valid = marks.filter(t => Number.isFinite(t) && t >= 0 && t <= now);
+  return valid.length ? Math.max(...valid) : now;
+};
+ZI.beginOfflineWindow = function(now) {
+  now = Number.isFinite(now) ? now : ZI.clockNow();
+  let last = NaN;
+  try { const raw = localStorage.getItem(ZI.OFFLINE_LAST_SEEN_KEY); if (raw != null && raw !== '') last = Number(raw); } catch (e) {}
+  if (!Number.isFinite(last) || last < 0 || last > now) last = ZI._inferOfflineLastSeen(now);
+  const elapsedMs = Math.max(0, now - last), creditedMs = Math.min(elapsedMs, ZI.OFFLINE_CAP_MS);
+  ZI._offlineWindow = { from:last, to:last + creditedMs, now, elapsedMs, creditedMs, discardedMs:elapsedMs - creditedMs };
+  ZI._offlineWanderPending = elapsedMs >= 250;
+  try { localStorage.setItem(ZI.OFFLINE_LAST_SEEN_KEY, String(now)); } catch (e) {}
+  return ZI._offlineWindow;
+};
+ZI.offlineWindow = function() { return ZI._offlineWindow || ZI.beginOfflineWindow(); };
+ZI.heartbeatOfflineWindow = function(now) {
+  now = Number.isFinite(now) ? now : ZI.clockNow();
+  try { localStorage.setItem(ZI.OFFLINE_LAST_SEEN_KEY, String(now)); } catch (e) {}
+};
 ZI.CLOCK_KEY = 'zi_game_clock';
 ZI.CLOCK_RATE = 3600 * 1000 / ZI.REAL_MS_PER_GAME_HOUR; // game seconds per real second (600; was 0.5)
 ZI._clock = function() {
@@ -73,12 +105,30 @@ ZI.getGameTime = function() {
   const t = ZI.gameTotalSeconds();
   return { day: Math.floor(t / 86400) + 1, second: t % 86400 };
 };
+// Calendar years contain 364 days; the calendar is elapsed game time from Day 1.
+ZI.getCalendar = function() {
+  const t = ZI.gameTotalSeconds();
+  const totalDay = Math.floor(t / 86400) + 1;
+  const second = t % 86400;
+  return {
+    year: Math.floor((totalDay - 1) / 364) + 1,
+    day: ((totalDay - 1) % 364) + 1,
+    hh: Math.floor(second / 3600),
+    mm: Math.floor(second / 60) % 60,
+  };
+};
 // Skip ahead N in-game hours (e.g. resting at camp). Returns the new day number.
 ZI.passTime = function(hours) {
   const t = ZI.gameTotalSeconds() + Math.round(hours * 3600);
   const c = { day: Math.floor(t / 86400) + 1, base: t % 86400, at: Date.now(), rate: ZI.CLOCK_RATE };
   try { localStorage.setItem(ZI.CLOCK_KEY, JSON.stringify(c)); } catch (e) {}
   return c.day;
+};
+ZI.passTimeToNextMorning = function(hour) {
+  hour = Number.isFinite(hour) ? Math.max(0, Math.min(23, Math.floor(hour))) : 6;
+  const t = ZI.gameTotalSeconds(), dayStart = Math.floor(t / 86400) * 86400;
+  const target = dayStart + 86400 + hour * 3600;
+  return ZI.passTime((target - t) / 3600);
 };
 
 // ─── PLAYER SETTINGS ─────────────────────────────────────────────────────────

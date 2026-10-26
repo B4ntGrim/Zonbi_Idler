@@ -374,10 +374,6 @@ ZI._maybeSettleOnRead = function() {
   const now = ZI.clockNow(), c = ZI._decayClockMem || ZI.getDecayClock(now);
   if (now - c.lastSettledUtc >= ZI.DECAY_CLOCK.settleEveryOpenSec * 1000) ZI.settleSkillDecay(now);
 };
-// Lasting injury from the attack: −10% effective level on combat & athletics, ~3 days or treatment.
-ZI.getInjury = function() { const j = ZI._rj('zi_injury', null); return j && j.until > ZI.clockNow() ? j : null; };
-ZI.setInjury = function(days) { ZI._wj('zi_injury', { skills:['combat','athletics'], pct:0.10, until: ZI.clockNow() + days * ZI.GAME_DAY_MS }); }; // game days (Oct 16)
-ZI.treatInjury = function(days) { const j = ZI.getInjury(); if (!j) return; j.until -= days * ZI.GAME_DAY_MS; ZI._wj('zi_injury', j); };
 // Rust + injury combined never exceed −20% (spec 13.8).
 ZI.effectiveLevel = function(skill) {
   let eff = ZI.skillRust(skill).eff;
@@ -393,10 +389,42 @@ ZI.SURVIVOR_MAX_HP = 100;
 // Missing keys read as "full / nothing yet", so old saves need no migration (save version unchanged).
 ZI.TRAVERSAL_TABLE = {
   scoutChargesPerDay: 5,   // TRAVERSAL_SCOUT_CHARGES_PER_DAY [DECIDED Oct 21, starting value; 10 to be tested]
-  hideGameHours: 1,        // TRAV_HIDE_GAME_HOURS [DECIDED Oct 21, starting value]
+  hideGameHours: 12,       // CLOCK-01 CL3 [DECIDED Oct 24]
 };
 ZI.TRAVERSAL_SCOUT_CHARGES_PER_DAY = ZI.TRAVERSAL_TABLE.scoutChargesPerDay;
 ZI.TRAV_HIDE_GAME_HOURS = ZI.TRAVERSAL_TABLE.hideGameHours;
+ZI.TRAV_HIDE_MAX_PER_24H = 2;
+ZI.TRAV_HIDE_USES_KEY = 'zi_trav_hide_uses';
+ZI.TRAV_CAMP_LAST_USED_KEY = 'zi_trav_camp_last_used';
+ZI._hideUsesAt = function(now) {
+  now = Number.isFinite(now) ? now : ZI.clockNow();
+  let uses = []; try { uses = JSON.parse(localStorage.getItem(ZI.TRAV_HIDE_USES_KEY) || '[]'); } catch (e) {}
+  if (!Array.isArray(uses)) uses = [];
+  return uses.map(Number).filter(t => Number.isFinite(t) && t > now - ZI.OFFLINE_CAP_MS && t <= now).sort((a,b) => a-b);
+};
+ZI.getHideUses = function(now) {
+  const uses = ZI._hideUsesAt(now);
+  return { used:uses.length, max:ZI.TRAV_HIDE_MAX_PER_24H, left:Math.max(0, ZI.TRAV_HIDE_MAX_PER_24H-uses.length), nextAt:uses.length >= ZI.TRAV_HIDE_MAX_PER_24H ? uses[0] + ZI.OFFLINE_CAP_MS : null };
+};
+ZI.spendHideUse = function(now) {
+  now = Number.isFinite(now) ? now : ZI.clockNow();
+  const uses = ZI._hideUsesAt(now), left = ZI.TRAV_HIDE_MAX_PER_24H - uses.length;
+  if (left <= 0) return { ok:false, left:0, max:ZI.TRAV_HIDE_MAX_PER_24H, nextAt:uses[0] + ZI.OFFLINE_CAP_MS };
+  uses.push(now); try { localStorage.setItem(ZI.TRAV_HIDE_USES_KEY, JSON.stringify(uses)); } catch (e) {}
+  return { ok:true, left:left-1, max:ZI.TRAV_HIDE_MAX_PER_24H, nextAt:uses.length >= ZI.TRAV_HIDE_MAX_PER_24H ? uses[0] + ZI.OFFLINE_CAP_MS : null };
+};
+ZI.getCampCooldown = function(now) {
+  now = Number.isFinite(now) ? now : ZI.clockNow();
+  let usedAt = NaN; try { const raw = localStorage.getItem(ZI.TRAV_CAMP_LAST_USED_KEY); if (raw != null) usedAt = Number(raw); } catch (e) {}
+  const availableAt = Number.isFinite(usedAt) ? usedAt + ZI.OFFLINE_CAP_MS : 0;
+  return { available:now >= availableAt, availableAt, remainingMs:Math.max(0, availableAt-now) };
+};
+ZI.spendCampUse = function(now) {
+  now = Number.isFinite(now) ? now : ZI.clockNow();
+  const status = ZI.getCampCooldown(now); if (!status.available) return { ok:false, ...status };
+  try { localStorage.setItem(ZI.TRAV_CAMP_LAST_USED_KEY, String(now)); } catch (e) {}
+  return { ok:true, available:false, availableAt:now + ZI.OFFLINE_CAP_MS, remainingMs:ZI.OFFLINE_CAP_MS };
+};
 ZI.TRAV_SCOUT_KEY = 'zi_trav_scout';     // { day, left }
 ZI.TRAV_XP_DAY_KEY = 'zi_trav_xp_day';   // { day, done: { '<kind>:<gx>,<gy>': 1 } }
 ZI._travToday = function() {

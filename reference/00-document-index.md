@@ -1,4 +1,4 @@
-# Zed Idler — Document Index (updated Oct 24)
+# Zed Idler — Document Index (updated Oct 26, afternoon)
 
 Start here. This lists every design document, its folder and its status.
 Rules for how design work is done: `CREATIVE_DIRECTION_RULES.md` (project root; replaced `CLAUDE_DESIGN_RULES.md` Oct 22).
@@ -38,6 +38,7 @@ Code's list of deferred items: `PARKED.md` (project root). Kept by Code; separat
 | `h2-batch-draft.md` | H2: 80-run simulation batch (A designed skipper; B once per starter weapon) | **CLOSED Oct 19** (Sam); batch archived as `archive/batch-h2-closed-oct19.md` |
 | `trav-01-traversal-slice.md` | Traversal slice T1–T19, batches TRAV-01a/01b (CLOCK-01 moved to its own slice Oct 23) | Current. TRAV-01a **CLOSED (code)** Oct 21; smoke test pending |
 | `clock-01-slice.md` | CLOCK-01: continuous clock, "Year X, Day Y, Time" calendar (364-day years), Hide +12 game hours (2 per real day), Make camp to 06:00 of the next calendar day once per real day, 24 real-hour offline credit cap with the calendar showing the full absence, injury treatment in play time, both HTML pages | **Active batch.** CL1–CL8 `[DECIDED Oct 23]`; O1–O6 `[DECIDED Oct 24]`; issued as `CURRENT_BATCH.md` Oct 24 |
+| `biome-01-chunks-slice.md` | BIOME-01: chunk-based world generator with four biomes (Mountain Country, Ruined Suburbia, Metropolis City, The Debriefed Perimeter), per-cell biome, tier/noise encounter hooks, plus `[PROPOSED]` hazards, loot bias, fog of war, scout birds `[PARKED]`, and Traversal UI changes (biome tints, POI corner icons, Buffs / Afflictions tabs, Current Square and Survivor Status panels, draggable Zone Details, hidden seed, hint cut-off bug, shortest/safest path) | **Queued** behind CLOCK-01. Step 0 read-only report first. Saved Oct 25 |
 | `routes-preparation-implementation.md` | Solo route preparation (skills, gear, carrying space → duration, fight/avoid odds, loot cap); idle haul and XP fixes; Routes → Stockpile Gear & Loadout link. §0 decision record and `ROUTE_PREP_TABLE` | **Implemented Oct 23.** Decision record added and starting values `[DECIDED Oct 24]` |
 | `food-01-nutrition-slice.md` | FOOD-01 nutrition and HP recovery; draft batch | Slice draft. O1, O2, O4, O5, O7–O10 `[DECIDED Oct 21]`; O3 (pacing) and O6 (Code facts) open. Copied from the claude.ai Project Oct 24 |
 | `food-01-sim-oct21.md` | FOOD-01 design model (`food_sim.py`, `fish_sim.py`) | Evidence for FOOD-01. Copied Oct 24 |
@@ -50,6 +51,8 @@ Code's list of deferred items: `PARKED.md` (project root). Kept by Code; separat
 
 | File | What it is |
 |---|---|
+| `concordance-introduction-concept.md` | Concordance introduction after the Sealed Crate: stolen crate, three exits, Heinous and Criminal versions, Diplomat tiers, standing changes, guaranteed backup route (CI1–CI13) | Concept with decided parts (Oct 26); not a build input |
+| `circuit-expedition-concepts.md` | Proposed circuit routines, biome and cell discovery, recorded custom routes, Mastery/Profession/Survival XP, clock and automation questions, and related extensions | Planning only. Decisions **C1–C9, C6a–C6c `[DECIDED Oct 25]` and C10–C21 `[DECIDED Oct 26]`** (duration display, repeat, one-loop Shop toggle, safe ending, stop rules, night and its window and risk, one game-wide night window, rule priority, return report and its order, one repeat rule); other additions `[PROPOSED]`, unresolved choices `[OPEN]`; still not a build input |
 | `balance-03-screening-oct17.md` | BALANCE-03 first screening (MS/EN/ST models) | Planning record. Copied from the claude.ai Project Oct 24 |
 | `balance-03-round2-oct17.md` | Round 2: Sam's Oct 17 directions (kill-heal parts superseded Oct 21) | Planning record. Copied from the claude.ai Project Oct 24 |
 | `balance-03-round3-oct18.md` | Round 3: active-time levers | Planning record. Copied from the claude.ai Project Oct 24 |
@@ -136,6 +139,9 @@ Code's step and completion reports, one folder per batch (from Oct 22).
 | Folder | What it is |
 |---|---|
 | `reports/stockpile-loadout-2026-10-23/` | Routes → Stockpile Gear & Loadout link: scripts, backups, tests (617/617), `STOCKPILE_LINK_REPORT.md` (written Oct 24) |
+| `reports/docs-oct26/` | Oct 26 docs session: pre-change copies, apply scripts, report |
+| `reports/level-12/` | Read-only Design Handoff: character level appears stuck at 12 |
+| `reports/docs-oct25/` | Oct 25 circuit decisions C1–C8: pre-change copies, apply script, report |
 | `reports/docs-oct24/` | Oct 24 docs session: pre-change copies |
 | `reports/h2-full-2026-10-24/` | Full 30-day H2 matrix (80 runs) for BAL-A closure; source snapshot and results |
 | `reports/trav-01a/` | TRAV-01a browser results and screenshots |
@@ -157,6 +163,16 @@ Code's step and completion reports, one folder per batch (from Oct 22).
 
 | Date | Decision | Recorded in |
 |---|---|---|
+| Oct 26 | BAL-A answers B1–B6 (Sam): Downings per km main target with field-time guardrail; rule 5 closed; T0 durability for an 8 h absence (later batch); automatic repair parked; Broken mild; Codex Option B | `slice-retreat-broken-batch-a-draft.md` §3b; `DESIGN_HANDOFF.md` |
+| Oct 26 | FOOD-01 decisions F1–F18, O3a–O3c, ST1–ST2 (Sam): top bar, auto-eat order, fruit, foraging variants, comfort food, cola, cans, last-can Easter egg, hidden achievement, background finds, food groups, Well Nourished, containers, 60 s pacing, stamina from hunger. NB1 bar proposed until the mock-up. Conflicts flagged: F5 cap vs FOOD-02 5/day; F15 day unit; F11 rate; O3a vs round 8's 90 s | `food-01-nutrition-slice.md` §3b, §4; `parked/food-02-cooking-concept.md` §1b; `wandering-tab-spec.md` §2.3, 13.4, 13.8, 14.1 |
+| Oct 26 | Milestone MS1–MS2 (Sam): Fallow Ground turn-in is the first milestone, with a one-time chapter card; Sealed Crate beat kept, elder unnamed. MS3 proposed (conflicts with H2 scope D3) | `wandering-fort-scene.md` §12.2; `tutorial-first-session-spec.md` Beat 8; `sim-harness-v1-brief.md` §12 |
+| Oct 26 | Concordance introduction CI1–CI13 (Sam) | `concordance-introduction-concept.md`; `wandering-design-audit.md` §6 |
+| Oct 26 | Circuit questions 2–14 answered, C10–C21 (Sam): real-time timers; quick circuit 2–3 cells ≈ 5 real min; 24 h cap reused; settle on next load; one shared step function with per-stop done flags; unlocked cells, scavenge and rest stops only; fishing stays in person; unknown treated as dangerous; no pause for discoveries, no Fort rolls on circuits; ETA with 25% buffer; calm map; foot and bike only, food via auto-eat (FOOD-01). Questions 15–24 stay open | `reference/circuit-expedition-concepts.md`; `route-01-route-builder-concept.md` §3; `DESIGN_HANDOFF.md` |
+| Oct 25 | Placement, currency and price (Sam): the C6c night/dusk code change goes in a small follow-up batch after CLOCK-01 closes (CLOCK-01 stays locked); the Shop currency is RMAT; C3 "one loop only" costs 10 Tier 2 (Refined) RMAT, starting value | `reference/circuit-expedition-concepts.md`; `parked/retreat-rules-shop.md`; `DESIGN_HANDOFF.md` |
+| Oct 25 | C6c night window (Sam): night is 22:00–06:00 game time game-wide; dusk 19:00–22:00 and 06:00–08:00. Resolves the code conflict (code had night 21:00–05:00); code change queued for the clock work | `reference/circuit-expedition-concepts.md`; `DESIGN_HANDOFF.md` |
+| Oct 25 | Circuit details (Sam): C6a night rest 22:00–06:00 game time (starting value); C6b night travel +25% encounters (starting value); C8 report order headline → stops → notable events → haul total with Claim All; C3 price stays open until the Shop currency is decided. Conflict found: code's night window is 21:00–05:00 | `reference/circuit-expedition-concepts.md`; `DESIGN_HANDOFF.md` |
+| Oct 25 | C9 one repeat rule (Sam): once circuits take over Idle run, repeating is free and "one loop only" is the Shop unlock, superseding the tutorial spec's Auto-Repeat Shop unlock; until then predefined Routes keep Auto-Repeat as a Shop unlock | `reference/circuit-expedition-concepts.md`; `tutorial-first-session-spec.md` 6.1; `DESIGN_HANDOFF.md` |
+| Oct 25 | Circuit decisions C1–C8 (Sam): real-time duration with game time in small text; repeat by default; "one loop only" toggle as a Shop unlock for in-game currency; a stopping circuit finishes at its start cell, emergencies retreat straight home; first stop rules low HP, high stress, full pack; rest through the night by default with a free night-travel toggle; priority HP → stress → pack; return report covers loops, stops, ending rule and hauls | `reference/circuit-expedition-concepts.md`; `route-01-route-builder-concept.md` §3; `parked/retreat-rules-shop.md`; `DESIGN_HANDOFF.md` |
 | Oct 23 | CLOCK-01 decisions CL1–CL8 (Sam): continuous clock; "Year X, Day Y, Time" (day 365 = Year 2, Day 1); Hide +12 game hours, repeatable with a cap (value open); Make camp to 06:00 the following morning (replaces the fixed skip), once per real day at local midnight; offline credit capped at 24 real hours per absence; online/offline results within 1 game minute; both HTML pages in scope. Supersedes T3 and P3's 1-hour Hide; extends T15 | `reference/clock-01-slice.md`; `DESIGN_HANDOFF.md` |
 | Oct 22 | Claude Design retired; Director + Code workflow (Sam). The Creative Director (Desktop chat) writes decisions, slices and batch contracts as instructions; Code applies them to the files; `E:\Zed_Idler` stays the master. Code's reports go in `reports/<batch-id>/` | `CREATIVE_DIRECTION_RULES.md`; `archive/claude-design-rules-retired-oct22.md`; `DESIGN_HANDOFF.md` |
 | Oct 21 | TRAV-01a locked, revised after step 1 (S1–S7, T14–T17), implemented, CLOSED (code). Sam's smoke test pending | `reference/trav-01-traversal-slice.md`; `CURRENT_BATCH.md`; `reports/trav-01a/` |
@@ -241,3 +257,10 @@ Scope stays Solo-only. Map circuit building and survival expansion remain separa
 | 39 Project-only documents | Copied from the claude.ai Project to `reference/`, `reference/parked/` and `archive/` (`design-handoff-oct16.md`). Not copied: `claude/trav-01a-current-batch.md` (older than `archive/trav-01a-batch.md`) and `claude/best1-draft/best1-enemy-identity.test.js` (superseded by `tests/best1-enemy-identity.test.js`) |
 | `CURRENT_BATCH.md` | CLOCK-01 (locked Oct 24). TRAV-01a contract archived as `archive/trav-01a-batch.md` |
 | `handoff/to-cloud/` | New rule (Sam, Oct 24): every working file or script that leaves this computer for the cloud, or that Claude writes or runs here, is duplicated under `handoff/to-cloud/<date>/` with a MANIFEST. `E:\C2C` is the exchange folder with ChatGPT |
+
+## Oct 25: BIOME-01 slice saved
+
+| Record | Status |
+|---|---|
+| `reference/biome-01-chunks-slice.md` | Saved from the Claude Docs draft (Oct 25 voice session). Queued; not issued as `CURRENT_BATCH.md` while CLOCK-01 is NOT CLOSED |
+| `reports/biome-chunks-2026-10-25/pre-change/` | Copy of this index before the change |

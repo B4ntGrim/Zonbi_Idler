@@ -16,7 +16,7 @@ ZI.SCHEDULE_JOBS = [
 ZI.getJob = function(id) { return ZI.SCHEDULE_JOBS.find(j => j.id === id) || null; };
 ZI.SCHEDULE_KEY = 'zi_schedule';
 ZI.SCHEDULE_VER = 1;
-ZI.SCHEDULE_OFFLINE_CAP_H = 24; // idle-pacing cap on offline accrual (§3 24h daily loop)
+ZI.SCHEDULE_OFFLINE_CAP_H = 24; // compatibility constant; shared real-time window is authoritative
 ZI.getSchedule = function() {
   let s; try { s = JSON.parse(localStorage.getItem(ZI.SCHEDULE_KEY) || 'null'); } catch (e) { s = null; }
   if (!s || s.v !== ZI.SCHEDULE_VER) s = { v: ZI.SCHEDULE_VER, assignments: [] };
@@ -35,19 +35,32 @@ ZI.unassignJob = function(survivorId) {
   ZI.saveSchedule(s);
 };
 // Award a job's idle XP for `hours` (profession full, attr × ratio) via the bus.
-ZI.emitScheduleTick = function(jobId, hours) {
+ZI.emitScheduleTick = function(jobId, hours, remainder) {
   const job = ZI.getJob(jobId); if (!job || hours <= 0) return;
-  ZI.awardXp(job.profession, job.xpPerHour * hours, { action:'schedule.tick', jobId });
-  if (job.attr) ZI.awardXp(job.attr, job.xpPerHour * hours * (job.attrRatio || 0.4), { action:'schedule.tick', jobId });
+  // Retain sub-point XP between live ticks. Rounding each one-second grant used to
+  // make the total depend on how often the page settled the same elapsed time.
+  const grant = (track, amount) => {
+    if (!remainder) { ZI.awardXp(track, amount, { action:'schedule.tick', jobId }); return; }
+    const total = amount + (remainder[track] || 0), whole = Math.round(total + 1e-9);
+    remainder[track] = total - whole;
+    if (whole > 0) ZI.awardXp(track, whole, { action:'schedule.tick', jobId });
+  };
+  grant(job.profession, job.xpPerHour * hours);
+  if (job.attr) grant(job.attr, job.xpPerHour * hours * (job.attrRatio || 0.4));
 };
 // Offline catch-up: settle each assignment's elapsed time in game hours (capped). 1 game hour = ZI.REAL_MS_PER_GAME_HOUR.
-ZI.settleSchedule = function() {
-  const s = ZI.getSchedule(); const now = Date.now(); let any = false;
+ZI.settleSchedule = function(window) {
+  const s = ZI.getSchedule(); let any = false;
+  const now = ZI.clockNow();
+  window = window || { from:0, to:now, now };
   s.assignments.forEach(a => {
-    const elapsedH = Math.min(ZI.SCHEDULE_OFFLINE_CAP_H, (now - (a.lastTick || a.since)) / ZI.REAL_MS_PER_GAME_HOUR);
-    if (elapsedH >= 0.02) { ZI.emitScheduleTick(a.jobId, elapsedH); a.lastTick = now; any = true; }
+    const start = Math.max(a.lastTick || a.since, window.from);
+    const elapsedH = Math.max(0, window.to - start) / ZI.REAL_MS_PER_GAME_HOUR;
+    if (elapsedH > 0) { ZI.emitScheduleTick(a.jobId, elapsedH, a.xpRemainder || (a.xpRemainder = {})); any = true; }
+    // The uncapped remainder of an absence is discarded for this assignment.
+    a.lastTick = Math.max(a.lastTick || a.since, window.now);
   });
-  if (any) ZI.saveSchedule(s);
+  if (s.assignments.length) ZI.saveSchedule(s);
   return s.assignments.length;
 };
 
@@ -95,6 +108,9 @@ ZI.CAMP_STRUCTURES = [
     effectPerLevel:{ wallHp:120 }, desc:'Fortification — the horde attacks walls first. Raises siege wall HP.',
     build:[ {materials:{wood:60,metal:40}, time:600}, {materials:{wood:120,metal:80,fuel:10}, rmat:{T1:2}, time:1800}, {materials:{metal:160,wood:90}, rmat:{T2:2}, components:{planks:12}, time:4200}, {materials:{metal:240,fuel:30}, rmat:{T3:2}, components:{planks:24}, time:9000}, {materials:{metal:340,fuel:60}, rmat:{T3:5,T4:1}, components:{planks:40}, time:18000} ] },
 ];
+// CLOCK-01 T9: stored construction game-seconds are divided by ten to preserve
+// their real build times at the new one-minute game-hour rate.
+ZI.CAMP_STRUCTURES.forEach(s => (s.build || []).forEach(b => { if (Number.isFinite(b.time)) b.time /= 10; }));
 ZI.getStructure = function(id) { return ZI.CAMP_STRUCTURES.find(s => s.id === id) || null; };
 ZI.CAMP_KEY = 'zi_camp';
 ZI.CAMP_VER = 1;
@@ -156,7 +172,7 @@ ZI.buildStructure = function(id) {
   Object.entries(cost.components || {}).forEach(([k, q]) => ZI.addComponent(k, -q));
   const targetLevel = ZI.structureLevel(id) + 1;
   // Enqueue as a timed construction job (separate build lane). Level applies on completion.
-  // cost.time is in game seconds; the job engine counts real seconds (1 game hour = ZI.REAL_MS_PER_GAME_HOUR).
+  // cost.time is CLOCK-01-rescaled game seconds; the job engine counts real seconds.
   ZI.enqueueJob('build', id, (cost.time || 60) * ZI.REAL_MS_PER_GAME_HOUR / 3600000, { toLevel: targetLevel });
   return { ok:true, level: targetLevel, queued:true };
 };

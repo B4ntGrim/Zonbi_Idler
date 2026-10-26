@@ -758,13 +758,22 @@ window.SatelliteTraversalScreen = function SatelliteTraversalScreen({ setScreen,
   // TRAV-01a (Sam, Oct 21: T5, S7): Camp Leader controls show only in Camp Leader mode. Solo reads the active save's mode.
   const isCampMode = ((ZI.getActiveSlot && ZI.getActiveSlot()) || {}).mode === 'camp';
   const [travTick, setTravTick] = React.useState(0);           // re-render after a scout, XP or Hide changes stored state
+  React.useEffect(() => { const t = setInterval(() => setTravTick(x => x + 1), 60000); return () => clearInterval(t); }, []);
   const [hideSeen, setHideSeen] = React.useState({});           // cell key → last Hide result this session (panel "Threats" line)
   const [sheetMode, setSheetMode] = React.useState(false);      // T13: touch opens the zone panel as a bottom sheet
+  // TRAV-01a fix 2 (Oct 25): below 760 px the three desktop columns left the map 4 px wide, so no cell could be tapped and the
+  // bottom sheet never opened. Solo stacks instead: map first at full width, afflictions and resources below, no side column
+  // (the bottom sheet replaces it). Camp Leader keeps its layout. Same 760 px breakpoint as Wandering.
+  const [travNarrow, setTravNarrow] = React.useState(() => (window.innerWidth || 1024) < 760);
+  React.useEffect(() => { const f = () => setTravNarrow((window.innerWidth || 1024) < 760); window.addEventListener('resize', f); return () => window.removeEventListener('resize', f); }, []);
   const lastPointer = React.useRef('mouse');                    // 'mouse' | 'touch' | 'pen' | 'controller'
   const [hl, setHl] = React.useState(null);                     // controller/keyboard highlight { gx, gy }
   const [panelFocus, setPanelFocus] = React.useState(null);     // TRAV-01a fix 1 (PF11): controller focus inside the zone panel, by item id ('__first__' = first enabled)
   const sheetTouchY = React.useRef(null);
   const [tutStep, setTutStep] = React.useState(() => ZI.tutDone('zi_trav_tutorial_done') ? -1 : 0);
+  const shortWait = (ms) => { const total = Math.max(1, Math.ceil(ms / 60000)), h = Math.floor(total / 60), m = total % 60; return h ? `${h}h ${m}m` : `${m}m`; };
+  const hideUses = ZI.getHideUses ? ZI.getHideUses() : { left:2, max:2, nextAt:null };
+  const campCooldown = ZI.getCampCooldown ? ZI.getCampCooldown() : { available:true, remainingMs:0 };
   // Grid helpers take the VIEWED sector's local (r,c) and compare in global coords.
   const gOf = (r, c) => ({ gx: view.sx * COLS + c, gy: view.sy * ROWS + r });
   const keyG = (gx, gy) => gy + '-' + gx; // sector 0 keys match older saves
@@ -860,6 +869,8 @@ window.SatelliteTraversalScreen = function SatelliteTraversalScreen({ setScreen,
     let res;
     if (cell.state === 'locked') { setActionResult({ tone:'warn', text:'Locked zone.' }); return; }
     if (!isHereCell(cell) && !isAdjCell(cell)) { setActionResult({ tone:'warn', text:'Too far — move next to it.' }); return; }
+    if (id === 'camp' && !campCooldown.available) { setActionResult({ tone:'warn', text:`Make Camp is ready in ${shortWait(campCooldown.remainingMs)}.` }); return; }
+    if (id === 'hide' && hideUses.left <= 0) { setActionResult({ tone:'warn', text:`Hide is ready in ${shortWait(Math.max(0, hideUses.nextAt - ZI.clockNow()))}.` }); return; }
     if (id === 'travel') {
       const p = ZI.zoneFromCell(cell); setPos(p); writeJ('zi_trav_pos', p);
       ZI.clearTravReturn && ZI.clearTravReturn(); // BAL-A D1: the player's own move replaces any saved return
@@ -897,21 +908,25 @@ window.SatelliteTraversalScreen = function SatelliteTraversalScreen({ setScreen,
     } else if (id === 'camp' && !ZI.canCampAt(cell)) {
       res = { tone:'warn', text:`You can't make camp on ${coord} while Fallow Ground is in progress.` };
     } else if (id === 'camp') {
+      const used = ZI.spendCampUse();
+      if (!used.ok) { setActionResult({ tone:'warn', text:`Make Camp is ready in ${shortWait(used.remainingMs)}.` }); setTravTick(t => t + 1); return; }
       const p = ZI.zoneFromCell(cell); setPos(p); writeJ('zi_trav_pos', p);
       setCamp(p); writeJ('zi_trav_camp', p);
       ZI.clearTravReturn && ZI.clearTravReturn(); // BAL-A D1
       const xpC = ZI.travEmitOnce('camp', 'any', 'camp', 1); // TRAV-01a T15: Command XP once per real day
-      const day = ZI.passTime ? ZI.passTime(24) : null;
+      const day = ZI.passTimeToNextMorning ? ZI.passTimeToNextMorning(6) : null;
       // TRAV-01a T15: Make camp no longer sets HP to full or resets healsUsed (it was a free, unlimited full heal).
       // BAL-A O5: Make camp no longer treats the injury (only certain items cure it)
       res = { tone:'good', text:`You make camp at ${coord}.${day ? ` Day ${day} begins.` : ''} This is your new safe rest point: a Forced Retreat brings you here.${xpC ? ' +Command XP.' : ''}` };
     } else if (id === 'hide') {
+      const used = ZI.spendHideUse();
+      if (!used.ok) { setActionResult({ tone:'warn', text:`Hide is ready in ${shortWait(Math.max(0, used.nextAt - ZI.clockNow()))}.` }); setTravTick(t => t + 1); return; }
       // TRAV-01a T2/S2: Hide reports only what Wandering really uses (threat level and drawable tier range).
       ZI.passTime && ZI.passTime(ZI.TRAVERSAL_TABLE.hideGameHours);
       const th = ZI.hideThreats(cell);
       setHideSeen(m => ({ ...m, [key]: th }));
       const xpH = ZI.travEmitOnce('hide', ck, 'sneak', 1); // P3: XP once per cell per real day
-      res = { tone:'info', text:`You stay low in ${coord} for an hour. Threat level ${th.threatLevel}/5 (${th.dangerLabel}). Threats here: tiers ${th.range}, the range Wandering can meet right now.${xpH ? ' +Stealth XP.' : ' No XP: already earned here today.'}` };
+      res = { tone:'info', text:`You stay hidden in ${coord} for 12 game hours. Threat level ${th.threatLevel}/5 (${th.dangerLabel}). Threats here: tiers ${th.range}, the range Wandering can meet right now.${xpH ? ' +Stealth XP.' : ' No XP: already earned here today.'}` };
     }
     setActionResult(res);
     setTravTick(t => t + 1);
@@ -921,7 +936,7 @@ window.SatelliteTraversalScreen = function SatelliteTraversalScreen({ setScreen,
     { id:'loot',   icon:'◈', label:'Loot',      desc:'Grab supplies once per zone. A failed roll means you get hurt.' },
     { id:'scout',  icon:'👁', label:'Scout',     desc:'Check the threat and supplies. Uses 1 Traversal scout.' },
     { id:'camp',   icon:'⛺', label:'Make Camp', desc:'Move in and set your rest point.' },
-    { id:'hide',   icon:'◌', label:'Hide',      desc:'Stay low for an hour and learn which threats Wandering can meet here.' },
+    { id:'hide',   icon:'◌', label:'Hide',      desc:'Stay hidden for 12 game hours. Two uses refill one at a time after 24 real hours.' },
   ];
 
   // ── TRAV-01a Solo layout: afflictions, preview bar, zone details panel (T4, T13, S5) ──
@@ -999,8 +1014,8 @@ window.SatelliteTraversalScreen = function SatelliteTraversalScreen({ setScreen,
       { id:'travel', icon:'➜', label:'Travel',    reason: here ? "You're already here." : far, cost: `Moves you in · ${xpNote('travel', 'Athletics')}` },
       { id:'loot',   icon:'◈', label:'Loot',      reason: far || (looted[key] ? 'Already looted.' : null), cost: `Once per zone · ${chance}% safe · a failed roll hurts` },
       { id:'scout',  icon:'👁', label:'Scout',     reason: far || (ts.left <= 0 ? 'No Traversal scouts left today. Refills at midnight.' : null), cost: `1 Traversal scout (${ts.left}/${ts.max} today) · ${xpNote('scout', 'Stealth')}` },
-      { id:'hide',   icon:'◌', label:'Hide',      reason: far, cost: `${ZI.TRAVERSAL_TABLE.hideGameHours} game hour · ${xpNote('hide', 'Stealth')}` },
-      { id:'camp',   icon:'⛺', label:'Make Camp', reason: far || (!ZI.canCampAt(c) ? "You can't make camp here while Fallow Ground is in progress." : null), cost: `24 game hours · sets your rest point · ${xpNote('camp', 'Command')}` },
+      { id:'hide',   icon:'◌', label:'Hide',      reason: far || (hideUses.left <= 0 ? `Ready in ${shortWait(Math.max(0, hideUses.nextAt - ZI.clockNow()))}.` : null), cost: `${ZI.TRAVERSAL_TABLE.hideGameHours} game hours · ${hideUses.left}/${hideUses.max} uses left · each returns after 24h · ${xpNote('hide', 'Stealth')}` },
+      { id:'camp',   icon:'⛺', label:'Make Camp', reason: far || (!ZI.canCampAt(c) ? "You can't make camp here while Fallow Ground is in progress." : !campCooldown.available ? `Ready in ${shortWait(campCooldown.remainingMs)}.` : null), cost: `Until 06:00 next game day · 24h refill after use · sets your rest point · ${xpNote('camp', 'Command')}` },
     ];
   };
   const panelItems = (c) => {
@@ -1093,10 +1108,10 @@ window.SatelliteTraversalScreen = function SatelliteTraversalScreen({ setScreen,
   };
 
   return (
-    <div className="screen-enter" style={{ display:'flex', gap:8, padding:8, height:'100%', overflow:'hidden', position:'relative' }}>
+    <div className="screen-enter" data-trav-layout={!isCampMode && travNarrow ? 'stacked' : 'columns'} style={{ display:'flex', flexDirection: !isCampMode && travNarrow ? 'column' : 'row', gap:8, padding:8, height:'100%', overflowX:'hidden', overflowY: !isCampMode && travNarrow ? 'auto' : 'hidden', position:'relative' }}>
 
       {/* LEFT: Survivor roster + dispatch */}
-      <div style={{ width:240, display:'flex', flexDirection:'column', gap:8, flexShrink:0 }}>
+      <div style={{ width: !isCampMode && travNarrow ? '100%' : 240, order: !isCampMode && travNarrow ? 2 : undefined, minHeight: !isCampMode && travNarrow ? 260 : undefined, display:'flex', flexDirection:'column', gap:8, flexShrink:0 }}>
         {isCampMode ? (
         <div className="panel" style={{ flex:1, display:'flex', flexDirection:'column', overflow:'hidden' }}>
           <div className="panel-title">Available Survivors</div>
@@ -1157,7 +1172,7 @@ window.SatelliteTraversalScreen = function SatelliteTraversalScreen({ setScreen,
       </div>
 
       {/* CENTER: Satellite map */}
-      <div style={{ flex:1, display:'flex', flexDirection:'column', gap:8, minWidth:0, overflow:'hidden' }}>
+      <div data-trav="map-column" style={{ flex: !isCampMode && travNarrow ? '0 0 auto' : 1, order: !isCampMode && travNarrow ? 1 : undefined, display:'flex', flexDirection:'column', gap:8, minWidth:0, overflow:'hidden' }}>
         {/* Map type tabs */}
         {isCampMode ? (
         <div className="panel" style={{ display:'flex', alignItems:'center', flexShrink:0 }}>
@@ -1456,7 +1471,7 @@ window.SatelliteTraversalScreen = function SatelliteTraversalScreen({ setScreen,
       </div>
 
       ) : (
-        <div data-trav="side-panel" style={{ width:300, display:'flex', flexDirection:'column', gap:8, flexShrink:0 }}>
+        <div data-trav="side-panel" style={{ width:300, display: travNarrow ? 'none' : 'flex', flexDirection:'column', gap:8, flexShrink:0 }}>
           <div className="panel" style={{ flex:1, display:'flex', flexDirection:'column', overflow:'hidden' }}>
             <div className="panel-title">Zone Details</div>
             <div style={{ flex:1, overflow:'auto', padding:10 }}>{sheetMode ? null : renderZonePanel()}{sheetMode && <div style={{ fontFamily:'var(--font-mono)', fontSize:10, color:'var(--text3)', textAlign:'center', padding:20 }}>Zone details open as a sheet at the bottom of the screen.</div>}</div>

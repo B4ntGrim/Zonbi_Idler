@@ -11,8 +11,8 @@ function StatLevelingScreen() {
   const ZI = window.ZI;
   const ZI_ART = window.ZI_ART;
 
-  const [gameNow, setGameNow] = React.useState(() => ZI.getGameTime()); // shared global clock
-  const gameSecond = gameNow.second, gameDay = gameNow.day;
+  const [gameNow, setGameNow] = React.useState(() => ZI.getCalendar()); // shared game calendar
+  const gameSecond = gameNow.hh * 3600 + gameNow.mm * 60, gameDay = gameNow.day;
   const gameMinute = Math.floor(gameSecond / 60);
   const gameHour = Math.floor(gameSecond / 3600);
   const [weather, setWeather] = React.useState('Rain');
@@ -32,9 +32,9 @@ function StatLevelingScreen() {
     });
   }, []);
 
-  // Tick game clock: shared rate from game/core.js (1 game hour = 6 real seconds).
+  // Tick game clock: shared rate from game/core.js (1 game hour = 1 real minute).
   React.useEffect(() => {
-    const t = setInterval(() => setGameNow(ZI.getGameTime()), 1000);
+    const t = setInterval(() => setGameNow(ZI.getCalendar()), 1000);
     return () => clearInterval(t);
   }, []);
 
@@ -188,7 +188,7 @@ function StatLevelingScreen() {
                 {timeLabel}
               </div>
               <div style={{ fontFamily:'var(--font-mono)', fontSize:9, color:'var(--text3)', marginTop:2 }}>
-                DAY {gameDay} · {isNight ? '🌙 NIGHT' : isDusk ? '🌇 DUSK' : '☀️ DAY'}
+                YEAR {gameNow.year} · DAY {gameDay} · {isNight ? '🌙 NIGHT' : isDusk ? '🌇 DUSK' : '☀️ DAY'}
               </div>
             </div>
             {/* 24h bar */}

@@ -277,22 +277,28 @@ ZI.WanderEngine = {
   _run(now, live) {
     const out = [];
     if (!this._lead(now, live)) return out; // another tab is running this save; this one only displays it
+    const offlineWindow = !live && ZI._offlineWanderPending ? ZI._offlineWindow : null;
+    if (offlineWindow) ZI._offlineWanderPending = false;
+    const tickNow = offlineWindow ? offlineWindow.to : now;
     const s = ZI.getWanderRun();
-    if (!s.active) { s.lastTickAt = now; ZI.saveWanderRun(s); return out; }
-    if (!s.lastTickAt) { s.lastTickAt = now; ZI.saveWanderRun(s); return out; }
-    const newMs = Math.max(0, now - s.lastTickAt);
-    if (newMs < ZI.WANDER_SIM_TABLE.minStepSec * 1000 || s.paused) return out; // keep the clock: no time is dropped
+    if (!s.active) { s.lastTickAt = offlineWindow ? offlineWindow.now : now; ZI.saveWanderRun(s); return out; }
+    if (!s.lastTickAt) { s.lastTickAt = offlineWindow ? offlineWindow.now : now; ZI.saveWanderRun(s); return out; }
+    const from = offlineWindow ? Math.max(s.lastTickAt, offlineWindow.from) : s.lastTickAt;
+    const newMs = Math.max(0, tickNow - from);
+    if (s.paused) { if (offlineWindow) { s.lastTickAt = offlineWindow.now; ZI.saveWanderRun(s); } return out; }
+    if (newMs < ZI.WANDER_SIM_TABLE.minStepSec * 1000 && !(s._carryMs > 0)) return out; // a saved backlog can drain at the same clock instant
     // FX2 (Q2, U2): one return processes at most 24 h in total, carried time included. Time beyond the cap is discarded.
     const pending = Math.min(ZI.WANDER_SIM_TABLE.offlineCapSec * 1000, newMs + (s._carryMs || 0));
     const dtMs = Math.min(pending, newMs);           // the new part of the window
     s._carryMs = pending - dtMs;                      // the backlog part (never above the cap); no new saved field (P1)
     const dt = dtMs / 1000;
-    s._simNow = now - pending; // H1 (A1a): the engine seeds the simulated clock at the start of the window it runs
-    s.lastTickAt = now;
+    s._simNow = tickNow - pending; // H1 (A1a): the engine seeds the simulated clock at the start of the window it runs
+    s.lastTickAt = offlineWindow ? offlineWindow.now : tickNow;
     const away = live ? ZI.WanderSim.emptySummary() : (s.awaySummary || ZI.WanderSim.emptySummary());
     // BAL-A D2b: damage extends an injury only in a 'present' window: the page is visible, this session has credited a tick, and the window is one tick long.
     ZI._injPresent = !!(ZI.pageVisible && ZI.pageVisible() && ZI._injLastCredit != null && newMs <= (ZI.INJURY_TABLE ? ZI.INJURY_TABLE.tickCreditCapMs : 0));
     try { ZI.WanderSim.advance(s, dt, away, this.rng || Math.random, out, { watching: !!(live && ZI.retreatWatching && ZI.retreatWatching()) }); } finally { ZI._injPresent = false; }
+    if (offlineWindow && offlineWindow.discardedMs > 0) s._simNow += offlineWindow.discardedMs;
     if (ZI.tryBandageCure) { const used = ZI.tryBandageCure(s); if (used) { const ev = { kind:'injuryTreated', from: used, text:'Field Bandage used — injury treated.' }; out.push(ev); away.injuryTreated = (away.injuryTreated || 0) + 1; } } // BAL-A D4b
     if (!live) s.awaySummary = away;
     ZI.saveWanderRun(s);

@@ -91,7 +91,7 @@ ZI._grantJob = function(j) {
   return true; // unknown job type — don't block the queue on it
 };
 // Offline catch-up: walk the queue forward through elapsed real time, respecting slots.
-ZI._settleJobs = function(now) {
+ZI._settleJobs = function(now, offlineWindow) {
   const s = ZI._readJobsRaw();
   const completed = [];
   let guard = 0;
@@ -121,6 +121,10 @@ ZI._settleJobs = function(now) {
       if (free > 0) { x.status = 'active'; x.startedAt = now; free--; }
     });
   });
+  // Shift unfinished timers across the discarded part of a long absence so it cannot accrue later.
+  if (offlineWindow && offlineWindow.discardedMs > 0) {
+    s.jobs.forEach(j => { if (j.status === 'active' && j.startedAt != null) j.startedAt += offlineWindow.discardedMs; });
+  }
   ZI.saveJobs(s);
   return completed;
 };
@@ -135,4 +139,4 @@ ZI.jobRemaining = function(j) {
 ZI.jobsByType = function(type) { return ZI.getJobs().jobs.filter(j => j.type === type); };
 ZI.cancelJob = function(id) { const s = ZI.getJobs(); s.jobs = s.jobs.filter(j => j.id !== id); ZI.saveJobs(s); ZI._settleJobs(ZI.now()); };
 // The JobEngine ticker (foreground) + one settle on load (offline catch-up).
-ZI.JobEngine = { timer:null, start(){ if(this.timer) return; this.timer=setInterval(()=>{ try{ ZI._settleJobs(ZI.now()); }catch(e){} },1000); } };
+ZI.JobEngine = { timer:null, start(){ if(this.timer) return; this.timer=setInterval(()=>{ try{ ZI.heartbeatOfflineWindow(); ZI._settleJobs(ZI.now()); ZI.settleSchedule(); ZI.settleRouteRuns && ZI.settleRouteRuns(); }catch(e){} },1000); } };

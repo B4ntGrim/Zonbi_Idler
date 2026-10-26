@@ -816,7 +816,7 @@ ZI.Jester = {
     firstMeetingOn: false,                 // S5: off for players until JD1b
     distances: [3, 4, 5, 2, 1],            // G1: search order (Chebyshev, as the Fort placement)
     stayDaysMin: 3, stayDaysMax: 5,        // U35/U38b: 3–5 days, rolled once at the meeting
-    dayMs: ZI.GAME_DAY_MS,                 // one game day on the shared game clock (Oct 16, Sam: 3–5 game days ≈ 7–12 real min)
+    dayMs: ZI.GAME_DAY_MS,                 // CLOCK-01: one game day at the shared rate; Jester stays 3–5 full game days
     weapons: ['bat', 'iron_knuckles', 'pocket_knife'],
     equip: [{ id: 'old_padded_jacket', slot: 'vest' }, { id: 'handmade_pouch', slot: 'backpack' }], // B3: empty slot, else stash
     carried: [{ id: 'scout_kit', qty: 1 }, { id: 'ration', qty: 2 }],                            // B3: go with the survivor
@@ -1183,7 +1183,12 @@ ZI.applyInjury = function(source, state) {
   return ZI.getInjury();
 };
 ZI.setInjury = function() { return ZI.applyInjury('fort'); };                      // legacy signature (the Fort guard); length now follows O5
-ZI.treatInjury = function(days) { const j = ZI.getInjury(); if (!j) return; j.remainingMs = Math.max(0, j.remainingMs - days * ZI.GAME_DAY_MS); if (j.remainingMs <= 0) ZI._clearInjury(); else ZI._wj(ZI.INJURY_KEY2, j); }; // no callers after BAL-A (Make camp no longer cures)
+ZI.treatInjury = function(playMinutes) {
+  const j = ZI.getInjury(), playMs = Number(playMinutes) * 60 * 1000;
+  if (!j || !Number.isFinite(playMs) || playMs <= 0) return;
+  j.remainingMs = Math.max(0, j.remainingMs - playMs);
+  if (j.remainingMs <= 0) ZI._clearInjury(); else ZI._wj(ZI.INJURY_KEY2, j);
+}; // O5: treatment subtracts real play minutes; Make camp does not treat injuries
 ZI.cureInjury = function(source) { if (!ZI.getInjury()) return false; ZI._clearInjury(); ZI._lastInjuryCure = source || 'cure'; return true; }; // interface for Batch B's Rest roll
 ZI.injuryOnDamage = function(hp) {
   if (!ZI._injPresent || !(hp > 0)) return;

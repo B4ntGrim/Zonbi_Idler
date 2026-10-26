@@ -22,6 +22,16 @@
 - **A cooking station at base does the cooking**, so food cooks while the survivor wanders and while the player is away (offline under the 24 h cap).
 - `[CONCEPT Oct 21]` The cooking station **ties into the tutorial**, and the player can **improve it through a shop unlock**.
 
+## 1b. Links from FOOD-01 (Oct 26)
+
+Recorded in `food-01-nutrition-slice.md` §3b; listed here so this slice picks them up when unparked:
+- **F3** raisins are dried grapes: the first simple recipe.
+- **F10** hidden achievement "Can I get a number one?" (burger, fries, cola within one game hour) is inactive until this slice adds burgers and fries, which carry both Food and Component tags.
+- **F13** dishes beat ingredients through nutrition plus a bonus (e.g. raw potato about 5; steak and potatoes about 35 plus comfort or a short buff) `[PROPOSED]`. Fits C6.
+- **F14** food-group numbers are set in this slice.
+- **F17** the variety-first auto-eat Shop unlock sits beside "Cook greatest to least".
+- **Conflict `[OPEN]`:** F5 (Oct 26) says food comfort is capped at −10 a day; §1a decided 5 per real day (audited in §2b). Sam to confirm which stands.
+
 ## 2. Proposed rules `[PROPOSED]`
 
 | # | Rule | Why |

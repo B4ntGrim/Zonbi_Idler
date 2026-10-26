@@ -375,7 +375,10 @@ ELDER: "That mark is not ours. Somebody built this. Find out who."
 - **B. The Escort.** The elder asks the survivor to escort a trader to the Lodge. Introduces the neutral broker first; slower link to the Concordance.
 - **C. The Patrol.** An Iron March patrol arrives at the gate as the survivor turns in the quest. Raises the stakes at once, but introduces a third faction before the second.
 
-`[OPEN]` Which beat, and the elder's name.
+~~`[OPEN]` Which beat, and the elder's name.~~ **Oct 26 (Sam):** keep "The Sealed Crate" as drafted `[DECIDED Oct 26]`. The elder and the Elder Jester are different people; **the elder's name stays `[OPEN]`**.
+- **MS1 `[DECIDED Oct 26]`:** turning in Fallow Ground is the first story milestone.
+- **MS2 `[DECIDED Oct 26]`:** after the turn-in, a chapter card shows once: title "Chapter One: Fallow Ground", 2–3 story lines from this beat, a summary (days survived, cells cleared, kills, policy), the hook line, a Continue button. The survivor keeps working behind it; it closes itself after a timer `[PROPOSED 20 s]`. *Why:* the one moment that earns the player's attention (rules §4.5).
+- Step 5's "Concordance introduction event" is now designed as a concept: `concordance-introduction-concept.md` (CI1–CI13, Oct 26).
 
 ### 12.3 Extra gear wear near the Fort after an attack
 

@@ -84,9 +84,9 @@ const arm = (id) => { const m = doBody.search(new RegExp(`if \\(id === '${id}'[^
   check('4: with no drawable tiers recorded the range reads "—", never an invented list', ZI.hideThreats(cell, { scroll:0 }).range === 'F' || ZI.hideThreats(cell, { scroll:0 }).range === '—', ZI.hideThreats(cell, { scroll:0 }).range);
   check('4: screen — the Hide arm reads ZI.hideThreats and the panel "Threats" line shows the last Hide range', /ZI\.hideThreats\(cell\)/.test(arm('hide')) && /line\('Threats'/.test(trav)); }
 
-// ── 5: Hide advances the world clock by 1 game hour and names no zombie kinds or counts ──
+// ── 5: Hide advances the world clock by 12 game hours and names no zombie kinds or counts ──
 { const { ZI } = mkEnv(); const g0 = ZI.gameTotalSeconds(); ZI.passTime(ZI.TRAVERSAL_TABLE.hideGameHours); const g1 = ZI.gameTotalSeconds();
-  check('5: TRAV_HIDE_GAME_HOURS = 1 and passTime moves the world clock by exactly 3,600 game s', ZI.TRAV_HIDE_GAME_HOURS === 1 && g1 - g0 === 3600, g1 - g0);
+  check('5: TRAV_HIDE_GAME_HOURS = 12 and passTime moves the world clock by exactly 43,200 game s', ZI.TRAV_HIDE_GAME_HOURS === 12 && g1 - g0 === 43200, g1 - g0);
   const hd = arm('hide');
   check('5: screen — the Hide arm calls passTime(ZI.TRAVERSAL_TABLE.hideGameHours)', /ZI\.passTime\(ZI\.TRAVERSAL_TABLE\.hideGameHours\)/.test(hd));
   const out = ZI.hideThreats(ZI.worldCell(1, 1, 'scavenge'), { scroll:2500 }), names = (ZI.BESTIARY || []).map(z => z.name);
@@ -130,7 +130,7 @@ const arm = (id) => { const m = doBody.search(new RegExp(`if \\(id === '${id}'[^
 // ── 9: Make camp leaves HP and healsUsed unchanged; Command XP once per real day; camp cell still stored ──
 { const cp = (() => { const a = doBody.indexOf("} else if (id === 'camp') {"), b = doBody.indexOf("} else if (id === 'hide')", a); return doBody.slice(a, b); })();
   check('9: screen — the camp arm no longer writes HP or healsUsed (comments ignored)', !/syncWanderState|healsUsed|maxHp/.test(noComments(cp)), cp.length);
-  check('9: screen — the camp cell is still stored (zi_trav_camp) and a saved return still cleared', /writeJ\('zi_trav_camp', p\)/.test(cp) && /clearTravReturn/.test(cp) && /passTime\(24\)/.test(cp));
+  check('9: screen — the camp cell is still stored, saved return is cleared, and the clock wakes at 06:00 next day', /writeJ\('zi_trav_camp', p\)/.test(cp) && /clearTravReturn/.test(cp) && /passTimeToNextMorning\(6\)/.test(cp));
   check("9: screen — Command XP via travEmitOnce('camp', 'any', 'camp', 1)", /travEmitOnce\('camp', 'any', 'camp', 1\)/.test(cp));
   const { ZI, xp, setNow } = mkEnv(); const run = Object.assign(ZI.defaultWanderRun(), { hp:37, healsUsed:2 }); ZI.saveWanderRun(run);
   const r = [ZI.travEmitOnce('camp', 'any', 'camp', 1), ZI.travEmitOnce('camp', 'any', 'camp', 1)]; setNow(new Date(2026, 9, 22, 9).getTime()); r.push(ZI.travEmitOnce('camp', 'any', 'camp', 1));

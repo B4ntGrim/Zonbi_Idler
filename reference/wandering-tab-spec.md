@@ -71,6 +71,8 @@ Weights are relative. "Faction" means a faction NPC is rolled, using 4.4.
 | Heinous | Strip the fallen | scavenging → combat | 15 |
 | Heinous | Zombie group | combat → endurance | 15 |
 
+> **Oct 26 (FOOD-01 F4) `[DECIDED]`:** orchard (apples, Foraging 5; oranges, Foraging 10) and vineyard (grapes, Foraging 12) are variants of "Abandoned farm" and "Undefended field", not new encounters. F7: the "Broken-down vehicle" encounter can roll the rare cola. See `food-01-nutrition-slice.md` §3b.
+
 **Baseline skills** (athletics, endurance, discovery) get a small XP trickle from *every* encounter under *every* policy, and decay at half rate. `[DECIDED as a group, rates PROPOSED]`
 
 **Base skills** (smithing, mechanical, engineering, logistics) also grow from base work: crafting, repairs, building, schedule jobs. Mechanical and engineering additionally appear in the Criminal pool above. `[PROPOSED]`
@@ -497,7 +499,7 @@ Starting examples (names and numbers are placeholders):
 
 | Action | Effect | Cost |
 |---|---|---|
-| Push on | Extends the run, raises encounter tier and rate | Stamina and risk |
+| Push on | Extends the run, raises encounter tier and rate | Nutrition and risk (~~stamina~~: superseded Oct 26, FOOD-01 ST2) |
 | Retreat | Banks loot, returns to base, ends the run safely | Ends the run |
 | Change route | Choose a different route or Traversal square | **Stress** (13.8) |
 
@@ -531,7 +533,7 @@ Failure penalties on "Venture closer" `[PROPOSED]`, scaled by risk tier: HP loss
 **Stress** is a new run resource (0-100). It measures how uneasy the survivor is, and it is the cost of changing route.
 
 **Gains:**
-- **Change route:** a stress cost, plus a **stamina or nutrition** cost (the resource used is `[PROPOSED]`: stamina by default, nutrition on long routes). Costs vary and are tuned over time.
+- **Change route:** a stress cost, plus a ~~**stamina or nutrition**~~ **nutrition** cost (~~the resource used is `[PROPOSED]`: stamina by default, nutrition on long routes~~; superseded Oct 26, FOOD-01 ST1–ST2: no separate stamina meter). Costs vary and are tuned over time.
 - **Unfamiliar ground:** time spent on Traversal squares the survivor does not know how to leave. Stress per minute is high on unexplored or uncleared squares, lower on explored ones, and near zero on cleared ones.
 - **Negative outcomes:** a failed venture, an injury, an ambush, or dropping to low HP add stress.
 
@@ -594,7 +596,7 @@ The paperdoll slots are: **Melee, Helmet, Mask, Body Armor, Gloves, Boots, Pack,
 Comfort items use these existing slots `[PROPOSED]`:
 - **Helmet, Mask, Body Armor, Gloves, Boots:** a comfort version replaces the protective item, so the trade-off is protection against stress. A flower hat sits in the Helmet slot.
 - **Trinket:** the natural slot for a pure stress item. Charge kits no longer use it.
-- **Food:** comfort food reduces stress and ties into the nutrition cost of route changes.
+- **Food:** comfort food reduces stress and ties into the nutrition cost of route changes. Values and daily cap: FOOD-01 F5 (Oct 26) and FOOD-02 §1a.
 - **Melee, Throw, Pack:** no comfort items (carriers provide pockets, Section 14).
 
 There is no separate stat penalty. The cost is that the slot is not holding armor.
@@ -628,7 +630,7 @@ Added from design review. Carrying space comes from the gear the survivor is wea
 - **A second carrier slot, named Belt** `[DECIDED]`, so a player can carry, for example, med kits and scout kits in separate carriers. It holds a **belt pouch, satchel, hip bag or similar**; it is not a second Pack. The paperdoll becomes: Melee, Helmet, Mask, Body Armor, Gloves, Boots, Pack, **Belt**, Trinket, Food, Throw.
 - **Raw crafting materials take up weight only, never pockets** `[DECIDED]`. Pockets are for distinct items: kits, consumables, tools, keys, documents.
 - **Story items take weight only, never pockets** `[DECIDED Oct 1]`, so a full pack can never block a scripted beat (Fort brief 12.6).
-- Food and Throw are quick-use slots holding one stack each. They do not count as pockets.
+- ~~Food and Throw are quick-use slots holding one stack each.~~ **Superseded in part Oct 26 (FOOD-01 F18):** Throw holds one stack; Food holds one stack, or a food container (lunch bag, lunch pack, cooler) holding several food types with no stack limit inside. They do not count as pockets.
 
 ### 14.2 Carriers: pockets and weight `[PROPOSED numbers]`
 

@@ -77,3 +77,11 @@ Full table and reasons: Fort brief 12.6.
 
 Still open from Section 2: A to E, the returned med kit, and the story beat choice.
 
+## 6. Open for playtest and economy review (added Oct 26)
+
+| Item | Starting value | Why it is here |
+|---|---|---|
+| CI11 Diplomat tiers for the Concordance crate | low < 10, mid 10–19, high 20+; Criminal +5 per tier | Sam asked to keep it open for playtest |
+| F12 Scavenging XP per background find | `[OPEN]` | Frequent finds could inflate Scavenging and stop its decay |
+| F11 background find rate | proposed one per 10 game minutes (= 10 real seconds) | Six times the encounter rate; about 8,600 metal a real day of Wandering |
+| O3a pacing | 60 s (round 8 recommended 90 s) | Steady-state field time at 60 s is under the band |

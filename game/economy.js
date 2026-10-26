@@ -25,15 +25,16 @@ ZI.toRecyclerItem = function(it) {
   if (/gas|fuel/.test(n)) outputs.fuel = Math.max(1, Math.round(v * 0.3));
   if (/bandage|medical|med|pill|syringe/.test(n)) outputs.medical = Math.max(1, Math.round(v * 0.3));
   if (Object.keys(outputs).length === 0) outputs.metal = Math.max(1, Math.round(v * 0.5)); // generic salvage → metal
+  const bankedAt = ZI.buffMoment ? ZI.buffMoment() : ZI.clockNow(); // simulated extraction time during catch-up
   return {
-    id: 'w' + ZI.clockNow() + Math.floor(ZI.roll('ids') * 1e6), // H1 (A2): live = Math.random(); harness = seeded 'ids' stream
+    id: 'w' + bankedAt + Math.floor(ZI.roll('ids') * 1e6), // H1 (A2): live = Math.random(); harness = seeded 'ids' stream
     name: it.name || 'Salvage',
     tier,
     rarity: it.rarity || 'Common', // preserve canonical rarity word for tierOf()
     weight: typeof it.weight === 'number' ? it.weight : ZI.salvageWeight(v), // canonical salvage weight (Batch 3A)
     outputs,
     fromWandering: true,
-    bankedAt: ZI.clockNow(), // for "Newest banked" sort
+    bankedAt, // for "Newest banked" sort
   };
 };
 ZI.bankWanderLoot = function(items) {

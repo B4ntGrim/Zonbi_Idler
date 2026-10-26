@@ -115,6 +115,23 @@ The slice turns those results into rules, in **three batches** (Sam, Oct 19):
 
 **Parity note (for O5/O6):** the injury is the **first deliberate online/offline difference.** Every other system follows "one rule online and offline" (FX2, H1, DC-1). Batch A's parity check (acceptance 7) must list the injury as the named exception.
 
+## 3b. Open questions answered (Sam, Oct 26)
+
+| # | Decision | Why |
+|---|---|---|
+| B1 | **Main balance target: Downings per km** `[DECIDED Oct 26]`. Field time is a guardrail: tuning may not push it below about 50% | Downings are what the player feels; the guardrail stops "fewer Downings" coming from more time in bed |
+| B2 | **Rule 5 scope: closed** `[DECIDED Oct 26]`. Already covered by BAL-A (policy events pause on the walk home, acceptance check 1) | Nothing left to decide |
+| B3 | **Raise starting (T0) durability so gear lasts a full 8 h absence** `[DECIDED Oct 26]`. Values go in a later batch, not BAL-A. Repair cost revisited later | Gear breaking while away punishes being away |
+| B4 | **Automatic repair `[PARKED]`** as a quality-of-life Shop idea (matches §4) | Tests showed it barely changes balance |
+| B5 | **Broken penalty: mild for now; tune in playtests** `[DECIDED Oct 26]`. Steers the tuning of A4's penalties (A4 was set "between mild and harsh", Oct 19) toward the mild end; A4's values stand until a playtest batch changes them | Broken is only 2–5% of the time at current rates |
+| B6 | **Codex Option B** `[DECIDED Oct 26]`: `WANDER_SIM_TABLE.codexFromWandering = true`; an entry unlocks on a fight, not an evade (tutorial spec 7.3); 13 Discovery XP once per new entry. Dependency met: BEST1 is CLOSED (Oct 17) and the flag exists in `game/wandering.js` (currently `false`). Flipping it belongs to a batch, not this document change | The Codex fills from where most zombies are met |
+
+**Still needed to close BAL-A:** Sam's TEST SAVE smoke test; the 30-day H2 run; Sam's review of the BAL-A report scope note §4.
+
+**Audit notes (Oct 26, for Sam):**
+- Broken release at 1 in 6 per rest means about 58% of Broken spells end in the forced release (with 5–10% durability loss). Check that against B5 "mild" in the playtest.
+- The injury timer's online/offline difference (O5/O6) is the one named parity exception. The 30-day run must treat it as such, or the comparison fails.
+
 ## 4. Parked (not in this slice)
 - the friendly-group trade screen;
 - full animations;

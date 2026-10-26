@@ -28,6 +28,8 @@
 
 ## 3. Open
 
+- **Circuit decisions C1–C8 `[DECIDED Oct 25]`** live in `circuit-expedition-concepts.md` (Decisions): real-time duration with game time in small text, repeat by default, Shop "one loop only" toggle, safe ending at the start cell, first stop rules (HP, stress, pack), rest through the night by default, rule priority, return report. R1's "loops it while idle" now follows C2–C4. **C10–C21 `[DECIDED Oct 26]`:** the first circuit version is foot and bike only, with no fuel, battery or cargo use (C21); scavenge and rest stops only (C15–C16). Whether a bike ever uses fuel stays open below.
+
 - `[OPEN]` Battery capacity (how many route loops per charge) and generator fuel cost.
 - `[OPEN]` How bikes and vehicles are obtained (crafted, found, quest), and whether a bike uses fuel.
 - `[OPEN]` `[CODE]` How Routes works today (route cards, stops, dead buttons from PF6), so the builder reuses it.

@@ -5,7 +5,7 @@ const ORDER = ['core','world','save','stats','items','crafting','combat','factio
 const src = (await readFile('bestiary-data.js')) + '\n' + (await Promise.all(ORDER.map(m => readFile('game/' + m + '.js')))).join('\n');
 const activeSrc = await readFile('game/active.js');
 const results = []; const check = (n, c, x) => results.push([c ? 'PASS' : 'FAIL', n, x === undefined ? '' : String(x)]);
-const T0 = 1790500000000, H = 3600000, DAY = 24 * 6000; // Clock unify (authorized by Sam, Oct 16): the Jester's stay is counted in game days
+const T0 = 1790500000000, H = 3600000, DAY = 24 * 60000; // CLOCK-01: the Jester's stay remains 3–5 full game days
 // mkEnv: a fresh browser-like environment. store0 = saved keys; on = switch for this environment only; map = optional cell-state function.
 const mkEnv = (store0, opt) => {
   opt = opt || {};

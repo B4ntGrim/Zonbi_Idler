@@ -96,6 +96,19 @@ const savedWithDueJobs = (jobsFn) => {
   check('Control: a live recycle grant does reset the Mechanical clock', E.ZI.skillDecayState('mechanical').lastActiveUtc === T0);
 }
 
+// CLOCK-01: joint chronological replay must retain the same offline craft rule.
+{
+  const E = mkEnv({ zi_world_seed:'777' }), Z = E.ZI, start = T0 - 10000, old = T0 - 3600000;
+  const recipe = Z.CRAFT_RECIPES.find(r => r.kind === 'gear' && Z.ACTION_XP['craft.smith'].split.mechanical);
+  Z.enqueueJob('craft', recipe.id, 1, {}, 1);
+  const jobs = Z._readJobsRaw(); jobs.jobs[0].startedAt = start; Z.saveJobs(jobs);
+  Z.saveWanderRun(Object.assign(Z.defaultWanderRun(), { active:true, hp:100, lastTickAt:start, _simNow:start }));
+  E.store.zi_offline_last_seen = String(start);
+  E.store.zi_skill_decay = JSON.stringify({ mechanical:{ lastActiveUtc:old, floorXp:0, floorProgress:{}, lastSettle:T0 } });
+  const before = Z.getStatXp().mechanical || 0, after = mkEnv(E.store);
+  check('CLOCK-01: overlapping Wandering/craft catch-up grants craft XP without resetting its offline decay clock',
+    after.ZI.getStatXp().mechanical > before && after.ZI.skillDecayState('mechanical').lastActiveUtc === old);
+}
 let pass = 0; for (const [r, n, x] of results) { if (r === 'PASS') pass++; log(r + '  ' + n + '  ' + (r === 'FAIL' ? x : '')); }
 log(pass + '/' + results.length + ' load-regression checks passed');
 })();

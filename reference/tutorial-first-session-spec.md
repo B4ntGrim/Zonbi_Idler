@@ -128,6 +128,7 @@ The current Traversal tutorial has four steps: the grid, "You are here", moving 
 - When the cell is cleared, the quest log says to return to the Fort. **The player must return for the story to continue** `[DECIDED]`.
 - The turn-in scene continues the story (`wandering-fort-scene.md`, still to be written).
 - The **Factions page opens**, with a clear moment (highlight the tab, a short line). The Hearthguard appear by name; the other factions remain unnamed groups until their events.
+- **Oct 26 `[DECIDED]` (MS1, MS2):** the turn-in is the first story milestone, closed by a one-time chapter card "Chapter One: Fallow Ground" (`wandering-fort-scene.md` §12.2). The turn-in scene is "The Sealed Crate".
 
 ### End of first session
 The player should now have: chosen a policy, met a discovery prompt, seen a return report, learned pockets, reached the Fort, done the quest, and unlocked the Factions page. Total target: **20-30 minutes**.
@@ -179,7 +180,7 @@ Each tab tutorial fires the **first time the player opens that tab** (per save),
 | Routes | First open. A new game starts on Traversal (3.1) `[DECIDED]`; `[CODE]` the current Routes default start screen is a bug for Code to fix | First-open tutorial (7.4) |
 | Schedule | Parked feature. Its tutorial is written in the batch that builds it | One-line placeholder until then (7.5) |
 | Market | Parked feature. Its tutorial is written in the batch that builds it | One-line placeholder until then (7.6) |
-| Active/Idle, Auto-Repeat | Introduced on Shop unlock `[DECIDED]` | One short step when unlocked in the Shop. Written in the Shop batch (parked); not mentioned in the Routes tutorial |
+| Active/Idle, Auto-Repeat | Introduced on Shop unlock `[DECIDED]` | One short step when unlocked in the Shop. Written in the Shop batch (parked); not mentioned in the Routes tutorial. **Superseded in part `[DECIDED Oct 25]`, C9:** once circuits take over Idle run, repeating is free (C2) and "one loop only" is the Shop unlock (C3); until then, predefined Routes keep Auto-Repeat as a Shop unlock. Active/Idle is unchanged. See `circuit-expedition-concepts.md`. |
 
 ---
 
@@ -265,7 +266,7 @@ All counters are per save, written by the same seeded combat resolution, so live
 
 ### 7.4 Routes (3 steps)
 
-`[CODE]` Pick a biome, then a route card (risk, RMAT tier, loot range, recommended level, success chance; cards shift toward danger with global threat). Each route is a chain of stops resolved by type. Launching starts a timed run; when it ends, **Last Run** shows the per-stop log with **Claim** (banks loot to the Recycler) and **Send Again**. The success formula is a prototype heuristic (Development Status 8.4). Active/Idle run modes and Auto-Repeat are Shop unlocks `[DECIDED]`; the Routes tutorial does not mention them (see 6.1).
+`[CODE]` Pick a biome, then a route card (risk, RMAT tier, loot range, recommended level, success chance; cards shift toward danger with global threat). Each route is a chain of stops resolved by type. Launching starts a timed run; when it ends, **Last Run** shows the per-stop log with **Claim** (banks loot to the Recycler) and **Send Again**. The success formula is a prototype heuristic (Development Status 8.4). Active/Idle run modes and Auto-Repeat are Shop unlocks `[DECIDED]`; the Routes tutorial does not mention them (see 6.1). **Superseded in part `[DECIDED Oct 25]`, C9:** once circuits take over Idle run, repeating is free (C2) and "one loop only" is the Shop unlock (C3); until then, predefined Routes keep Auto-Repeat as a Shop unlock. Active/Idle is unchanged. See `circuit-expedition-concepts.md`.
 
 | Id | Title | Body |
 |---|---|---|
@@ -359,7 +360,7 @@ Record, locally and only with consent: tutorial step completed or skipped, polic
 6. Should the tab bar hide unopened tabs, or show them locked?
 7. Should the first policy choice be free of the cooldown? (Proposed: yes.)
 8. ~~**Routes:** when is the Routes tab introduced?~~ **Resolved `[DECIDED]`:** a new game starts on Traversal (3.1). The code's Routes default is a bug for Code.
-9. ~~**Routes:** should the tutorial teach Active/Idle and Auto-Repeat?~~ **Resolved `[DECIDED]`:** they are Shop unlocks, taught by a short step on unlock, written in the Shop batch (6.1).
+9. ~~**Routes:** should the tutorial teach Active/Idle and Auto-Repeat?~~ **Resolved `[DECIDED]`:** they are Shop unlocks, taught by a short step on unlock, written in the Shop batch (6.1). **Superseded in part `[DECIDED Oct 25]`, C9:** once circuits take over Idle run, repeating is free (C2) and "one loop only" is the Shop unlock (C3); until then, predefined Routes keep Auto-Repeat as a Shop unlock. Active/Idle is unchanged. See `circuit-expedition-concepts.md`.
 10. ~~**Stats:** are the sample panels in the first release?~~ **Resolved `[DECIDED]`:** shown with a visible "Preview" label; no tutorial step mentions them (7.2).
 11. ~~**Codex:** what unlocks an entry; are stats canonical?~~ **Resolved `[DECIDED]`:** unlocks when fought; stats read from the canonical enemy table; entries add a player record `[PROPOSED]` (7.3). Still `[OPEN]`: times downed by a type, best weapon used, headshots (7.3 table).
 12. ~~**Codex:** is the danger rating for players?~~ **Resolved `[DECIDED]`:** yes, a simple label derived from canonical enemy data (7.3).

@@ -235,3 +235,9 @@ Each is documented here only; none is implemented in this slice. Each needs Sam'
 - **Advance by consumed time** (A1a): the simulation's clock moves only by the time the simulation actually spent. It never jumps to match the machine, so a slow machine cannot change the outcome.
 - **Seams with a live default** (A2): a hook that returns exactly today's behavior in the game and a controlled value in tests. You get testability without changing what players see.
 - **Diagnose, then fix:** check 15's cause was identified (F8) before H1 was scoped to remove it.
+
+## 12. Proposed milestone metric (MS3, Oct 26) `[PROPOSED]`
+
+Report per run whether MS1 (turning in Fallow Ground) is reached, game days to reach it, and Downings and retreats before it. A run that never reaches it is flagged as a possible dead end.
+
+**Conflict `[OPEN]`:** H2 scope (D3) excludes Fort scenes ("No Fallow Ground quest"). MS3 needs a scope change, or a proxy such as "cells cleared and distance at which the Fallow Ground goal would be met". Sam to choose when the next harness batch is drafted.

@@ -18,15 +18,15 @@
 <script src="game/crafting.js?v=1791700100000"></script>
 <script src="game/combat.js?v=1791700100000"></script>
 <script src="game/factions.js?v=1791700100000"></script>
-<script src="game/camp.js?v=1791700100000"></script>
-<script src="game/jobs.js?v=1791700100000"></script>
-<script src="game/economy.js?v=1791700100000"></script>
-<script src="game/wandering.js?v=1792504400000"></script>
+<script src="game/camp.js?v=20261025-clock-parity"></script>
+<script src="game/jobs.js?v=20261025-clock-parity"></script>
+<script src="game/economy.js?v=20261025-clock-parity"></script>
+<script src="game/wandering.js?v=20261025-clock-parity"></script>
 <script src="game/fort.js?v=1791700100000"></script>
 <script src="game/active.js?v=1792532500000"></script>
-<script src="game/routes.js?v=20261023-solo-preparation"></script>
+<script src="game/routes.js?v=20261025-clock-parity"></script>
 <script src="game/survival-data.js?v=1791700100000"></script>
-<script src="game/bootstrap.js?v=1791918000000"></script>
+<script src="game/bootstrap.js?v=20261025-clock-parity"></script>
 <script src="bestiary-data.js?v=1791700100000"></script>
 <script src="pixel-art.js?v=1791700100000"></script>
 <script src="zombie-sprites.js?v=20261024-allart"></script>
@@ -341,9 +341,9 @@ function TopBar({ mode, screen, setScreen, resources, threatLevel, worldEvent })
     return () => clearInterval(t);
   }, []);
 
-  const gameNow = ZI.getGameTime(); // shared game clock (game/core.js); `time` ticking each second re-renders this
-  const gameDay = gameNow.day;
-  const gameClock = String(Math.floor(gameNow.second / 3600)).padStart(2,'0') + ':' + String(Math.floor(gameNow.second / 60) % 60).padStart(2,'0');
+  const gameNow = ZI.getCalendar(); // shared calendar; `time` ticking each second re-renders this
+  const gameDay = gameNow.day, gameYear = gameNow.year;
+  const gameClock = String(gameNow.hh).padStart(2,'0') + ':' + String(gameNow.mm).padStart(2,'0');
   const isCamp = mode === 'camp';
   const tabs = isCamp ? [
     ['camp-main','Overview'], ['camp-schedule','Schedule'], ['traversal','Traversal'], ['marketplace','Market'], ['rmat-crafting','Crafting'],
@@ -386,7 +386,7 @@ function TopBar({ mode, screen, setScreen, resources, threatLevel, worldEvent })
         </div>
         <button onClick={() => setDrawer(true)} aria-label="Current screen, open menu" style={{ flex:1, minWidth:0, height:'100%', padding:'0 10px', display:'flex', flexDirection:'column', justifyContent:'center', alignItems:'flex-start', background:'none', border:'none', cursor:'pointer', textAlign:'left' }}>
           <span style={{ maxWidth:'100%', fontFamily:'var(--font-body)', fontSize:13, letterSpacing:'0.12em', textTransform:'uppercase', color:'var(--amber)', whiteSpace:'nowrap', overflow:'hidden', textOverflow:'ellipsis' }}>{cur ? cur[1] : 'Zombie Idler'}</span>
-          <span style={{ fontFamily:'var(--font-mono)', fontSize:9, color:'var(--text3)', whiteSpace:'nowrap' }}>DAY {gameDay} · {gameClock} · <span style={{ color:tColor }}>THREAT {threatLevel}/5</span></span>
+          <span style={{ fontFamily:'var(--font-mono)', fontSize:9, color:'var(--text3)', whiteSpace:'nowrap' }}>YEAR {gameYear} · DAY {gameDay} · {gameClock} · <span style={{ color:tColor }}>THREAT {threatLevel}/5</span></span>
         </button>
         {worldEvent && <EventChip worldEvent={worldEvent}/>}
         {drawer && (
@@ -479,7 +479,7 @@ function TopBar({ mode, screen, setScreen, resources, threatLevel, worldEvent })
         display: 'flex', alignItems: 'center', gap: 12,
       }}>
         <div style={{fontFamily:'var(--font-mono)', fontSize:11, color:'var(--text2)'}}>
-          DAY <span style={{color:'var(--amber)', fontWeight:'bold'}}>{gameDay}</span>
+          YEAR <span style={{color:'var(--amber)', fontWeight:'bold'}}>{gameYear}</span> · DAY <span style={{color:'var(--amber)', fontWeight:'bold'}}>{gameDay}</span>
         </div>
         <div style={{display:'flex', alignItems:'center', gap:5}}>
           <div className="threat-active" style={{
@@ -498,7 +498,7 @@ function TopBar({ mode, screen, setScreen, resources, threatLevel, worldEvent })
       {/* World event ticker — compact chip that opens the full text */}
       {worldEvent && <EventChip worldEvent={worldEvent}/>}
 
-      {/* Time — in-game clock (1 game hour = 6 real seconds) */}
+      {/* Time — in-game clock (1 game hour = 1 real minute) */}
       <div title={`Game time · real time ${time.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}`} style={{padding:'0 14px', fontFamily:'var(--font-mono)', fontSize:11, color:'var(--text3)', flexShrink:0}}>
         {gameClock}
       </div>
@@ -3379,8 +3379,8 @@ function RmatCraftingScreen() {
     const h = Math.floor(sec / 3600), m = Math.round((sec % 3600) / 60);
     return `${h}h${m ? ` ${m}m` : ''}`;
   };
-  // Recipe times are in-game seconds, on the shared game clock: 1 game hour = ZI.REAL_MS_PER_GAME_HOUR (6 real s).
-  const craftRealSec = (r) => (r.time || 60) * window.ZI.REAL_MS_PER_GAME_HOUR / 3600000;
+  // Recipe times are in-game seconds, on the shared game clock: 1 game hour = ZI.REAL_MS_PER_GAME_HOUR (60 real s).
+  const craftRealSec = (r) => (r.time || 6) * window.ZI.REAL_MS_PER_GAME_HOUR / 3600000;
   const fmtReal = (sec) => sec < 60 ? `${Math.max(1, Math.round(sec))}s` : `${Math.floor(sec / 60)}m${Math.round(sec % 60) ? ` ${Math.round(sec % 60)}s` : ''}`;
 
   const doCraft = (r) => {

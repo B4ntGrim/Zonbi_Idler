@@ -8,7 +8,7 @@ ZI.SAVE_ACTIVE_KEY = 'zisave_active'; // { mode, slot }
 ZI._readJSON = function(k, d) { try { const v = JSON.parse(localStorage.getItem(k) || 'null'); return v == null ? d : v; } catch (e) { return d; } };
 ZI._gameKeys = function() {
   const out = [];
-  for (let i = 0; i < localStorage.length; i++) { const k = localStorage.key(i); if (k && k.indexOf('zi_') === 0) out.push(k); }
+  for (let i = 0; i < localStorage.length; i++) { const k = localStorage.key(i); if (k && k.indexOf('zi_') === 0 && k !== ZI.OFFLINE_LAST_SEEN_KEY) out.push(k); }
   return out;
 };
 ZI._snapshot = function() { const snap = {}; ZI._gameKeys().forEach(k => { snap[k] = localStorage.getItem(k); }); return snap; };
