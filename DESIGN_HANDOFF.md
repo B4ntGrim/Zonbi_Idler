@@ -1,25 +1,34 @@
-# Design handoff — Oct 27
+# Design handoff — Oct 27 (PM)
 
-**Replaces:** the Oct 26 late-evening handoff, archived as `archive/design-handoff-oct26-late.md`.
-**Active batch:** `CURRENT_BATCH.md` = **CLOCK-01** (unchanged). **PF15 comes first** once Sam approves the fix direction.
-**Source:** `reports/docs-oct27/ADDENDUM_OCT27.md` (Sam's Oct 27 morning voice session), applied Oct 27 by `apply_oct27.py`.
+**Replaces:** the Oct 27 morning handoff, archived as `archive/design-handoff-oct27-am.md`.
+**Active batch:** `CURRENT_BATCH.md` = **CLOCK-01** (NOT CLOSED). **PF15 is the next batch** `[DECIDED Oct 26, Sam, Addendum 10]`, ahead of CLOCK-01's remaining manual checks.
+**Source:** Google Docs "Zed Idler — Code Instructions Oct 26 — Addendum 10" and "Addendum 11, 11b–11i" (Sam, Oct 26 late evening, voice), applied Oct 27 by `reports/docs-oct27/apply_oct27_pm.py`. The Oct 27 morning decisions (FISH-01 and others) stay in force; see `archive/design-handoff-oct27-am.md` §1.
 
-## 1. Decisions made (Sam, Oct 27)
-- **FISH-01 fishing:** lives in Traversal (water square → **Fish**; "You are now fishing"; cancel any time); **tick-based** rolls replace the per-cell rest; water type sets the tiers; rod → net → traps (base roll / more per tick / keeps rolling after you leave).
-- **Fish tiers:** more than four, topped by Legendary; Legendary **0.1% per roll** (starting value; supersedes 3%). Seven-tier list proposed.
-- **Fish prep:** the player prepares fish; **descaling knife** is a pocket item that wears down; without it, less nutrition, the loss shrinking with cooking skill.
-- **Gear:** + waders, tackle box, lures and bait, fisher's hat; every recipe mixes metal, wood and plastic; named sub-parts are their own components.
-- **Sunken Blade:** 10 fishing spots → the Lady of the Lake (mistakes you for a squire) → gift five legendary fish → quest → pond scene with "leave it" (blade waits as a Traversal action). **Broken Crown** (Helmet) = unbroken blade at a quality tier; Discovery and loot-quality % clothing push toward Relic. Crown sources: Command check, fight, or a random lake POI.
-- **Naga Sirens:** Black Haven's hidden information network (round-robin background events); Black Haven water quests; Diplomat check by standing and level; pass = trade + hint, fail = fishing spoiled for a while.
-- **Diplomat XP:** trading, negotiating, talking past NPCs; successes only.
-- **FOOD-02:** smoker, cook basin, kettle pot (art, clickable) `[CONCEPT]`; wood more abundant than metal; **plastics proposed**.
-- **ANIM-01:** retro pixel main character; loot pickup animation, bending at the waist `[CONCEPT]`.
+## 1. Decisions made (Sam, Oct 26 late evening)
+- **PF15 first:** issue `pf15-save-continue-slice.md` as the next batch, ahead of CLOCK-01's manual checks.
+- **Improvised base-tier hazard counters** for every hazard (improvised respirator; improvised radiation suit or medicine): from NPCs, POI and checkpoint loot, and the improvised crafting chain. Closes the BIOME-01 counter gap.
+- **Debriefed Perimeter** hazard row decided (values proposed).
+- **Concordance gear = improvised tier and durability;** its value is the disguise (supersedes Addendum 10's ladder reading).
+- **Legs** paperdoll slot: Melee, Helmet, Mask, Body Armor, Gloves, Legs, Boots, Pack, Belt, Trinket, Food, Throw.
+- **Disguise:** each Concordance piece lowers detection (respirator 25, chest 20, hood 15, legs 15, gloves 10, boots 10 — proposed); full set 5%; none = certain.
+- **Discovered:** −50 standing (proposed), stripped of equipped faction pieces (the one exception to never-lost gear), thrown to an adjacent square that doesn't count against TRAV-02.
+- **Disguise pieces** drop from survey teams (CI14; rates proposed); **chest piece and hazmat suit are separate** Body Armor items.
+- **Inside undetected:** loot stores, steal research, listen in; each action re-rolls detection (proposed).
+- **Prisoner quest** parked.
 
 ## 2. Files changed
-New `reference/parked/fish-01-fishing-concept.md` · `poi-framework-v1-brief.md` ("Fish", numbers table) · `food-01-nutrition-slice.md` (legendary chance) · `parked/djinn-fishing-concept.md` §5 · `parked/food-02-cooking-concept.md` §2d · `wandering-tab-spec.md` (Diplomat XP) · `playtest-findings-oct15.md` (ANIM-01) · `PARKED.md` (Sunken Blade row) · `00-document-index.md` · this file · `reports/docs-oct27/` (addendum, script, pre-change copies, report).
+`pf15-save-continue-slice.md` (status, §3) · `biome-01-chunks-slice.md` (counters, Perimeter row, gap resolved) · `concordance-introduction-concept.md` (CI14 rows and conflict notes, new §2b CI19–CI26, §3) · `wandering-tab-spec.md` (13.8 exception, 14.1 Legs, 14.2, 15.3, paperdoll line) · `trav-01-traversal-slice.md` (TRAV-02e) · new `parked/prisoner-quest-concept.md` · `parked/faction-quests-and-poi-density.md` (pointer) · `00-document-index.md` · this file · `reports/docs-oct27/` (`apply_oct27_pm.py`, `pre-change-pm/`, `DOCS_OCT27_PM_REPORT.md`).
 
 ## 3. Open questions
-**Sam (from today):**
+**Sam (from Addenda 10–11i):**
+- **CI14 total:** the table was "values kept as set, 25% total"; the disguise pieces raise it to about 50%. Allow it, or scale the rates?
+- **CI19 scope:** does "Concordance gear = improvised tier" cover the dart gun, field scanner and sample case (CI14 rarities up to Legendary), or only the wearable pieces?
+- What sits above improvised gear (salvaged military, e.g. the NBC Gas Mask)? Legs pockets (cargo pants)? Disguise for other factions' forts? CI26 loot tables, research items and intel display.
+- **Code (read-only, reuse first):** is the NBC Gas Mask the improvised base respirator or a higher rung? Note: GitHub branch `codex/faction-infiltration-20261026` already holds infiltration code written outside the batch process; reconcile it with CI19–CI26 before any batch.
+
+**Carried from the Oct 27 morning handoff:**
+
+**Sam (Oct 27 morning):**
 - **Prep skill:** the spec has no Cooking skill. Use Foraging, or add Cooking?
 - **Plastics:** seventh base material, or replace one of wood, metal, cloth, medical, electronics, fuel? Fishing gear recipes depend on it.
 - **Components:** no 17-component list was found on E:. Reuse `wiring` for wire and `planks` for wood frame and handle? Where does the 17-component list live?
@@ -31,10 +40,7 @@ New `reference/parked/fish-01-fishing-concept.md` · `poi-framework-v1-brief.md`
 **Sam (11:30 list, not docs):** BAL-A is **implemented but NOT CLOSED** (Oct 20 report: Sam's hands-on TEST SAVE check, the 30-day H2 run, scope note §4) · review the team's new Wandering art in `assets/wandering-characters/` and `assets/wandering-backgrounds/` before building ANIM-01 · routes bug: the vehicle can't be selected (needs a repro at the desk).
 
 **Carried from Oct 26:**
-**Sam (urgent):**
-- **PF15 vs CLOCK-01 order:** ship PF15 first (recommended), or close CLOCK-01's manual checks first. Until PF15 ships, press **Save** before closing.
-- **Hazard counters:** the city and Perimeter counters only drop from Concordance fights. Add basic counters for everyone (the existing NBC Gas Mask; a basic suit or anti-radiation medicine)?
-- **Debriefed Perimeter:** confirm the hazard row (radiation, corrosive storms, hazmat suit, Crystallized RMAT); recorded as proposed.
+**Reminder:** until PF15 ships, press **Save** before closing.
 
 **Sam (other):**
 - BAL-A closure: Broken gear, injury timer and the Solo-save T5 check, on a fresh test save after PF15; the 30-day H2 run; BAL-A scope note §4.
@@ -52,4 +58,4 @@ New `reference/parked/fish-01-fishing-concept.md` · `poi-framework-v1-brief.md`
 **Code (read-only first):** PF15 fingerprint test and fix proposal · W-3 (salvage weights and callers, rarity tiers incl. "relic", walk/jog/run constants) · FOOD-01 O6 with ST3 · round 8 rerun (90 s base, three-meals target) · ANIM-01 current-sway report · whether the test save should have a Jester starter weapon.
 
 ## 4. Next step
-Sam answers the prep-skill and plastics questions; they unblock FISH-01's recipes. Batch order is unchanged: PF15 first (once approved), then CLOCK-01's remaining checks, then a fresh test save for BAL-A closure.
+Issue PF15 as `CURRENT_BATCH.md` (decided), then CLOCK-01's remaining checks, then a fresh test save for BAL-A closure. Sam settles the CI14 total and CI19 scope; the prep-skill and plastics questions still block FISH-01's recipes.

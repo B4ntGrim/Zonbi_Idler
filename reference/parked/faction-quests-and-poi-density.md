@@ -1,6 +1,7 @@
 # Zed Idler — Faction Quests, Travel and POI Density (Design Brief)
 
 **Status:** `[PARKED]` until POI Framework v1 is complete and the faction quest system is scheduled. Concept captured Oct 9; updated Oct 9 (the world expands).
+**Related (Oct 26):** `prisoner-quest-concept.md`, a captivity quest that waits on this brief.
 **Companion to:** `wandering-tab-spec.md` (v2.1), `poi-framework-v1-brief.md`, `wandering-fort-scene.md`, and the parked site briefs (`wandering-church-scene.md`, `wandering-workshop-scene.md`, `wandering-horde-ground-scene.md`).
 **Tags:** `[DECIDED]` confirmed by Sam · `[CONCEPT]` Sam's direction, details not settled · `[PROPOSED]` draft · `[OPEN]` needs a decision
 

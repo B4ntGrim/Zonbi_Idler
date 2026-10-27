@@ -36,8 +36,32 @@
 | Hazmat suit | 4% | Body Armour | Protective gear | Rare | Concordance, hazard protection, heavy |
 | Dart gun | 1.5% | Ranged | Weapon | Rare | Concordance, ranged, needs ammo, quiet |
 | Field scanner | 0.5% (about 1 in 200 wins) | Trinket | Tool | Legendary | Concordance, information, scouting |
+| Gloves (disguise) | 6% `[PROPOSED]` | Gloves | Disguise gear | `[OPEN]` improvised tier (CI19) | Concordance, disguise |
+| Boots (disguise) | 6% `[PROPOSED]` | Boots | Disguise gear | `[OPEN]` improvised tier (CI19) | Concordance, disguise |
+| Hood | 5% `[PROPOSED]` | Helmet | Disguise gear | `[OPEN]` improvised tier (CI19) | Concordance, disguise |
+| Legs piece | 5% `[PROPOSED]` | Legs | Disguise gear | `[OPEN]` improvised tier (CI19) | Concordance, disguise |
+| Chest piece | 3% `[PROPOSED]` | Body Armor | Disguise gear | `[OPEN]` improvised tier (CI19) | Concordance, disguise; separate from the hazmat suit (CI25) |
 
 All five carry the drop-source tag "Concordance survey team". The rarity names must match the tiers in code (W-3 check).
+
+**Oct 26 late evening additions (Sam, Addenda 11g, 11h):** the five disguise pieces above join the table `[DECIDED]`; their rates are `[PROPOSED]` starting values and the audit sets the final ones. They carry the same drop-source tag.
+- **Conflict `[OPEN]` (for Sam):** the table header says "values kept as set" with **25% total** (also quoted in CI6). The added pieces raise the total to about **50%**. Addendum 11g leaves this to the audit; Sam to confirm the total is allowed to change.
+- **Conflict `[OPEN]` (for Sam):** CI19 (Addendum 11) puts Concordance gear on the **improvised tier and durability**, but this table gives the original five rarities Uncommon to Legendary and calls the field scanner "the strongest of the five". Does CI19 cover all Concordance items (dart gun, field scanner, sample case) or only the wearable pieces (respirator, hazmat suit, disguise pieces)?
+
+## 2b. Concordance disguise (Sam, Oct 26 late evening, Addenda 11–11i)
+
+| # | Rule | Tag | Why |
+|---|---|---|---|
+| CI19 | **Concordance gear = improvised tier.** Concordance items keep their own names but sit on the **same tier and durability** as improvised gear (BIOME-01 base-tier counters). Their value is the disguise, not stats. Supersedes Addendum 10's reading that put Concordance gear above improvised. What sits above improvised is `[OPEN]` | `[DECIDED Oct 26, Sam]` | Disguise is the reason to wear them |
+| CI20 | **Disguise:** wearing Concordance pieces lets the survivor enter a Concordance fort or POI undetected. Each piece lowers the chance of being discovered; no full-set requirement; with no pieces detection is certain; a full set leaves 5% (never fully safe). Reductions (data table): respirator (Mask) 25% · chest piece (Body Armor) 20% · hood (Helmet) 15% · legs piece (Legs) 15% · gloves 10% · boots 10% | Rule `[DECIDED Oct 26, Sam]`; values `[PROPOSED]` | Partial sets still help; never a guaranteed safe entry |
+| CI21 | **Discovered in disguise:** Concordance standing drops and the survivor is **thrown out of the POI**. Standing loss −50 (the per-event cap, spec 4.2). Being thrown out never blocks a later retry | Rule `[DECIDED Oct 26, Sam]`; −50 `[PROPOSED]` | No dead ends |
+| CI22 | **Thrown out to an adjacent Traversal square.** A passable, unlocked neighbour chosen deterministically from the seed `[PROPOSED]`. The move does **not** count against the daily movement cap (`trav-01-traversal-slice.md` TRAV-02e, like TRAV-02b) | `[DECIDED Oct 26, Sam]` (Addenda 11c, 11d) | A spent cap must never strand the survivor |
+| CI23 | **Stripped of faction gear:** when discovered, the survivor loses every **equipped Concordance (faction) piece**, then is thrown out (CI22) with the standing loss (CI21). A **deliberate exception** to "equipped gear is never lost" (spec 13.8 Batch 3B note; 15.3), for this case only. Story items are never stripped; non-faction gear is kept | `[DECIDED Oct 26, Sam]` (Addendum 11e) | Sneaking into a faction base should cost something |
+| CI24 | **Disguise piece sources:** hood, chest piece, legs piece, gloves and boots drop from Concordance survey teams via CI14 (§2a) | `[DECIDED Oct 26, Sam]`; rates `[PROPOSED]` (Addendum 11g) | Reuses the existing drop table |
+| CI25 | **Chest piece and hazmat suit are separate items,** both Body Armor: the survivor wears one or the other, a deliberate trade-off between disguise and radiation protection | `[DECIDED Oct 26, Sam]` (Addendum 11h) | A real choice per trip |
+| CI26 | **Actions inside, undetected:** (1) **Loot their stores**: better medical and tech supplies than elsewhere; (2) **Steal research**: notes that advance the Concordance story (the Sealed Crate thread, Fort brief 12.2); (3) **Listen in**: learn where survey teams will be (avoid or ambush them; ties to CI16). Each action makes a fresh detection roll at the disguise's current chance `[PROPOSED]`, so staying longer is riskier; discovery follows CI21–CI23. Player decisions made in person, with a timer and a default of leaving (rules §4.5) | Actions `[DECIDED Oct 26, Sam]`; per-action roll `[PROPOSED]` (Addendum 11i) | Attention goes to a moment that deserves it |
+
+**Prisoner quest** `[PARKED]` (Addendum 11f): a harsher capture version is parked in `parked/prisoner-quest-concept.md`. CI21–CI23 are the light version.
 
 | # | Rule | Tag | Why |
 |---|---|---|---|
@@ -55,3 +79,7 @@ All five carry the drop-source tag "Concordance survey team". The rarity names m
 - `[OPEN]` CI4 other modifiers (policy, scouting the team).
 - `[OPEN]` Failed-check wording and the scene text (terminal style, original).
 - `[OPEN]` Which Concordance gear item drops in CI6.
+- `[OPEN]` CI14 total chance with the disguise pieces (25% → about 50%), and the final piece rates (audit).
+- `[OPEN]` CI19 scope: all Concordance items, or only the wearable pieces? What sits above improvised?
+- `[OPEN]` CI26 loot tables, research items, and how intel is shown; numbers to the audit.
+- `[OPEN]` Does disguise work for other factions' forts later (same pattern)?

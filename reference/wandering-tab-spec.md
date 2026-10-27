@@ -554,6 +554,7 @@ Failure penalties on "Venture closer" `[PROPOSED]`, scaled by risk tier: HP loss
 - Forced Retreat = the survivor can no longer stay in the field and is driven back to Base; the run ends. Current triggers: Stress Breaking, and Downed with no successful Heal/revive (Downed = HP reaches 1 from any damage source, U5). Low HP, zero Heal charges, overload, worn gear and voluntary withdrawal are not triggers by themselves.
 - One canonical path for both triggers. Haul loss: N = eligible non-story haul entries; lossCount = floor(N × 0.50 × factor), factor = scavDropRate(effective Scavenging) / DROP_MAX (1 at ≤1, 0 at ≥50); actual = min(N − 1, lossCount). The most valuable entry (Recycler value) is always kept; ties go to the earliest pickup by stored sequence. Losses are chosen with the seeded RNG. Retained haul banks to the Recycler.
 - Never lost: carried items, kits (partial charges kept), equipped gear (no extra wear), story items.
+- **One exception `[DECIDED Oct 26, Sam, Addendum 11e]`:** a survivor discovered in disguise in a Concordance POI is stripped of every equipped Concordance (faction) piece (`concordance-introduction-concept.md` CI23). Story items and non-faction gear are kept. This is not a Forced Retreat.
 - Returns to Base immediately and begins Base rest. The fixed resume gate is HP ≥ 80% **and** stress < 70 `[DECIDED Oct 16, Sam, PF1]` (was stress < 50); it applies to every rest (Base, checkpoint, camp). Breaking additionally resets stress to 80 (Shaken) `[DECIDED Oct 16, Sam]`; Downed does not. A pending discovery is recorded as `left behind (forced retreat)`. One report row per Forced Retreat.
 - A failed Fort guard attack keeps its Fort-specific costs and is not a Forced Retreat.
 
@@ -593,7 +594,7 @@ Better beds need better tools (workshop tier), so engineering and mechanical mat
 
 **Stress-reducing crafted items `[DECIDED]`:** whimsical and comfort clothing (flower hat, patchwork scarf, woven charm, other fantasy-style clothing) reduce stress gained or speed recovery.
 
-The paperdoll slots are: **Melee, Helmet, Mask, Body Armor, Gloves, Boots, Pack, Trinket, Food, Throw.** `[DECIDED]`
+The paperdoll slots are: **Melee, Helmet, Mask, Body Armor, Gloves, Boots, Pack, Trinket, Food, Throw.** `[DECIDED]` *Updated:* Belt added (14.1); **Legs** added Oct 26 (Sam, Addendum 11). Current list in 14.1.
 
 Comfort items use these existing slots `[PROPOSED]`:
 - **Helmet, Mask, Body Armor, Gloves, Boots:** a comfort version replaces the protective item, so the trade-off is protection against stress. A flower hat sits in the Helmet slot.
@@ -629,7 +630,7 @@ Added from design review. Carrying space comes from the gear the survivor is wea
 - **Equipped gear grants pockets. Unequipped gear grants none.** `[DECIDED]`
 - Every carryable item has a **set size** in pockets, the same everywhere in the game `[DECIDED]`.
 - **Weight still applies.** Pockets limit *how many separate items*; weight limits *how heavy the load is*. This ties into the existing 40 kg carry capacity and the per-item weight (`carryW`) already in the gear data.
-- **A second carrier slot, named Belt** `[DECIDED]`, so a player can carry, for example, med kits and scout kits in separate carriers. It holds a **belt pouch, satchel, hip bag or similar**; it is not a second Pack. The paperdoll becomes: Melee, Helmet, Mask, Body Armor, Gloves, Boots, Pack, **Belt**, Trinket, Food, Throw.
+- **A second carrier slot, named Belt** `[DECIDED]`, so a player can carry, for example, med kits and scout kits in separate carriers. It holds a **belt pouch, satchel, hip bag or similar**; it is not a second Pack. The paperdoll becomes: Melee, Helmet, Mask, Body Armor, Gloves, Boots, Pack, **Belt**, Trinket, Food, Throw. **Updated Oct 26 `[DECIDED, Sam, Addendum 11]`:** a **Legs** armour slot is added: Melee, Helmet, Mask, Body Armor, Gloves, **Legs**, Boots, Pack, Belt, Trinket, Food, Throw. `[OPEN]` whether Legs items (for example cargo pants) grant pockets.
 - **Raw crafting materials take up weight only, never pockets** `[DECIDED]`. Pockets are for distinct items: kits, consumables, tools, keys, documents.
 - **Story items take weight only, never pockets** `[DECIDED Oct 1]`, so a full pack can never block a scripted beat (Fort brief 12.6).
 - ~~Food and Throw are quick-use slots holding one stack each.~~ **Superseded in part Oct 26 (FOOD-01 F18):** Throw holds one stack; Food holds one stack, or a food container (lunch bag, lunch pack, cooler) holding several food types with no stack limit inside. They do not count as pockets.
@@ -638,7 +639,7 @@ Added from design review. Carrying space comes from the gear the survivor is wea
 
 Carriers have **two stats**: *pockets* (distinct items) and *weight capacity* (bulk materials). A rucksack is mostly about weight; a vest is mostly about pockets. That is why the vest gives 6-8 pockets while a rucksack gives 2.
 
-Only three slots hold carriers, because the paperdoll has no legs or belt slot. Helmet, Mask, Gloves, Boots, Trinket, Food, Throw and Melee give **0 pockets**.
+Only three slots hold carriers~~, because the paperdoll has no legs or belt slot~~ (*superseded:* Belt added in 14.1; **Legs** added Oct 26, Addendum 11, pockets `[OPEN]`). Helmet, Mask, Gloves, Boots, Trinket, Food, Throw and Melee give **0 pockets**.
 
 | Carrier | Slot | Pockets | Weight capacity | Note |
 |---|---|---|---|---|
@@ -778,7 +779,7 @@ Hard pays more because it risks more. Timers on prompts, the Fort chance and hex
 > **Oct 19 (Sam):** difficulty modes stay (Easy / Normal / Hard). The Breaking trigger below no longer exists (Broken replaces Breaking). Its replacement is a parked rule: on entering Broken, the most valuable carried item drops one tier. Whether it applies to every mode or only Hard is `[OPEN]`, with item details parked. Do not implement the item-loss line below.
 
 Hard changes consequences, not just numbers:
-- **Forced retreat costs gear.** When stress reaches 100 (Breaking), the survivor permanently loses one random **unequipped, non-story** item from their pockets, on top of the normal loot loss. Equipped gear and story items are never lost this way.
+- **Forced retreat costs gear.** When stress reaches 100 (Breaking), the survivor permanently loses one random **unequipped, non-story** item from their pockets, on top of the normal loot loss. Equipped gear and story items are never lost this way. (The one equipped-gear exception, being discovered in disguise, is not a forced retreat: 13.8 Batch 3B note, CI23.)
 - Easy and Normal keep the forced retreat as a loot loss only.
 
 *Why unequipped and non-story only:* the loss hurts, but it cannot delete a character-defining item or the gear the player is standing in, so the punishment stays a story about a bad run, not a lost save.

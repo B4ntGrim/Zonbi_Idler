@@ -1,6 +1,6 @@
 # PF15 — Continue keeps progress, autosave (slice brief)
 
-**Status:** Decisions `[DECIDED Oct 26, Sam]`. Draft batch below; **not yet issued** as `CURRENT_BATCH.md`. CLOCK-01 is still the active batch (NOT CLOSED: manual browser checks pending).
+**Status:** Decisions `[DECIDED Oct 26, Sam]`. **Next batch** `[DECIDED Oct 26, Sam, Addendum 10]`: issue this ahead of CLOCK-01's remaining manual checks. Draft batch below; not yet copied to `CURRENT_BATCH.md` (CLOCK-01 stays NOT CLOSED until its manual checks run on a reliable save).
 
 ## 1. Next slice
 Fix the critical defect PF15 (`playtest-findings-oct15.md`): the save-files screen's Continue calls `ZI.loadSlot`, which replaces live progress with the slot's creation-time snapshot (no autosave). Every playtest is unreliable until this is fixed.
@@ -13,7 +13,7 @@ Fix the critical defect PF15 (`playtest-findings-oct15.md`): the save-files scre
 | S3 | Regression test: close → reopen → Continue preserves every `zi_*` key except those offline catch-up legitimately changes; catch-up runs with the 24 h cap | Proves the fix and guards it |
 
 ## 3. Open decisions
-- `[OPEN]` **Order with CLOCK-01:** pause CLOCK-01's remaining manual checks and ship PF15 first, or close CLOCK-01 first. Recommendation: PF15 first; CLOCK-01's remaining checks are manual browser checks that need a reliable save.
+- ~~`[OPEN]` **Order with CLOCK-01:** pause CLOCK-01's remaining manual checks and ship PF15 first, or close CLOCK-01 first.~~ **Decided Oct 26 (Sam, Addendum 10):** PF15 first, as the next batch, ahead of CLOCK-01's remaining manual checks.
 - `[CODE]` Step 1 confirms the cause and lists files before any change.
 
 ## 4. Parked / out
