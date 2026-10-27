@@ -132,11 +132,12 @@ ZI_ART.zombieSprite = function(bestiaryId, seed) {
 
 // Walking bob and sway, one pose per animation frame (4 frames, 250 ms each).
 // Pivot is the feet, so the body rocks over its stance instead of sliding.
+// Oct 27 anim fix: translate only. Rotating pixel art by a degree or two resamples it and makes the outline shimmer.
 ZI_ART.ZOMBIE_WALK_POSES = [
-  'translateY(0px) rotate(-2deg)',
-  'translateY(-2px) rotate(0deg)',
-  'translateY(0px) rotate(2deg)',
-  'translateY(-2px) rotate(0deg)',
+  'translate(0px, 0px)',
+  'translate(1px, -2px)',
+  'translate(0px, 0px)',
+  'translate(-1px, -2px)',
 ];
 
 // Warm the image cache for the sprites Wandering can show, so the first fight doesn't flash (45 small PNGs).

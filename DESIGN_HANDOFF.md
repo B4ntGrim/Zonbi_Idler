@@ -48,7 +48,7 @@ This session: `wandering-tab-spec.md` (skills line, Cooking) · `parked/fish-01-
 - **Fishing details:** net vs "one result per pull"; does rod fishing tick while away; quest step after the gift (which pond); crown stats and fight drop chance; timers and defaults on the maiden and siren dialogue boxes (rules §4.5).
 - **Numbers:** rerun the fish sim at 0.1% per tick; djinn gate should count legendaries *caught*.
 
-**Sam (11:30 list, not docs):** BAL-A is **implemented but NOT CLOSED**. Sam believes it is done (Oct 27); to write `BAL-A: CLOSED` he confirms: (1) TEST SAVE checks not yet run on Oct 26: Broken gear, injury timer, Solo-save T5, status icons; (2) the full 30-day H2 run (never completed; `reports/h2-full-2026-10-24/` holds only an empty log); (3) the scope note §4 review · review the team's new Wandering art in `assets/wandering-characters/` and `assets/wandering-backgrounds/` before building ANIM-01 · routes bug: the vehicle can't be selected (needs a repro at the desk).
+**Sam (11:30 list, not docs):** BAL-A is **implemented but NOT CLOSED**. Sam believes it is done (Oct 27); to write `BAL-A: CLOSED` he confirms: (1) TEST SAVE checks not yet run on Oct 26: Broken gear, injury timer, Solo-save T5, status icons; (2) the full 30-day H2 run (never completed; `reports/h2-full-2026-10-24/` holds only an empty log); ~~(3) the scope note §4 review~~ (accepted by Sam, Oct 27; hands-on test instructions given Oct 27 14:10) · review the team's new Wandering art in `assets/wandering-characters/` and `assets/wandering-backgrounds/` before building ANIM-01 · routes bug: the vehicle can't be selected (needs a repro at the desk).
 
 **Carried from Oct 26:**
 **Reminder:** until PF15 ships, press **Save** before closing.

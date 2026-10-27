@@ -1,0 +1,21 @@
+{
+  "counts": {
+    "live": 30,
+    "axes": 100,
+    "uniques": 12,
+    "sets": 3,
+    "ranged": 7,
+    "relics": 2,
+    "legacy": 10
+  },
+  "total": 164,
+  "checks": [
+    "Roster selection, IDs, set links, missing values and read-only catalog passed",
+    "List-to-details, pair links and browser Back passed",
+    "Search, filters, damage display and desktop layout passed",
+    "Every catalog record renders its own detail page",
+    "Stockpile inspection preserves stash and loadout",
+    "Unknown-link handling, reload, both entry pages and browser console passed"
+  ],
+  "errors": []
+}

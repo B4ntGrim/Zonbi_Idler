@@ -126,7 +126,7 @@ The slice turns those results into rules, in **three batches** (Sam, Oct 19):
 | B5 | **Broken penalty: mild for now; tune in playtests** `[DECIDED Oct 26]`. Steers the tuning of A4's penalties (A4 was set "between mild and harsh", Oct 19) toward the mild end; A4's values stand until a playtest batch changes them | Broken is only 2–5% of the time at current rates |
 | B6 | **Codex Option B** `[DECIDED Oct 26]`: `WANDER_SIM_TABLE.codexFromWandering = true`; an entry unlocks on a fight, not an evade (tutorial spec 7.3); 13 Discovery XP once per new entry. Dependency met: BEST1 is CLOSED (Oct 17) and the flag exists in `game/wandering.js` (currently `false`). Flipping it belongs to a batch, not this document change | The Codex fills from where most zombies are met |
 
-**Still needed to close BAL-A:** Sam's TEST SAVE smoke test; the 30-day H2 run; Sam's review of the BAL-A report scope note §4.
+**Still needed to close BAL-A:** Sam's TEST SAVE smoke test (remaining: Broken gear, injury timer, Solo-save T5, status icons); the 30-day H2 run. ~~Sam's review of the BAL-A report scope note §4.~~ **Scope note §4 accepted by Sam, Oct 27.**
 
 **Smoke test, Oct 26 (PF14):** walk home PASS; Broken gear and the injury timer not run; the Codex result is not a BAL-A defect (B6 isn't built yet). The run was stopped by PF15, a critical save defect (Continue reverts progress). **BAL-A stays NOT CLOSED** until PF15 is fixed and the remaining checks run on a fresh test save.
 

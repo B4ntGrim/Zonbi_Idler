@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Zed Idler</title>
+<link rel="stylesheet" href="crafting-frame-proposals.css?v=20261027-craft-proposals2">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Special+Elite&family=Oswald:wght@300;400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
 <script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
@@ -30,13 +31,16 @@
 <script src="game/bootstrap.js?v=20261025-clock-parity"></script>
 <script src="bestiary-data.js?v=1791700100000"></script>
 <script src="pixel-art.js?v=1791700100000"></script>
-<script src="zombie-sprites.js?v=20261024-allart"></script>
+<script src="zombie-sprites.js?v=20261027-animfix"></script>
 <script src="bestiary-expanded.js?v=20261024-codex"></script>
 <script src="satellite-tiles.js?v=1791700100000"></script>
+<script src="weapon-design-data.js?v=20261027-weapons1"></script>
+<script src="crafting-frame-proposals.js?v=20261027-craft-proposals2"></script>
+<script type="text/babel" src="crafting-frame-proposals.jsx?v=20261027-craft-proposals2"></script>
 <script type="text/babel" src="tweaks-panel.jsx?v=1791700100000"></script>
 <script type="text/babel" src="screens-v2.jsx?v=1791000000000"></script>
 <script type="text/babel" src="screens-v2b.jsx?v=1791700100000"></script>
-<script type="text/babel" src="screens-v3.jsx?v=20261027-topbar"></script>
+<script type="text/babel" src="screens-v3.jsx?v=20261027-craft-proposals2-animfix"></script>
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -3367,6 +3371,10 @@ function CraftJobsStrip() {
 }
 
 function RmatCraftingScreen() {
+  return <window.CraftingWorkspace><RmatCraftingRecipeBrowser/></window.CraftingWorkspace>;
+}
+
+function RmatCraftingRecipeBrowser() {
   const M = window.ZI_MATERIALS;
   const [stock, setStock] = useState(() => {
     const s = {}; Object.keys(M).forEach(k => s[k] = M[k].current); return s;
@@ -3607,6 +3615,7 @@ function RmatCraftingScreen() {
                   </div>
                 </div>
                 <div style={{fontFamily:'var(--font-mono)', fontSize:10, color:'var(--text2)', fontStyle:'italic', borderLeft:`2px solid ${tc}`, paddingLeft:8, marginBottom:10, lineHeight:1.5}}>{sel.lore}</div>
+                {sel.grantsGear && window.ZI_CRAFTING_FRAMES.getRecords().some(r => r.id === sel.grantsGear) && <a className="btn btn-sm" style={{marginBottom:10}} href={window.ZI_CRAFTING_FRAMES.href(sel.grantsGear)}>Proposed frame preview</a>}
                 <div style={{display:'flex', flexDirection:'column', gap:5, marginBottom:10}}>
                   <InfoRow label="Output" value={sel.out.map(o => `${o.q}× ${o.n}`).join(', ')} color={tc}/>
                   <InfoRow label="Craft Time" value={`${fmtDur(sel.time)} game · ${fmtReal(craftRealSec(sel))} real`} color="var(--amber)"/>
@@ -4193,7 +4202,17 @@ function App() {
   // Planning context is temporary UI state. Inventory and route-run saves stay canonical.
   const [routePlan, setRoutePlan] = useState(null);
   const [preparingRoute, setPreparingRoute] = useState(false);
-  const navigate = next => { setPreparingRoute(false); setScreen(next); };
+  const navigate = next => {
+    setPreparingRoute(false);
+    if (window.ZI_CRAFTING_FRAMES.readRoute().active) window.location.hash = next === 'rmat-crafting' ? '#crafting' : '';
+    setScreen(next);
+  };
+  useEffect(() => {
+    const openCraftingFrame = () => { if (window.ZI_CRAFTING_FRAMES.readRoute().active) { setPreparingRoute(false); setScreen('rmat-crafting'); } };
+    openCraftingFrame();
+    window.addEventListener('hashchange', openCraftingFrame);
+    return () => window.removeEventListener('hashchange', openCraftingFrame);
+  }, []);
   const openRouteGear = plan => { setRoutePlan(plan); setPreparingRoute(true); setScreen('stockpile'); };
 
   const [resources, setResources] = useState({

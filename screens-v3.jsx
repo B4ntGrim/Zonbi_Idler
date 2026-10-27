@@ -216,7 +216,8 @@ window.ZI_ART.zombieSvg = function(type, frame = 0) {
   // Glowing veins / frost / dirt / maggots
   if (L.feats.includes('veins')) { const v = L.glow; [[hx + 2, hy + 6],[hx + 3, hy + 5],[5, ay + 1],[6, ay + 2],[7, ay + 1],[tx + 3, 20],[tx + 4, 21],[tx + 4, 22],[tx + 5, 23],[tx + 6, 26],[tx + 7, 27]].forEach(([x, y]) => px(x, y, v)); }
   if (L.feats.includes('ice')) [[hx + 2, hy],[hx + 8, hy + 2],[3, ay],[tx + 1, 16],[tx + tw - 2, 20],[17, 40],[22, 37]].forEach(([x, y]) => { px(x, y, '#e8f8ff'); px(x, y - 1, '#bfe4f4'); });
-  if (L.feats.includes('dirt')) for (let i = 0; i < 18; i++) px(2 + Math.floor(rnd() * 30), 12 + Math.floor(rnd() * 33), rnd() > 0.5 ? '#4a3a24' : '#6a5436');
+  // Keep dirt staining on solid body pixels; don't scatter isolated flecks into transparent space behind the sprite.
+  if (L.feats.includes('dirt')) for (let i = 0; i < 18; i++) { const x = 2 + Math.floor(rnd() * 30), y = 12 + Math.floor(rnd() * 33); if (g[y] && g[y][x]) px(x, y, rnd() > 0.5 ? '#4a3a24' : '#6a5436'); }
   if (L.feats.includes('maggots')) [[tx + 3, 20],[tx + 5, 22],[tx + 4, 24],[hx + 6, hy + 4],[6, ay + 1]].forEach(([x, y]) => px(x, y, '#ece4c4'));
   // Auto outline
   const out = g.map(r => r.slice());
@@ -985,6 +986,13 @@ window.SatelliteTraversalScreen = function SatelliteTraversalScreen({ setScreen,
     return (
       <div className="panel" data-trav="afflictions" style={{ flex:1, display:'flex', flexDirection:'column', overflow:'hidden' }}>
         <div className="panel-title">Afflictions</div>
+        {(() => { // PF17 (Sam, Oct 27): HP on Traversal, same source as the Wandering bar (persisted run, current max HP). Display only.
+          const run = ZI.getWanderRun ? ZI.getWanderRun() : null, mx = ZI.maxHp ? ZI.maxHp() : 100;
+          const hp = Math.max(0, Math.min(mx, run && run.hp != null ? run.hp : mx)), col = hp > 40 ? 'var(--green)' : 'var(--red2)';
+          return (<div data-trav="hp" style={{ padding:'6px 9px', borderBottom:'1px solid var(--border)' }}>
+            <div style={{ display:'flex', justifyContent:'space-between', fontFamily:'var(--font-mono)', fontSize:11, color:'var(--text2)', marginBottom:3 }}><span>Health</span><span style={{ color: col }}>HP {Math.round(hp)}/{mx}</span></div>
+            <ProgressBar value={hp / mx * 100} color={col} height={7}/>
+          </div>); })()}
         <div style={{ flex:1, overflow:'auto', padding:6, display:'flex', flexDirection:'column', gap:5 }}>
           {br && T && <div data-affliction="broken" style={row}><span style={{ fontSize:16, color:'var(--red2)' }}>💔</span><span style={{ flex:1 }}>
             <span style={{ display:'block', fontFamily:'var(--font-body)', fontSize:13, color:'var(--red2)' }}>Broken</span>
@@ -1833,6 +1841,34 @@ window.WanderingScreen = function WanderingScreen({ route, setScreen }) {
   React.useEffect(() => { window.ZI.syncWanderState && window.ZI.syncWanderState({ carried }); }, [carried]);
   const [cmdsLeft, setCmdsLeft] = React.useState((window.ZI.cmdsRemaining && window.ZI.cmdsRemaining()) || 60);
   const [animFrame, setAnimFrame] = React.useState(0);
+  const [survivorFrame, setSurvivorFrame] = React.useState(0);
+  const [sceneHeight, setSceneHeight] = React.useState(340);
+  const [sceneWidth, setSceneWidth] = React.useState(1000);
+  const sceneRef = React.useRef(null);
+  React.useEffect(() => {
+    const node = sceneRef.current; if (!node) return;
+    const sync = () => { const r = node.getBoundingClientRect(); setSceneHeight(r.height || 340); setSceneWidth(r.width || 1000); };
+    sync();
+    if (typeof ResizeObserver === 'undefined') { window.addEventListener('resize', sync); return () => window.removeEventListener('resize', sync); }
+    const observer = new ResizeObserver(sync); observer.observe(node); return () => observer.disconnect();
+  }, []);
+  const actorSize = Math.max(112, Math.min(176, Math.round(sceneHeight * 0.46)));
+  // ANIM-FIX (Oct 27): v4 sheets are clean 4x4 grids (rows 1-2 an 8-frame walk cycle, rows 3-4 the strike), every
+  // frame on one baseline. aspect = cell width / height; body = average walking figure height / cell height.
+  const SURVIVOR_SHEETS = { fist:{ file:'survivor-walk-punch-v4', aspect:0.9455, body:0.922 }, melee:{ file:'survivor-melee-swing-v4', aspect:1.1298, body:0.9209 } };
+  const survivorSheet = SURVIVOR_SHEETS[meleeEquipped ? 'melee' : 'fist'];
+  const survivorBodyPx = actorSize * survivorSheet.body;
+  // Zombie size by tier, relative to the survivor: F-D are human sized, then C 52 / B 56 / A 62 / S 70 / BOSS 84 on the
+  // 48 px tier scale (zombie-sprites.js). If the boss would not fit under the HP bar, every tier shrinks together.
+  const TIER_BODY = { F:48, E:48, D:48, C:52, B:56, A:62, S:70, BOSS:84 };
+  const tierFit = Math.min(1, (sceneHeight * 0.88 - 46) / (survivorBodyPx * 84 / 48));
+  const zombieHeightForTier = (tier) => Math.round(survivorBodyPx * (TIER_BODY[tier] || 48) / 48 * tierFit);
+  // Walk timing: one step of the v4 cycle covers 0.316 of the body height. The scenery scrolls at exactly that speed
+  // so the planted foot stays put on the ground (no sliding / walking in place). Display only.
+  const STEP_SECONDS = { walk:0.7, jog:0.48, run:0.36 };
+  const stepSeconds = STEP_SECONDS[moveMode] || 0.7;
+  const groundSpeed = (0.316 * survivorBodyPx) / stepSeconds; // px per second
+  const [bgAspect, setBgAspect] = React.useState(3);
   const [zombieAnim, setZombieAnim] = React.useState({});
   const [survivorStriking, setSurvivorStriking] = React.useState(false);
   const [survivorStrikeId, setSurvivorStrikeId] = React.useState(0);
@@ -1876,12 +1912,32 @@ window.WanderingScreen = function WanderingScreen({ route, setScreen }) {
     const elig = undeadTypes.filter(u => (TIER_RANK[u.tier] ?? 0) <= maxRank);
     return elig.length ? elig : undeadTypes.filter(u => (TIER_RANK[u.tier] ?? 0) === 0);
   };
+  const zombieMetricsFor = (enemy) => {
+    const sprite = window.ZI_ART.zombieSprite && window.ZI_ART.zombieSprite(enemy.bestiaryId, enemy.id);
+    const lookScale = !sprite && window.ZI_ART.zombieLook ? (window.ZI_ART.zombieLook(enemy.type).scale || 1) : 1;
+    let targetHeight = zombieHeightForTier(enemy.tier);
+    const sourceHeight = sprite ? sprite.h * 2 : 96 * lookScale;
+    const maxW = sceneWidth * 0.5, w = sprite ? sprite.w * 2 * targetHeight / sourceHeight : 0;
+    if (w > maxW) targetHeight = Math.round(targetHeight * maxW / w);
+    return { sprite, targetHeight, scale:targetHeight / sourceHeight, lookScale };
+  };
 
   // Animation tick
   React.useEffect(() => {
-    const t = setInterval(() => setAnimFrame(f => (f + 1) % 4), 250);
+    const t = setInterval(() => setAnimFrame(f => (f + 1) % 12), 250); // 12 = both the 6-beat weapon cycle and the 4-pose zombie walk
     return () => clearInterval(t);
   }, []);
+  // The survivor walks (cycle runs, scenery scrolls) only while travelling: not in a fight, resting, pinned or down.
+  const wanderRunNow = (window.ZI.getWanderRun && window.ZI.getWanderRun()) || {};
+  const survivorWalking = !encounter && !downed && !wanderRunNow.resting && !wanderRunNow.paused;
+  const walkingRef = React.useRef(true); walkingRef.current = survivorWalking;
+  // Standing frame when not walking: guard stance in a fight (fist row 4 col 2, melee row 3 col 1), else mid-stride.
+  const survivorCell = survivorWalking ? survivorFrame : encounter ? (meleeEquipped ? 8 : 13) : 2;
+  React.useEffect(() => {
+    const frameDelay = Math.round(stepSeconds * 1000 / 4); // 4 frames per step, 8 per stride
+    const t = setInterval(() => { if (walkingRef.current) setSurvivorFrame(f => (f + 1) % 8); }, frameDelay);
+    return () => clearInterval(t);
+  }, [stepSeconds]);
 
   // Restore checkpoint cursor from saved progress so resuming a tab doesn't
   // re-fire every checkpoint we already passed.
@@ -1959,7 +2015,7 @@ window.WanderingScreen = function WanderingScreen({ route, setScreen }) {
         const eTot = hits.reduce((s, h) => s + (h.by !== 's' && h.d > 0 ? h.d : 0), 0); if (eTot > 0) setHpLag(l => l + eTot);
         hits.forEach((h, i) => setTimeout(() => {
           if (h.by === 's') {
-            if (h.d > 0) { ehp = Math.max(0, ehp - h.d); const now = ehp; popDmg('zombie', h.d); setEncounter(e => (e && e.id === vis.id ? { ...e, currentHp: now } : e)); setZombieAnim({ [vis.id]: 'hit' }); if (closeCombatRef.current) { setSurvivorStriking(true); setSurvivorStrikeId(n => n + 1); clearTimeout(survivorStrikeTimer.current); survivorStrikeTimer.current = setTimeout(() => setSurvivorStriking(false), 480); } setTimeout(() => setZombieAnim({}), 150); }
+            if (h.d > 0) { ehp = Math.max(0, ehp - h.d); const now = ehp; popDmg('zombie', h.d); setEncounter(e => (e && e.id === vis.id ? { ...e, currentHp: now } : e)); setZombieAnim({ [vis.id]: 'hit' }); if (closeCombatRef.current) { setSurvivorStriking(true); setSurvivorStrikeId(n => n + 1); clearTimeout(survivorStrikeTimer.current); survivorStrikeTimer.current = setTimeout(() => setSurvivorStriking(false), 960); } setTimeout(() => setZombieAnim({}), 150); }
           } else if (h.d > 0) { popDmg('player', h.d); setHpLag(l => Math.max(0, l - h.d)); setZombieAnim({ [vis.id]:'attack' }); setTimeout(() => setZombieAnim(a => a[vis.id] === 'attack' ? {} : a), 380); }
           if (i === hits.length - 1 && killed) setEncounter(e => (e && e.id === vis.id ? { ...e, currentHp: 0 } : e));
         }, 250 + i * gap));
@@ -2357,16 +2413,13 @@ window.WanderingScreen = function WanderingScreen({ route, setScreen }) {
 
       {/* Game scene */}
       <div style={{ flex: narrow ? '0 0 auto' : 1, display:'flex', flexDirection: narrow ? 'column' : 'row', overflow:'hidden' }}>
-        <div data-tut="scene" style={{
+        <div ref={sceneRef} data-tut="scene" style={{
           flex: narrow ? '0 0 340px' : 1, height: narrow ? 340 : undefined, position:'relative', overflow:'hidden',
           background: `linear-gradient(180deg, #0a0808 0%, #1a1410 60%, #2a1e14 100%)`,
         }}>
           <style>{`
-            @keyframes ziWalkFourSlow { 0%,100% { transform:translate(0,0) rotate(0) scaleY(1); } 25% { transform:translate(1px,-1px) rotate(-1deg) scaleY(.99); } 50% { transform:translate(2px,0) rotate(0) scaleY(1); } 75% { transform:translate(1px,-1px) rotate(1deg) scaleY(.99); } }
-            @keyframes ziWalkFourJog { 0%,100% { transform:translate(0,0) rotate(-1deg) scaleY(1); } 25% { transform:translate(2px,-3px) rotate(1deg) scaleY(.98); } 50% { transform:translate(3px,1px) rotate(2deg) scaleY(1); } 75% { transform:translate(1px,-2px) rotate(-2deg) scaleY(.99); } }
-            @keyframes ziWalkFourRun { 0%,100% { transform:translate(0,1px) rotate(-3deg) scaleY(1); } 25% { transform:translate(3px,-4px) rotate(-5deg) scaleY(.97); } 50% { transform:translate(5px,1px) rotate(-2deg) scaleY(1); } 75% { transform:translate(2px,-2px) rotate(-4deg) scaleY(.98); } }
-            @keyframes ziFistFrames { 0% { background-position:0% 100%; transform:translate(0,0) rotate(0); } 18% { background-position:33.333% 100%; transform:translate(1px,0) rotate(-2deg); } 46% { background-position:66.667% 100%; transform:translate(12px,-1px) rotate(4deg); } 64% { background-position:100% 100%; transform:translate(8px,0) rotate(2deg); } 82%,100% { background-position:0% 100%; transform:translate(0,0) rotate(0); } }
-            @keyframes ziMeleeFrames { 0% { background-position:0% 0%; transform:translate(0,0) rotate(0); } 20% { background-position:33.333% 0%; transform:translate(-2px,-1px) rotate(-3deg); } 50% { background-position:66.667% 0%; transform:translate(12px,-1px) rotate(4deg); } 70% { background-position:100% 0%; transform:translate(8px,0) rotate(2deg); } 100% { background-position:0% 0%; transform:translate(0,0) rotate(0); } }
+            @keyframes ziFistFrames { 0% { background-position:0% 66.667%; transform:translateX(0); } 12% { background-position:33.333% 66.667%; } 24% { background-position:66.667% 66.667%; } 36% { background-position:100% 66.667%; transform:translateX(2px); } 48% { background-position:0% 100%; transform:translateX(4px); } 60% { background-position:33.333% 100%; transform:translateX(3px); } 72% { background-position:66.667% 100%; transform:translateX(1px); } 86% { background-position:100% 100%; transform:translateX(0); } 100% { background-position:0% 66.667%; transform:translateX(0); } }
+            @keyframes ziMeleeFrames { 0% { background-position:0% 66.667%; transform:translateX(0); } 12% { background-position:33.333% 66.667%; } 24% { background-position:66.667% 66.667%; transform:translateX(-1px); } 36% { background-position:100% 66.667%; transform:translateX(-2px); } 48% { background-position:0% 100%; transform:translateX(3px); } 60% { background-position:33.333% 100%; transform:translateX(5px); } 74% { background-position:66.667% 100%; transform:translateX(3px); } 88% { background-position:100% 100%; transform:translateX(1px); } 100% { background-position:0% 66.667%; transform:translateX(0); } }
             @keyframes ziArcFlash { 0% { opacity:0; transform:scale(.7); } 20% { opacity:1; transform:scale(1); } 100% { opacity:0; transform:scale(1.12); } }
             @keyframes ziWheelPulse { 0%,100% { opacity:.58; } 50% { opacity:1; } }
             @keyframes ziWanderingSceneScroll { from { transform:translateX(0); } to { transform:translateX(-50%); } }
@@ -2375,7 +2428,7 @@ window.WanderingScreen = function WanderingScreen({ route, setScreen }) {
             @keyframes ziTrailTextureScroll { from { background-position:0 0, 0 0; } to { background-position:-96px 0, 0 0; } }
             .zi-travel-ground { position:absolute; z-index:3; left:0; right:0; bottom:0; height:12%; border-top:2px solid var(--zi-trail-edge); background-color:var(--zi-trail-mid); background-image:repeating-linear-gradient(90deg, transparent 0 13px, rgba(5,7,7,.25) 13px 16px, transparent 16px 39px, rgba(172,164,132,.12) 39px 43px, transparent 43px 71px),linear-gradient(180deg,var(--zi-trail-mid),var(--zi-trail-dark)); background-size:96px 100%,100% 100%; animation:ziTrailTextureScroll 3.4s linear infinite; image-rendering:pixelated; pointer-events:none; }
             .zi-character-shadow { position:absolute; left:14%; bottom:0; width:72%; height:3px; background:#090b0b; box-shadow:0 0 4px rgba(0,0,0,.8); pointer-events:none; }
-            @keyframes ziThreatIdle { 0%,100% { translate:0 0; filter:brightness(1); } 25% { translate:0 -1px; filter:brightness(1.04); } 50% { translate:0 0; filter:brightness(.98); } 75% { translate:0 1px; filter:brightness(1.02); } }
+            @keyframes ziThreatIdle { 0%,100% { filter:brightness(1); } 25% { filter:brightness(1.04); } 50% { filter:brightness(.98); } 75% { filter:brightness(1.02); } }
             @keyframes ziThreatFlinch { 0% { translate:0 0; } 25% { translate:7px -1px; filter:brightness(1.7) sepia(.25); } 60% { translate:-2px 1px; } 100% { translate:0 0; } }
             @keyframes ziThreatAttack { 0%,100% { transform:translateX(0); } 30% { transform:translateX(-20px); } 48% { transform:translateX(-24px); } 70% { transform:translateX(-10px); } }
             @keyframes ziThreatAsh { 0% { opacity:1; filter:brightness(1); } 35% { opacity:.82; filter:brightness(1.8) sepia(.8); } 100% { opacity:0; filter:brightness(2) grayscale(1); translate:0 -9px; } }
@@ -2390,12 +2443,12 @@ window.WanderingScreen = function WanderingScreen({ route, setScreen }) {
             .zi-ash-particle:nth-child(3) { left:57%; bottom:20%; --ash-x:-2px; animation-delay:.08s; }
             .zi-ash-particle:nth-child(4) { left:74%; bottom:28%; --ash-x:7px; animation-delay:.02s; }
             .zi-survivor-pixel { image-rendering:pixelated; shape-rendering:crispEdges; transform-origin:50% 100%; will-change:transform; }
-            .zi-survivor-pixel.pace-walk { animation:ziWalkFourSlow 1s steps(4,end) infinite; }
-            .zi-survivor-pixel.pace-jog { animation:ziWalkFourJog .68s steps(4,end) infinite; }
-            .zi-survivor-pixel.pace-run { animation:ziWalkFourRun .46s steps(4,end) infinite; }
-            .zi-survivor-art { position:absolute; inset:0; background-repeat:no-repeat; image-rendering:pixelated; shape-rendering:crispEdges; transform-origin:50% 100%; }
-            .zi-survivor-art.fist-strike { background-size:400% 200% !important; animation:ziFistFrames .42s steps(1,end) both; }
-            .zi-survivor-art.melee-strike { background-size:400% 100% !important; animation:ziMeleeFrames .42s steps(1,end) both; }
+            .zi-survivor-pixel.pace-walk { transform:none; }
+            .zi-survivor-pixel.pace-jog { transform:rotate(-1.5deg); }
+            .zi-survivor-pixel.pace-run { transform:rotate(-3deg); }
+            .zi-survivor-art { position:absolute; inset:0; background-repeat:no-repeat; image-rendering:auto; transform-origin:50% 100%; }
+            .zi-survivor-art.fist-strike { background-size:400% 400% !important; animation:ziFistFrames .76s steps(1,end) both; }
+            .zi-survivor-art.melee-strike { background-size:400% 400% !important; animation:ziMeleeFrames .88s steps(1,end) both; }
             .zi-pixel-burst { position:absolute; right:22%; bottom:39%; width:34px; height:34px; z-index:24; pointer-events:none; animation:ziArcFlash .5s steps(4,end) both; }
             .zi-pixel-burst i { position:absolute; display:block; width:2px; height:2px; background:#b8ff9c; box-shadow:0 0 3px currentColor; }
             .zi-pixel-burst i:nth-child(1) { left:14px; top:3px; } .zi-pixel-burst i:nth-child(2) { left:24px; top:11px; }
@@ -2405,8 +2458,8 @@ window.WanderingScreen = function WanderingScreen({ route, setScreen }) {
             @media (prefers-reduced-motion: reduce) { .zi-wandering-scene-track, .zi-travel-ground, .zi-survivor-pixel, .zi-survivor-art, .zi-pixel-burst, .zi-wheel-pixel, .zi-threat-idle, .zi-threat-hit, .zi-threat-attack, .zi-threat-death, .zi-ash-particle { animation:none !important; } }
           `}</style>
           {/* Each biome gets its own continuously looping side-scroll tile; two copies keep the seam off-screen. */}
-          <div className="zi-wandering-scene-track" aria-hidden="true" style={{ zIndex:0 }}>
-            <img src={sceneBackground} alt="" draggable={false}/>
+          <div className="zi-wandering-scene-track" aria-hidden="true" style={{ zIndex:0, animationDuration:`${(sceneHeight * bgAspect / groundSpeed).toFixed(2)}s`, animationPlayState: survivorWalking ? 'running' : 'paused' }}>
+            <img src={sceneBackground} alt="" draggable={false} onLoad={e => { const im = e.currentTarget; if (im.naturalHeight) setBgAspect(im.naturalWidth / im.naturalHeight); }}/>
             <img src={sceneBackground} alt="" draggable={false}/>
           </div>
           {/* Parallax stars/dust (back layer, slow scroll) */}
@@ -2474,7 +2527,7 @@ window.WanderingScreen = function WanderingScreen({ route, setScreen }) {
           }
 
           {/* A continuous foreground trail gives every region a readable, passable footing plane. */}
-          <div className="zi-travel-ground" aria-hidden="true" style={{ '--zi-trail-edge':sceneGround[0], '--zi-trail-mid':sceneGround[1], '--zi-trail-dark':sceneGround[2] }}/>
+          {!sceneBackground && <div className="zi-travel-ground" aria-hidden="true" style={{ animationDuration:`${(96 / groundSpeed).toFixed(2)}s`, animationPlayState: survivorWalking ? 'running' : 'paused', '--zi-trail-edge':sceneGround[0], '--zi-trail-mid':sceneGround[1], '--zi-trail-dark':sceneGround[2] }}/>}
 
           {/* MIDGROUND ARTIFACTS — cars, debris, stones (mid scroll) */}
           {!sceneBackground && artifacts.filter(a=>a.layer==='mid').map(item => {
@@ -2680,13 +2733,12 @@ window.WanderingScreen = function WanderingScreen({ route, setScreen }) {
           })}
 
           {/* Survivor sprite (left side, four-pose pace cycle) */}
-          <div className={`zi-survivor-pixel pace-${moveMode}`} style={{
+          <div className={`zi-survivor-pixel pace-${moveMode}`} data-survivor-walking={survivorWalking ? '1' : '0'} style={{
             position:'absolute',
-            left: '14%', bottom: '12%',
-            width: 'clamp(88px, 12vh, 112px)', height: 'clamp(88px, 12vh, 112px)',
+            left: '14%', bottom: closeCombatLoadout ? `calc(12% - ${Math.round(actorSize * 0.031)}px)` : '12%',
+            width: closeCombatLoadout ? Math.round(actorSize * survivorSheet.aspect) : actorSize, height: actorSize,
             zIndex: 10,
           }}>
-            <span className="zi-character-shadow" aria-hidden="true"/>
             {dmgPops.filter(p => p.who === 'player').map(p => <div key={p.id} className="zi-dmg" style={{ top:-14, marginLeft:p.dx }}>-{p.n}</div>)}
             {/* Close-combat sheets show legible walk cycles, bare-fist punches, or a melee swing. */}
             {closeCombatLoadout && <div
@@ -2695,15 +2747,15 @@ window.WanderingScreen = function WanderingScreen({ route, setScreen }) {
               role="img"
               aria-label={meleeEquipped ? 'Survivor holding a melee weapon' : 'Unarmed survivor'}
               style={{
-                backgroundImage:`url("assets/wandering-characters/${meleeEquipped ? 'survivor-melee-swing' : 'survivor-walk-punch'}.png")`,
-                backgroundSize:meleeEquipped ? '400% 100%' : '400% 200%',
-                backgroundPosition:survivorStriking ? undefined : (meleeEquipped ? '0% 0%' : `${(animFrame % 4) * 33.3333}% 0%`),
+                backgroundImage:`url("assets/wandering-characters/${survivorSheet.file}.png")`,
+                backgroundSize:'400% 400%',
+                backgroundPosition:survivorStriking ? undefined : `${(survivorCell % 4) * 33.3333}% ${Math.floor(survivorCell / 4) * 33.3333}%`,
                 filter:'drop-shadow(1px 0 #080a0d) drop-shadow(-1px 0 #080a0d) drop-shadow(0 1px #080a0d)',
               }}/>}
             {/* Ranged weapons keep their existing held-weapon art and muzzle effects. */}
             {!closeCombatLoadout && <svg viewBox="0 0 36 48" width="84" height="112" shapeRendering="crispEdges" style={{ position:'absolute', inset:0, overflow:'visible', imageRendering:'pixelated', filter:'drop-shadow(1px 0 #080a0d) drop-shadow(-1px 0 #080a0d) drop-shadow(0 1px #080a0d)' }}>
               {window.ZI_ART.survivorRuns(weaponKind).map((r, i) => <rect key={i} x={r.x} y={r.y} width={r.w} height="1" fill={r.c}/>)}
-              {encounter && (animFrame === 0 || animFrame === 2) && weaponFx.muzzle && <g>
+              {encounter && (animFrame % 6 === 0 || animFrame % 6 === 2) && weaponFx.muzzle && <g>
                 <rect x={weaponFx.muzzle[0]} y={weaponFx.muzzle[1] - 1} width="3" height="3" fill="#f0d060"/>
                 <rect x={weaponFx.muzzle[0] + 1} y={weaponFx.muzzle[1]} width="3" height="1" fill="#fff4b0"/>
               </g>}
@@ -2711,7 +2763,7 @@ window.WanderingScreen = function WanderingScreen({ route, setScreen }) {
           </div>
 
           {/* Projectile travelling from the equipped weapon to the zombie */}
-          {encounter && (animFrame === 0 || animFrame === 2) && weaponFx.shot !== 'slash' && (
+          {encounter && (animFrame % 6 === 0 || animFrame % 6 === 2) && weaponFx.shot !== 'slash' && (
             <div style={{ position:'absolute', left:'calc(14% + 70px)', right:'calc(20% + 40px)', bottom: weaponKind === 'pistol' ? 'calc(12% + 64px)' : 'calc(12% + 56px)', height:8, pointerEvents:'none', zIndex:11 }}>
               {weaponFx.shot === 'flame' ? (
                 <div key={animFrame} className="zi-flame" style={{ position:'absolute', left:0, top:-4, height:16, width:'100%', background:'linear-gradient(90deg, #fff4b0, #f0a030 30%, #e0501a 70%, rgba(200,40,10,0))', borderRadius:'0 50% 50% 0', imageRendering:'pixelated', filter:'drop-shadow(0 0 2px #f46b24)' }}/>
@@ -2741,25 +2793,25 @@ window.WanderingScreen = function WanderingScreen({ route, setScreen }) {
           {encounter && (() => {
             // Display only: bestiary entries with processed sprite art (zombie-sprites.js) show it with a
             // walking bob and sway; every other entry keeps the painted SVG.
-            const spr = window.ZI_ART.zombieSprite && window.ZI_ART.zombieSprite(encounter.bestiaryId, encounter.id);
+            const { sprite: spr, targetHeight, scale: zombieScale } = zombieMetricsFor(encounter);
             const dead = (encounter.currentHp ?? encounter.hp) <= 0;
             const anim = zombieAnim[encounter.id];
             const threatClass = dead ? 'zi-threat-death' : anim === 'hit' ? 'zi-threat-hit' : anim === 'attack' ? 'zi-threat-attack' : 'zi-threat-idle';
             const wrap = {
               position:'absolute',
               right: '20%', bottom: '12%',
-              zIndex: 10,
+              zIndex: 10, scale:String(zombieScale), transformOrigin:'50% 100%', // a string: React would turn a bare number into '1.6px', which browsers ignore
             };
             if (!spr) return (
               <div className={threatClass} style={wrap}>
                 <span className="zi-character-shadow" aria-hidden="true"/>
-                <div dangerouslySetInnerHTML={{ __html: window.ZI_ART.zombieSvg(encounter.type, animFrame) }}/>
+                <div dangerouslySetInnerHTML={{ __html: window.ZI_ART.zombieSvg(encounter.type, animFrame % 6) }}/>
                 {dead && <span aria-hidden="true">{[0,1,2,3].map(n => <i key={n} className="zi-ash-particle"/>)}</span>}
               </div>
             );
-            // Wide sprites (megaphone, runner) are capped at 80% of the scene so they never run off its left edge on a phone.
+            // Sprite art is uniformly scaled to the height assigned to its bestiary tier.
             return (
-              <div className={threatClass} style={{ ...wrap, width: spr.w * 2, maxWidth:'80%' }} data-zombie-sprite={spr.file}>
+              <div className={threatClass} style={{ ...wrap, width: spr.w * 2 }} data-zombie-sprite={spr.file}>
                 <span className="zi-character-shadow" aria-hidden="true"/>
                 <img src={spr.src} alt="" width={spr.w * 2} height={spr.h * 2} draggable={false}
                   style={{ display:'block', width:'100%', height:'auto', imageRendering:'pixelated', transformOrigin:'50% 100%',
@@ -2769,8 +2821,8 @@ window.WanderingScreen = function WanderingScreen({ route, setScreen }) {
             );
           })()}
           {/* Floating damage numbers over the zombie's head */}
-          {encounter && dmgPops.some(p => p.who === 'zombie') && (() => { const zs = window.ZI_ART.zombieSprite && window.ZI_ART.zombieSprite(encounter.bestiaryId, encounter.id); return (
-            <div style={{ position:'absolute', right:'20%', bottom: zs ? `calc(12% + ${Math.round(zs.h * 2 * 0.78)}px)` : 'calc(12% + 78px)', width: zs ? zs.w * 2 : 72, maxWidth:'80%', height:1, zIndex:20, pointerEvents:'none' }}>
+          {encounter && dmgPops.some(p => p.who === 'zombie') && (() => { const m = zombieMetricsFor(encounter), zs = m.sprite; return (
+            <div style={{ position:'absolute', right:'20%', bottom:`calc(12% + ${Math.round(m.targetHeight * 0.78)}px)`, width:zs ? zs.w * 2 * m.scale : 72 * m.scale, maxWidth:'80%', height:1, zIndex:20, pointerEvents:'none' }}>
               {dmgPops.filter(p => p.who === 'zombie').map(p => <div key={p.id} className="zi-dmg" style={{ top:0, marginLeft:p.dx }}>-{p.n}</div>)}
             </div>
           ); })()}
@@ -2778,7 +2830,7 @@ window.WanderingScreen = function WanderingScreen({ route, setScreen }) {
           {encounter && (
             <div style={{
               position:'absolute',
-              right: '22%', bottom: (() => { const zs = window.ZI_ART.zombieSprite && window.ZI_ART.zombieSprite(encounter.bestiaryId, encounter.id); return zs ? `calc(12% + ${zs.h * 2 + 10}px)` : 'calc(12% + 110px)'; })(), // sits just above the sprite; bosses are taller
+              right: '22%', bottom: (() => { const m = zombieMetricsFor(encounter); return `calc(12% + ${m.targetHeight + 10}px)`; })(), // positioned above the tier-scaled sprite
               width: 80, zIndex: 12,
               background:'rgba(0,0,0,0.7)', padding: 3,
             }}>
@@ -2988,6 +3040,9 @@ window.WanderingScreen = function WanderingScreen({ route, setScreen }) {
                         <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:4 }}>
                           {window.ZI.GEAR_SLOTS.filter(s => s.accepts === cat).map(s => {
                             const it = loadout[s.id] && window.ZI.getGearItem(loadout[s.id]);
+                            const dur = it && window.ZI.itemDurability ? window.ZI.itemDurability(it) : null; // PF17c (Sam, Oct 27): durability in the Wandering gear pop-up too
+                            const durPct = dur ? Math.max(0, Math.min(100, (dur.current / dur.max) * 100)) : 100;
+                            const durColor = durPct <= 20 ? '#f06a5a' : durPct <= 50 ? '#E0A93F' : '#3dcf8e';
                             return (
                               <div key={s.id} onClick={() => it && unequip(s.id)} title={it ? 'Click to unequip' : ''} style={{
                                 padding:'6px 8px', minHeight:42, cursor: it ? 'pointer' : 'default',
@@ -2998,9 +3053,13 @@ window.WanderingScreen = function WanderingScreen({ route, setScreen }) {
                                 {it ? (
                                   <>
                                     <span style={{ fontSize:15 }}>{it.icon}</span>
-                                    <div style={{ minWidth:0 }}>
+                                    <div style={{ minWidth:0, flex:1 }}>
                                       <div style={{ fontFamily:'var(--font-mono)', fontSize:9, color:'var(--text)', whiteSpace:'nowrap', overflow:'hidden', textOverflow:'ellipsis' }}>{it.name}</div>
                                       <div style={{ fontFamily:'var(--font-mono)', fontSize:8, color:'var(--text3)' }}>{s.label}</div>
+                                      {dur && <div data-slot-durability="popup" style={{ marginTop:3 }}>
+                                        <div style={{ fontFamily:'var(--font-mono)', fontSize:9, color:durColor, whiteSpace:'nowrap' }}>Durability {Math.round(dur.current)}/{dur.max}</div>
+                                        <div style={{ width:'100%', height:6, marginTop:2, background:'var(--bg4)', borderRadius:2 }}><div style={{ height:'100%', width:`${durPct}%`, background:durColor, borderRadius:2 }}/></div>
+                                      </div>}
                                     </div>
                                   </>
                                 ) : (
@@ -3846,11 +3905,11 @@ window.StockpileScreen = function StockpileScreen({ initialTab = 'recycler', pre
                                     }}>✕</button>
                                   </div>
                                   {dur && (
-                                    <div style={{ display:'flex', alignItems:'center', gap:5 }}>
-                                      <div style={{ flex:1, height:4, background:'var(--bg4)', borderRadius:2 }}>
+                                    <div data-slot-durability="1" style={{ display:'flex', alignItems:'center', gap:5 }}>{/* PF17 (Sam, Oct 27): readable durability under the slot name */}
+                                      <div style={{ flex:1, height:6, background:'var(--bg4)', borderRadius:2 }}>
                                         <div style={{ height:'100%', width:`${durPct}%`, background:durColor, borderRadius:2 }}/>
                                       </div>
-                                      <span style={{ fontFamily:'var(--font-mono)', fontSize:7, color:durColor }}>{Math.round(dur.current)}/{dur.max}</span>
+                                      <span style={{ fontFamily:'var(--font-mono)', fontSize:9, color:durColor, whiteSpace:'nowrap' }}>Durability {Math.round(dur.current)}/{dur.max}</span>
                                       {damaged && (
                                         <button onClick={(e) => { e.stopPropagation(); repair(it.id); }} disabled={!afford}
                                           title={afford ? 'Repair (partial re-craft)' : 'Not enough materials to repair'}
