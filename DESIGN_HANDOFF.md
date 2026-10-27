@@ -10,10 +10,10 @@
 
 **Sam, Oct 27 evening:**
 - **Cooking** is a new skill (17th), separate from Foraging. XP sources, cap and effects open.
-- **Fish prep:** the no-knife loss shrinks as **Foraging** rises (FISH-01 FP3).
+- **Fish prep:** the no-knife loss shrinks as **Cooking** rises (FISH-01 FP3).
 - **Plastics is the seventh base material.**
 - **Smoker, cook basin, kettle pot** are steps of FOOD-02's station ladder, **unlocked in the Shop**; the Campfire stays free.
-- **The Shop replaces the Market tab.**
+- **The Shop replaces the Market tab; the Auction view is removed.**
 
 **Sam, Oct 26 late evening (Addenda 10–11i, applied Oct 27 PM):**
 - **PF15 first:** issue `pf15-save-continue-slice.md` as the next batch, ahead of CLOCK-01's manual checks.
@@ -42,7 +42,7 @@ This session: `wandering-tab-spec.md` (skills line, Cooking) · `parked/fish-01-
 **Sam (Oct 27 morning):**
 - **Plastics:** where it drops and how common (proposed: between wood and metal).
 - **Cooking skill:** XP sources, cap, what levels give.
-- **Shop:** what happens to the Auction view and the "Marketplace Trade" schedule task; station order and prices (proposed Campfire → kettle pot → cook basin → camp stove → smoker → field kitchen; unlock in the Shop, then craft).
+- **Shop:** the "Marketplace Trade" schedule task; station order and prices (proposed Campfire → kettle pot → cook basin → camp stove → smoker → field kitchen; unlock in the Shop, then craft).
 - **Components:** reuse plan read back to Sam Oct 27 PM (wire → `wiring`; wood frame and handle from `planks`; clasp, hook, reel, float new). Awaiting his confirmation. Where does the 17-component list live?
 - **Diplomat:** level cap; does a trade give both Trading and Diplomat XP?
 - **Fishing details:** net vs "one result per pull"; does rod fishing tick while away; quest step after the gift (which pond); crown stats and fight drop chance; timers and defaults on the maiden and siren dialogue boxes (rules §4.5).

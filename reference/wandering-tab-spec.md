@@ -17,7 +17,7 @@ The player sets a **standing policy** once, leaves for other tabs, and the survi
 
 Skills (17): combat, first aid, scavenging, stealth, athletics, endurance, foraging, smithing, medical, mechanical, discovery, trading, diplomat, logistics, engineering, command, cooking.
 
-Cooking `[DECIDED Oct 27, Sam]`: a new skill, **separate from Foraging** (supersedes the 16-skill list). It belongs to cooking at the base stations (FOOD-02). `[OPEN]` XP sources (proposed: meals cooked at a station, more for better dishes), level cap, and what a higher level gives (proposed: faster cooking, chance of a better dish). Not yet in code (`game/stats.js` skill list).
+Cooking `[DECIDED Oct 27, Sam]`: a new skill, **separate from Foraging** (supersedes the 16-skill list). It belongs to cooking at the base stations (FOOD-02) and controls fish preparation (FISH-01 FP3). `[OPEN]` XP sources (proposed: meals cooked at a station, more for better dishes), level cap, and what a higher level gives (proposed: faster cooking, chance of a better dish). Not yet in code (`game/stats.js` skill list).
 
 Diplomat XP `[DECIDED Oct 27, Sam]`: earned from trading, negotiating and successfully talking past NPC encounters (siren checks included, FISH-01 §6), **on successes only**; failed checks give no XP. `[OPEN]` level cap; whether a trade gives both Trading and Diplomat XP.
 

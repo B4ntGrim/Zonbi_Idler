@@ -12,7 +12,7 @@ Applied by `apply_oct27_eve.py` (exact-match edits, each matched once). Pre-chan
 | All | `00-document-index.md` log row; `DESIGN_HANDOFF.md` (old: `archive/design-handoff-oct27-pm.md`) |
 
 ## Notes
-- Sam answered "Foraging" for the fish-prep skill and, separately, asked for a Cooking skill. Recorded as: FP3 uses Foraging; Cooking is a new skill for the stations. Confirm if Cooking should drive fish prep instead.
+- Follow-up 14:08 (Sam, `apply_oct27_eve2.py`, copies in `pre-change-eve2/`): **Cooking controls fish prep** (FP3), replacing the Foraging reading; **the Auction view is removed**.
 - Component reuse plan not recorded as decided: Sam asked to hear it again first.
 - Stations as Shop unlocks: the Campfire stays free so eating is never locked behind the Shop (rule 5.1).
 - BAL-A not marked closed: Sam asked what is left; the handoff lists the three checks.

@@ -289,7 +289,7 @@ All counters are per save, written by the same seeded combat resolution, so live
 
 ### 7.6 Market (placeholder) — becomes the Shop
 
-`[DECIDED Oct 27 PM, Sam]` **The Shop replaces the Market.** The Market tab becomes the Shop (RMAT currency, decided Oct 25), which holds the Shop unlocks (cooking stations, FOOD-02 §2c; "one loop only", C9; retreat rules, `parked/retreat-rules-shop.md`). `[OPEN]` what happens to the Auction view (player-to-player listings): remove, or park for later; and the Schedule task "Marketplace Trade". The `market.placeholder` text below changes with the batch that builds the Shop.
+`[DECIDED Oct 27 PM, Sam]` **The Shop replaces the Market.** The Market tab becomes the Shop (RMAT currency, decided Oct 25), which holds the Shop unlocks (cooking stations, FOOD-02 §2c; "one loop only", C9; retreat rules, `parked/retreat-rules-shop.md`). **The Auction view is removed** `[DECIDED Oct 27 PM, Sam]` (player-to-player listings, `ZI.MARKET_ITEMS` sample data). `[OPEN]` the Schedule task "Marketplace Trade". The `market.placeholder` text below changes with the batch that builds the Shop.
 
 `[CODE]` Built today: a Market tab with an **Auction ⇄ Shop** switch (choice saved). Auction is a player-to-player listing screen filled from sample data (`ZI.MARKET_ITEMS`); the prototype does not call the server (Development Status 8.5). Shop is a fixed vendor gated by RMAT and distance, with a "new unlocks" badge. Parked: "Shop, Scheduling" (PARKED.md, 3A → Later).
 

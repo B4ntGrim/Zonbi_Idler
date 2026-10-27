@@ -32,7 +32,7 @@
 |---|---|---|
 | FP1 | The player **prepares** caught fish; it is not auto-processed | A hands-on step that gives the knife and cooking a job |
 | FP2 | **Descaling knife:** pocket item (not the Melee slot); full-nutrition and bulk preparation | It is a tool, not a weapon; costs a pocket like scout and med kits |
-| FP3 | Without the knife, fish gives **less nutrition**; the loss **shrinks as Foraging rises** (`[DECIDED Oct 27 PM, Sam]`; replaces "cooking skill"); the knife is always best | Skill partly makes up for missing gear without making the knife pointless |
+| FP3 | Without the knife, fish gives **less nutrition**; the loss **shrinks as the Cooking skill rises** (`[DECIDED Oct 27 PM, Sam]`; a brief Foraging reading the same afternoon is superseded); the knife is always best | Skill partly makes up for missing gear without making the knife pointless |
 | FP4 | The knife **wears down with use** (stress speeds wear, existing rule) | Ties into durability and stress |
 
 `[PROPOSED]` Fish guts become bait.
@@ -96,7 +96,7 @@ Diplomat is already one of the skills (spec, top; 17 since Cooking was added Oct
 
 ## 8. Open
 
-- ~~`[OPEN]` **Prep skill:** Foraging or a new Cooking skill?~~ **Decided Oct 27 PM (Sam):** FP3 uses **Foraging**. Cooking is added as its own skill for the stations (spec skills line), separate from Foraging.
+- ~~`[OPEN]` **Prep skill:** Foraging or a new Cooking skill?~~ **Decided Oct 27 PM (Sam):** FP3 uses the new **Cooking** skill (spec skills line), separate from Foraging. Foraging still governs catching (POI brief).
 - `[OPEN]` **Net vs one result per pull:** the POI brief says each pull gives exactly one result and Foraging scales fish per pull (1–3). How does the net's "more catches per tick" combine with that?
 - `[OPEN]` **Offline:** the POI brief starts fishing in person and lets it finish offline. Does rod fishing keep ticking while away, or only traps (FA5)? Traps: 24 h cap, settle on read; robbed or broken (proposed earlier, not decided)?
 - `[OPEN]` **FOOD-01 / djinn numbers:** the fish table (80 / 17 / 3) and the djinn gate estimate assumed 3% legendaries. Rerun `fish_sim.py` at 0.1% per tick with the new tiers.
