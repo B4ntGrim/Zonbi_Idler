@@ -143,6 +143,7 @@ The prompt is a text box, so it is treated as untrusted input from the first dra
 
 ## 5. Open
 
+- `[OPEN]` **Oct 27 conflict (Sam's fishing decisions, `fish-01-fishing-concept.md`):** the legendary chance is now 0.1% per tick roll (was 3% of fish), and five legendary fish are gifted to the Lady of the Lake. The gate value (5) and the "about 100 / 26 visits" estimate need a rerun. Recommended: the gate counts legendaries **caught**, so gifting them never closes it.
 - `[OPEN]` **Once per save, or repeatable?** Recommendation: the first meeting is unique; later meetings are possible but rarer, so the gate stays meaningful.
 - `[CONCEPT Oct 21]` **Danger** as a visible metric (Sam). Recommended: build it on the existing square `threatLevel` plus modifiers such as the curse, rather than a new number.
 - `[OPEN]` Does "never trading" also mean items the djinn grants **can't be traded or sold** afterward?

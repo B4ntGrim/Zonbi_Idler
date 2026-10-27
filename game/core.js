@@ -280,3 +280,6 @@ ZI._wj = function(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } ca
 ZI.DIFFICULTY_TABLE = { normal: { fortAttackHp: 1 } };
 ZI.getDifficulty = function() { return ZI._rj('zi_difficulty', 'normal'); };
 ZI.difficultyMult = function(param) { const row = ZI.DIFFICULTY_TABLE[ZI.getDifficulty()] || ZI.DIFFICULTY_TABLE.normal; return row[param] != null ? row[param] : 1; };
+
+// Developer view (Oct 27): open the page with ?dev in the address to show development-only info (e.g. the world seed).
+ZI.isDevView = function() { try { return /[?&]dev(=1|=true)?(&|$)/.test(window.location.search); } catch (e) { return false; } };

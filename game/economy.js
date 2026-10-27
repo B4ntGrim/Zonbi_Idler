@@ -116,6 +116,34 @@ ZI.addRmat = function(tierKeyOrRank, qty) {
   const h = ZI.getRmatHoldings(); h[key] = (h[key] || 0) + (qty || 0);
   try { localStorage.setItem(ZI.RMAT_HOLD_KEY, JSON.stringify(h)); } catch (e) {}
 };
+// ─── TOP BAR RESOURCES (Oct 27) ─────────────────────────────────────────────
+// The one backend reader for the header's resource strip, in display order. Read-only; the top bar polls it.
+// Each entry: { current, max, rate, pending }. pending = the system isn't built yet; the chip shows "—".
+//   Nutrition — ZI.getNutrition() → { current, max } (FOOD-01 meter, 0–100). Not built yet.
+//   Food      — camp food: Food-slot items in the base stash (FOOD-01 O9).
+//   Ammo      — ZI.getAmmo() → number. No ammo store exists yet.
+//   Fuel      — ZI_MATERIALS.fuel (saved material).
+//   RMAT      — RMAT wallet, all tiers T0–T5.
+ZI.getTopBarResources = function() {
+  const out = {};
+  const nut = typeof ZI.getNutrition === 'function' ? ZI.getNutrition() : null;
+  out.Nutrition = nut && Number.isFinite(nut.current)
+    ? { current: nut.current, max: nut.max || 100, rate: 0, pending: false }
+    : { current: 0, max: 100, rate: 0, pending: true };
+  let food = 0;
+  try {
+    const isFood = id => { const g = ZI.getGearItem && ZI.getGearItem(id); return !!g && g.slot === 'consumable3'; };
+    (ZI.getStash ? ZI.getStash() : []).forEach(id => { if (isFood(id)) food++; });
+  } catch (e) {}
+  out.Food = { current: food, max: 0, rate: 0, pending: false };
+  const ammo = typeof ZI.getAmmo === 'function' ? ZI.getAmmo() : null;
+  out.Ammo = Number.isFinite(ammo) ? { current: ammo, max: 0, rate: 0, pending: false } : { current: 0, max: 0, rate: 0, pending: true };
+  const F = window.ZI_MATERIALS && window.ZI_MATERIALS.fuel;
+  out.Fuel = { current: F ? F.current : 0, max: F ? F.max : 0, rate: 0, pending: !F };
+  const h = ZI.getRmatHoldings();
+  out.RMAT = { current: ['T0','T1','T2','T3','T4','T5'].reduce((a, k) => a + (h[k] || 0), 0), max: 0, rate: 0, pending: false };
+  return out;
+};
 ZI.rmatReachedRank = function() {
   const h = ZI.getRmatHoldings();
   let max = 0;

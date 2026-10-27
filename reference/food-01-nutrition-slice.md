@@ -75,7 +75,7 @@ Give food a job. HP recovery in the field costs nutrition, and a free auto-eat p
 |---|---|---|---|
 | Common | 10 | 80% | value `[DECIDED Oct 21]`, chance `[PROPOSED]` |
 | Uncommon | 15 | 17% | value `[DECIDED Oct 21]`, chance `[PROPOSED]` |
-| Legendary | 30 (fixed) | 3% | value `[DECIDED Oct 21]`, chance `[PROPOSED]` |
+| Legendary | 30 (fixed) | ~~3%~~ 0.1% per roll | value `[DECIDED Oct 21]`; chance `[DECIDED Oct 27, Sam, starting value]`, supersedes 3%. `[OPEN]` rerun the fish sim: Common/Uncommon shares and visit estimates assumed 3%; more tiers coming (`parked/fish-01-fishing-concept.md` §2) |
 
 *Why fixed 30:* the test showed 25, 30 or a rolled 25–30 change the average per visit by under 2 nutrition. The legendary value is a feeling, not a supply lever, so the bigger fixed number reads best in the log and beats a ration (25).
 

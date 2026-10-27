@@ -1,5 +1,12 @@
 # CODE_STATE — current implementation facts
 
+## Top bar resources and seed (October 27)
+
+- The header resource strip shows **Nutrition · Food · Ammo · Fuel · RMAT**, read from `ZI.getTopBarResources()` (`game/economy.js`). Both pages' `TopBar` use `useTopBarResources()` (re-read every 1 s and on `ZI.onInventoryChange`); the old hard-coded `resources` state (Food/Scrap/Ammo/Medicine/Fuel/RMAT with fake rates) no longer feeds the top bar and now only feeds the Camp mock screens.
+- Sources: Food = Food-slot (`consumable3`) items in the base stash (FOOD-01 O9); Fuel = `ZI_MATERIALS.fuel`; RMAT = wallet total T0–T5. **Nutrition** reads `ZI.getNutrition()` → `{ current, max }` and **Ammo** reads `ZI.getAmmo()` → number; neither exists yet, so both chips show "—" (tooltip "not built yet") until a batch defines them. No reader change is needed when they land. Nutrition shows as a percentage, coloured by `ZI.NUTRITION.levels`.
+- The Traversal "Seed #… / 65,535" text shows only in the developer view: open the page with `?dev` (`ZI.isDevView()`, `game/core.js`).
+- `tests/split-equivalence.test.js` registers `getTopBarResources` and `isDevView` as intended additions. Its two remaining failures (`describeGearItem`, `itemStatLines`) came from other uncommitted `game/items.js` work and are not related to this change. Pre-change copies: `reports/topbar-resources-2026-10-27/pre-change/`.
+
 ## CLOCK-01 progress parity fix (October 25)
 
 - Startup captures one 24-real-hour processing window while the calendar advances for the full absence. When active Wandering overlaps schedules, timer jobs or routes, `game/bootstrap.js` replays the credited window in one-second chronological steps so later skill gains cannot affect earlier encounters. The existing offline craft/schedule decay semantics and injury visibility exception are retained.

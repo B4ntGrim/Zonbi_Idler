@@ -57,12 +57,57 @@ ZI.GEAR_ITEMS = [
   { id:'scout_kit',  name:'Scout Kit',         slot:'consumable2',cat:'consumable',rarity:'common', icon:'🔭', dmg:0, armor:0, carryW:1, speedDelta:0, lootBonus:0, charges:2, desc:'Binoculars and notes. Holds 2 scout charges.' },
   { id:'medkit',     name:'Field Medkit',      slot:'consumable1',cat:'consumable',rarity:'uncommon',icon:'🧰', dmg:0, armor:0, carryW:1, speedDelta:0, lootBonus:0, effect:{heal:60}, desc:'+60 HP over 8s.' },
   { id:'fort_medkit', name:'Fort-bound Med Kit', slot:null, cat:'story', isStory:true, rarity:'uncommon', icon:'🧰', dmg:0, armor:0, carryW:1, speedDelta:0, lootBonus:0, purpose:['faction'], desc:'Sealed and marked for the Fort. Not yours to open.' }, // JD1a (B1, U21): story item, 1 kg; Fort hand-in only
+  { id:'concordance_research_log', name:'Concordance Research Log', slot:null, cat:'story', isStory:true, rarity:'rare', icon:'📓', dmg:0, armor:0, carryW:0.2, speedDelta:0, lootBonus:0, purpose:['faction'], desc:'A protected story item: notes on the infection and the Sealed Crate.' },
   { id:'bandage',    name:'Bandage Roll',      slot:'consumable1',cat:'consumable',rarity:'common', icon:'🩹', dmg:0, armor:0, carryW:0, speedDelta:0, lootBonus:0, effect:{heal:25}, desc:'+25 HP over 4s. Stops bleeding.' },
   { id:'stimpack',   name:'Adrenaline Shot',   slot:'consumable2',cat:'consumable',rarity:'rare',   icon:'💉', dmg:0, armor:0, carryW:0, speedDelta:0, lootBonus:0, effect:{speedPct:30,durSec:45}, desc:'+30% speed for 45s.' },
   { id:'ration',     name:'MRE Ration',        slot:'consumable3',cat:'consumable',rarity:'common', icon:'🥫', dmg:0, armor:0, carryW:1, speedDelta:0, lootBonus:0, effect:{heal:12}, desc:'+40% stamina regen 120s.' },
   { id:'grenade',    name:'Frag Grenade',      slot:'throwable', cat:'consumable',rarity:'uncommon',icon:'💣', dmg:0, armor:0, carryW:1, speedDelta:0, lootBonus:0, effect:{killEnemy:true}, desc:'120 blast / 5m radius.' },
   { id:'flashbang',  name:'Flashbang',         slot:'throwable', cat:'consumable',rarity:'uncommon',icon:'🧨', dmg:0, armor:0, carryW:0, speedDelta:0, lootBonus:0, effect:{stun:true}, desc:'Stun 6s / 8m radius.' },
 ];
+// Build the mechanical part of every item description from the values the game
+// actually uses. Optional attributeBonuses supports future S.U.R.V.I.V.A.L.
+// affixes without inventing attribute values for the existing catalog.
+ZI.itemStatLines = function(item) {
+  if (!item) return [];
+  const lines = [];
+  const add = (label, value) => {
+    if (Number.isFinite(value) && value !== 0) lines.push(`${label} ${value > 0 ? '+' : ''}${value}`);
+    else if (typeof value === 'string' && value) lines.push(`${label} ${value}`);
+  };
+  if (item.unique === true) lines.push('Unique');
+  if (item.cat === 'weapon') add('Base damage', item.dmg);
+  if (item.cat === 'armor') add('Armor', item.armor);
+  add('Movement', item.speedDelta);
+  add('Loot find', item.lootBonus);
+  add('Heavy swing chance', item.heavySwingPct);
+  add('Stagger chance', item.staggerPct);
+  add('Escape chance', item.escapeBonus);
+  Object.entries(item.stats || {}).forEach(([key, value]) => add(key === 'evade' ? 'Evasion' : key, value));
+  if (item.unique === true) {
+    Object.entries(item.attributeBonuses || {}).forEach(([key, value]) => {
+      const attr = (ZI.SURVIVAL_ATTRS || []).find(a => a.key === key);
+      add(`${attr ? attr.name : key} attribute`, value);
+    });
+  }
+  const effect = item.effect || {};
+  add('Heal', effect.heal);
+  add('Damage', effect.dmgPct == null ? 0 : `${effect.dmgPct > 0 ? '+' : ''}${effect.dmgPct}%`);
+  add('Movement speed', effect.speedPct == null ? 0 : `${effect.speedPct > 0 ? '+' : ''}${effect.speedPct}%`);
+  add('Armor', effect.armorAdd);
+  add('Evasion', effect.evade);
+  add('Loot value', effect.lootPct == null ? 0 : `${effect.lootPct > 0 ? '+' : ''}${effect.lootPct}%`);
+  if (effect.xpBonus) add(`${effect.xpBonus.track} XP/action`, effect.xpBonus.amount);
+  if (effect.revive) add('Revive', `${effect.revive}% HP`);
+  if (effect.stun) lines.push('Special: stuns target');
+  if (effect.killEnemy) lines.push('Special: instantly defeats the target');
+  if (Number.isFinite(effect.durSec)) lines.push(`Duration ${effect.durSec}s`);
+  if (Number.isFinite(item.charges)) lines.push(`${item.charges} charges`);
+  return lines;
+};
+ZI.describeGearItem = function(item) {
+  if (!item) return '';
+  return [item.desc || '', ...ZI.itemStatLines(item)].filter(Boolean).join('\n');
+};
 ZI.getGearItem = function(id) { return ZI.GEAR_ITEMS.find(g => g.id === id) || null; };
 
 // ─── ITEM PURPOSE TAXONOMY ("every item earns its place") ────────────────────

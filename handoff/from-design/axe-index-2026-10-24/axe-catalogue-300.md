@@ -1,8 +1,8 @@
-# Zed Idler — 300 Axe Designs
+# Zed Idler — 299 Axe Designs
 
-Status: BRAINSTORM / CONTENT INDEX. Prepared 2026-10-24. Counts: 300 designs, 30 historical anchor families, 250 held axes and 50 consumable throwing-axe designs.
+Status: BRAINSTORM / CONTENT INDEX. Prepared 2026-10-24. Counts: 299 designs, 30 historical anchor families, 249 held axes and 50 consumable throwing-axe designs.
 
-These are 300 distinct fictional model proposals inspired by documented historical families, not 300 attested archaeological typologies. Each model has an invented maker, personal name, different shape configuration and candidate playstyle. Rarity upgrades, recolors and owned copies do not count as additional designs. Exact damage, mass, recovery percentages and tier availability remain unset.
+These are 299 distinct fictional model proposals inspired by documented historical families, not 299 attested archaeological typologies. Each model has an invented maker, personal name, different shape configuration and candidate playstyle. Rarity upgrades, recolors and owned copies do not count as additional designs. Exact damage, mass, recovery percentages and tier availability remain unset.
 
 ## Existing taxonomy mapping
 
@@ -17,7 +17,7 @@ Source context is shared in each group and linked from every JSON record through
 | C1 | Stone and early hand axes | 50 | weapon / melee |
 | C2 | Copper and early metal axes | 50 | weapon / melee |
 | C3 | Socketed and working axes | 50 | weapon / melee |
-| C4 | Iron hand axes, bearded axes and broad axes | 50 | weapon / melee |
+| C4 | Iron hand axes, bearded axes and broad axes | 49 | weapon / melee |
 | C5 | Double-bit, broad-blade and prestige-inspired axes | 50 | weapon / melee |
 | C6 | Throwing axes — recoverable consumables | 50 | consumable / throwable |
 
@@ -363,7 +363,6 @@ Source context is shared in each group and linked from every JSON record through
 | AXE-157 | **Tabitha** | short-beard head with recessed inlay channels; narrow wedge; hooked pommel | 1H | Damage to Elites; Vulnerable Damage | conditional bonuses need eligible targets |
 | AXE-158 | **Vesper** | short-beard head with recessed inlay channels; deep cutting belly; protected haft collar | 1H | Luck; Experience | lower combat-stat budget |
 | AXE-159 | **Willa** | short-beard head with recessed inlay channels; thin wide edge; flared grip end | 1H | Shield; Regen/s | requires absorption-shield support |
-| AXE-160 | **Zelda** | short-beard head with recessed inlay channels; heavy rounded poll; extended power haft | 2H | Special Damage; Duration | requires an explicit nonphysical attack or effect |
 
 ### H17 — Birka narrow-blade axe
 
@@ -671,6 +670,6 @@ Source context is shared in each group and linked from every JSON record through
 - Use each base silhouette for different construction tiers where believable. Modern alloys or RMAT reinterpretations are explicitly fictional and must respect source restrictions.
 - Ordinary held axes fit `melee`; only approved light one-handed models may later fit Off-hand. Two-handed models block Off-hand. Throwing consumables use the existing Throw slot and never contribute passive weapon damage.
 - Design the throwing attack profile and recovery settlement before enabling the 50 consumables. Do not reuse grenade instant-kill behavior.
-- Keep all 300 as content candidates. Roll out a small complete slice before expanding loot or Shop pools.
+- Keep all 299 as content candidates. Roll out a small complete slice before expanding loot or Shop pools.
 
 

@@ -28,6 +28,8 @@ ADDED.add('getUnclaimedRouteRewards'); ADDED.add('ROUTE_XP_MULTIPLIERS');
 // Solo preparation (authorized Oct 23): real skill/gear/cargo forecasts and departure snapshots.
 ['startRouteRun','routeRunProgress','estimateSuccessProbability','resolveRunNodes','canSendAgain'].forEach(k => CHANGED_FN.add(k));
 ['ROUTE_PREP_TABLE','routeUsesSoloPreparation','routeLootCapacity','getRoutePreparation','resolvePreparedRouteNodes'].forEach(k => ADDED.add(k));
+// Top bar resources (Oct 27): one read-only backend reader for the header strip; dev-only view flag (world seed).
+['getTopBarResources','isDevView'].forEach(k => ADDED.add(k));
 const INTENDED = { zi_rmat: 2, zi_jobs: 3, zi_materials: 3, zi_stash: 3, zi_stat_xp: 3 };
 const results = []; const check = (n, c, x) => results.push([c ? 'PASS' : 'FAIL', n, x || '']);
 // CLOCK-01 T9 rescales these data tables; CL7 adds fractional schedule credit.

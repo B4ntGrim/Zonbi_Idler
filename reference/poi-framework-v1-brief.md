@@ -532,7 +532,7 @@ depleting survival meter.
 - Must be started in person at the water cell; the timer then finishes
   offline and settles on read. The game never starts fishing while the
   player is away.
-- One action, one per-cell cooldown.
+- One action. ~~One per-cell cooldown.~~ Superseded Oct 27 (Sam): tick-based fishing, see `parked/fish-01-fishing-concept.md` §1.
 - Each pull returns exactly one result: **fish**, **loot**, or **empty**.
   Never fish and loot together.
   - Fish: nutrition (feeds stamina). Each fish = 1 nutrition [PROPOSED].
@@ -550,10 +550,10 @@ depleting survival meter.
   number of fish per successful pull [PROPOSED: 1 at low Foraging, up to 3
   at high].
 - Action time is one fixed data-table value, not rolled.
-- A cell gives up to **N pulls per visit**, then rests for one game day.
+- ~~A cell gives up to **N pulls per visit**, then rests for one game day.~~ **Superseded Oct 27 (Sam):** fishing is tick-based; each clock tick is a fresh roll and the player cancels at any time (`parked/fish-01-fishing-concept.md` FA3).
 - Yield rule: each caught fish converts directly to nutrition
   [PROPOSED: 1 per fish]. No daily consumption rate is needed.
-- The Sunken Blade Easter egg is [PARKED] (see PARKED.md); not in v1 scope.
+- The Sunken Blade Easter egg is [PARKED] (see PARKED.md); not in v1 scope. Questline redesigned Oct 27 (Lady of the Lake): `parked/fish-01-fishing-concept.md` §5.
 - No new skills. XP routes through Foraging / Scavenging via `emitAction`.
 
 ## Fishing numbers [PROPOSED — tune in playtesting]
@@ -564,8 +564,8 @@ depleting survival meter.
 | Fish per successful pull | 1 at low Foraging, up to 3 at high |
 | Empty-pull chance | ~25% at low Foraging, falling as Foraging rises |
 | Loot share of non-empty pulls | ~15% |
-| Pulls per visit (N) | 3 |
-| Cell rest after N pulls | One game day (primary balance lever) |
+| ~~Pulls per visit (N)~~ | ~~3~~ superseded Oct 27 (tick-based, FISH-01) |
+| ~~Cell rest after N pulls~~ | ~~One game day~~ superseded Oct 27; tick length is now the primary balance lever (FISH-01) |
 
 ## Dependencies (read-only question for Code)
 

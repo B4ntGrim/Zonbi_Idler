@@ -4,16 +4,16 @@ Prepared 2026-10-24. These checks validate documentation/data integrity and exam
 
 | Check | Result | Evidence |
 |---|---|---|
-| Catalogue model count | PASS | 300 |
-| Unique tracking IDs | PASS | AXE-001 through AXE-300 |
-| Unique model IDs | PASS | 300 stable draft model IDs |
-| Unique names | PASS | 300 personal names |
-| Unique shape configurations | PASS | 300 fictional head/haft configurations |
-| Markdown catalogue rows | PASS | 300 item rows |
+| Catalogue model count | PASS | 299 |
+| Unique tracking IDs | PASS | 299 IDs; AXE-160 removed |
+| Unique model IDs | PASS | 299 stable draft model IDs |
+| Unique names | PASS | 299 personal names |
+| Unique shape configurations | PASS | 299 fictional head/haft configurations |
+| Markdown catalogue rows | PASS | 299 item rows |
 | Historical anchor count | PASS | 30 shared source records |
 | Source references | PASS | Every model has a valid H-number |
-| Six catalogue groups | PASS | 6 groups of 50 |
-| Held category mapping | PASS | 250 weapon/melee |
+| Six catalogue groups | PASS | 6 groups; C4 has 49 after AXE-160 removal |
+| Held category mapping | PASS | 249 weapon/melee |
 | Throwing category mapping | PASS | 50 consumable/throwable |
 | Unset production balance | PASS | No guessed runtime balance |
 | Requested metric rows | PASS | 14 Attack + 8 Defense + 7 Utility |

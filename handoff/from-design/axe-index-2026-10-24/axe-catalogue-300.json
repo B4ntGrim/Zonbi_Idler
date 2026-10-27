@@ -3,12 +3,12 @@
   "date": "2026-10-24",
   "status": "BRAINSTORM_NOT_RUNTIME_IMPORT",
   "counts": {
-    "models": 300,
-    "held": 250,
+    "models": 299,
+    "held": 249,
     "throwable": 50,
     "historical_anchors": 30
   },
-  "scope_note": "300 fictional model designs from 30 documented anchor families; historical claims and invented gameplay are separate.",
+  "scope_note": "299 fictional model designs from 30 documented anchor families; historical claims and invented gameplay are separate.",
   "categories": [
     {
       "id": "C1",
@@ -5286,37 +5286,6 @@
       "status": "BRAINSTORM"
     },
     {
-      "draft_id": "AXE-160",
-      "name": "Zelda",
-      "epithet": "The Final Echo",
-      "invented_maker": "Widow's Bell",
-      "model_id": "draft.axe.h16.10",
-      "variant_id": null,
-      "catalogue_section": "C4",
-      "catalogue_section_title": "Iron hand axes, bearded axes and broad axes",
-      "runtime_category": "weapon",
-      "runtime_slot": "melee",
-      "encyclopedia_family": "axes/choppers",
-      "content_subfamily": "Mammen inlaid axe",
-      "style": "short-beard head with recessed inlay channels; heavy rounded poll; extended power haft",
-      "hands": "2H",
-      "source_id": "H16",
-      "history_scope": "Historical anchor only; item name, maker, shape variation and gameplay are fictional proposals.",
-      "role": "Resonance",
-      "suggested_affixes": [
-        "Special Damage",
-        "Duration"
-      ],
-      "tradeoff": "requires an explicit nonphysical attack or effect",
-      "rarity": null,
-      "construction_tier": null,
-      "base_damage": null,
-      "weight_kg": null,
-      "recovery_chance": null,
-      "acquisition": "Fictional survivor-made reconstruction or collection find; source eligibility and story gates require design.",
-      "status": "BRAINSTORM"
-    },
-    {
       "draft_id": "AXE-161",
       "name": "Asta",
       "epithet": "The Last Word",
@@ -6559,7 +6528,7 @@
     {
       "draft_id": "AXE-201",
       "name": "Ariadne",
-      "epithet": "The Last Word",
+      "epithet": "The Twin Arc",
       "invented_maker": "Twinwake",
       "model_id": "draft.axe.h21.01",
       "variant_id": null,
@@ -8109,7 +8078,7 @@
     {
       "draft_id": "AXE-251",
       "name": "Adelaide",
-      "epithet": "The Last Word",
+      "epithet": "The Quick Return",
       "invented_maker": "Lastmile",
       "model_id": "draft.axe.h26.01",
       "variant_id": null,

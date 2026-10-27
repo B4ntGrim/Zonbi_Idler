@@ -1,4 +1,4 @@
-# Zed Idler — Document Index (updated Oct 26, afternoon)
+# Zed Idler — Document Index (updated Oct 27)
 
 Start here. This lists every design document, its folder and its status.
 Rules for how design work is done: `CREATIVE_DIRECTION_RULES.md` (project root; replaced `CLAUDE_DESIGN_RULES.md` Oct 22).
@@ -95,6 +95,7 @@ Code's list of deferred items: `PARKED.md` (project root). Kept by Code; separat
 |---|---|---|
 | `food-02-cooking-concept.md` | FOOD-02 cooking: pot bonus, idle cooking, 5/day food stress cap, Legendary Lunch Pail | Until FOOD-01 closes and STOCK-01 is scheduled. Copied Oct 24 |
 | `djinn-fishing-concept.md` | The djinn fishing secret: wish of three items, curse (Hunted + Hollow), Endured reward | Until the Water POI fishing loop ships and FOOD-01 closes. Copied Oct 24 |
+| `fish-01-fishing-concept.md` | FISH-01: tick-based fishing in Traversal, fish tiers, fish prep and descaling knife, fishing gear and components, the Sunken Blade / Lady of the Lake questline, Naga Sirens and Black Haven | Until the Water POI fishing loop ships and FOOD-01 closes. New Oct 27 |
 | `ammo-12-ammunition-loadout-draft.md` | AMMO-12 team draft; Player Intent Preservation Invariant; LR1 shared loadout resolver `[DECIDED Oct 16]` | Weapons Phase 6. Copied Oct 24 |
 | `wandering-church-scene.md` | The Church: optional specialized comfort. Repeatable POI `[DECIDED Oct 9]`; never gates core comfort `[DECIDED Oct 3]`; shop and blessing output `[PARKED]` | POI Framework v1 is complete and the comfort-items system exists |
 | `wandering-workshop-scene.md` | The Workshop: field repair and salvage. Normal POI placement `[DECIDED Oct 9]` | POI Framework v1 is complete |
@@ -165,6 +166,7 @@ Code's step and completion reports, one folder per batch (from Oct 22).
 
 | Date | Decision | Recorded in |
 |---|---|---|
+| Oct 27 | Voice session (Sam): FISH-01 tick-based fishing in Traversal (supersedes per-cell rest), legendary 0.1% per roll, fish prep with descaling knife (skill-scaled loss), gear rod/net/traps + waders, tackle box, lures/bait, fisher's hat, sub-parts as components; Sunken Blade via the Lady of the Lake (10 spots, five legendary fish, Broken Crown, Discovery and loot-quality %), Naga Sirens for Black Haven (Diplomat check); Diplomat XP on successes; cooking stations and wood/metal balance; plastics proposed; ANIM-01 pickup animation concept. Conflicts flagged: prep skill, fish sim at 0.1%, djinn gate | `parked/fish-01-fishing-concept.md`; `poi-framework-v1-brief.md`; `food-01-nutrition-slice.md`; `parked/food-02-cooking-concept.md` §2d; `parked/djinn-fishing-concept.md` §5; `wandering-tab-spec.md`; `playtest-findings-oct15.md`; `PARKED.md` |
 | Oct 26 (evening) | PF15 fix approved (Continue keeps progress, 60 s autosave, regression test); T18 travel stamina dropped; TRAV-02c footwear (on foot only) and TRAV-02d floor of 1 square; SEASON-01 seasons; biome hazard table (Mountain, Suburbia, City decided; Perimeter proposed) with mountain onboarding. Conflict flagged: city and Perimeter counters only drop from Concordance fights | `playtest-findings-oct15.md` PF15; `pf15-save-continue-slice.md`; `trav-01-traversal-slice.md`; `season-01-seasons-concept.md`; `biome-01-chunks-slice.md` |
 | Oct 26 (PM) | Conflicts settled (Sam): pacing base 90 s (60 / 90 / 135 by familiarity); food comfort cap stays 5 per real day; Well Nourished counts per real day; target about three meals a real day (mechanics open); background finds one per 90 s; character XP banks on every return; MS3 uses a Fallow-clear proxy. Weight W-1/W-2 (real-world weights, rarity never changes weight; load slows by pace above 50%). Gem socketing parked | `food-01-nutrition-slice.md`; `wandering-tab-spec.md` §14.3–14.4; `sim-harness-v1-brief.md` §12; `reports/level-12/`; `weapons-development-directive.md` |
 | Oct 26 (PM) | Concordance CI14–CI18 (Sam): survey-team drop table (respirator 12% … field scanner 0.5%, no pity counter), repeat teams, frequency by distance to a Concordance fort, sample case effect, identity | `concordance-introduction-concept.md` §2a |

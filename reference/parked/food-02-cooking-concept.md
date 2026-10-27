@@ -122,6 +122,15 @@ A rare item the player can **find** that **raises the daily food stress cap**.
 - Existing saves see it as **"What's new"** (decided tutorial rule, option A).
 - A later hint points to the shop unlock once the player has cooked several times, so the shop appears when it's useful, not on day one.
 
+## 2d. Cooking stations, materials and spoilage (Sam, Oct 27)
+
+- `[CONCEPT Oct 27]` **Stations:** smoker, cook basin and kettle pot. Not built yet. Each needs its own art and is **clickable inside the crafting/cooking menu**. Spoilage is tackled through them (the smoker preserves fish and meat, `[PROPOSED]`).
+- `[DECIDED Oct 27]` **Material balance:** metal and wood each get their own balance; **wood is more abundant than metal**. `[PROPOSED]` kettle pot mostly metal, smoker mostly wood, cook basin a mix, so neither material bottlenecks.
+- `[PROPOSED Oct 27, Sam]` **Plastics** as a new material (containers and seals that slow spoilage, water jugs; fishing gear in FISH-01). `[OPEN]` a seventh base material, or replacing one of the six (`[CODE]` wood, metal, cloth, medical, electronics, fuel).
+- `[PROPOSED]` **Spoilage starting reference:** GDD v5.3 decay, perishables lose 10% of value every two days at camp; during travel it depends on containers.
+- `[OPEN]` Reconcile with §2c's station ladder (Campfire → Camp stove → Field kitchen): are the smoker, cook basin and kettle pot rungs of that ladder, or parallel stations with different jobs?
+- Fish preparation (descaling knife, skill-scaled loss) lives in `fish-01-fishing-concept.md` §3.
+
 ## 3. Open
 
 - `[OPEN]` Mini-game shape: drag ingredients into the pot, or tap ingredients in order?

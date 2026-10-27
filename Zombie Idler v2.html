@@ -10,7 +10,7 @@
 <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
 <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
 <script src="image-slot.js"></script>
-<script src="game/core.js?v=1791700100000"></script>
+<script src="game/core.js?v=20261027-topbar"></script>
 <script src="game/world.js?v=1792640900000"></script>
 <script src="game/save.js?v=1791918000000"></script>
 <script src="game/stats.js?v=1792640900000"></script>
@@ -20,9 +20,10 @@
 <script src="game/factions.js?v=1791700100000"></script>
 <script src="game/camp.js?v=20261025-clock-parity"></script>
 <script src="game/jobs.js?v=20261025-clock-parity"></script>
-<script src="game/economy.js?v=20261025-clock-parity"></script>
+<script src="game/economy.js?v=20261027-topbar"></script>
 <script src="game/wandering.js?v=20261025-clock-parity"></script>
 <script src="game/fort.js?v=1791700100000"></script>
+<script src="game/infiltration.js?v=20261026-infiltration1"></script>
 <script src="game/active.js?v=1792532500000"></script>
 <script src="game/routes.js?v=20261025-clock-parity"></script>
 <script src="game/survival-data.js?v=1791700100000"></script>
@@ -35,7 +36,7 @@
 <script type="text/babel" src="tweaks-panel.jsx?v=1791700100000"></script>
 <script type="text/babel" src="screens-v2.jsx?v=1791000000000"></script>
 <script type="text/babel" src="screens-v2b.jsx?v=1791700100000"></script>
-<script type="text/babel" src="screens-v3.jsx?v=20261024-allart"></script>
+<script type="text/babel" src="screens-v3.jsx?v=20261027-topbar"></script>
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -327,7 +328,8 @@ function RiskBar({ risk }) {
 }
 
 // ─── TOP BAR ─────────────────────────────────────────────────────────────────
-function TopBar({ mode, screen, setScreen, resources, threatLevel, worldEvent }) {
+function TopBar({ mode, screen, setScreen, threatLevel, worldEvent }) {
+  const resources = useTopBarResources(); // Nutrition · Food · Ammo · Fuel · RMAT, read from the game (ZI.getTopBarResources)
   const [time, setTime] = useState(new Date());
   const [saveMsg, setSaveMsg] = useState(null);
   const activeSlot = ZI.getActiveSlot();
@@ -370,7 +372,6 @@ function TopBar({ mode, screen, setScreen, resources, threatLevel, worldEvent })
   if (narrow) {
     const cur = tabs.find(t => t[0] === screen);
     const go = (s) => { setScreen(s); setDrawer(false); };
-    const tColor = threatLevel > 3 ? 'var(--red2)' : threatLevel > 1 ? 'var(--amber)' : 'var(--green)';
     return (
       <div data-topbar="compact" style={{ height:44, background:'var(--bg3)', borderBottom:'1px solid var(--border)', display:'flex', alignItems:'center', flexShrink:0, zIndex:100, position:'relative' }}>
         <button aria-label="Open menu" aria-expanded={drawer} data-nav-toggle="1" onClick={() => setDrawer(true)} style={{
@@ -386,7 +387,7 @@ function TopBar({ mode, screen, setScreen, resources, threatLevel, worldEvent })
         </div>
         <button onClick={() => setDrawer(true)} aria-label="Current screen, open menu" style={{ flex:1, minWidth:0, height:'100%', padding:'0 10px', display:'flex', flexDirection:'column', justifyContent:'center', alignItems:'flex-start', background:'none', border:'none', cursor:'pointer', textAlign:'left' }}>
           <span style={{ maxWidth:'100%', fontFamily:'var(--font-body)', fontSize:13, letterSpacing:'0.12em', textTransform:'uppercase', color:'var(--amber)', whiteSpace:'nowrap', overflow:'hidden', textOverflow:'ellipsis' }}>{cur ? cur[1] : 'Zombie Idler'}</span>
-          <span style={{ fontFamily:'var(--font-mono)', fontSize:9, color:'var(--text3)', whiteSpace:'nowrap' }}>YEAR {gameYear} · DAY {gameDay} · {gameClock} · <span style={{ color:tColor }}>THREAT {threatLevel}/5</span></span>
+          <span style={{ fontFamily:'var(--font-mono)', fontSize:9, color:'var(--text3)', whiteSpace:'nowrap' }}>YEAR {gameYear} · DAY {gameDay} · {gameClock}</span>
         </button>
         {worldEvent && <EventChip worldEvent={worldEvent}/>}
         {drawer && (
@@ -420,7 +421,7 @@ function TopBar({ mode, screen, setScreen, resources, threatLevel, worldEvent })
                 })}
               </div>
               <div style={{ borderTop:'1px solid var(--border)', padding:'4px 0', flexShrink:0 }}>
-                {Object.entries(resources).slice(0, 6).map(([k, v]) => <div key={k} style={{ height:28, display:'flex' }}><ResourceChip label={k} value={v} block/></div>)}
+                {Object.entries(resources).map(([k, v]) => <div key={k} style={{ height:28, display:'flex' }}><ResourceChip label={k} value={v} block/></div>)}
               </div>
             </nav>
           </>
@@ -473,7 +474,7 @@ function TopBar({ mode, screen, setScreen, resources, threatLevel, worldEvent })
       {/* Resources row */}
       <ResourceBar resources={resources}/>
 
-      {/* Day + Threat */}
+      {/* Day + digital game clock */}
       <div style={{
         padding: '0 14px', borderRight: '1px solid var(--border)', height: '100%',
         display: 'flex', alignItems: 'center', gap: 12,
@@ -481,15 +482,9 @@ function TopBar({ mode, screen, setScreen, resources, threatLevel, worldEvent })
         <div style={{fontFamily:'var(--font-mono)', fontSize:11, color:'var(--text2)'}}>
           YEAR <span style={{color:'var(--amber)', fontWeight:'bold'}}>{gameYear}</span> · DAY <span style={{color:'var(--amber)', fontWeight:'bold'}}>{gameDay}</span>
         </div>
-        <div style={{display:'flex', alignItems:'center', gap:5}}>
-          <div className="threat-active" style={{
-            width: 8, height: 8, borderRadius: '50%',
-            background: threatLevel > 3 ? 'var(--red2)' : threatLevel > 1 ? 'var(--amber)' : 'var(--green)',
-          }}/>
-          <span style={{fontFamily:'var(--font-mono)', fontSize:10, color:'var(--text2)'}}>
-            THREAT <span style={{color: threatLevel > 3 ? 'var(--red2)' : 'var(--amber)'}}>{threatLevel}/5</span>
-          </span>
-        </div>
+        <span aria-label={`Game time ${gameClock}`} title={`Game time · real time ${time.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}`} style={{fontFamily:'var(--font-mono)', fontSize:12, fontVariantNumeric:'tabular-nums', color:'var(--amber)', fontWeight:'bold', letterSpacing:'0.08em'}}>
+          {gameClock}
+        </span>
       </div>
 
       {/* Nav tabs — overflow collapses into a "▾ More" dropdown */}
@@ -498,10 +493,6 @@ function TopBar({ mode, screen, setScreen, resources, threatLevel, worldEvent })
       {/* World event ticker — compact chip that opens the full text */}
       {worldEvent && <EventChip worldEvent={worldEvent}/>}
 
-      {/* Time — in-game clock (1 game hour = 1 real minute) */}
-      <div title={`Game time · real time ${time.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}`} style={{padding:'0 14px', fontFamily:'var(--font-mono)', fontSize:11, color:'var(--text3)', flexShrink:0}}>
-        {gameClock}
-      </div>
     </div>
   );
 }
@@ -587,7 +578,7 @@ function NavTabs({ tabs, screen, setScreen }) {
 // Shows as many resource chips as fit; the rest collapse into a "▾ +N" dropdown
 // so chips never squash into each other when the bar is narrow.
 function ResourceBar({ resources }) {
-  const entries = Object.entries(resources).slice(0, 6);
+  const entries = Object.entries(resources);
   const boxRef = useRef(null);
   const measureRef = useRef(null);
   const [fit, setFit] = useState(entries.length);
@@ -640,19 +631,37 @@ function ResourceBar({ resources }) {
   );
 }
 
+// Top bar resources come from the game code (ZI.getTopBarResources in game/economy.js), re-read every second and
+// whenever the stash or loadout changes, so crafting, loot and spending show up without a reload.
+function useTopBarResources() {
+  const read = () => (ZI.getTopBarResources ? ZI.getTopBarResources() : {});
+  const [res, setRes] = useState(read);
+  useEffect(() => {
+    const refresh = () => setRes(read());
+    const t = setInterval(refresh, 1000);
+    const off = ZI.onInventoryChange ? ZI.onInventoryChange(refresh) : null;
+    return () => { clearInterval(t); if (off) off(); };
+  }, []);
+  return res;
+}
+
 function ResourceChip({ label, value, block }) {
   const colors = {
     Food:'var(--green2)', Scrap:'var(--text2)', Ammo:'var(--amber)', Medicine:'var(--blue)',
     Fuel:'var(--red2)', RMAT:'var(--purple)',
   };
-  const color = colors[label] || 'var(--text2)';
+  // Nutrition is a 0–100 meter: colour it by its FOOD level (Starving … Peak Fueled).
+  const color = label === 'Nutrition'
+    ? (value.pending ? 'var(--text3)' : getNutritionLevel(value.current).color)
+    : value.pending ? 'var(--text3)' : (colors[label] || 'var(--text2)');
+  const shown = value.pending ? '—' : label === 'Nutrition' ? `${Math.round(value.current)}%` : fmt(value.current);
   return (
-    <div style={{
+    <div title={value.pending ? `${label}: not built yet` : undefined} style={{
       display:'flex', alignItems:'center', gap:5, padding:'0 10px', flexShrink:0, whiteSpace:'nowrap',
       borderRight: block ? 'none' : '1px solid var(--border)', height:'100%', width: block ? '100%' : 'auto',
     }}>
       <span style={{fontFamily:'var(--font-mono)', fontSize:10, color:'var(--text3)', letterSpacing:'0.08em', flex: block ? 1 : 'none'}}>{label}</span>
-      <span style={{fontFamily:'var(--font-mono)', fontSize:12, color, fontWeight:'bold'}}>{fmt(value.current)}</span>
+      <span style={{fontFamily:'var(--font-mono)', fontSize:12, color, fontWeight:'bold'}}>{shown}</span>
       {value.rate > 0 && (
         <span style={{fontFamily:'var(--font-mono)', fontSize:9, color:'var(--green)', opacity:0.8}}>+{value.rate}/m</span>
       )}
@@ -4253,7 +4262,6 @@ function App() {
           mode={mode}
           screen={screen}
           setScreen={navigate}
-          resources={resources}
           threatLevel={tweaks.threatLevel}
           worldEvent={worldEvent}
         />

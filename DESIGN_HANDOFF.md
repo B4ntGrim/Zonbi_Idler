@@ -1,23 +1,36 @@
-# Design handoff — Oct 26 (late evening)
+# Design handoff — Oct 27
 
-**Replaces:** the Oct 26 evening handoff, archived as `archive/design-handoff-oct26-evening.md` (morning one in `archive/design-handoff-oct26-am.md`).
+**Replaces:** the Oct 26 late-evening handoff, archived as `archive/design-handoff-oct26-late.md`.
 **Active batch:** `CURRENT_BATCH.md` = **CLOCK-01** (unchanged). **PF15 comes first** once Sam approves the fix direction.
-**Source:** Google Docs "Zed Idler — Code Instructions Oct 26 — Addendum 3, 4, 5, 5b, 6, 6b", applied Oct 26 evening.
+**Source:** `reports/docs-oct27/ADDENDUM_OCT27.md` (Sam's Oct 27 morning voice session), applied Oct 27 by `apply_oct27.py`.
 
-## 1. Decisions made (Sam, Oct 26 afternoon)
-- **Conflicts settled:** encounter pacing base **90 s** (familiarity 60 / 90 / 135 s) · food comfort cap stays **5 per real day** · Well Nourished counts per **real day** · target **about three meals a real day** (mechanics open) · background finds **one per 90 s** · character XP **banks on every return**, watched or away · MS3 uses a **Fallow-clear proxy**, H2 scope unchanged.
-- **Weight:** W-1 real-world weights per item type; rarity never changes weight (supersedes value-driven salvage weight). W-2 load above 50% of capacity slows movement by pace (walk −1%, jog −1.5%, run −2% per kg, proposed). Gem socketing parked for weapons.
-- **Concordance CI14–CI18:** drop table (respirator 12%, sample case 7%, hazmat suit 4%, dart gun 1.5%, field scanner 0.5%; no pity counter) · repeat survey teams · frequency by distance (≈6 / 2 / 1 a day) · sample case +25% medical finds · identity (infection research; cure in public, control in private).
-- **Fort:** the elder is **Elder Jerry**; dialogue tree (first draft) in Fort brief §12.2a.
-- **TRAV-02:** daily Traversal movement cap by transport (2 / 3 / 5 / 8+), free until Fallow Ground is turned in; emergency withdrawals never count.
-- **Codex "In development" tab:** developer-only. **ANIM-01:** richer Wandering animation (display only), after CLOCK-01 and BIOME-01. **Camp Leader assignment:** concept.
-
-- **Late evening (Addenda 7–9c):** PF15 fix approved (draft batch `pf15-save-continue-slice.md`) · T18 travel stamina dropped · footwear adjusts the movement cap on foot (sneakers +1, military boots better camps, worn-out −1), floor of 1 square · SEASON-01 (a real week per season, two bonuses and two minuses each) · biome hazards for Mountain (with mild onboarding), Suburbia and City; Perimeter proposed.
+## 1. Decisions made (Sam, Oct 27)
+- **FISH-01 fishing:** lives in Traversal (water square → **Fish**; "You are now fishing"; cancel any time); **tick-based** rolls replace the per-cell rest; water type sets the tiers; rod → net → traps (base roll / more per tick / keeps rolling after you leave).
+- **Fish tiers:** more than four, topped by Legendary; Legendary **0.1% per roll** (starting value; supersedes 3%). Seven-tier list proposed.
+- **Fish prep:** the player prepares fish; **descaling knife** is a pocket item that wears down; without it, less nutrition, the loss shrinking with cooking skill.
+- **Gear:** + waders, tackle box, lures and bait, fisher's hat; every recipe mixes metal, wood and plastic; named sub-parts are their own components.
+- **Sunken Blade:** 10 fishing spots → the Lady of the Lake (mistakes you for a squire) → gift five legendary fish → quest → pond scene with "leave it" (blade waits as a Traversal action). **Broken Crown** (Helmet) = unbroken blade at a quality tier; Discovery and loot-quality % clothing push toward Relic. Crown sources: Command check, fight, or a random lake POI.
+- **Naga Sirens:** Black Haven's hidden information network (round-robin background events); Black Haven water quests; Diplomat check by standing and level; pass = trade + hint, fail = fishing spoiled for a while.
+- **Diplomat XP:** trading, negotiating, talking past NPCs; successes only.
+- **FOOD-02:** smoker, cook basin, kettle pot (art, clickable) `[CONCEPT]`; wood more abundant than metal; **plastics proposed**.
+- **ANIM-01:** retro pixel main character; loot pickup animation, bending at the waist `[CONCEPT]`.
 
 ## 2. Files changed
-`food-01-nutrition-slice.md` · `parked/food-02-cooking-concept.md` · `balance-03-round8-regen-oct21.md` · `wandering-design-audit.md` · `sim-harness-v1-brief.md` · `wandering-tab-spec.md` (§14.3, §14.4) · `weapons-development-directive.md` · `wandering-fort-scene.md` (§12.2a) · `trav-01-traversal-slice.md` (§2a) · `route-01-route-builder-concept.md` (R3) · `tutorial-first-session-spec.md` (§5) · `concordance-introduction-concept.md` (§2a) · `playtest-findings-oct15.md` (PF14–PF16) · `slice-retreat-broken-batch-a-draft.md` · `00-document-index.md` · `reports/level-12/LEVEL12_REPORT.md` · `reports/docs-oct26/` (PM pre-change copies, script, report) · this file; `archive/design-handoff-oct26-am.md`.
+New `reference/parked/fish-01-fishing-concept.md` · `poi-framework-v1-brief.md` ("Fish", numbers table) · `food-01-nutrition-slice.md` (legendary chance) · `parked/djinn-fishing-concept.md` §5 · `parked/food-02-cooking-concept.md` §2d · `wandering-tab-spec.md` (Diplomat XP) · `playtest-findings-oct15.md` (ANIM-01) · `PARKED.md` (Sunken Blade row) · `00-document-index.md` · this file · `reports/docs-oct27/` (addendum, script, pre-change copies, report).
 
 ## 3. Open questions
+**Sam (from today):**
+- **Prep skill:** the spec has no Cooking skill. Use Foraging, or add Cooking?
+- **Plastics:** seventh base material, or replace one of wood, metal, cloth, medical, electronics, fuel? Fishing gear recipes depend on it.
+- **Components:** no 17-component list was found on E:. Reuse `wiring` for wire and `planks` for wood frame and handle? Where does the 17-component list live?
+- **Stations vs ladder:** are the smoker, cook basin and kettle pot rungs of FOOD-02's Campfire → Camp stove → Field kitchen ladder, or separate stations?
+- **Diplomat:** level cap; does a trade give both Trading and Diplomat XP?
+- **Fishing details:** net vs "one result per pull"; does rod fishing tick while away; quest step after the gift (which pond); crown stats and fight drop chance; timers and defaults on the maiden and siren dialogue boxes (rules §4.5).
+- **Numbers:** rerun the fish sim at 0.1% per tick; djinn gate should count legendaries *caught*.
+
+**Sam (11:30 list, not docs):** BAL-A is **implemented but NOT CLOSED** (Oct 20 report: Sam's hands-on TEST SAVE check, the 30-day H2 run, scope note §4) · review the team's new Wandering art in `assets/wandering-characters/` and `assets/wandering-backgrounds/` before building ANIM-01 · routes bug: the vehicle can't be selected (needs a repro at the desk).
+
+**Carried from Oct 26:**
 **Sam (urgent):**
 - **PF15 vs CLOCK-01 order:** ship PF15 first (recommended), or close CLOCK-01's manual checks first. Until PF15 ships, press **Save** before closing.
 - **Hazard counters:** the city and Perimeter counters only drop from Concordance fights. Add basic counters for everyone (the existing NBC Gas Mask; a basic suit or anti-radiation medicine)?
@@ -39,4 +52,4 @@
 **Code (read-only first):** PF15 fingerprint test and fix proposal · W-3 (salvage weights and callers, rarity tiers incl. "relic", walk/jog/run constants) · FOOD-01 O6 with ST3 · round 8 rerun (90 s base, three-meals target) · ANIM-01 current-sway report · whether the test save should have a Jester starter weapon.
 
 ## 4. Next step
-Issue `pf15-save-continue-slice.md` as the next batch once Sam sets its order with CLOCK-01. Sam approves the PF15 fix direction; Code fixes it before other batch work. Then a fresh test save for the remaining BAL-A checks.
+Sam answers the prep-skill and plastics questions; they unblock FISH-01's recipes. Batch order is unchanged: PF15 first (once approved), then CLOCK-01's remaining checks, then a fresh test save for BAL-A closure.
