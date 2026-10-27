@@ -32,7 +32,7 @@
 |---|---|---|
 | FP1 | The player **prepares** caught fish; it is not auto-processed | A hands-on step that gives the knife and cooking a job |
 | FP2 | **Descaling knife:** pocket item (not the Melee slot); full-nutrition and bulk preparation | It is a tool, not a weapon; costs a pocket like scout and med kits |
-| FP3 | Without the knife, fish gives **less nutrition**; the loss **shrinks as cooking skill rises**; the knife is always best | Skill partly makes up for missing gear without making the knife pointless |
+| FP3 | Without the knife, fish gives **less nutrition**; the loss **shrinks as Foraging rises** (`[DECIDED Oct 27 PM, Sam]`; replaces "cooking skill"); the knife is always best | Skill partly makes up for missing gear without making the knife pointless |
 | FP4 | The knife **wears down with use** (stress speeds wear, existing rule) | Ties into durability and stress |
 
 `[PROPOSED]` Fish guts become bait.
@@ -92,11 +92,11 @@ Skill split: the maiden uses **Command** (you stand tall before a lady); sirens 
 
 ## 7. Diplomat XP `[DECIDED Oct 27]`
 
-Diplomat is already one of the 16 skills (spec, top). It gains XP from trading, negotiating and successfully talking past NPC encounters; **successes only**. Recorded in `wandering-tab-spec.md` under the skills line.
+Diplomat is already one of the skills (spec, top; 17 since Cooking was added Oct 27). It gains XP from trading, negotiating and successfully talking past NPC encounters; **successes only**. Recorded in `wandering-tab-spec.md` under the skills line.
 
 ## 8. Open
 
-- `[OPEN]` **Prep skill:** the spec has no Cooking skill. FP3 needs one: Foraging (fishing already trains it; the Excalibur doc scaled fish nutrition with Foraging) or a new Cooking skill.
+- ~~`[OPEN]` **Prep skill:** Foraging or a new Cooking skill?~~ **Decided Oct 27 PM (Sam):** FP3 uses **Foraging**. Cooking is added as its own skill for the stations (spec skills line), separate from Foraging.
 - `[OPEN]` **Net vs one result per pull:** the POI brief says each pull gives exactly one result and Foraging scales fish per pull (1–3). How does the net's "more catches per tick" combine with that?
 - `[OPEN]` **Offline:** the POI brief starts fishing in person and lets it finish offline. Does rod fishing keep ticking while away, or only traps (FA5)? Traps: 24 h cap, settle on read; robbed or broken (proposed earlier, not decided)?
 - `[OPEN]` **FOOD-01 / djinn numbers:** the fish table (80 / 17 / 3) and the djinn gate estimate assumed 3% legendaries. Rerun `fish_sim.py` at 0.1% per tick with the new tiers.
@@ -105,7 +105,8 @@ Diplomat is already one of the 16 skills (spec, top). It gains XP from trading, 
 - `[OPEN]` Broken Crown stats and drop chance from the fight; Command check level; siren "spoil" duration; standing thresholds.
 - `[OPEN]` **Prompt timers (rules §4.5):** maiden and siren dialogue boxes need a timer and a policy default unless Sam exempts them like the djinn scene (P3).
 - `[OPEN]` **Quality names:** code has an "epic" tier and no "unique"/"relic" pair (W-3 check).
-- `[OPEN]` **Plastic** is not a base material yet (FOOD-02 §2d); every gear recipe here depends on it.
+- ~~`[OPEN]` **Plastic** is not a base material yet.~~ **Decided Oct 27 PM (Sam):** plastics is the **seventh base material** (FOOD-02 §2d). `[OPEN]` its sources and abundance.
+- `[OPEN]` **Component reuse plan** (wire → `wiring`; wood frame and wood handle → from `planks`; metal clasp, metal hook, plastic reel and plastic float new): read back to Sam Oct 27 PM, awaiting his confirmation.
 - `[OPEN]` Diplomat level cap; whether a trade gives both Trading and Diplomat XP.
 
 ## 9. Watch for

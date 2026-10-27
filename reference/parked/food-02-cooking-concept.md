@@ -113,6 +113,8 @@ A rare item the player can **find** that **raises the daily food stress cap**.
 | Camp stove | Crafted (needs workshop tools) | Faster cooking |
 | Field kitchen | Crafted (higher tier) | Faster again; can cook specialty dishes in bulk |
 
+**Stations as Shop unlocks `[DECIDED Oct 27 PM, Sam]`:** the kettle pot, cook basin and smoker are **steps of this ladder, unlocked in the Shop** (the Shop replaces the Market tab; currency RMAT, decided Oct 25). The Campfire stays free from the start and cooks every basic recipe, so eating is never locked behind the Shop (rule 5.1). `[PROPOSED]` order Campfire → kettle pot → cook basin → camp stove → smoker → field kitchen; the Shop unlocks a station, then the player crafts it from wood, metal and plastics (keeps the material balance in §2d). `[OPEN]` the order, whether the camp stove and field kitchen stay, and RMAT prices.
+
 **Shop unlocks (RMAT, efficiency only):** an extra cooking queue slot; "Cook greatest to least" ordering; an automatic reserve that keeps camp food above a set number for rest.
 
 *Why both:* crafting upgrades the station's power (earned through play); the shop sells convenience. The Campfire always cooks every basic recipe at a fair speed, so nothing about eating is ever locked behind the shop (business-model rule 5.1).
@@ -124,11 +126,11 @@ A rare item the player can **find** that **raises the daily food stress cap**.
 
 ## 2d. Cooking stations, materials and spoilage (Sam, Oct 27)
 
-- `[CONCEPT Oct 27]` **Stations:** smoker, cook basin and kettle pot. Not built yet. Each needs its own art and is **clickable inside the crafting/cooking menu**. Spoilage is tackled through them (the smoker preserves fish and meat, `[PROPOSED]`).
+- `[CONCEPT Oct 27]` **Stations:** smoker, cook basin and kettle pot. **`[DECIDED Oct 27 PM, Sam]` They are steps of the §2c station ladder, unlocked through the Shop** (see §2c). Not built yet. Each needs its own art and is **clickable inside the crafting/cooking menu**. Spoilage is tackled through them (the smoker preserves fish and meat, `[PROPOSED]`).
 - `[DECIDED Oct 27]` **Material balance:** metal and wood each get their own balance; **wood is more abundant than metal**. `[PROPOSED]` kettle pot mostly metal, smoker mostly wood, cook basin a mix, so neither material bottlenecks.
-- `[PROPOSED Oct 27, Sam]` **Plastics** as a new material (containers and seals that slow spoilage, water jugs; fishing gear in FISH-01). `[OPEN]` a seventh base material, or replacing one of the six (`[CODE]` wood, metal, cloth, medical, electronics, fuel).
+- `[DECIDED Oct 27 PM, Sam]` **Plastics is the seventh base material**, alongside `[CODE]` wood, metal, cloth, medical, electronics and fuel (containers and seals that slow spoilage, water jugs; fishing gear in FISH-01). `[OPEN]` where plastics drops and how abundant it is (proposed: between wood and metal). Code: `ZI_MATERIALS` and every "six base materials" recipe comment change when a batch builds it.
 - `[PROPOSED]` **Spoilage starting reference:** GDD v5.3 decay, perishables lose 10% of value every two days at camp; during travel it depends on containers.
-- `[OPEN]` Reconcile with §2c's station ladder (Campfire → Camp stove → Field kitchen): are the smoker, cook basin and kettle pot rungs of that ladder, or parallel stations with different jobs?
+- ~~`[OPEN]` Rungs of the §2c ladder, or parallel stations?~~ **Decided Oct 27 PM (Sam): rungs of the ladder, as Shop unlocks** (§2c).
 - Fish preparation (descaling knife, skill-scaled loss) lives in `fish-01-fishing-concept.md` §3.
 
 ## 3. Open

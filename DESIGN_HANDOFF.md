@@ -1,10 +1,21 @@
-# Design handoff — Oct 27 (PM)
+# Design handoff — Oct 27 (evening)
 
-**Replaces:** the Oct 27 morning handoff, archived as `archive/design-handoff-oct27-am.md`.
+**Replaces:** the Oct 27 PM handoff, archived as `archive/design-handoff-oct27-pm.md` (morning one in `archive/design-handoff-oct27-am.md`).
 **Active batch:** `CURRENT_BATCH.md` = **CLOCK-01** (NOT CLOSED). **PF15 is the next batch** `[DECIDED Oct 26, Sam, Addendum 10]`, ahead of CLOCK-01's remaining manual checks.
-**Source:** Google Docs "Zed Idler — Code Instructions Oct 26 — Addendum 10" and "Addendum 11, 11b–11i" (Sam, Oct 26 late evening, voice), applied Oct 27 by `reports/docs-oct27/apply_oct27_pm.py`. The Oct 27 morning decisions (FISH-01 and others) stay in force; see `archive/design-handoff-oct27-am.md` §1.
+**Source:** Sam's answers in chat, Oct 27 14:02, applied by `reports/docs-oct27/apply_oct27_eve.py`. The Oct 27 morning (FISH-01) and PM (Addenda 10–11i) decisions stay in force; see the archived handoffs §1.
 
-## 1. Decisions made (Sam, Oct 26 late evening)
+ force; see `archive/design-handoff-oct27-am.md` §1.
+
+## 1. Decisions made
+
+**Sam, Oct 27 evening:**
+- **Cooking** is a new skill (17th), separate from Foraging. XP sources, cap and effects open.
+- **Fish prep:** the no-knife loss shrinks as **Foraging** rises (FISH-01 FP3).
+- **Plastics is the seventh base material.**
+- **Smoker, cook basin, kettle pot** are steps of FOOD-02's station ladder, **unlocked in the Shop**; the Campfire stays free.
+- **The Shop replaces the Market tab.**
+
+**Sam, Oct 26 late evening (Addenda 10–11i, applied Oct 27 PM):**
 - **PF15 first:** issue `pf15-save-continue-slice.md` as the next batch, ahead of CLOCK-01's manual checks.
 - **Improvised base-tier hazard counters** for every hazard (improvised respirator; improvised radiation suit or medicine): from NPCs, POI and checkpoint loot, and the improvised crafting chain. Closes the BIOME-01 counter gap.
 - **Debriefed Perimeter** hazard row decided (values proposed).
@@ -17,7 +28,7 @@
 - **Prisoner quest** parked.
 
 ## 2. Files changed
-`pf15-save-continue-slice.md` (status, §3) · `biome-01-chunks-slice.md` (counters, Perimeter row, gap resolved) · `concordance-introduction-concept.md` (CI14 rows and conflict notes, new §2b CI19–CI26, §3) · `wandering-tab-spec.md` (13.8 exception, 14.1 Legs, 14.2, 15.3, paperdoll line) · `trav-01-traversal-slice.md` (TRAV-02e) · new `parked/prisoner-quest-concept.md` · `parked/faction-quests-and-poi-density.md` (pointer) · `00-document-index.md` · this file · `reports/docs-oct27/` (`apply_oct27_pm.py`, `pre-change-pm/`, `DOCS_OCT27_PM_REPORT.md`).
+This session: `wandering-tab-spec.md` (skills line, Cooking) · `parked/fish-01-fishing-concept.md` (FP3, Diplomat line, §8) · `parked/food-02-cooking-concept.md` (§2c, §2d) · `tutorial-first-session-spec.md` (Market row, 7.6) · `00-document-index.md` · this file · `reports/docs-oct27/` (`apply_oct27_eve.py`, `pre-change-eve/`, `DOCS_OCT27_EVE_REPORT.md`). PM files: see `archive/design-handoff-oct27-pm.md` §2.
 
 ## 3. Open questions
 **Sam (from Addenda 10–11i):**
@@ -29,15 +40,15 @@
 **Carried from the Oct 27 morning handoff:**
 
 **Sam (Oct 27 morning):**
-- **Prep skill:** the spec has no Cooking skill. Use Foraging, or add Cooking?
-- **Plastics:** seventh base material, or replace one of wood, metal, cloth, medical, electronics, fuel? Fishing gear recipes depend on it.
-- **Components:** no 17-component list was found on E:. Reuse `wiring` for wire and `planks` for wood frame and handle? Where does the 17-component list live?
-- **Stations vs ladder:** are the smoker, cook basin and kettle pot rungs of FOOD-02's Campfire → Camp stove → Field kitchen ladder, or separate stations?
+- **Plastics:** where it drops and how common (proposed: between wood and metal).
+- **Cooking skill:** XP sources, cap, what levels give.
+- **Shop:** what happens to the Auction view and the "Marketplace Trade" schedule task; station order and prices (proposed Campfire → kettle pot → cook basin → camp stove → smoker → field kitchen; unlock in the Shop, then craft).
+- **Components:** reuse plan read back to Sam Oct 27 PM (wire → `wiring`; wood frame and handle from `planks`; clasp, hook, reel, float new). Awaiting his confirmation. Where does the 17-component list live?
 - **Diplomat:** level cap; does a trade give both Trading and Diplomat XP?
 - **Fishing details:** net vs "one result per pull"; does rod fishing tick while away; quest step after the gift (which pond); crown stats and fight drop chance; timers and defaults on the maiden and siren dialogue boxes (rules §4.5).
 - **Numbers:** rerun the fish sim at 0.1% per tick; djinn gate should count legendaries *caught*.
 
-**Sam (11:30 list, not docs):** BAL-A is **implemented but NOT CLOSED** (Oct 20 report: Sam's hands-on TEST SAVE check, the 30-day H2 run, scope note §4) · review the team's new Wandering art in `assets/wandering-characters/` and `assets/wandering-backgrounds/` before building ANIM-01 · routes bug: the vehicle can't be selected (needs a repro at the desk).
+**Sam (11:30 list, not docs):** BAL-A is **implemented but NOT CLOSED**. Sam believes it is done (Oct 27); to write `BAL-A: CLOSED` he confirms: (1) TEST SAVE checks not yet run on Oct 26: Broken gear, injury timer, Solo-save T5, status icons; (2) the full 30-day H2 run (never completed; `reports/h2-full-2026-10-24/` holds only an empty log); (3) the scope note §4 review · review the team's new Wandering art in `assets/wandering-characters/` and `assets/wandering-backgrounds/` before building ANIM-01 · routes bug: the vehicle can't be selected (needs a repro at the desk).
 
 **Carried from Oct 26:**
 **Reminder:** until PF15 ships, press **Save** before closing.
@@ -58,4 +69,4 @@
 **Code (read-only first):** PF15 fingerprint test and fix proposal · W-3 (salvage weights and callers, rarity tiers incl. "relic", walk/jog/run constants) · FOOD-01 O6 with ST3 · round 8 rerun (90 s base, three-meals target) · ANIM-01 current-sway report · whether the test save should have a Jester starter weapon.
 
 ## 4. Next step
-Issue PF15 as `CURRENT_BATCH.md` (decided), then CLOCK-01's remaining checks, then a fresh test save for BAL-A closure. Sam settles the CI14 total and CI19 scope; the prep-skill and plastics questions still block FISH-01's recipes.
+Issue PF15 as `CURRENT_BATCH.md` (decided), then CLOCK-01's remaining checks, then a fresh test save for BAL-A closure. Sam settles the CI14 total and CI19 scope; the component reuse plan (Sam to confirm) is the last blocker on FISH-01's recipes.

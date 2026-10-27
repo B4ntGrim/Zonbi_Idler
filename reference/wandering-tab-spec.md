@@ -15,7 +15,9 @@ The player sets a **standing policy** once, leaves for other tabs, and the survi
 
 *Why:* an idler needs a reason to come back. Policy is a decision the player owns (identity), decay is a soft pressure (return), and factions are consequences (story). None of these require the player to stay on the Wandering tab.
 
-Skills (16): combat, first aid, scavenging, stealth, athletics, endurance, foraging, smithing, medical, mechanical, discovery, trading, diplomat, logistics, engineering, command.
+Skills (17): combat, first aid, scavenging, stealth, athletics, endurance, foraging, smithing, medical, mechanical, discovery, trading, diplomat, logistics, engineering, command, cooking.
+
+Cooking `[DECIDED Oct 27, Sam]`: a new skill, **separate from Foraging** (supersedes the 16-skill list). It belongs to cooking at the base stations (FOOD-02). `[OPEN]` XP sources (proposed: meals cooked at a station, more for better dishes), level cap, and what a higher level gives (proposed: faster cooking, chance of a better dish). Not yet in code (`game/stats.js` skill list).
 
 Diplomat XP `[DECIDED Oct 27, Sam]`: earned from trading, negotiating and successfully talking past NPC encounters (siren checks included, FISH-01 §6), **on successes only**; failed checks give no XP. `[OPEN]` level cap; whether a trade gives both Trading and Diplomat XP.
 
@@ -40,7 +42,7 @@ A policy does **not** hard-wire skills. It defines which **encounter pool** is r
 
 Example (Sam's): Criminal rolls a *broken-down vehicle* → checks **mechanical**. Criminal rolls a *gang of faction members* (low odds) → checks **combat**. So Criminal feeds mechanical *and* combat, depending on what the world presents.
 
-*Why:* this removes the "combat or mechanical?" question entirely, gives every policy variety, and makes the 16 skills reachable through situations instead of a lookup table. It also matches the fiction: a criminal does not choose to have a car break down.
+*Why:* this removes the "combat or mechanical?" question entirely, gives every policy variety, and makes the skills reachable through situations instead of a lookup table. It also matches the fiction: a criminal does not choose to have a car break down.
 
 **Consequence for decay `[PROPOSED]`:** a skill is *protected* by a policy only when at least one encounter in that policy's pool checks it. Protection is earned per event (each event resets that skill's clock, see 3.3). Low-weight encounters will protect their skill less reliably; tune weights so the expected gap between events for a pooled skill is well under the grace period (Section 12, `PolicyPools`).
 

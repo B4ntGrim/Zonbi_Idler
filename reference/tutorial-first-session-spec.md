@@ -181,7 +181,7 @@ Each tab tutorial fires the **first time the player opens that tab** (per save),
 | Codex | After the first zombie fought (Beat 2) `[PROPOSED]` | First-open tutorial (7.3) |
 | Routes | First open. A new game starts on Traversal (3.1) `[DECIDED]`; `[CODE]` the current Routes default start screen is a bug for Code to fix | First-open tutorial (7.4) |
 | Schedule | Parked feature. Its tutorial is written in the batch that builds it | One-line placeholder until then (7.5) |
-| Market | Parked feature. Its tutorial is written in the batch that builds it | One-line placeholder until then (7.6) |
+| ~~Market~~ Shop | **The Shop replaces the Market tab** `[DECIDED Oct 27 PM, Sam]`. Parked feature; its tutorial is written in the batch that builds it | One-line placeholder until then (7.6) |
 | Active/Idle, Auto-Repeat | Introduced on Shop unlock `[DECIDED]` | One short step when unlocked in the Shop. Written in the Shop batch (parked); not mentioned in the Routes tutorial. **Superseded in part `[DECIDED Oct 25]`, C9:** once circuits take over Idle run, repeating is free (C2) and "one loop only" is the Shop unlock (C3); until then, predefined Routes keep Auto-Repeat as a Shop unlock. Active/Idle is unchanged. See `circuit-expedition-concepts.md`. |
 
 ---
@@ -287,7 +287,9 @@ All counters are per save, written by the same seeded combat resolution, so live
 |---|---|---|
 | `schedule.placeholder` | Schedule | Planning your survivor's day arrives in a later update. Nothing on this screen affects your game yet. |
 
-### 7.6 Market (placeholder)
+### 7.6 Market (placeholder) — becomes the Shop
+
+`[DECIDED Oct 27 PM, Sam]` **The Shop replaces the Market.** The Market tab becomes the Shop (RMAT currency, decided Oct 25), which holds the Shop unlocks (cooking stations, FOOD-02 §2c; "one loop only", C9; retreat rules, `parked/retreat-rules-shop.md`). `[OPEN]` what happens to the Auction view (player-to-player listings): remove, or park for later; and the Schedule task "Marketplace Trade". The `market.placeholder` text below changes with the batch that builds the Shop.
 
 `[CODE]` Built today: a Market tab with an **Auction ⇄ Shop** switch (choice saved). Auction is a player-to-player listing screen filled from sample data (`ZI.MARKET_ITEMS`); the prototype does not call the server (Development Status 8.5). Shop is a fixed vendor gated by RMAT and distance, with a "new unlocks" badge. Parked: "Shop, Scheduling" (PARKED.md, 3A → Later).
 
