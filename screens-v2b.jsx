@@ -395,6 +395,7 @@ function ShopScreen() {
   const catGroups = [
     { key:'blueprint', label:'Blueprints',         cats:['blueprint'] },
     { key:'capacity',  label:'Capacity',           cats:['capacity'] },
+    { key:'station',   label:'Cooking stations',   cats:['station'] },
     { key:'gear',      label:'Gear & Consumables', cats:['gear','consumable'] },
     { key:'cosmetic',  label:'Cosmetics & QoL',    cats:['cosmetic','qol'] },
   ];
@@ -422,7 +423,14 @@ function ShopScreen() {
     return nearest.name;
   })();
 
-  const buy = (entry) => { /* Buy disabled until cost model chosen (spec §6). */ };
+  // Oct 27: purchases are live. One path (ZI.shopPurchase) checks the gate and the RMAT wallet, then grants.
+  const [notice, setNotice] = React.useState(null);
+  const buy = (entry) => {
+    const r = ZI.shopPurchase(entry);
+    setNotice({ id: entry.id, ok: r.ok, text: r.ok ? r.text : r.reason });
+    rerender();
+  };
+  const wallet = ZI.getRmatHoldings();
 
   const ProgressLine = ({ c, label, color }) => (
     <div style={{ marginBottom:3 }}>
@@ -463,22 +471,24 @@ function ShopScreen() {
         <div style={{ display:'flex', alignItems:'center', gap:8 }}>
           {st === 'owned' ? (
             <span style={{ fontFamily:'var(--font-mono)', fontSize:10, color:'var(--green)' }}>
-              ✓ {entry.repeatable ? `Lvl ${lvl}/${maxLvl}` : 'Owned'}
+              ✓ {entry.repeatable && entry.grant?.maxLevel ? `Lvl ${lvl}/${maxLvl}` : 'Owned'}
             </span>
           ) : st === 'unlocked' ? (
             <>
-              <span style={{ fontFamily:'var(--font-mono)', fontSize:10, color:'var(--text3)' }}>
-                Cost: — {entry.repeatable ? `· Lvl ${lvl}/${maxLvl}` : ''}
+              <span data-shop-price={entry.id} style={{ fontFamily:'var(--font-mono)', fontSize:10, color: ZI.shopCanAfford(entry) ? 'var(--text2)' : 'var(--red2)' }}>
+                {ZI.shopPriceText(entry)} {entry.repeatable && entry.grant?.maxLevel ? `· Lvl ${lvl}/${maxLvl}` : ''}
               </span>
-              <button onClick={() => buy(entry)} disabled title="Pricing pending balance pass" style={{
+              <button data-shop-buy={entry.id} onClick={() => buy(entry)} disabled={!ZI.shopCanAfford(entry)} title={ZI.shopCanAfford(entry) ? 'Buy with RMAT' : 'Not enough RMAT'} style={{
                 marginLeft:'auto', fontFamily:'var(--font-mono)', fontSize:10, padding:'3px 12px',
-                background:'var(--bg4)', border:'1px solid var(--border)', color:'var(--text3)', cursor:'not-allowed',
+                background: ZI.shopCanAfford(entry) ? 'var(--amber)' : 'var(--bg4)', border:'1px solid ' + (ZI.shopCanAfford(entry) ? 'var(--amber)' : 'var(--border)'),
+                color: ZI.shopCanAfford(entry) ? '#000' : 'var(--text3)', cursor: ZI.shopCanAfford(entry) ? 'pointer' : 'not-allowed',
               }}>Buy</button>
             </>
           ) : (
-            <span style={{ fontFamily:'var(--font-mono)', fontSize:9, color:'var(--text3)' }}>🔒 Locked — meet the gate to unlock</span>
+            <span style={{ fontFamily:'var(--font-mono)', fontSize:9, color:'var(--text3)' }}>🔒 Locked — meet the gate to unlock{ZI.shopPrice(entry) ? ` · price ${ZI.shopPriceText(entry)}` : ''}</span>
           )}
         </div>
+        {notice && notice.id === entry.id && <div data-shop-notice={notice.ok ? 'ok' : 'fail'} style={{ marginTop:6, fontFamily:'var(--font-mono)', fontSize:9, color: notice.ok ? 'var(--green)' : 'var(--red2)' }}>{notice.ok ? '✓ ' : '✕ '}{notice.text}</div>}
       </div>
     );
   };
@@ -489,8 +499,9 @@ function ShopScreen() {
       <div style={{ display:'flex', alignItems:'center', gap:10, padding:'7px 12px', background:'var(--bg3)', borderBottom:'1px solid var(--border)', flexShrink:0 }}>
         <span style={{ fontFamily:'var(--font-mono)', fontSize:10, color:'var(--amber)' }}>◈ Next unlock:</span>
         <span style={{ fontFamily:'var(--font-mono)', fontSize:10, color:'var(--text2)' }}>{nearestMsg || '—'}</span>
-        <span style={{ marginLeft:'auto', fontFamily:'var(--font-mono)', fontSize:9, color:'var(--text3)' }}>
-          Wandering {ZI.getLifetimeDistance().toLocaleString()} m · Lap {ZI.getLifetimeLap()} · RMAT reached {ZI.TIER_META['T'+ZI.rmatReachedRank()].label}
+        <span data-shop-wallet style={{ marginLeft:'auto', fontFamily:'var(--font-mono)', fontSize:9, color:'var(--text3)', display:'flex', gap:8, flexWrap:'wrap', justifyContent:'flex-end' }}>
+          <span>Wandering {ZI.getLifetimeDistance().toLocaleString()} m · Lap {ZI.getLifetimeLap()}</span>
+          <span>RMAT: {['T0','T1','T2','T3','T4','T5'].map(k => <span key={k} style={{ color:tierColor(k), marginLeft:5 }}>{k} {wallet[k] || 0}</span>)}</span>
         </span>
       </div>
       <div style={{ flex:1, overflow:'auto', padding:10, display:'flex', flexDirection:'column', gap:10 }}>
@@ -499,7 +510,7 @@ function ShopScreen() {
           if (!groupItems.length) return null;
           const isCol = collapsed[group.key];
           return (
-            <div key={group.key} className="panel" style={{ padding:0 }}>
+            <div key={group.key} className="panel" style={{ padding:0, flexShrink:0 }}>
               <div className="panel-title" onClick={() => setCollapsed(c => ({ ...c, [group.key]: !c[group.key] }))} style={{ cursor:'pointer', display:'flex', alignItems:'center' }}>
                 <span>{isCol ? '▸' : '▾'} {group.label}</span>
                 <span style={{ marginLeft:'auto', fontFamily:'var(--font-mono)', fontSize:8, color:'var(--text3)' }}>{groupItems.length}</span>
@@ -513,60 +524,23 @@ function ShopScreen() {
           );
         })}
         <div style={{ fontFamily:'var(--font-mono)', fontSize:8, color:'var(--text3)', textAlign:'center', padding:4 }}>
-          Pricing is pending a balance pass — Buy unlocks once the cost model is set.
+          Prices are in RMAT. They are starting values for the economy check (the circuit toggle's 10 T2 is decided).
         </div>
       </div>
     </div>
   );
 }
 
-// Parent: Market tab with an Auction ⇄ Shop dropdown sub-menu.
+// Parent: the Shop tab. The Shop replaced the Market tab and the Auction view was removed [DECIDED Oct 27, Sam].
+// MarketplaceScreenV2 (the old auction) stays defined but is no longer reachable.
 function MarketParent() {
-  const ZI = window.ZI;
-  const [view, setView] = React.useState(() => ZI.getMarketView());
-  const [open, setOpen] = React.useState(false);
-  // New-unlock badge: unlocked-but-unowned count, cleared once Shop is viewed.
-  const [seenShop, setSeenShop] = React.useState(() => ZI.getMarketView() === 'shop');
-  const newUnlocks = ZI.shopNewUnlockCount ? ZI.shopNewUnlockCount() : 0;
-  const showBadge = !seenShop && newUnlocks > 0 && view !== 'shop';
-  const pick = (v) => { setView(v); ZI.saveMarketView(v); setOpen(false); if (v === 'shop') setSeenShop(true); };
   return (
-    <div style={{ display:'flex', flexDirection:'column', height:'100%', overflow:'hidden' }}>
-      <div style={{ display:'flex', alignItems:'center', gap:8, padding:'6px 10px', borderBottom:'1px solid var(--border)', flexShrink:0, position:'relative' }}>
-        <div style={{ position:'relative' }}>
-          <button onClick={() => setOpen(o => !o)} style={{
-            fontFamily:'var(--font-title)', fontSize:13, letterSpacing:'0.06em', cursor:'pointer',
-            background:'var(--bg4)', border:`1px solid ${open ? 'var(--amber)' : 'var(--border)'}`,
-            color:'var(--amber)', padding:'4px 12px', display:'flex', alignItems:'center', gap:8,
-          }}>
-            MARKET ▾ <span style={{ color:'var(--text2)', fontFamily:'var(--font-mono)', fontSize:11 }}>{view === 'shop' ? 'Shop' : 'Auction'}</span>
-            {showBadge && <span style={{ background:'var(--amber)', color:'#000', fontFamily:'var(--font-mono)', fontSize:8, borderRadius:8, padding:'0 5px' }}>{newUnlocks} new</span>}
-          </button>
-          {open && (
-            <>
-              <div onClick={() => setOpen(false)} style={{ position:'fixed', inset:0, zIndex:40 }}/>
-              <div style={{ position:'absolute', top:'110%', left:0, zIndex:50, minWidth:150, background:'var(--bg2)', border:'1px solid var(--amber)', boxShadow:'0 6px 20px rgba(0,0,0,0.5)', padding:5 }}>
-                {[['auction','Auction'],['shop','Shop']].map(([id, label]) => (
-                  <div key={id} onClick={() => pick(id)} style={{
-                    padding:'5px 10px', cursor:'pointer', fontFamily:'var(--font-mono)', fontSize:11,
-                    color: view === id ? 'var(--amber)' : 'var(--text2)', background: view === id ? 'var(--bg4)' : 'transparent',
-                    display:'flex', alignItems:'center', gap:6,
-                  }}>
-                    <span style={{ width:10 }}>{view === id ? '•' : ''}</span>{label}
-                    {id === 'shop' && newUnlocks > 0 && <span style={{ marginLeft:'auto', background:'var(--amber)', color:'#000', fontSize:8, borderRadius:8, padding:'0 5px' }}>{newUnlocks}</span>}
-                  </div>
-                ))}
-              </div>
-            </>
-          )}
-        </div>
-        <span style={{ fontFamily:'var(--font-mono)', fontSize:9, color:'var(--text3)' }}>
-          {view === 'shop' ? 'Fixed vendor · gated by RMAT & distance' : 'Player-to-player auction · live listings'}
-        </span>
+    <div data-shop-tab style={{ display:'flex', flexDirection:'column', height:'100%', overflow:'hidden' }}>
+      <div style={{ display:'flex', alignItems:'center', gap:10, padding:'6px 10px', borderBottom:'1px solid var(--border)', flexShrink:0 }}>
+        <span style={{ fontFamily:'var(--font-title)', fontSize:13, letterSpacing:'0.06em', color:'var(--amber)' }}>SHOP</span>
+        <span style={{ fontFamily:'var(--font-mono)', fontSize:9, color:'var(--text3)' }}>Fixed vendor · prices in RMAT · stock unlocks with progress</span>
       </div>
-      <div style={{ flex:1, minHeight:0, overflow:'hidden' }}>
-        {view === 'shop' ? <ShopScreen/> : <MarketplaceScreenV2/>}
-      </div>
+      <div style={{ flex:1, minHeight:0, overflow:'hidden' }}><ShopScreen/></div>
     </div>
   );
 }

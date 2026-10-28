@@ -1,0 +1,474 @@
+[
+  {
+    "id": "rifle",
+    "name": "AK-74 Carbine",
+    "category": "weapon",
+    "slot": "primary",
+    "rarity": "rare",
+    "description": "Reliable 5.45mm carbine. Loud but devastating."
+  },
+  {
+    "id": "shotgun",
+    "name": "Sawn-Off Shotgun",
+    "category": "weapon",
+    "slot": "primary",
+    "rarity": "uncommon",
+    "description": "Close range devastation. Useless past 20m."
+  },
+  {
+    "id": "suppressed",
+    "name": "Suppressed SMG",
+    "category": "weapon",
+    "slot": "primary",
+    "rarity": "epic",
+    "description": "Quiet and fast. Urban specialist weapon."
+  },
+  {
+    "id": "pistol",
+    "name": "9mm Pistol",
+    "category": "weapon",
+    "slot": "secondary",
+    "rarity": "common",
+    "description": "Standard sidearm. Backup when it counts."
+  },
+  {
+    "id": "revolver",
+    "name": ".357 Revolver",
+    "category": "weapon",
+    "slot": "secondary",
+    "rarity": "uncommon",
+    "description": "Heavy hitting. Slow to reload."
+  },
+  {
+    "id": "machete",
+    "name": "Military Machete",
+    "category": "weapon",
+    "slot": "melee",
+    "rarity": "uncommon",
+    "description": "Silent. Efficient. Close range only."
+  },
+  {
+    "id": "bat",
+    "name": "Nail Bat",
+    "category": "weapon",
+    "slot": "melee",
+    "rarity": "common",
+    "description": "Improvised and heavy. Heavy swing: 30% chance to lose your next attack."
+  },
+  {
+    "id": "pocket_knife",
+    "name": "Pocket Knife",
+    "category": "weapon",
+    "slot": "melee",
+    "rarity": "common",
+    "description": "Small and quiet. +30 escape chance, +5 loot."
+  },
+  {
+    "id": "crowbar",
+    "name": "Crowbar",
+    "category": "weapon",
+    "slot": "melee",
+    "rarity": "common",
+    "description": "Opens locked containers."
+  },
+  {
+    "id": "helmet_t2",
+    "name": "Ballistic Helmet T2",
+    "category": "armor",
+    "slot": "helmet",
+    "rarity": "rare",
+    "description": "Rated for pistol caliber."
+  },
+  {
+    "id": "helmet_t1",
+    "name": "Construction Hard Hat",
+    "category": "armor",
+    "slot": "helmet",
+    "rarity": "common",
+    "description": "Better than nothing. Barely."
+  },
+  {
+    "id": "gasmask",
+    "name": "NBC Gas Mask",
+    "category": "armor",
+    "slot": "mask",
+    "rarity": "epic",
+    "description": "Required for toxic zones. -15% visibility."
+  },
+  {
+    "id": "balaclava",
+    "name": "Tactical Balaclava",
+    "category": "armor",
+    "slot": "mask",
+    "rarity": "uncommon",
+    "description": "Minor protection."
+  },
+  {
+    "id": "vest_t3",
+    "name": "SAPI Plate Carrier",
+    "category": "armor",
+    "slot": "vest",
+    "rarity": "legendary",
+    "description": "Military-grade ceramic. Stops rifle rounds."
+  },
+  {
+    "id": "vest_t1",
+    "name": "Padded Jacket",
+    "category": "armor",
+    "slot": "vest",
+    "rarity": "common",
+    "description": "Civilian padding. Minimal ballistic value."
+  },
+  {
+    "id": "old_padded_jacket",
+    "name": "Old Padded Jacket",
+    "category": "armor",
+    "slot": "vest",
+    "rarity": "common",
+    "description": "Worn thin and patched twice. Better than nothing."
+  },
+  {
+    "id": "gloves_t2",
+    "name": "Combat Gloves",
+    "category": "armor",
+    "slot": "gloves",
+    "rarity": "uncommon",
+    "description": "+10% melee damage. Improved grip."
+  },
+  {
+    "id": "boots_t2",
+    "name": "Tactical Boots",
+    "category": "armor",
+    "slot": "boots",
+    "rarity": "rare",
+    "description": "-20% movement noise. Sprint bonus."
+  },
+  {
+    "id": "boots_t1",
+    "name": "Work Boots",
+    "category": "armor",
+    "slot": "boots",
+    "rarity": "common",
+    "description": "Sturdy. Nothing special."
+  },
+  {
+    "id": "backpack_lg",
+    "name": "Military MOLLE Pack",
+    "category": "gear",
+    "slot": "backpack",
+    "rarity": "rare",
+    "description": "12 extra stash slots on run."
+  },
+  {
+    "id": "backpack_sm",
+    "name": "Daypack",
+    "category": "gear",
+    "slot": "backpack",
+    "rarity": "common",
+    "description": "6 extra stash slots. Lightweight."
+  },
+  {
+    "id": "rig_t2",
+    "name": "Tactical Chest Rig",
+    "category": "gear",
+    "slot": "rig",
+    "rarity": "uncommon",
+    "description": "+4 quick slots. +20% reload speed."
+  },
+  {
+    "id": "handmade_pouch",
+    "name": "Handmade Pouch",
+    "category": "gear",
+    "slot": "backpack",
+    "rarity": "common",
+    "description": "Starter pouch. 2 pockets, +5 kg."
+  },
+  {
+    "id": "iron_knuckles",
+    "name": "Iron Knuckles",
+    "category": "weapon",
+    "slot": "melee",
+    "rarity": "common",
+    "description": "25% stagger chance on hit."
+  },
+  {
+    "id": "spike_board",
+    "name": "Spike Board",
+    "category": "weapon",
+    "slot": "melee",
+    "rarity": "uncommon",
+    "description": "Ignores 15% of enemy armor."
+  },
+  {
+    "id": "combat_knife",
+    "name": "Combat Knife",
+    "category": "weapon",
+    "slot": "melee",
+    "rarity": "uncommon",
+    "description": "Silent kills — no noise on headshots."
+  },
+  {
+    "id": "steel_baton",
+    "name": "Steel Baton",
+    "category": "weapon",
+    "slot": "melee",
+    "rarity": "uncommon",
+    "description": "25% stun chance on hit."
+  },
+  {
+    "id": "machete_blade",
+    "name": "Machete Blade",
+    "category": "weapon",
+    "slot": "melee",
+    "rarity": "rare",
+    "description": "Cleave — hits up to 2 enemies."
+  },
+  {
+    "id": "combat_axe",
+    "name": "Combat Axe",
+    "category": "weapon",
+    "slot": "melee",
+    "rarity": "epic",
+    "description": "10% decapitate on unarmored."
+  },
+  {
+    "id": "shock_baton",
+    "name": "Shock Baton",
+    "category": "weapon",
+    "slot": "melee",
+    "rarity": "epic",
+    "description": "Every hit applies 3s paralysis."
+  },
+  {
+    "id": "jet_sledge",
+    "name": "Jet-Assisted Sledge",
+    "category": "weapon",
+    "slot": "melee",
+    "rarity": "legendary",
+    "description": "Shockwave knockback; smashes barricades."
+  },
+  {
+    "id": "pipe_shotgun",
+    "name": "Improvised Pipe Shotgun",
+    "category": "weapon",
+    "slot": "primary",
+    "rarity": "common",
+    "description": "Cone spread — hits up to 3."
+  },
+  {
+    "id": "compound_bow",
+    "name": "Compound Bow",
+    "category": "weapon",
+    "slot": "primary",
+    "rarity": "uncommon",
+    "description": "Silent — zero noise."
+  },
+  {
+    "id": "crossbow",
+    "name": "Crossbow",
+    "category": "weapon",
+    "slot": "primary",
+    "rarity": "rare",
+    "description": "Bolt penetration — pierces 2."
+  },
+  {
+    "id": "arc_carbine",
+    "name": "Arc Carbine",
+    "category": "weapon",
+    "slot": "primary",
+    "rarity": "epic",
+    "description": "Arc burst — chains to adjacent."
+  },
+  {
+    "id": "flamethrower",
+    "name": "Flamethrower",
+    "category": "weapon",
+    "slot": "primary",
+    "rarity": "legendary",
+    "description": "Sustained burn; spreads to nearby."
+  },
+  {
+    "id": "void_pulse_rifle",
+    "name": "Void Pulse Rifle",
+    "category": "weapon",
+    "slot": "primary",
+    "rarity": "exotic",
+    "description": "Phases through cover; kills boost loot."
+  },
+  {
+    "id": "pipe_pistol",
+    "name": "Pipe Pistol",
+    "category": "weapon",
+    "slot": "secondary",
+    "rarity": "common",
+    "description": "Single-shot scrap sidearm."
+  },
+  {
+    "id": "shock_pistol",
+    "name": "Shock Pistol",
+    "category": "weapon",
+    "slot": "secondary",
+    "rarity": "rare",
+    "description": "Chain shock — arcs to adjacent."
+  },
+  {
+    "id": "scrap_helmet",
+    "name": "Scrap Helmet",
+    "category": "armor",
+    "slot": "helmet",
+    "rarity": "common",
+    "description": "Iron-plate saucepan. It works."
+  },
+  {
+    "id": "riot_helmet",
+    "name": "Riot Helmet",
+    "category": "armor",
+    "slot": "helmet",
+    "rarity": "uncommon",
+    "description": "Face shield deflects bites."
+  },
+  {
+    "id": "composite_helmet",
+    "name": "Composite Helmet",
+    "category": "armor",
+    "slot": "helmet",
+    "rarity": "rare",
+    "description": "Alloy/weave/padding. -15% head dmg."
+  },
+  {
+    "id": "perimeter_helmet",
+    "name": "Perimeter Helmet",
+    "category": "armor",
+    "slot": "helmet",
+    "rarity": "legendary",
+    "description": "Integrated HUD; NBC rated."
+  },
+  {
+    "id": "soft_armor_vest",
+    "name": "Soft Armor Vest",
+    "category": "armor",
+    "slot": "vest",
+    "rarity": "uncommon",
+    "description": "Ballistic weave panel vest."
+  },
+  {
+    "id": "plate_carrier",
+    "name": "Plate Carrier",
+    "category": "armor",
+    "slot": "vest",
+    "rarity": "epic",
+    "description": "Ballistic steel insert carrier."
+  },
+  {
+    "id": "leather_gloves",
+    "name": "Leather Gloves",
+    "category": "armor",
+    "slot": "gloves",
+    "rarity": "common",
+    "description": "Cured leather grip."
+  },
+  {
+    "id": "combat_boots",
+    "name": "Combat Boots",
+    "category": "armor",
+    "slot": "boots",
+    "rarity": "uncommon",
+    "description": "Tempered tread — sprint bonus."
+  },
+  {
+    "id": "molle_pack",
+    "name": "MOLLE Pack",
+    "category": "gear",
+    "slot": "backpack",
+    "rarity": "rare",
+    "description": "Crafted MOLLE — big carry + loot."
+  },
+  {
+    "id": "sensor_rig",
+    "name": "Sensor Rig",
+    "category": "gear",
+    "slot": "rig",
+    "rarity": "rare",
+    "description": "PCB sensor rig — loot detection."
+  },
+  {
+    "id": "runners_cloak",
+    "name": "Runner's Cloak",
+    "category": "gear",
+    "slot": "back",
+    "rarity": "uncommon",
+    "description": "Light cloak — slip contact more often."
+  },
+  {
+    "id": "ghost_wrap",
+    "name": "Ghost Wrap",
+    "category": "gear",
+    "slot": "back",
+    "rarity": "rare",
+    "description": "Muffled wrap — a Runner might still lose you."
+  },
+  {
+    "id": "tacticians_lens",
+    "name": "Tactician's Lens",
+    "category": "gear",
+    "slot": "trinket",
+    "rarity": "epic",
+    "description": "+5 Discovery XP per qualifying action while worn."
+  },
+  {
+    "id": "warlords_sigil",
+    "name": "Warlord's Sigil",
+    "category": "gear",
+    "slot": "trinket",
+    "rarity": "legendary",
+    "description": "+6 Combat XP per qualifying action while worn."
+  },
+  {
+    "id": "belt_pouch",
+    "name": "Belt Pouch",
+    "category": "gear",
+    "slot": "belt",
+    "rarity": "common",
+    "description": "2 pockets, +3 kg."
+  },
+  {
+    "id": "satchel",
+    "name": "Satchel",
+    "category": "gear",
+    "slot": "belt",
+    "rarity": "uncommon",
+    "description": "3 pockets, +5 kg."
+  },
+  {
+    "id": "rucksack",
+    "name": "Rucksack",
+    "category": "gear",
+    "slot": "backpack",
+    "rarity": "uncommon",
+    "description": "2 pockets, +25 kg."
+  },
+  {
+    "id": "cargo_jacket",
+    "name": "Cargo Jacket",
+    "category": "armor",
+    "slot": "vest",
+    "rarity": "common",
+    "description": "Hunting jacket. 4 pockets, +2 kg."
+  },
+  {
+    "id": "tactical_vest",
+    "name": "Tactical Vest",
+    "category": "armor",
+    "slot": "vest",
+    "rarity": "rare",
+    "description": "Best carrying. 7 pockets, +5 kg."
+  },
+  {
+    "id": "heavy_plate",
+    "name": "Heavy Plate Armor",
+    "category": "armor",
+    "slot": "vest",
+    "rarity": "legendary",
+    "description": "Maximum protection. No pockets."
+  }
+]

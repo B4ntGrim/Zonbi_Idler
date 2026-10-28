@@ -14,7 +14,7 @@ The strongest unifying direction is **a map that remembers the survivor's journe
 
 ## Decisions [DECIDED Oct 25]
 
-Sam, Oct 25 (voice session with the Creative Director); C10–C21 Sam, Oct 26. These rules are decided. Everything else in this note stays `[PROPOSED]` or `[OPEN]`, and the note is still not a build input; a Solo circuit slice will carry these into a batch.
+Sam, Oct 25 (voice session with the Creative Director); C10–C21 Sam, Oct 26; C22–C32 Sam, Oct 28. These rules are decided. Everything else in this note stays `[PROPOSED]` or `[OPEN]`, and the note is still not a build input; a Solo circuit slice will carry these into a batch.
 
 | # | Rule | Why |
 |---|---|---|
@@ -35,13 +35,24 @@ Sam, Oct 25 (voice session with the Creative Director); C10–C21 Sam, Oct 26. T
 | C12 | **Long absence (Q5).** Beyond 24 real hours, settle 24 h and discard the rest; supplies drain only within it; the report says "progress capped at 24 hours" | Reuses FX2 and CLOCK-01 CL6 |
 | C13 | **While away (Q6)** = settled on the next load with seeded rolls; no server in the first version | Same settle-on-read pattern as crafting and route runs |
 | C14 | **Parity (Q7).** One shared step function (H1); the screen only animates results; a per-stop done flag prevents duplicate rewards and lets an interrupted circuit resume | Watched and offline must match; the recap must never reroll or pay twice |
-| C15 | **Valid cells and stops (Q8).** Unlocked cells only; stops are scavenge and rest. A blocked stop is skipped and reported; a blocked way home means walking back the way they came | Small, testable first version; never stranded |
+| C15 | **Valid cells and stops (Q8).** Circuits use unlocked cells only; player-made circuits are further limited to visited cells (C28), while a quest may authorize an unvisited unlocked cell. Stops are scavenge and rest. A blocked stop is skipped and reported; a blocked way home means walking back the way they came | Small, testable first version; never stranded |
 | C16 | **Fishing is not a circuit stop (Q8);** it is started in person | Keeps the POI framework rule (`poi-framework-v1-brief.md`: fishing must be started in person at the water cell) |
 | C17 | **Missing information (Q9).** Treat unknown as dangerous, apply the standing policy, and skip a stop when in doubt | The safest default earns trust while unattended |
 | C18 | **No pause (Q10).** Discovery prompts use their normal timer and policy default; while away, the policy decides at once. Forts are never rolled on circuits | Nothing waits on the player (rules §4.5). Narrows spec 2.5, which rolls later Forts only on Traversal squares while the player is present |
 | C19 | **ETA (Q12)** = one real-time estimate per loop: travel + stops + 25% buffer for unfamiliar cells, with the line "estimate; encounters vary" | Honest about uncertainty without false precision |
 | C20 | **Map while running (Q13):** route line, survivor marker, next stop, loop counter. Kills, loot and events wait for the return report | A calm map; matches C8 |
 | C21 | **Supplies (Q14).** First version: foot and bike only, so nothing runs out mid-loop; food via Food-slot auto-eat; fuel, batteries and cargo wait for the vehicle slice | Keeps the first slice small. `[CODE]` auto-eat is not built yet; it comes from FOOD-01 (P6), so the circuit slice depends on FOOD-01 or ships without food use |
+| C22 | **Circuit movement and the Traversal daily cap are separate limits.** Direct player-initiated map movement uses TRAV-02; circuit travel follows its own timing and safety/stop rules and does not consume that manual movement cap. Circuit travel still uses the shared movement and cell-visit logic | Preserves the repeat-circuit pacing without creating a second world-movement model |
+| C23 | **Per-cell discovery.** Each cell actually visited by a circuit is recorded as explored. Sector map visibility does not by itself make every cell familiar; a cell becomes cleared through its existing kill-based rule | Makes circuit familiarity reflect where the survivor has actually traveled, while preserving combat-based clearing |
+| C24 | **Loot availability.** A circuit can collect only loot that remains available in a cell. Revisiting a cell does not refresh or respawn its loot | Repeat trips can recover leftovers, without turning circuits into a renewable loot source |
+| C25 | **Field failures are player concerns.** Plan the circuit to return within the selected time, but unexpected trouble may make the survivor late. Do not automatically rescue or restore a failed vehicle: a bicycle with a flat can be walked home; a car without fuel may be left behind | Resource and vehicle setbacks should have real consequences; the player weighs route risk and preparation |
+| C26 | **Stranded vehicles remain recoverable.** A disabled vehicle stays marked at its map cell until the player recovers it; it is not automatically returned or permanently lost in the first version. A flat bicycle can be walked home but remains unusable until repaired. A stranded car requires a later trip with what it needs | Setbacks cost time and planning without erasing a major unlock |
+| C27 | **No repeat XP for the same resolved encounter.** Repeating a circuit through the same cell does not award XP again for the same encounter. New encounters or cells that become newly dangerous remain eligible under the existing XP rules | Prevents repeat loops from farming the same event while rewarding genuinely new risks |
+| C28 | **Player-made circuit cells.** A player can add only cells they have already visited. A quest may authorize a circuit into unvisited cells for its objective | Keeps routine circuits on known ground while allowing quests to lead exploration |
+| C29 | **Transport sets loop length.** Transport determines the maximum number of squares in one circuit loop. First version: foot 2, bike 3; electric bike 5 and vehicle 8+ remain later starting values. This is separate from the direct Traversal daily cap (C22) | Makes transport's route benefit clear and keeps the first implementation small |
+| C30 | **Food sets planned duration.** Available food limits how long the circuit may be scheduled to run; it does not change the number of squares in a loop. Show the planned duration and food coverage before departure. Exact consumption rates remain open; unexpected delays can still exhaust supplies (C25) | Separates route shape from how long the survivor can stay out |
+| C31 | **Drawing indicators.** Purple marks the start cell and direction arrow, yellow marks cells already added, and green marks a valid next cell. Invalid cells get a clear blocked marker; outlines or symbols must also communicate state | Makes route-building state visible without relying on color alone |
+| C32 | **Last Run panel for circuits.** Show the latest completed loop's planned and actual time, cells explored, loot and XP, and setbacks such as delays or vehicle trouble. Show unclaimed loot totals across completed repeats with a Claim All action. Circuit creation and activation stay in the Routes-to-Traversal flow; replay uses that same flow rather than launching from the report | Keeps results and reward claiming clear without creating a second deployment path |
 
 **Still `[OPEN]` under these rules:** nothing. Night rest window, night risk, report order (C6a, C6b, C8) and the C3 currency and price were decided Oct 25. The C6c code change goes in a small follow-up batch after CLOCK-01 closes.
 
@@ -116,16 +127,28 @@ These eight areas are a catalog, not a commitment to build them together. Severa
 
 ### 9. Route discovery and progression [PROPOSED]
 
-- Selecting a biome would show the places and routes the player has found there. Cells, points of interest, or route entries not yet discovered could appear grayed out or otherwise concealed, while their surrounding area still gives a sense of what remains unknown.
-- Creating a custom route would become available only after the player gains access to its biome. How access is earned and how that differs from discovering individual cells are not settled.
-- As the player travels a custom route, record which Traversal cells it actually visits. Use those records to populate that biome's **Available Routes** list, so routes are grounded in explored territory and the player can tell where each path goes.
-- A route could be launched as a single active run or set as an idle circuit that repeats. Route progress could grant three kinds of advancement: route or biome Mastery XP, relevant Profession XP, and relevant Survival-attribute XP.
-- Keep the repeat model consistent with decided circuit direction C2/C3/C9. Clarify whether “active” means a watched run and “idle” means unattended repetition, or whether the distinction also controls one run versus many.
-- Show newly recorded cells, route progress, and XP earned in the route summary. Which tracks receive XP, at what rates, and what route mastery unlocks remain open.
+- On **Routes**, select a biome available from the survivor's current Traversal position, then choose an entry under **Available Routes**. This selects the route being configured; the exact entry or template model remains open.
+- Select **Idle Run** and press **Deploy** to transition into Traversal drawing mode. Draw from the survivor's current cell, preview the next adjacent cell with a direction arrow, add cells on click, and close a complete loop. Touch controls need an equivalent preview-and-confirm flow.
+- Save the completed circuit under the selected biome and route entry. Zone Details can show the start cell and travel information while drawing; the earlier idea of starting creation directly from Zone Details is superseded.
+- It remains open whether Deploy begins the first loop after drawing or only saves the circuit for later activation.
+- Purple marks the start cell and direction arrow, yellow marks cells already added, and green marks a valid next cell. Invalid cells get a clear blocked marker; outlines or symbols also communicate state (C31).
+- Transport sets maximum squares per loop; available food sets the planned duration. Show food coverage before departure; exact consumption rates remain open (C29–C30). First-version transport is foot and bike (C21).
+- As a circuit travels, record which Traversal cells it visits and use those records for per-cell discovery (C23). The Routes biome list then shows the saved circuits and where they go.
+- Circuit progression could grant route or biome Mastery XP, relevant Profession XP, and relevant Survival-attribute XP. Which tracks receive XP, at what rates, and what mastery unlocks remain open.
+- Clarify how Routes' Deploy flow relates to Schedule assignments, whether Deploy starts a loop immediately after drawing, and how one-time versus repeat behavior works across those screens (C2/C3/C9; Q29 and §10).
+- Proposed Routes layout: make Active Run / Idle Run compact, tighten the Available Routes list, and widen the right panel for **Run Readiness** and the **Last Run** claim/report (details in `route-01-route-builder-concept.md` §2b).
+
+### 10. Schedule integration [PROPOSED, Oct 28]
+
+- Routes provides biome and route selection, then Deploy transitions into Traversal for drawing. Traversal owns the circuit geometry; Schedule may launch or schedule a saved circuit as a planned task.
+- Schedule may control when a saved circuit starts and whether it runs once or repeats. How this relates to the Routes tab's Idle Run and Deploy controls remains open.
+- The existing Schedule tab is still a placeholder. Its planned 24-hour timeline must be reconciled with circuit movement timers, which use real time (C10).
+- If a hazard makes a circuit return late, decide whether later schedule tasks shift, are skipped, or wait. Tasks must not overlap or silently discard a returning survivor's state.
+- This proposal may supersede the Shop unlock for one-loop mode (C3); that conflict is unresolved until Schedule integration is designed.
 
 ## Open questions [OPEN]
 
-Questions 1–14 are answered (C1–C21, Oct 25–26). Questions 15–24 stay `[OPEN]` for later slices. The Routes-page questions 25–33 below are also `[OPEN]`.
+Questions 1–14 are answered (C1–C32, Oct 25–28). Questions 15–24 stay `[OPEN]` for later slices. The Routes-page questions 25–26 and 28–32 are `[OPEN]`; Q27 is resolved by C28, Q33 by C27 with XP rates to be playtested, and Q37–Q38 by C29–C31, with exact food-consumption rates still open. Schedule integration questions 34–36 and route-entry question 39 are also `[OPEN]`.
 
 ### Clock, cadence, and server behavior
 
@@ -167,13 +190,19 @@ Questions 1–14 are answered (C1–C21, Oct 25–26). Questions 15–24 stay `[
 
 25. What exactly counts as biome **access** for enabling route creation: entering any cell, reaching a named point of interest, completing a discovery, or another milestone?
 26. What is the player's discovery boundary? Should the biome show a grayed grid, grayed points of interest and routes, silhouettes, or only locations the player has some clue about?
-27. Does a route become “available” automatically from cells the player traversed, or does the player still choose and save a path? Can a route include only visited cells, or may a known route include an unexplored leg?
+27. ~~Does a route become “available” automatically from cells the player traversed, or does the player still choose and save a path? Can a route include only visited cells, or may a known route include an unexplored leg?~~ **Player-made circuits use visited cells only; quests may authorize unvisited cells (C28 `[DECIDED Oct 28]`).**
 28. What makes two recorded journeys the same route, and how should reversed paths, loops, overlapping routes, and changed or blocked cells appear in the list?
-29. Does **Active run** mean playing/watching one dispatch while **Idle run** means unattended repetition, or does “single active run” specifically mean one loop? How should this relate to the decided default-repeat and one-loop option?
+29. Does **Idle Run** select repetition, and does **Deploy** start immediately after drawing or save for later? How does this relate to the one-loop option in C3 and Schedule assignments? `[OPEN]`
 30. Which actions earn Profession XP on custom circuits, and how will those grants avoid double-counting combat, travel, and scavenging already represented by route outcomes?
 31. What is route or biome **Mastery XP** tied to—repeated completed loops, new cells, discoveries, or safe successful returns—and what does mastery unlock?
 32. Which Survival attributes should each route action develop, and how will that XP use the existing attribute progression rather than creating a conflicting second system?
-33. What pacing or limits keep repeated idle loops from becoming an unintended XP farm while still rewarding a useful circuit?
+33. ~~What pacing or limits keep repeated idle loops from becoming an unintended XP farm while still rewarding a useful circuit?~~ **Answered by C27 `[DECIDED Oct 28]`; XP rates still need playtesting.**
+34. Should Schedule also launch or schedule saved circuits alongside the Routes-first Deploy flow? `[OPEN]` (proposed in §10)
+35. Which clock controls circuit start times and Schedule task blocks: the Schedule's 24-hour plan or the circuit's real-time timer? `[OPEN]`
+36. When a circuit runs late after a hazard, do later Schedule tasks shift, get skipped, or wait? `[OPEN]`
+37. ~~What do the yellow, green, and purple circuit highlights mean, and how should route drawing show an invalid next cell or a closed loop?~~ **Answered by C31 `[DECIDED Oct 28]`.**
+38. ~~How do current transport and available food combine to set the maximum circuit length, and how does that interact with C21's first-version limits?~~ **Transport sets squares per loop; food sets planned duration (C29–C30 `[DECIDED Oct 28]`). Exact food-consumption rates remain open.**
+39. What does choosing an entry under **Available Routes** select: a saved circuit to edit, a blank route slot, or a route template? `[OPEN]`
 
 ## Design risks to watch
 

@@ -1,0 +1,18 @@
+[
+ {
+  "id": "concept-princess",
+  "name": "Princess",
+  "epithet": "Rose Gold",
+  "slot": "melee",
+  "family": "Axes / choppers",
+  "cm": 50,
+  "biome": "",
+  "materials": [
+   "metal",
+   "leather"
+  ],
+  "role": "Standalone visual concept: no stats or gameplay defined",
+  "description": "A broad crescent hand axe with a salvaged brass inset, dark green leather grip and small rose-gold rivets.",
+  "prompt": "A broad crescent hand axe with a salvaged brass inset in the blade, a dark green leather-wrapped grip and small rose-gold rivets."
+ }
+]

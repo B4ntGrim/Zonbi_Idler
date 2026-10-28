@@ -3,6 +3,18 @@
   'use strict';
   const MISSING = 'Not defined';
   const design = root.ZI_WEAPON_DESIGNS || { models:[], origins:[], legacy:[] };
+  // Oct 27 (Sam): the 106-axe roster shared only 10 titles, so regular axes repeated the named Uniques' titles.
+  // Every regular axe now has its own title, picked to fit its proposed role. The six named Uniques keep theirs.
+  // Display-layer fix: the source catalogue (axe-catalogue-300.json) is unchanged.
+  // Launch roster [DECIDED Oct 27, Sam]: 20 axes ship first; the other 88 axe concepts stay parked as a pool.
+  // Stone 4 (one per core role) · copper 6 (bleed, reap, elite hunt + heavier execution, tempo and guard) ·
+  // throwing 2 (fast, heavy) · the 6 named Uniques + Danielle and Raquelle.
+  const LAUNCH_AXES = new Set(['AXE-001','AXE-002','AXE-003','AXE-004','AXE-055','AXE-056','AXE-057','AXE-051','AXE-052','AXE-054',
+    'AXE-261','AXE-260','AXE-151','AXE-152','AXE-153','AXE-201','AXE-251','AXE-258','unique-danielle','unique-raquelle']);
+  // Team rename requests (art/weapons/update-request-manifest.json), approved by Sam Oct 27 ("Dahlia is fine").
+  // Display layer; the source catalogue keeps its original spelling.
+  const NAMES = { 'AXE-064':'Dahlia', 'AXE-065':'Lila', 'AXE-113':'Cicely', 'AXE-210':'Melena', 'AXE-269':'Joanne' };
+  const EPITHETS = {"AXE-001":"The Final Stroke","AXE-002":"The Quick Tally","AXE-003":"The Broad Reckoning","AXE-004":"The Standing Wall","AXE-005":"The Red Ledger","AXE-006":"The Patient Harvest","AXE-007":"The Giant’s Bane","AXE-008":"The Lucky Find","AXE-009":"The Warding Rite","AXE-010":"The Ringing Edge","AXE-011":"The Clean Ending","AXE-012":"The Restless Edge","AXE-013":"The Clearing Arc","AXE-014":"The Held Line","AXE-015":"The Weeping Edge","AXE-016":"The Hungry Crescent","AXE-017":"The Tall Fall","AXE-051":"The Headsman’s Due","AXE-052":"The Short Breath","AXE-053":"The Open Field","AXE-054":"The Iron Gate","AXE-055":"The Crimson Thread","AXE-056":"The Grey Gleaner","AXE-057":"The Throne Splitter","AXE-058":"The Gambler’s Edge","AXE-059":"The Cold Comfort","AXE-060":"The Humming Steel","AXE-061":"The Last Mercy","AXE-062":"The Busy Hand","AXE-063":"The Wide Harvest","AXE-064":"The Patient Guard","AXE-065":"The Open Vein","AXE-066":"The Last Sheaf","AXE-067":"The Champion’s End","AXE-101":"The Settled Debt","AXE-102":"The Hurried Kiss","AXE-103":"The Full Circle","AXE-104":"The Barred Door","AXE-105":"The Slow Bleed","AXE-106":"The Late Harvest","AXE-107":"The Lord’s Ruin","AXE-108":"The Fair Wind","AXE-109":"The Safe Hearth","AXE-110":"The Long Echo","AXE-111":"The Closing Bell","AXE-112":"The Second Beat","AXE-113":"The Sweeping Word","AXE-114":"The Steady Post","AXE-115":"The Red Ribbon","AXE-116":"The Empty Field","AXE-117":"The Big Game","AXE-154":"The Last Fence","AXE-155":"The Wet Harvest","AXE-156":"The Gathering Dark","AXE-157":"The Hunter’s Tithe","AXE-158":"The Found Coin","AXE-159":"The Shielding Hand","AXE-161":"The Hard Sentence","AXE-162":"The Fast Toll","AXE-163":"The Long Reach","AXE-164":"The Firm Threshold","AXE-165":"The Rust Kiss","AXE-166":"The Pale Sickle","AXE-167":"The Bane of Kings","AXE-168":"The Kind Chance","AXE-169":"The Quiet Ward","AXE-170":"The Struck Bell","AXE-171":"The Full Stop","AXE-202":"The Running Count","AXE-203":"The Scythe’s Cousin","AXE-204":"The Watchful Beam","AXE-205":"The Scarlet Tithe","AXE-206":"The Slow Reaping","AXE-207":"The Proud Felling","AXE-208":"The Second Chance","AXE-209":"The Iron Blessing","AXE-210":"The Singing Bit","AXE-211":"The Quiet Gallows","AXE-212":"The Swift Debt","AXE-213":"The Turning Tide","AXE-214":"The Unmoved Stone","AXE-215":"The Running Red","AXE-216":"The Black Furrow","AXE-217":"The Crest Cleaver","AXE-252":"The Thrown Verdict","AXE-253":"The Spinning Arc","AXE-254":"The Homing Pigeon","AXE-255":"The Red Flight","AXE-256":"The Far Reach","AXE-257":"The Giant Toppler","AXE-259":"The Picked Bone","AXE-260":"The Falling Anvil","AXE-261":"The Flick of the Wrist","AXE-262":"The Parting Shot","AXE-263":"The Wide Toss","AXE-264":"The Faithful Return","AXE-265":"The Bleeding Spin","AXE-266":"The Long Arc","AXE-267":"The Crown Toss","AXE-268":"The Calm Aim"};
   const uniqueThemes = {
     'AXE-151': 'A deliberate execution axe: heavy strikes reward commitment and punish exposed elites.',
     'AXE-152': 'A fast duelist: successive eligible hits prepare an authored bleed or finishing effect.',
@@ -93,8 +105,9 @@
   function axeRecord(item) {
     const origin = design.origins.find(o => o.id === item.source_id);
     return {
-      id:item.draft_id, name:item.name, epithet:item.epithet, maker:item.invented_maker,
-      roster:uniqueThemes[item.draft_id] ? 'uniques' : 'axes', status:uniqueThemes[item.draft_id] ? 'Unique concept' : 'Axe concept',
+      id:item.draft_id, name:NAMES[item.draft_id] || item.name, epithet:EPITHETS[item.draft_id] || item.epithet, maker:item.invented_maker,
+      roster:uniqueThemes[item.draft_id] ? 'uniques' : 'axes',
+      status:(uniqueThemes[item.draft_id] ? 'Unique concept' : 'Axe concept') + (LAUNCH_AXES.has(item.draft_id) ? ' · Launch' : ' · Parked'),
       slot:item.runtime_slot, family:'Axes / choppers', art:'axe', section:item.catalogue_section,
       sectionTitle:item.catalogue_section_title, subfamily:item.content_subfamily,
       rarity:uniqueThemes[item.draft_id] ? 'unique' : item.rarity,
@@ -134,7 +147,21 @@
       source:'reference/crafting-frame-proposals.md', sourceId:c.id, sourceLabel:'Authored weapon workshop concepts' }));
     const pairs = sets.map(s => ({ ...s, roster:'sets', status:'Set concept', art:'set', family:s.setType, bonuses:[],
       source:'reference/crafting-frame-proposals.md', sourceId:s.id, sourceLabel:'Authored two-piece set concepts' }));
-    return [...live, ...design.models.map(axeRecord), ...authored, ...ideas, ...relics, ...pairs, ...design.legacy.map(legacyRecord)];
+    // Weapon Forge concepts (art/weapons/concepts/concepts-data.js, built by tools/weapon-forge/forge.py).
+    const forgeArt = c => /axe|tomahawk/i.test(c.family) ? 'axe' : /shield/i.test(c.family) ? 'shield' : /mace|maul|flail|heavy/i.test(c.family) ? 'hammer'
+      : /sling|sidearm/i.test(c.family) ? 'pistol' : /speargun|sprayer/i.test(c.family) ? 'rifle' : /javelin|throw/i.test(c.family) ? 'knife' : 'blade';
+    const workshop = (root.ZI_WEAPON_CONCEPTS || []).map(c => ({
+      id:c.id, name:c.name, epithet:c.epithet, roster:'workshop', status:c.origin ? 'Imported concept · ' + c.origin.license : 'Workshop concept',
+      slot:c.slot, family:c.family, art:forgeArt(c), description:c.description, role:c.role, biome:c.biome,
+      materials:(c.materials || []).join(', ') || null, bonuses:[], rarity:null, hands:null, origin2:c.origin || null,
+      source:c.origin ? c.origin.url : 'art/weapons/concepts/', sourceId:c.id,
+      sourceLabel:c.origin ? `${c.origin.pack} · ${c.origin.author} · ${c.origin.license}` : 'Weapon Forge concept batch',
+    }));
+    // Weapon sprites (art/weapons/sprites/weapon-art.js, built by tools/weapon-sprites). A Relic falls back to its base weapon's art.
+    const art = root.ZI_WEAPON_ART || {};
+    return [...live, ...design.models.map(axeRecord), ...authored, ...ideas, ...relics, ...pairs, ...workshop, ...design.legacy.map(legacyRecord)]
+      .map(r => ({ ...r, sprite: art[r.id] || (r.baseId && art[r.baseId]) || null,
+        launch: LAUNCH_AXES.has(r.id) || undefined, parked: (r.roster === 'axes' || /^AXE-/.test(r.id)) && !LAUNCH_AXES.has(r.id) || undefined }));
   }
   function readRoute() {
     const hash = root.location.hash;
@@ -145,7 +172,7 @@
     catch (_) { return { active:true, id:null, invalid:true }; }
   }
   root.ZI_CRAFTING_FRAMES = {
-    MISSING, getRecords, readRoute,
+    MISSING, getRecords, readRoute, LAUNCH_AXES,
     href:id => '#crafting/proposed' + (id ? '/' + encodeURIComponent(id) : ''),
     format(value, unit) {
       if (value == null || value === '' || (typeof value === 'number' && !finite(value))) return MISSING;

@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Zed Idler</title>
-<link rel="stylesheet" href="crafting-frame-proposals.css?v=20261027-craft-proposals2">
+<link rel="stylesheet" href="crafting-frame-proposals.css?v=20261027-craft-proposals7">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Special+Elite&family=Oswald:wght@300;400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
 <script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
@@ -21,7 +21,7 @@
 <script src="game/factions.js?v=1791700100000"></script>
 <script src="game/camp.js?v=20261025-clock-parity"></script>
 <script src="game/jobs.js?v=20261025-clock-parity"></script>
-<script src="game/economy.js?v=20261027-topbar"></script>
+<script src="game/economy.js?v=20261027-shop1"></script>
 <script src="game/wandering.js?v=20261025-clock-parity"></script>
 <script src="game/fort.js?v=1791700100000"></script>
 <script src="game/infiltration.js?v=20261026-infiltration1"></script>
@@ -35,11 +35,13 @@
 <script src="bestiary-expanded.js?v=20261024-codex"></script>
 <script src="satellite-tiles.js?v=1791700100000"></script>
 <script src="weapon-design-data.js?v=20261027-weapons1"></script>
-<script src="crafting-frame-proposals.js?v=20261027-craft-proposals2"></script>
-<script type="text/babel" src="crafting-frame-proposals.jsx?v=20261027-craft-proposals2"></script>
+<script src="art/weapons/sprites/weapon-art.js?v=20261027-wart4"></script>
+<script src="art/weapons/concepts/concepts-data.js?v=20261027-forge2"></script>
+<script src="crafting-frame-proposals.js?v=20261027-craft-proposals3"></script>
+<script type="text/babel" src="crafting-frame-proposals.jsx?v=20261027-craft-proposals7"></script>
 <script type="text/babel" src="tweaks-panel.jsx?v=1791700100000"></script>
 <script type="text/babel" src="screens-v2.jsx?v=1791000000000"></script>
-<script type="text/babel" src="screens-v2b.jsx?v=1791700100000"></script>
+<script type="text/babel" src="screens-v2b.jsx?v=20261027-shop1"></script>
 <script type="text/babel" src="screens-v3.jsx?v=20261027-craft-proposals2-animfix"></script>
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -352,10 +354,10 @@ function TopBar({ mode, screen, setScreen, threatLevel, worldEvent }) {
   const gameClock = String(gameNow.hh).padStart(2,'0') + ':' + String(gameNow.mm).padStart(2,'0');
   const isCamp = mode === 'camp';
   const tabs = isCamp ? [
-    ['camp-main','Overview'], ['camp-schedule','Schedule'], ['traversal','Traversal'], ['marketplace','Market'], ['rmat-crafting','Crafting'],
+    ['camp-main','Overview'], ['camp-schedule','Schedule'], ['traversal','Traversal'], ['marketplace','Shop'], ['rmat-crafting','Crafting'],
     ['stockpile','Stockpile'], ['factions','Factions'], ['stat-leveling','Stats'], ['hack-slash','Wandering'], ['codex','Codex'],
   ] : [
-    ['solo-main','Routes'], ['traversal','Traversal'], ['solo-schedule','Schedule'], ['marketplace','Market'], ['rmat-crafting','Crafting'],
+    ['solo-main','Routes'], ['traversal','Traversal'], ['solo-schedule','Schedule'], ['marketplace','Shop'], ['rmat-crafting','Crafting'],
     ['stockpile','Stockpile'], ['factions','Factions'], ['stat-leveling','Stats'], ['hack-slash','Wandering'], ['codex','Codex'],
   ];
 

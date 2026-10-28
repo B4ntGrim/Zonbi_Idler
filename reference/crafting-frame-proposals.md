@@ -50,3 +50,17 @@ Two distinct named pieces are required. These descriptions are not combat rules.
 - An undefined value is never treated as zero. Undefined socket counts do not display a fabricated number of sockets.
 
 Implementation: `crafting-frame-proposals.js`, `crafting-frame-proposals.jsx`, `crafting-frame-proposals.css`, `weapon-design-data.js`, and both HTML entry pages. The standalone Weapons navigation and Stockpile links have been removed.
+
+## Oct 27 evening update (Sam)
+
+- Base stats follow the slot (melee shows no fire mode, magazine or reload). Undefined rows fold into one "Not defined" line per block; the empty full-stat list was removed.
+- Regular axes no longer repeat the named Uniques' titles: each has its own role-based title (`EPITHETS`, display layer). The six named Uniques keep theirs.
+- Team sprite art replaces code-drawn icons where it exists, at one real-world scale (2 px per cm; the card picture box stands for 120 cm). Built by `tools/weapon-sprites/build_weapon_sprites.py` into `art/weapons/sprites/`. `[OPEN]` confirm battery machete → Night Current.
+
+## Launch axes `[DECIDED Oct 27, Sam]`
+
+20 axes ship first; the other 88 axe concepts stay parked as a pool. Stone 4: Mara, Vera, Nora, Iris. Copper 6: Erika (bleed), Frieda (reap), Leni (elite hunt), Alma, Anja, Elke (heavier execution, tempo, guard). Throwing 2: Adeline (fast), Thelma (heavy). Uniques 8: Matilda, Delila, Judith, Ariadne, Adelaide, Odette, Danielle, Raquelle.
+
+## Weapon Forge (Oct 27)
+
+New weapon concepts go through `tools/weapon-forge/` (see its README): original concepts get house-style art prompts; openly licensed art (CC0 / CC-BY / OGA-BY only) can be imported and is converted to the game's look and credited. Batch 01 holds 16 original concepts (Workshop roster), all `[PROPOSED]`.

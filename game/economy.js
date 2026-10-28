@@ -175,8 +175,8 @@ ZI.shopReqMet = function(entry) {
 ZI.shopState = function(entry) {
   const lvl = ZI.shopLevel(entry.id);
   if (entry.repeatable) {
-    const max = (entry.grant && entry.grant.maxLevel) || 1;
-    if (lvl >= max) return 'owned';
+    const max = entry.grant && entry.grant.maxLevel; // no maxLevel = buy again any time (consumables)
+    if (max && lvl >= max) return 'owned';
   } else if (ZI.shopOwned(entry.id)) {
     return 'owned';
   }
@@ -209,6 +209,38 @@ ZI.shopBuy = function(entry) {
   ZI.saveShopSave(s);
   if (ZI.emitAction) ZI.emitAction('transaction', 1 + (ZI.TIER_META[entry.tier] ? ZI.TIER_META[entry.tier].rank : 0) * 0.4);
 };
+// ─── SHOP PURCHASES (Oct 27, Sam: "implement the Shop purchases") ───────────────────────────────────────
+// Currency is RMAT [DECIDED Oct 25]. entry.cost = { T2: 10 } (RMAT tier → amount). Levelled capacity items
+// (costScale 'level') cost cost × next level. Every price except the circuit toggle is a starting value.
+ZI.shopPrice = function(entry) {
+  const base = entry.cost || null; if (!base) return null;
+  const mult = entry.costScale === 'level' ? ZI.shopLevel(entry.id) + 1 : 1;
+  const out = {}; Object.entries(base).forEach(([k, q]) => { out[k] = q * mult; }); return out;
+};
+ZI.shopCanAfford = function(entry) {
+  const price = ZI.shopPrice(entry); if (!price) return false;
+  const h = ZI.getRmatHoldings();
+  return Object.entries(price).every(([k, q]) => (h[k] || 0) >= q);
+};
+ZI.shopPriceText = function(entry) {
+  const price = ZI.shopPrice(entry); if (!price) return 'Not priced';
+  return Object.entries(price).map(([k, q]) => `${q} ${k} RMAT${ZI.RMAT_TIERS && ZI.RMAT_TIERS[+k.slice(1)] ? ' (' + ZI.RMAT_TIERS[+k.slice(1)].name + ')' : ''}`).join(' + ');
+};
+// The one purchase path: checks the gate and the wallet, takes the RMAT, then applies the grant.
+ZI.shopPurchase = function(entry) {
+  if (!entry) return { ok:false, reason:'Unknown item.' };
+  const st = ZI.shopState(entry);
+  if (st === 'owned') return { ok:false, reason:'Already owned.' };
+  if (st === 'locked') return { ok:false, reason:'Not unlocked yet.' };
+  const price = ZI.shopPrice(entry);
+  if (!price) return { ok:false, reason:'Not priced yet.' };
+  if (!ZI.shopCanAfford(entry)) return { ok:false, reason:`Needs ${ZI.shopPriceText(entry)}.` };
+  if (entry.grant && entry.grant.kind === 'gear' && !(ZI.getGearItem && ZI.getGearItem(entry.grant.itemId))) return { ok:false, reason:'That item is missing from the game data.' };
+  Object.entries(price).forEach(([k, q]) => ZI.addRmat(k, -q));
+  ZI.shopBuy(entry);
+  return { ok:true, price, text:`Bought ${entry.name} for ${Object.entries(price).map(([k, q]) => q + ' ' + k).join(' + ')} RMAT.` };
+};
+
 // Grant sinks (single stores; consumed by their systems when wired).
 ZI.unlockShopRecipe = function(id) { try { const k='zi_unlocked_recipes'; const set=JSON.parse(localStorage.getItem(k)||'[]'); if(!set.includes(id)){set.push(id);localStorage.setItem(k,JSON.stringify(set)); if(ZI.emitAction) ZI.emitAction('discover');} } catch(e){} };
 ZI.isRecipeUnlocked = function(id) { try { return JSON.parse(localStorage.getItem('zi_unlocked_recipes')||'[]').includes(id); } catch(e){ return false; } };
@@ -221,52 +253,68 @@ ZI.shopNewUnlockCount = function() {
   return (ZI.SHOP_ITEMS || []).filter(e => ZI.shopState(e) === 'unlocked').length;
 };
 
-// Curated vendor catalog. cost is RESERVED (see spec §6) — Buy stays disabled
-// until a currency is chosen. Gates are an AND of the provided req keys.
+// Curated vendor catalog. cost = RMAT by tier (currency [DECIDED Oct 25]); prices are starting values for the
+// economy check except the circuit toggle (10 T2, [DECIDED Oct 25]). Gates are an AND of the provided req keys.
 ZI.SHOP_ITEMS = [
   // ── Blueprints (goals) ──
   { id:'bp_forged_plate', name:'Blueprint: Forged Plate', cat:'blueprint', tier:'T3', icon:'▤',
     desc:'Unlocks the Forged Plate armor recipe in Crafting.', req:{ rmatTier:'T3', distance:3000 },
-    cost:null, grant:{ kind:'recipe', recipeId:'plate_carrier' }, repeatable:false },
+    cost:{ T3:6 }, grant:{ kind:'recipe', recipeId:'plate_carrier' }, repeatable:false },
   { id:'bp_arc_carbine', name:'Blueprint: Arc Carbine', cat:'blueprint', tier:'T3', icon:'▤',
     desc:'Unlocks the Arc Carbine ranged recipe.', req:{ rmatTier:'T2', lap:3 },
-    cost:null, grant:{ kind:'recipe', recipeId:'arc_carbine' }, repeatable:false },
+    cost:{ T2:12 }, grant:{ kind:'recipe', recipeId:'arc_carbine' }, repeatable:false },
   { id:'bp_void_rifle', name:'Blueprint: Void Pulse Rifle', cat:'blueprint', tier:'T5', icon:'▤',
     desc:'Apex ranged blueprint. The last thing they hear.', req:{ rmatTier:'T5', distance:12000 },
-    cost:null, grant:{ kind:'recipe', recipeId:'void_pulse_rifle' }, repeatable:false },
+    cost:{ T5:4 }, grant:{ kind:'recipe', recipeId:'void_pulse_rifle' }, repeatable:false },
   // ── Capacity (power sinks, repeatable) ──
   { id:'cap_backpack', name:'Backpack Reinforcement', cat:'capacity', tier:'T1', icon:'▦',
     desc:'+10kg carry weight per level.', req:{ distance:1000 },
-    cost:null, grant:{ kind:'capacity', field:'backpackKg', amount:10, maxLevel:5 }, repeatable:true },
+    cost:{ T1:5 }, costScale:'level', grant:{ kind:'capacity', field:'backpackKg', amount:10, maxLevel:5 }, repeatable:true },
   { id:'cap_stash', name:'Stash Expansion', cat:'capacity', tier:'T2', icon:'▦',
     desc:'+4 stash slots per level.', req:{ rmatTier:'T2', distance:2500 },
-    cost:null, grant:{ kind:'capacity', field:'stashSlots', amount:4, maxLevel:5 }, repeatable:true },
+    cost:{ T2:4 }, costScale:'level', grant:{ kind:'capacity', field:'stashSlots', amount:4, maxLevel:5 }, repeatable:true },
   { id:'cap_squad', name:'Squad Billet', cat:'capacity', tier:'T3', icon:'▦',
     desc:'+1 max squad size per level (up to 4).', req:{ rmatTier:'T3', lap:5 },
-    cost:null, grant:{ kind:'capacity', field:'squadMax', amount:1, maxLevel:3 }, repeatable:true },
+    cost:{ T3:3 }, costScale:'level', grant:{ kind:'capacity', field:'squadMax', amount:1, maxLevel:3 }, repeatable:true },
   { id:'cap_recycler', name:'Recycler Tune-Up', cat:'capacity', tier:'T2', icon:'▦',
     desc:'+0.2 Recycler operator speed per level.', req:{ rmatTier:'T1', distance:2000 },
-    cost:null, grant:{ kind:'capacity', field:'recyclerOpSpeed', amount:0.2, maxLevel:5 }, repeatable:true },
+    cost:{ T1:6 }, costScale:'level', grant:{ kind:'capacity', field:'recyclerOpSpeed', amount:0.2, maxLevel:5 }, repeatable:true },
   // ── Gear & consumables (convenience) ──
   { id:'shop_vest_t3', name:'SAPI Plate Carrier', cat:'gear', tier:'T4', icon:'🦺',
     desc:'Vendor-stocked legendary vest, straight to your stash.', req:{ rmatTier:'T4', distance:8000 },
-    cost:null, grant:{ kind:'gear', itemId:'vest_t3', qty:1 }, repeatable:false },
+    cost:{ T4:5 }, grant:{ kind:'gear', itemId:'vest_t3', qty:1 }, repeatable:false },
   { id:'shop_medkits', name:'Field Medkit ×3', cat:'consumable', tier:'T1', icon:'🧰',
     desc:'Three medkits delivered to your loadout stash.', req:{ distance:1500 },
-    cost:null, grant:{ kind:'gear', itemId:'medkit', qty:3 }, repeatable:true },
+    cost:{ T1:4 }, grant:{ kind:'gear', itemId:'medkit', qty:3 }, repeatable:true },
   { id:'shop_stims', name:'Adrenaline Shot ×2', cat:'consumable', tier:'T2', icon:'💉',
     desc:'Two adrenaline shots for the next push.', req:{ lap:2 },
-    cost:null, grant:{ kind:'gear', itemId:'stimpack', qty:2 }, repeatable:true },
+    cost:{ T2:3 }, grant:{ kind:'gear', itemId:'stimpack', qty:2 }, repeatable:true },
   // ── Cosmetics / QoL (prestige) ──
   { id:'cos_amber_term', name:'Amber Terminal Skin', cat:'cosmetic', tier:'T3', icon:'✦',
     desc:'Recolors the UI terminal to warm amber. Pure flex.', req:{ lap:4 },
-    cost:null, grant:{ kind:'flag', flag:'terminalSkin', value:'amber' }, repeatable:false },
+    cost:{ T3:4 }, grant:{ kind:'flag', flag:'terminalSkin', value:'amber' }, repeatable:false },
   { id:'qol_autorecycle', name:'Auto-Recycle T0', cat:'qol', tier:'T2', icon:'⚙',
     desc:'Automatically recycle banked T0 salvage.', req:{ distance:4000 },
-    cost:null, grant:{ kind:'flag', flag:'autoRecycleT0', value:true }, repeatable:false },
+    cost:{ T2:8 }, grant:{ kind:'flag', flag:'autoRecycleT0', value:true }, repeatable:false },
+  // ── Cooking stations: steps of the FOOD-02 ladder, unlocked here, then crafted [DECIDED Oct 27 PM]. The Campfire stays free. ──
+  { id:'station_kettle_pot', name:'Kettle Pot (station unlock)', cat:'station', tier:'T1', icon:'♨',
+    desc:'Unlocks the Kettle Pot cooking station. You craft it afterwards; the recipe arrives with the cooking-stations batch. The Campfire still cooks every basic recipe.', req:{},
+    cost:{ T1:4 }, grant:{ kind:'flag', flag:'station_kettle_pot', value:true }, repeatable:false },
+  { id:'station_cook_basin', name:'Cook Basin (station unlock)', cat:'station', tier:'T1', icon:'♨',
+    desc:'Unlocks the Cook Basin cooking station (next step after the Kettle Pot). Crafted after unlocking.', req:{ distance:1500 },
+    cost:{ T1:8 }, grant:{ kind:'flag', flag:'station_cook_basin', value:true }, repeatable:false },
+  { id:'station_smoker', name:'Smoker (station unlock)', cat:'station', tier:'T2', icon:'♨',
+    desc:'Unlocks the Smoker, which is planned to preserve fish and meat against spoilage. Crafted after unlocking.', req:{ rmatTier:'T2' },
+    cost:{ T2:6 }, grant:{ kind:'flag', flag:'station_smoker', value:true }, repeatable:false },
+  { id:'qol_cook_order', name:'Cook Greatest to Least', cat:'qol', tier:'T2', icon:'⚙',
+    desc:'Smart cooking order: the station cooks the most valuable food first. Basic automatic cooking stays free (FOOD-02 C3). Takes effect when cooking stations are built.', req:{ rmatTier:'T2' },
+    cost:{ T2:8 }, grant:{ kind:'flag', flag:'cookGreatestToLeast', value:true }, repeatable:false },
+  { id:'qol_circuit_one_loop', name:'Circuit: One Loop Only', cat:'qol', tier:'T2', icon:'⟲',
+    desc:'Adds a toggle to run a circuit once and stop at the start cell instead of repeating (circuit C3). Takes effect when circuits are built.', req:{},
+    cost:{ T2:10 }, grant:{ kind:'flag', flag:'circuitOneLoop', value:true }, repeatable:false },
   { id:'cos_echo_palette', name:'Echo Sprite Palette', cat:'cosmetic', tier:'T5', icon:'✦',
     desc:'Reality-warped sprite palette. Deep-haul prestige marker.', req:{ rmatTier:'T5', distance:15000 },
-    cost:null, grant:{ kind:'flag', flag:'spritePalette', value:'echo' }, repeatable:false },
+    cost:{ T5:3 }, grant:{ kind:'flag', flag:'spritePalette', value:'echo' }, repeatable:false },
 ];
 
 // ─── MATERIAL ECONOMY ─────────────────────────────────────────────────────────

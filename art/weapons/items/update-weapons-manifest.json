@@ -1,0 +1,62 @@
+[
+  {
+    "id": "combat_knife",
+    "name": "Combat Knife",
+    "category": "weapon",
+    "description": "Silent kills — no noise on headshots."
+  },
+  {
+    "id": "jet_sledge",
+    "name": "Jet-Assisted Sledge",
+    "category": "weapon",
+    "description": "Shockwave knockback; smashes barricades."
+  },
+  {
+    "id": "machete",
+    "name": "Military Machete",
+    "category": "weapon",
+    "description": "Silent. Efficient. Close range only."
+  },
+  {
+    "id": "revolver",
+    "name": ".357 Revolver",
+    "category": "weapon",
+    "description": "Heavy hitting. Slow to reload."
+  },
+  {
+    "id": "pistol",
+    "name": "9mm Pistol",
+    "category": "weapon",
+    "description": "Standard sidearm. Backup when it counts."
+  },
+  {
+    "id": "suppressed",
+    "name": "Suppressed SMG",
+    "category": "weapon",
+    "description": "Quiet and fast. Urban specialist weapon."
+  },
+  {
+    "id": "shotgun",
+    "name": "Sawn-Off Shotgun",
+    "category": "weapon",
+    "description": "Close range devastation. Useless past 20m."
+  },
+  {
+    "id": "legacy-w_sledgehammer",
+    "name": "Sledgehammer",
+    "category": "legacy weapon",
+    "description": "Long-shafted salvaged demolition hammer with a heavy worn steel head and wrapped grip."
+  },
+  {
+    "id": "legacy-w_hunting_rifle",
+    "name": "Hunting Rifle",
+    "category": "legacy weapon",
+    "description": "Long bolt-action hunting rifle with a weathered wooden stock and compact iron sights."
+  },
+  {
+    "id": "legacy-w_pipe_rifle",
+    "name": "Pipe Rifle",
+    "category": "legacy weapon",
+    "description": "Crude single-shot rifle assembled from a dark steel pipe barrel, scrap receiver and rough wooden stock."
+  }
+]

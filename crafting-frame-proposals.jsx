@@ -2,13 +2,19 @@
 (function () {
   const W = window.ZI_CRAFTING_FRAMES;
   const rarityNames = { common:'Common', uncommon:'Uncommon', rare:'Rare', epic:'Epic', legendary:'Legendary', exotic:'Exotic', unique:'Unique', relic:'Relic Legendary' };
-  const rosters = [['all','All rosters'],['live','In game'],['axes','100 axe designs'],['uniques','Uniques'],['sets','Sets'],['ranged','Ranged concepts'],['relics','Relics'],['legacy','Legacy prototype']];
+  const rosters = [['all','All rosters'],['launch','Launch axes'],['live','In game'],['axes','100 axe designs'],['uniques','Uniques'],['sets','Sets'],['ranged','Ranged concepts'],['workshop','Workshop'],['relics','Relics'],['legacy','Legacy prototype']];
   const slotName = s => ({primary:'Primary',secondary:'Sidearm',melee:'Melee',throwable:'Throwable',offhand:'Off-hand (proposed)'}[s] || W.MISSING);
   const themeFor = r => r.art === 'flame' ? 'hazard' : ['pistol','revolver','flare','smg'].includes(r.art) ? 'bronze' : ['crossbow','bow','axe','shield'].includes(r.art) && r.rarity !== 'unique' ? 'leather' : 'copper';
-  const isMissing = v => v == null || v === '';
+  const isMissing = v => v == null || v === '' || v === W.MISSING;
 
   // Integer-grid silhouettes stay crisp at every card size; no text is baked into art.
+  // Team sprite art keeps a hint of real-world size but stays readable (Sam, Oct 27): the picture fills 75% of the
+  // box for the smallest items (knives, pistols) up to 100% for 110 cm and longer (rifles, flamethrower rig).
+  const spriteFill = cm => Math.round(75 + 25 * Math.max(0, Math.min(1, (cm - 15) / 95)));
   function WeaponArt({ record:r, compact=false }) {
+    if (r.sprite) return <span className={'wc-art wc-art-sprite' + (compact ? ' wc-art-small' : '')} aria-hidden="true">
+      <img src={r.sprite.src} alt="" draggable={false} style={compact ? undefined : (r.sprite.w / r.sprite.h < 1.2 ? { height: spriteFill(r.sprite.cm) + '%', width:'auto' } : { width: spriteFill(r.sprite.cm) + '%' })}/>
+    </span>;
     const electric = /shock|arc|void|night-current/.test(r.id);
     const metal = r.section === 'C1' ? '#a3aaa0' : r.section === 'C2' || r.id === 'unique-raquelle' ? '#b78654' : '#a3b0ad';
     const light = electric ? '#77e4e5' : '#e6c895';
@@ -81,36 +87,47 @@
     const missing = isMissing(value);
     return <div className={'wc-stat wc-tone-' + (missing ? 'missing' : tone)}><dt>{label}</dt><dd>{W.format(value, unit)}</dd></div>;
   }
+  // Rows with a value show normally; every undefined row folds into one "Not defined" line.
+  function Rows({ rows }) {
+    const shown = rows.filter(x => !isMissing(x[1])), missing = rows.filter(x => isMissing(x[1])).map(x => x[0]);
+    return <>{shown.map(([label, value, unit, tone]) => <StatRow key={label} label={label} value={value} unit={unit} tone={tone}/>)}
+      {missing.length > 0 && <div className="wc-stat wc-tone-missing wc-unset"><dt>Not defined</dt><dd>{missing.join(' · ')}</dd></div>}</>;
+  }
+  // Base stats depend on the slot: melee weapons have no fire mode, magazine or reload.
+  function baseRows(r) {
+    if (r.slot === 'melee') return [['DPS', null], ['Attacks / second', null]];
+    if (r.slot === 'primary' || r.slot === 'secondary') return [['DPS', null], ['Fire mode', r.fireMode], ['Magazine capacity', r.magazine], ['Reload time', null]];
+    if (r.slot === 'throwable') return [['Recovery chance', r.recovery, '%']];
+    return [];
+  }
   function Card({ record:r, records }) {
     const set = records.find(s => s.id === r.setId);
     const pieces = (r.pieces || []).map(id => records.find(w => w.id === id)).filter(Boolean);
-    const statGroups = [
-      ['Attack', ['Damage bonus','Physical damage','Special damage','Attack speed','Projectiles / second','Area bonus','Duration bonus','Projectile speed','Critical chance','Critical damage','Status chance','Status damage','Damage to elites','Vulnerable damage']],
-      ['Defense', ['Defense bonus','Max HP','Regeneration / second','Evasion','Shield absorption','Life steal','Healing bonus','Thorns']],
-      ['Utility', ['Movement speed bonus','Pickup range','Experience bonus','Resource yield','Luck','Extra jumps']],
-    ];
+    const base = baseRows(r);
+    const attrsSet = r.attributes && r.attributes.some(a => !isMissing(a.value));
     return <article className={'wc-card wc-theme-' + themeFor(r) + ' wc-rarity-' + (r.rarity || 'undefined')} data-proposed-frame={r.id}>
-      <div className="wc-proposed-stamp">PROPOSED FRAME · RECIPE NOT APPROVED</div>
+      <div className="wc-proposed-stamp">PROPOSED FRAME · RECIPE NOT APPROVED{r.launch && <span className="wc-launch-tag">LAUNCH AXE</span>}{r.parked && <span className="wc-parked-tag">PARKED POOL</span>}</div>
       <div className="wc-card-trim" aria-hidden="true"/>
       <header className="wc-card-header">
         <div className="wc-heading-copy"><div className="wc-eyebrow">{r.status}</div><h2 tabIndex="-1" id="wc-detail-title">{r.name}</h2>{r.epithet && <p className="wc-epithet">“{r.epithet}”</p>}<div className="wc-classification">{rarityNames[r.rarity] || 'Rarity · Not defined'} · {r.family}</div></div>
-        <div className={'wc-icon-frame' + (pieces.length ? ' wc-icon-pair' : '')}>{pieces.length ? pieces.map(p => <WeaponArt key={p.id} record={p}/>) : <WeaponArt record={r}/>}</div>
+        <div className={'wc-icon-frame' + (pieces.length && !r.sprite ? ' wc-icon-pair' : '')}>{pieces.length && !r.sprite ? pieces.map(p => <WeaponArt key={p.id} record={p}/>) : <WeaponArt record={r}/>}</div>
       </header>
       <div className="wc-card-content">
         {r.roster === 'sets' ? <section className="wc-set-pieces" aria-label="Set pieces"><div className="wc-eyebrow">Two-piece set · {r.setType}</div>{pieces.map(p => <a key={p.id} href={W.href(p.id)}><WeaponArt record={p} compact/><span>{p.name}<small>{p.epithet}</small></span><span aria-hidden="true">↗</span></a>)}</section> : <section className="wc-base-block" aria-label="Base weapon stats">
           <div className="wc-damage"><span>BASE DAMAGE</span><strong className={isMissing(r.baseDamage) ? 'wc-undefined-damage' : ''}>{W.format(r.baseDamage)}</strong></div>
-          <dl className="wc-branches"><StatRow label="DPS" value={null}/><StatRow label="Attacks / second" value={null}/><StatRow label="Fire mode" value={r.fireMode}/><StatRow label="Magazine capacity" value={r.magazine}/><StatRow label="Reload time" value={null}/></dl>
+          {base.length > 0 && <dl className="wc-branches"><Rows rows={base}/></dl>}
         </section>}
-        <dl className="wc-properties"><StatRow label="Slot" value={r.roster === 'sets' ? r.setType : slotName(r.slot)}/><StatRow label="Weight" value={r.weight} unit="kg"/><StatRow label="Hands" value={r.hands}/><StatRow label="Construction tier" value={r.constructionTier}/>{r.slot === 'throwable' && <StatRow label="Recovery chance" value={r.recovery} unit="%"/>}{r.durability != null && <StatRow label="Prototype durability" value={r.durability}/>}</dl>
+        <dl className="wc-properties"><Rows rows={[['Slot', r.roster === 'sets' ? r.setType : slotName(r.slot)], ['Weight', r.weight, 'kg'], ...(r.slot === 'throwable' || r.roster === 'sets' ? [] : [['Hands', r.hands]]), ['Construction tier', r.constructionTier], ...(r.roster === 'workshop' ? [['Biome', r.biome], ['Materials', r.materials]] : []), ...(r.durability != null ? [['Prototype durability', r.durability]] : [])]}/></dl>
         {r.bonuses.length > 0 && <section className="wc-section"><h3>Recorded bonuses</h3><dl>{r.bonuses.map(b => <StatRow key={b.label} {...b}/>)}</dl></section>}
-        {r.affixes && r.affixes.length > 0 && <section className="wc-section"><h3>Proposed bonus themes</h3><dl>{r.affixes.map(a => <StatRow key={a} label={a} value={null} tone="cyan"/>)}</dl></section>}
-        {r.attributes && <section className="wc-section wc-attributes"><h3>S.U.R.V.I.V.A.L. attributes</h3><dl>{r.attributes.map(a => <StatRow key={a.label} {...a}/>)}</dl><p className="wc-small-note">Attribute assignments and values are not defined.</p></section>}
+        {r.affixes && r.affixes.length > 0 && <section className="wc-section"><h3>Proposed bonus themes</h3><div className="wc-chips">{r.affixes.map(a => <span key={a} className="wc-chip">{a}</span>)}</div><p className="wc-small-note">Bonus values are not defined yet.</p></section>}
+        {r.attributes && (attrsSet
+          ? <section className="wc-section wc-attributes"><h3>S.U.R.V.I.V.A.L. attributes</h3><dl><Rows rows={r.attributes.map(a => [a.label, a.value, a.unit, a.tone])}/></dl></section>
+          : <section className="wc-section wc-attributes"><h3>S.U.R.V.I.V.A.L. attributes</h3><p className="wc-small-note">Not assigned yet.</p></section>)}
         <section className="wc-description"><h3>{r.roster === 'live' ? 'Recorded description' : 'Design identity'}</h3><p>{r.description || W.MISSING}</p>{r.roster === 'live' && <p className="wc-small-note">Description effects may require supporting mechanics. Recorded damage is not a DPS estimate.</p>}</section>
-        {r.signature && <section className={'wc-signature' + (r.rarity === 'relic' ? ' wc-relic-signature' : '')}><h3>{r.roster === 'sets' ? 'Proposed pair effect' : r.rarity === 'relic' ? 'Inherited signature · proposed' : 'Exclusive mechanic · proposed'}</h3><p>{r.signature}</p><dl><StatRow label="Effect values" value={null}/></dl></section>}
+        {r.signature && <section className={'wc-signature' + (r.rarity === 'relic' ? ' wc-relic-signature' : '')}><h3>{r.roster === 'sets' ? 'Proposed pair effect' : r.rarity === 'relic' ? 'Inherited signature · proposed' : 'Exclusive mechanic · proposed'}</h3><p>{r.signature}</p></section>}
         {set && <a className="wc-set-link" href={W.href(set.id)}><span>◈ {set.name}<small>{set.setType} · inspect the pair bonus</small></span><span aria-hidden="true">↗</span></a>}
         {r.baseId && <a className="wc-set-link" href={W.href(r.baseId)}>Inspect the base Legendary <span aria-hidden="true">↗</span></a>}
-        <footer className="wc-card-footer"><div className="wc-socket-line"><span className="wc-socket" aria-hidden="true">◇</span><span>Sockets</span><strong>{W.format(r.sockets)}</strong></div><dl><StatRow label="Requirement" value={r.requirement}/></dl><div className="wc-record-id">{r.id}</div></footer>
-        {r.roster !== 'sets' && <details className="wc-all-stats"><summary>Full stat record <span>Undefined metrics</span></summary>{statGroups.map(([group, labels]) => <section key={group}><h3>{group}</h3><dl>{labels.map(label => <StatRow key={label} label={label} value={null}/>)}</dl></section>)}</details>}
+        <footer className="wc-card-footer">{!isMissing(r.sockets) && <div className="wc-socket-line"><span className="wc-socket" aria-hidden="true">◇</span><span>Sockets</span><strong>{W.format(r.sockets)}</strong></div>}<dl><Rows rows={[...(isMissing(r.sockets) ? [['Sockets', null]] : []), ['Requirement', r.requirement]]}/></dl><div className="wc-record-id">{r.id}</div></footer>
       </div>
     </article>;
   }
@@ -127,22 +144,23 @@
     const selected = records.find(r => r.id === route.id);
     React.useEffect(() => { if (detailRef.current) { detailRef.current.scrollTop = 0; const h = detailRef.current.querySelector('#wc-detail-title'); if (h) h.focus({ preventScroll:true }); } }, [route.id]);
     const query = search.trim().toLowerCase();
-    const shown = records.filter(r => (roster === 'all' || r.roster === roster) && (slot === 'all' || r.slot === slot) && (rarity === 'all' || (r.rarity || 'undefined') === rarity)
+    const inRoster = (r, id) => id === 'all' || (id === 'launch' ? !!r.launch : r.roster === id);
+    const shown = records.filter(r => inRoster(r, roster) && (slot === 'all' || r.slot === slot) && (rarity === 'all' || (r.rarity || 'undefined') === rarity)
       && (!query || [r.name,r.epithet,r.maker,r.family,r.id,r.subfamily,r.sectionTitle,r.status].filter(Boolean).join(' ').toLowerCase().includes(query)));
     const clear = () => { setSearch(''); setRoster('all'); setSlot('all'); setRarity('all'); };
     const linkTo = id => records.find(r => r.id === id);
-    const highlights = ['unique-night-current','crossbow','flamethrower','unique-hushline'].map(linkTo).filter(Boolean);
+    const highlights = ['unique-night-current','crossbow','flamethrower','wf-hedge-reaper'].map(linkTo).filter(Boolean);
     const uniqueIds = ['AXE-151','AXE-152','AXE-153','AXE-201','AXE-251','AXE-258'];
     function Preview({ record:r }) { return <a href={W.href(r.id)} className={'wc-preview wc-theme-' + themeFor(r) + ' wc-rarity-' + (r.rarity || 'undefined')}><WeaponArt record={r}/><div><span className="wc-eyebrow">{r.status}</span><strong>{r.name}</strong><small>{r.epithet || r.family}</small></div><span className="wc-preview-arrow" aria-hidden="true">↗</span></a>; }
     return <div className="wc-screen" data-proposed-crafting-frames>
-      <header className="wc-page-header"><div><div className="wc-eyebrow">CRAFTING / PROPOSAL REVIEW</div><h1><a href={W.href()}>Proposed frame cards</a>{selected && <><span className="wc-breadcrumb"> / </span><span className="wc-current-name">{selected.name}</span></>}</h1></div><span className="wc-total">{records.length} proposed frames <span>100 regular axe designs + 8 axe Uniques</span></span></header>
+      <header className="wc-page-header"><div><div className="wc-eyebrow">CRAFTING / PROPOSAL REVIEW</div><h1><a href={W.href()}>Proposed frame cards</a>{selected && <><span className="wc-breadcrumb"> / </span><span className="wc-current-name">{selected.name}</span></>}</h1></div><span className="wc-total">{records.length} proposed frames <span>{rosters.slice(2).map(([id, label]) => `${records.filter(r => r.roster === id).length} ${({live:'in game',axes:'regular axes',uniques:'Uniques',sets:'sets',ranged:'ranged concepts',workshop:'workshop',relics:'Relics',legacy:'legacy'})[id] || label}`).join(' · ')}</span></span></header>
       <div className="wc-layout">
         <aside className="wc-sidebar" aria-label="Proposed recipe frame cards">
           <div className="wc-search"><label htmlFor="wc-search-input">Find a proposed frame</label><input id="wc-search-input" type="search" placeholder="Name, family, maker or ID…" value={search} onChange={e => setSearch(e.target.value)}/></div>
-          <nav className="wc-rosters" aria-label="Weapon rosters">{rosters.map(([id,label]) => <button key={id} onClick={() => setRoster(id)} aria-pressed={roster === id}>{label}<span>{id === 'all' ? records.length : records.filter(r => r.roster === id).length}</span></button>)}</nav>
+          <nav className="wc-rosters" aria-label="Weapon rosters">{rosters.map(([id,label]) => <button key={id} onClick={() => setRoster(id)} aria-pressed={roster === id}>{label}<span>{records.filter(r => inRoster(r, id)).length}</span></button>)}</nav>
           <div className="wc-filters"><label>Slot<select value={slot} onChange={e => setSlot(e.target.value)}><option value="all">All slots</option>{['primary','secondary','melee','throwable','offhand'].map(s => <option key={s} value={s}>{slotName(s)}</option>)}</select></label><label>Rarity<select value={rarity} onChange={e => setRarity(e.target.value)}><option value="all">All rarities</option>{Object.entries(rarityNames).map(([id,label]) => <option key={id} value={id}>{label}</option>)}<option value="undefined">Not defined</option></select></label></div>
           <div className="wc-list-heading"><h2>Frame proposals</h2><span role="status">{shown.length} shown</span></div>
-          <div className="wc-list">{shown.map(r => <a key={r.id} href={W.href(r.id)} aria-current={route.id === r.id ? 'page' : undefined} className={'wc-list-row wc-rarity-' + (r.rarity || 'undefined')}><WeaponArt record={r} compact/><span className="wc-list-copy"><strong>{r.name}</strong><small>{r.epithet || r.family}</small><span>{r.id} · {r.status}</span></span><span className="wc-list-chevron" aria-hidden="true">›</span></a>)}{shown.length === 0 && <div className="wc-empty"><p>No matching weapons.</p><button onClick={clear}>Clear filters</button></div>}</div>
+          <div className="wc-list">{shown.map(r => <a key={r.id} href={W.href(r.id)} aria-current={route.id === r.id ? 'page' : undefined} className={'wc-list-row wc-rarity-' + (r.rarity || 'undefined')}><WeaponArt record={r} compact/><span className="wc-list-copy"><strong>{r.name}</strong><small>{r.epithet || r.family}</small><span>{r.id} · {r.status}</span></span>{r.launch && <span className="wc-launch-dot" title="Launch axe">L</span>}<span className="wc-list-chevron" aria-hidden="true">›</span></a>)}{shown.length === 0 && <div className="wc-empty"><p>No matching frame cards.</p><button onClick={clear}>Clear filters</button></div>}</div>
           <div className="wc-list-footer">All frame cards are proposed. Select one to preview.</div>
         </aside>
         <main className="wc-detail" ref={detailRef} aria-label="Proposed crafting frame preview">
@@ -152,12 +170,14 @@
             {(selected.role || selected.tradeoff) && <section><h3>Proposed role</h3><p>{selected.role}</p>{selected.tradeoff && <><h4>Tradeoff</h4><p>{selected.tradeoff}</p></>}</section>}
             {selected.acquisition && <section><h3>Acquisition concept</h3><p>{selected.acquisition}</p></section>}
             {selected.origin && <section><h3>Historical inspiration</h3><p>{selected.origin.archetype}</p><p>{selected.origin.culture}<br/>{selected.origin.era}</p><p>{selected.origin.site}, {selected.origin.country}</p><p className="wc-small-note">Historical anchor only. The weapon’s name, design variation and mechanics are fictional concepts.</p>{/^https:\/\//.test(selected.origin.source || '') && <a href={selected.origin.source} target="_blank" rel="noreferrer">Historical source ↗</a>}</section>}
+            {selected.origin2 && <section><h3>Imported art</h3><p>{selected.origin2.pack}</p><p>{selected.origin2.author} · {selected.origin2.license}</p><p className="wc-small-note">Converted to the game palette and pixel grid. Listed in art/weapons/CREDITS.md.</p></section>}
             <section><h3>Source record</h3><p>{selected.sourceLabel}</p><p className="wc-source-id">{selected.sourceId}</p><a href={selected.source} target="_blank" rel="noreferrer">Open source file ↗</a></section>
             <section className="wc-data-note"><h3>Undefined values</h3><p>“Not defined” means the source has no approved value. It does not mean zero.</p>{selected.roster !== 'live' && <p>This is a reference concept. It does not grant or equip an item.</p>}</section>
           </aside></div> : route.id || route.invalid ? <div className="wc-empty wc-not-found"><h2>Frame proposal not found</h2><p>This link does not match a proposed card in this review.</p><a href={W.href()}>Return to proposed frame cards</a></div> : <div className="wc-overview">
             <div className="wc-overview-heading"><div className="wc-eyebrow">PROPOSED RECIPE FRAME CARDS</div><h2>Frame design proposals.</h2><p>Review the card frames for equipment, axe designs, Uniques, Relics and paired sets. These previews do not approve a recipe or its balance.</p><span className="wc-reference-label">All frames proposed · Existing source values shown for reference · Missing metrics remain “Not defined”</span></div>
             <div className="wc-featured-grid">{highlights.map(r => <Preview key={r.id} record={r}/>)}</div>
             <section className="wc-overview-section"><h3>Danielle &amp; Raquelle</h3><p>Two distinct axes. One proposed finishing sequence.</p><div className="wc-pair-banner">{['unique-danielle','unique-raquelle'].map(id => <Preview key={id} record={linkTo(id)}/>)}<a className="wc-pair-bonus" href={W.href('set-duet-of-iron')}><span>◈ TWO-PIECE SET</span><strong>Duet of Iron</strong><small>Inspect the pieces and proposed pair effect →</small></a></div></section>
+            <section className="wc-overview-section" data-launch-axes><h3>Launch axes · 20</h3><p>Ship first: 4 stone, 6 copper, 2 throwing and the 8 Uniques. The other 88 axe concepts stay parked.</p><div className="wc-unique-grid">{[...W.LAUNCH_AXES].filter(id => !uniqueIds.includes(id) && !id.startsWith('unique-')).map(id => linkTo(id)).filter(Boolean).map(r => <Preview key={r.id} record={r}/>)}</div></section>
             <section className="wc-overview-section"><h3>The six named axe Uniques</h3><div className="wc-unique-grid">{uniqueIds.map(id => <Preview key={id} record={linkTo(id)}/>)}</div></section>
             <section className="wc-overview-section"><h3>Set concepts</h3><div className="wc-set-overview">{records.filter(r => r.roster === 'sets').map(r => <a key={r.id} href={W.href(r.id)}><span>◈ {r.setType}</span><strong>{r.name}</strong><small>{r.pieces.map(id => linkTo(id).name).join(' + ')}</small></a>)}</div></section>
           </div>}

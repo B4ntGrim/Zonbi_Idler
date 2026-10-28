@@ -30,6 +30,8 @@ ADDED.add('getUnclaimedRouteRewards'); ADDED.add('ROUTE_XP_MULTIPLIERS');
 ['ROUTE_PREP_TABLE','routeUsesSoloPreparation','routeLootCapacity','getRoutePreparation','resolvePreparedRouteNodes'].forEach(k => ADDED.add(k));
 // Top bar resources (Oct 27): one read-only backend reader for the header strip; dev-only view flag (world seed).
 ['getTopBarResources','isDevView'].forEach(k => ADDED.add(k));
+// Shop purchases (Sam, Oct 27: "implement the Shop purchases"): RMAT prices, one purchase path, consumables re-buyable.
+['shopPrice','shopCanAfford','shopPriceText','shopPurchase'].forEach(k => ADDED.add(k)); CHANGED_FN.add('shopState'); DATA_CHANGED.add('SHOP_ITEMS');
 const INTENDED = { zi_rmat: 2, zi_jobs: 3, zi_materials: 3, zi_stash: 3, zi_stat_xp: 3 };
 const results = []; const check = (n, c, x) => results.push([c ? 'PASS' : 'FAIL', n, x || '']);
 // CLOCK-01 T9 rescales these data tables; CL7 adds fractional schedule credit.

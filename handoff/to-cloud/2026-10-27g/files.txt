@@ -1,0 +1,50 @@
+CODE_STATE.md
+DESIGN_HANDOFF.md
+Zombie Idler v2 - TEST SAVE.html
+Zombie Idler v2.html
+assets/wandering-characters/survivor-melee-swing-v2.png
+assets/wandering-characters/survivor-melee-swing-v3.png
+assets/wandering-characters/survivor-melee-swing-v4.png
+assets/wandering-characters/survivor-walk-punch-v2.png
+assets/wandering-characters/survivor-walk-punch-v3.png
+assets/wandering-characters/survivor-walk-punch-v4.png
+crafting-frame-proposals.css
+crafting-frame-proposals.js
+crafting-frame-proposals.jsx
+reference/00-document-index.md
+reference/crafting-frame-proposals.md
+reference/parked/fish-01-fishing-concept.md
+reference/playtest-findings-oct15.md
+reference/slice-retreat-broken-batch-a-draft.md
+reference/tutorial-first-session-spec.md
+reference/wandering-tab-spec.md
+reports/anim-fix-2026-10-27/ANIM_FIX_REPORT.md
+reports/anim-fix-2026-10-27/after-tiers.png
+reports/anim-fix-2026-10-27/before-tiers.png
+reports/anim-fix-2026-10-27/pre-change/CODE_STATE.md
+reports/anim-fix-2026-10-27/pre-change/Zombie Idler v2 - TEST SAVE.html
+reports/anim-fix-2026-10-27/pre-change/Zombie Idler v2.html
+reports/anim-fix-2026-10-27/pre-change/screens-v3.jsx
+reports/anim-fix-2026-10-27/survivor-melee-swing-v4-grid.png
+reports/anim-fix-2026-10-27/survivor-walk-punch-v4-grid.png
+reports/anim-fix-2026-10-27/wandering-walk-preview.gif
+reports/docs-oct27/DOCS_OCT27_EVE_REPORT.md
+reports/docs-oct27/apply_oct27_eve2.py
+reports/docs-oct27/pre-change-eve3/DESIGN_HANDOFF.md
+reports/pf17-hp-durability-2026-10-27/pre-change/screens-v3.after-first-pf17.jsx
+reports/pf17-hp-durability-2026-10-27/pre-change/screens-v3.before-pf17c.jsx
+reports/weapon-details-2026-10-27/README.md
+reports/weapon-details-2026-10-27/danielle-raquelle-set.png
+reports/weapon-details-2026-10-27/flamethrower.png
+reports/weapon-details-2026-10-27/matilda.png
+reports/weapon-details-2026-10-27/overview.png
+reports/weapon-details-2026-10-27/validation.json
+screens-v3.jsx
+tools/build-weapon-catalog.cjs
+tools/sprite-rig/README.md
+tools/sprite-rig/assemble.py
+tools/sprite-rig/batmask.py
+tools/sprite-rig/frames.py
+tools/sprite-rig/rig.py
+weapon-design-data.js
+zombie-sprites.js

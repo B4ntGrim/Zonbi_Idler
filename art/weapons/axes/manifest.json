@@ -1,0 +1,975 @@
+{
+  "style": "Retro 16-bit dark survival pixel art, desaturated earth/steel palette, crisp pixel grid, dark outlines, dark charcoal background",
+  "items": [
+    {
+      "id": "AXE-001",
+      "name": "Mara",
+      "style": "leaf-plan head; narrow wedge; short straight haft",
+      "role": "Execution",
+      "tradeoff": "slower attack cadence",
+      "section": "C1",
+      "status": "Regular axe"
+    },
+    {
+      "id": "AXE-002",
+      "name": "Vera",
+      "style": "leaf-plan head; wide oval edge; close-grip haft",
+      "role": "Tempo",
+      "tradeoff": "lower damage per hit",
+      "section": "C1",
+      "status": "Regular axe"
+    },
+    {
+      "id": "AXE-003",
+      "name": "Nora",
+      "style": "leaf-plan head; long tapering bit; forward-canted grip",
+      "role": "Sweeper",
+      "tradeoff": "higher weight / slower movement",
+      "section": "C1",
+      "status": "Regular axe"
+    },
+    {
+      "id": "AXE-004",
+      "name": "Iris",
+      "style": "leaf-plan head; squared heel; broad palm stop",
+      "role": "Bulwark",
+      "tradeoff": "lower attack output",
+      "section": "C1",
+      "status": "Regular axe"
+    },
+    {
+      "id": "AXE-005",
+      "name": "Ada",
+      "style": "leaf-plan head; rounded fan edge; swept haft",
+      "role": "Bloodletter",
+      "tradeoff": "requires an explicitly defined status effect",
+      "section": "C1",
+      "status": "Regular axe"
+    },
+    {
+      "id": "AXE-006",
+      "name": "Elsie",
+      "style": "leaf-plan head; deep lenticular body; extended handle",
+      "role": "Reaper",
+      "tradeoff": "lower direct burst damage",
+      "section": "C1",
+      "status": "Regular axe"
+    },
+    {
+      "id": "AXE-007",
+      "name": "Edith",
+      "style": "leaf-plan head; slim pointed toe; curved handle",
+      "role": "Elite hunter",
+      "tradeoff": "conditional bonuses need eligible targets",
+      "section": "C1",
+      "status": "Regular axe"
+    },
+    {
+      "id": "AXE-008",
+      "name": "Hazel",
+      "style": "leaf-plan head; broad trapezoid; braced socket housing",
+      "role": "Fortune",
+      "tradeoff": "lower combat-stat budget",
+      "section": "C1",
+      "status": "Regular axe"
+    },
+    {
+      "id": "AXE-009",
+      "name": "Opal",
+      "style": "leaf-plan head; compact rounded bit; twin-lash housing",
+      "role": "Ward",
+      "tradeoff": "requires absorption-shield support",
+      "section": "C1",
+      "status": "Regular axe"
+    },
+    {
+      "id": "AXE-010",
+      "name": "Mabel",
+      "style": "leaf-plan head; long asymmetrical edge; counterweighted haft",
+      "role": "Resonance",
+      "tradeoff": "requires an explicit nonphysical attack or effect",
+      "section": "C1",
+      "status": "Regular axe"
+    },
+    {
+      "id": "AXE-011",
+      "name": "Agnes",
+      "style": "long convex-sided head; narrow wedge; short straight haft",
+      "role": "Execution",
+      "tradeoff": "slower attack cadence",
+      "section": "C1",
+      "status": "Regular axe"
+    },
+    {
+      "id": "AXE-012",
+      "name": "Hilda",
+      "style": "long convex-sided head; wide oval edge; close-grip haft",
+      "role": "Tempo",
+      "tradeoff": "lower damage per hit",
+      "section": "C1",
+      "status": "Regular axe"
+    },
+    {
+      "id": "AXE-013",
+      "name": "Greta",
+      "style": "long convex-sided head; long tapering bit; forward-canted grip",
+      "role": "Sweeper",
+      "tradeoff": "higher weight / slower movement",
+      "section": "C1",
+      "status": "Regular axe"
+    },
+    {
+      "id": "AXE-014",
+      "name": "Ingrid",
+      "style": "long convex-sided head; squared heel; broad palm stop",
+      "role": "Bulwark",
+      "tradeoff": "lower attack output",
+      "section": "C1",
+      "status": "Regular axe"
+    },
+    {
+      "id": "AXE-015",
+      "name": "Freya",
+      "style": "long convex-sided head; rounded fan edge; swept haft",
+      "role": "Bloodletter",
+      "tradeoff": "requires an explicitly defined status effect",
+      "section": "C1",
+      "status": "Regular axe"
+    },
+    {
+      "id": "AXE-016",
+      "name": "Astrid",
+      "style": "long convex-sided head; deep lenticular body; extended handle",
+      "role": "Reaper",
+      "tradeoff": "lower direct burst damage",
+      "section": "C1",
+      "status": "Regular axe"
+    },
+    {
+      "id": "AXE-017",
+      "name": "Sigrid",
+      "style": "long convex-sided head; slim pointed toe; curved handle",
+      "role": "Elite hunter",
+      "tradeoff": "conditional bonuses need eligible targets",
+      "section": "C1",
+      "status": "Regular axe"
+    },
+    {
+      "id": "AXE-051",
+      "name": "Alma",
+      "style": "straight-sided rectangular bit; compact convex bit; curved haft",
+      "role": "Execution",
+      "tradeoff": "slower attack cadence",
+      "section": "C2",
+      "status": "Regular axe"
+    },
+    {
+      "id": "AXE-052",
+      "name": "Anja",
+      "style": "straight-sided rectangular bit; high flared toe; straight grip",
+      "role": "Tempo",
+      "tradeoff": "lower damage per hit",
+      "section": "C2",
+      "status": "Regular axe"
+    },
+    {
+      "id": "AXE-053",
+      "name": "Anika",
+      "style": "straight-sided rectangular bit; broad fan edge; short reinforced neck",
+      "role": "Sweeper",
+      "tradeoff": "higher weight / slower movement",
+      "section": "C2",
+      "status": "Regular axe"
+    },
+    {
+      "id": "AXE-054",
+      "name": "Elke",
+      "style": "straight-sided rectangular bit; squared heel; extended back-weight",
+      "role": "Bulwark",
+      "tradeoff": "lower attack output",
+      "section": "C2",
+      "status": "Regular axe"
+    },
+    {
+      "id": "AXE-055",
+      "name": "Erika",
+      "style": "straight-sided rectangular bit; slim wedge blade; three-band grip",
+      "role": "Bloodletter",
+      "tradeoff": "requires an explicitly defined status effect",
+      "section": "C2",
+      "status": "Regular axe"
+    },
+    {
+      "id": "AXE-056",
+      "name": "Frieda",
+      "style": "straight-sided rectangular bit; deep crescent edge; long handle",
+      "role": "Reaper",
+      "tradeoff": "lower direct burst damage",
+      "section": "C2",
+      "status": "Regular axe"
+    },
+    {
+      "id": "AXE-057",
+      "name": "Leni",
+      "style": "straight-sided rectangular bit; flared shoulders; close-control grip",
+      "role": "Elite hunter",
+      "tradeoff": "conditional bonuses need eligible targets",
+      "section": "C2",
+      "status": "Regular axe"
+    },
+    {
+      "id": "AXE-058",
+      "name": "Liesel",
+      "style": "straight-sided rectangular bit; narrow hooked heel; protected haft joint",
+      "role": "Fortune",
+      "tradeoff": "lower combat-stat budget",
+      "section": "C2",
+      "status": "Regular axe"
+    },
+    {
+      "id": "AXE-059",
+      "name": "Petra",
+      "style": "straight-sided rectangular bit; long biting toe; swept-back grip",
+      "role": "Ward",
+      "tradeoff": "requires absorption-shield support",
+      "section": "C2",
+      "status": "Regular axe"
+    },
+    {
+      "id": "AXE-060",
+      "name": "Wilma",
+      "style": "straight-sided rectangular bit; wide rounded belly; heavy haft collar",
+      "role": "Resonance",
+      "tradeoff": "requires an explicit nonphysical attack or effect",
+      "section": "C2",
+      "status": "Regular axe"
+    },
+    {
+      "id": "AXE-061",
+      "name": "Amara",
+      "style": "deep socket with triangular bit; compact convex bit; curved haft",
+      "role": "Execution",
+      "tradeoff": "slower attack cadence",
+      "section": "C2",
+      "status": "Regular axe"
+    },
+    {
+      "id": "AXE-062",
+      "name": "Adira",
+      "style": "deep socket with triangular bit; high flared toe; straight grip",
+      "role": "Tempo",
+      "tradeoff": "lower damage per hit",
+      "section": "C2",
+      "status": "Regular axe"
+    },
+    {
+      "id": "AXE-063",
+      "name": "Aziza",
+      "style": "deep socket with triangular bit; broad fan edge; short reinforced neck",
+      "role": "Sweeper",
+      "tradeoff": "higher weight / slower movement",
+      "section": "C2",
+      "status": "Regular axe"
+    },
+    {
+      "id": "AXE-064",
+      "name": "Dalia",
+      "style": "deep socket with triangular bit; squared heel; extended back-weight",
+      "role": "Bulwark",
+      "tradeoff": "lower attack output",
+      "section": "C2",
+      "status": "Regular axe"
+    },
+    {
+      "id": "AXE-065",
+      "name": "Leila",
+      "style": "deep socket with triangular bit; slim wedge blade; three-band grip",
+      "role": "Bloodletter",
+      "tradeoff": "requires an explicitly defined status effect",
+      "section": "C2",
+      "status": "Regular axe"
+    },
+    {
+      "id": "AXE-066",
+      "name": "Nadia",
+      "style": "deep socket with triangular bit; deep crescent edge; long handle",
+      "role": "Reaper",
+      "tradeoff": "lower direct burst damage",
+      "section": "C2",
+      "status": "Regular axe"
+    },
+    {
+      "id": "AXE-067",
+      "name": "Rima",
+      "style": "deep socket with triangular bit; flared shoulders; close-control grip",
+      "role": "Elite hunter",
+      "tradeoff": "conditional bonuses need eligible targets",
+      "section": "C2",
+      "status": "Regular axe"
+    },
+    {
+      "id": "AXE-101",
+      "name": "Bess",
+      "style": "long-neck socket and diamond cheeks; deep socket body; narrow working edge",
+      "role": "Execution",
+      "tradeoff": "slower attack cadence",
+      "section": "C3",
+      "status": "Regular axe"
+    },
+    {
+      "id": "AXE-102",
+      "name": "Blanche",
+      "style": "long-neck socket and diamond cheeks; oval socket profile; flared edge",
+      "role": "Tempo",
+      "tradeoff": "lower damage per hit",
+      "section": "C3",
+      "status": "Regular axe"
+    },
+    {
+      "id": "AXE-103",
+      "name": "Constance",
+      "style": "long-neck socket and diamond cheeks; reinforced mouth; compact wedge blade",
+      "role": "Sweeper",
+      "tradeoff": "higher weight / slower movement",
+      "section": "C3",
+      "status": "Regular axe"
+    },
+    {
+      "id": "AXE-104",
+      "name": "Dorothy",
+      "style": "long-neck socket and diamond cheeks; long neck; wide fan edge",
+      "role": "Bulwark",
+      "tradeoff": "lower attack output",
+      "section": "C3",
+      "status": "Regular axe"
+    },
+    {
+      "id": "AXE-105",
+      "name": "Eleanor",
+      "style": "long-neck socket and diamond cheeks; shallow socket shoulder; extended toe",
+      "role": "Bloodletter",
+      "tradeoff": "requires an explicitly defined status effect",
+      "section": "C3",
+      "status": "Regular axe"
+    },
+    {
+      "id": "AXE-106",
+      "name": "Florence",
+      "style": "long-neck socket and diamond cheeks; broad socket collar; steep heel",
+      "role": "Reaper",
+      "tradeoff": "lower direct burst damage",
+      "section": "C3",
+      "status": "Regular axe"
+    },
+    {
+      "id": "AXE-107",
+      "name": "Grace",
+      "style": "long-neck socket and diamond cheeks; slim cheeks; elongated cutting face",
+      "role": "Elite hunter",
+      "tradeoff": "conditional bonuses need eligible targets",
+      "section": "C3",
+      "status": "Regular axe"
+    },
+    {
+      "id": "AXE-108",
+      "name": "Harriet",
+      "style": "long-neck socket and diamond cheeks; offset edge; long hewing grip",
+      "role": "Fortune",
+      "tradeoff": "lower combat-stat budget",
+      "section": "C3",
+      "status": "Regular axe"
+    },
+    {
+      "id": "AXE-109",
+      "name": "Isabel",
+      "style": "long-neck socket and diamond cheeks; thick poll; short chopping handle",
+      "role": "Ward",
+      "tradeoff": "requires absorption-shield support",
+      "section": "C3",
+      "status": "Regular axe"
+    },
+    {
+      "id": "AXE-110",
+      "name": "Joan",
+      "style": "long-neck socket and diamond cheeks; long cutting belly; swept haft",
+      "role": "Resonance",
+      "tradeoff": "requires an explicit nonphysical attack or effect",
+      "section": "C3",
+      "status": "Regular axe"
+    },
+    {
+      "id": "AXE-111",
+      "name": "Alice",
+      "style": "ribbed socket and low flaring mouth; deep socket body; narrow working edge",
+      "role": "Execution",
+      "tradeoff": "slower attack cadence",
+      "section": "C3",
+      "status": "Regular axe"
+    },
+    {
+      "id": "AXE-112",
+      "name": "Beatrice",
+      "style": "ribbed socket and low flaring mouth; oval socket profile; flared edge",
+      "role": "Tempo",
+      "tradeoff": "lower damage per hit",
+      "section": "C3",
+      "status": "Regular axe"
+    },
+    {
+      "id": "AXE-113",
+      "name": "Cecily",
+      "style": "ribbed socket and low flaring mouth; reinforced mouth; compact wedge blade",
+      "role": "Sweeper",
+      "tradeoff": "higher weight / slower movement",
+      "section": "C3",
+      "status": "Regular axe"
+    },
+    {
+      "id": "AXE-114",
+      "name": "Dorothea",
+      "style": "ribbed socket and low flaring mouth; long neck; wide fan edge",
+      "role": "Bulwark",
+      "tradeoff": "lower attack output",
+      "section": "C3",
+      "status": "Regular axe"
+    },
+    {
+      "id": "AXE-115",
+      "name": "Emmeline",
+      "style": "ribbed socket and low flaring mouth; shallow socket shoulder; extended toe",
+      "role": "Bloodletter",
+      "tradeoff": "requires an explicitly defined status effect",
+      "section": "C3",
+      "status": "Regular axe"
+    },
+    {
+      "id": "AXE-116",
+      "name": "Frances",
+      "style": "ribbed socket and low flaring mouth; broad socket collar; steep heel",
+      "role": "Reaper",
+      "tradeoff": "lower direct burst damage",
+      "section": "C3",
+      "status": "Regular axe"
+    },
+    {
+      "id": "AXE-117",
+      "name": "Georgina",
+      "style": "ribbed socket and low flaring mouth; slim cheeks; elongated cutting face",
+      "role": "Elite hunter",
+      "tradeoff": "conditional bonuses need eligible targets",
+      "section": "C3",
+      "status": "Regular axe"
+    },
+    {
+      "id": "AXE-154",
+      "name": "Magda",
+      "style": "short-beard head with recessed inlay channels; broad crescent; long two-hand grip",
+      "role": "Bulwark",
+      "tradeoff": "lower attack output",
+      "section": "C4",
+      "status": "Regular axe"
+    },
+    {
+      "id": "AXE-155",
+      "name": "Ruth",
+      "style": "short-beard head with recessed inlay channels; squared poll; reinforced neck",
+      "role": "Bloodletter",
+      "tradeoff": "requires an explicitly defined status effect",
+      "section": "C4",
+      "status": "Regular axe"
+    },
+    {
+      "id": "AXE-156",
+      "name": "Salome",
+      "style": "short-beard head with recessed inlay channels; swept heel; counterbalanced handle",
+      "role": "Reaper",
+      "tradeoff": "lower direct burst damage",
+      "section": "C4",
+      "status": "Regular axe"
+    },
+    {
+      "id": "AXE-157",
+      "name": "Tabitha",
+      "style": "short-beard head with recessed inlay channels; narrow wedge; hooked pommel",
+      "role": "Elite hunter",
+      "tradeoff": "conditional bonuses need eligible targets",
+      "section": "C4",
+      "status": "Regular axe"
+    },
+    {
+      "id": "AXE-158",
+      "name": "Vesper",
+      "style": "short-beard head with recessed inlay channels; deep cutting belly; protected haft collar",
+      "role": "Fortune",
+      "tradeoff": "lower combat-stat budget",
+      "section": "C4",
+      "status": "Regular axe"
+    },
+    {
+      "id": "AXE-159",
+      "name": "Willa",
+      "style": "short-beard head with recessed inlay channels; thin wide edge; flared grip end",
+      "role": "Ward",
+      "tradeoff": "requires absorption-shield support",
+      "section": "C4",
+      "status": "Regular axe"
+    },
+    {
+      "id": "AXE-161",
+      "name": "Asta",
+      "style": "narrow blade with lateral haft wings; compact bit; high control grip",
+      "role": "Execution",
+      "tradeoff": "slower attack cadence",
+      "section": "C4",
+      "status": "Regular axe"
+    },
+    {
+      "id": "AXE-162",
+      "name": "Bodil",
+      "style": "narrow blade with lateral haft wings; extended beard; close-hand clearance",
+      "role": "Tempo",
+      "tradeoff": "lower damage per hit",
+      "section": "C4",
+      "status": "Regular axe"
+    },
+    {
+      "id": "AXE-163",
+      "name": "Dagmar",
+      "style": "narrow blade with lateral haft wings; long toe; slim straight haft",
+      "role": "Sweeper",
+      "tradeoff": "higher weight / slower movement",
+      "section": "C4",
+      "status": "Regular axe"
+    },
+    {
+      "id": "AXE-164",
+      "name": "Ebba",
+      "style": "narrow blade with lateral haft wings; broad crescent; long two-hand grip",
+      "role": "Bulwark",
+      "tradeoff": "lower attack output",
+      "section": "C4",
+      "status": "Regular axe"
+    },
+    {
+      "id": "AXE-165",
+      "name": "Frida",
+      "style": "narrow blade with lateral haft wings; squared poll; reinforced neck",
+      "role": "Bloodletter",
+      "tradeoff": "requires an explicitly defined status effect",
+      "section": "C4",
+      "status": "Regular axe"
+    },
+    {
+      "id": "AXE-166",
+      "name": "Gudrun",
+      "style": "narrow blade with lateral haft wings; swept heel; counterbalanced handle",
+      "role": "Reaper",
+      "tradeoff": "lower direct burst damage",
+      "section": "C4",
+      "status": "Regular axe"
+    },
+    {
+      "id": "AXE-167",
+      "name": "Hedda",
+      "style": "narrow blade with lateral haft wings; narrow wedge; hooked pommel",
+      "role": "Elite hunter",
+      "tradeoff": "conditional bonuses need eligible targets",
+      "section": "C4",
+      "status": "Regular axe"
+    },
+    {
+      "id": "AXE-168",
+      "name": "Idun",
+      "style": "narrow blade with lateral haft wings; deep cutting belly; protected haft collar",
+      "role": "Fortune",
+      "tradeoff": "lower combat-stat budget",
+      "section": "C4",
+      "status": "Regular axe"
+    },
+    {
+      "id": "AXE-169",
+      "name": "Kari",
+      "style": "narrow blade with lateral haft wings; thin wide edge; flared grip end",
+      "role": "Ward",
+      "tradeoff": "requires absorption-shield support",
+      "section": "C4",
+      "status": "Regular axe"
+    },
+    {
+      "id": "AXE-170",
+      "name": "Liv",
+      "style": "narrow blade with lateral haft wings; heavy rounded poll; extended power haft",
+      "role": "Resonance",
+      "tradeoff": "requires an explicit nonphysical attack or effect",
+      "section": "C4",
+      "status": "Regular axe"
+    },
+    {
+      "id": "AXE-171",
+      "name": "Alfhild",
+      "style": "very wide thin crescent head; compact bit; high control grip",
+      "role": "Execution",
+      "tradeoff": "slower attack cadence",
+      "section": "C4",
+      "status": "Regular axe"
+    },
+    {
+      "id": "AXE-202",
+      "name": "Asteria",
+      "style": "twin compact triangular wings; narrow paired wings; curved haft",
+      "role": "Tempo",
+      "tradeoff": "lower damage per hit",
+      "section": "C5",
+      "status": "Regular axe"
+    },
+    {
+      "id": "AXE-203",
+      "name": "Callista",
+      "style": "twin compact triangular wings; broad single fan; long reinforced neck",
+      "role": "Sweeper",
+      "tradeoff": "higher weight / slower movement",
+      "section": "C5",
+      "status": "Regular axe"
+    },
+    {
+      "id": "AXE-204",
+      "name": "Chloe",
+      "style": "twin compact triangular wings; deep single crescent; counterweighted grip",
+      "role": "Bulwark",
+      "tradeoff": "lower attack output",
+      "section": "C5",
+      "status": "Regular axe"
+    },
+    {
+      "id": "AXE-205",
+      "name": "Electra",
+      "style": "twin compact triangular wings; compact opposing edges; close-control haft",
+      "role": "Bloodletter",
+      "tradeoff": "requires an explicitly defined status effect",
+      "section": "C5",
+      "status": "Regular axe"
+    },
+    {
+      "id": "AXE-206",
+      "name": "Evadne",
+      "style": "twin compact triangular wings; long trapezoid bit; heavy collar",
+      "role": "Reaper",
+      "tradeoff": "lower direct burst damage",
+      "section": "C5",
+      "status": "Regular axe"
+    },
+    {
+      "id": "AXE-207",
+      "name": "Galatea",
+      "style": "twin compact triangular wings; swept leading toe; shielded haft joint",
+      "role": "Elite hunter",
+      "tradeoff": "conditional bonuses need eligible targets",
+      "section": "C5",
+      "status": "Regular axe"
+    },
+    {
+      "id": "AXE-208",
+      "name": "Helena",
+      "style": "twin compact triangular wings; asymmetric broad edge; long hewing grip",
+      "role": "Fortune",
+      "tradeoff": "lower combat-stat budget",
+      "section": "C5",
+      "status": "Regular axe"
+    },
+    {
+      "id": "AXE-209",
+      "name": "Ianthe",
+      "style": "twin compact triangular wings; rounded twin faces; two-hand palm stops",
+      "role": "Ward",
+      "tradeoff": "requires absorption-shield support",
+      "section": "C5",
+      "status": "Regular axe"
+    },
+    {
+      "id": "AXE-210",
+      "name": "Melina",
+      "style": "twin compact triangular wings; high single crown; extended power haft",
+      "role": "Resonance",
+      "tradeoff": "requires an explicit nonphysical attack or effect",
+      "section": "C5",
+      "status": "Regular axe"
+    },
+    {
+      "id": "AXE-211",
+      "name": "Aella",
+      "style": "twin extended crescent wings; wide paired wings; straight long haft",
+      "role": "Execution",
+      "tradeoff": "slower attack cadence",
+      "section": "C5",
+      "status": "Regular axe"
+    },
+    {
+      "id": "AXE-212",
+      "name": "Anthea",
+      "style": "twin extended crescent wings; narrow paired wings; curved haft",
+      "role": "Tempo",
+      "tradeoff": "lower damage per hit",
+      "section": "C5",
+      "status": "Regular axe"
+    },
+    {
+      "id": "AXE-213",
+      "name": "Calypso",
+      "style": "twin extended crescent wings; broad single fan; long reinforced neck",
+      "role": "Sweeper",
+      "tradeoff": "higher weight / slower movement",
+      "section": "C5",
+      "status": "Regular axe"
+    },
+    {
+      "id": "AXE-214",
+      "name": "Cyra",
+      "style": "twin extended crescent wings; deep single crescent; counterweighted grip",
+      "role": "Bulwark",
+      "tradeoff": "lower attack output",
+      "section": "C5",
+      "status": "Regular axe"
+    },
+    {
+      "id": "AXE-215",
+      "name": "Despoina",
+      "style": "twin extended crescent wings; compact opposing edges; close-control haft",
+      "role": "Bloodletter",
+      "tradeoff": "requires an explicitly defined status effect",
+      "section": "C5",
+      "status": "Regular axe"
+    },
+    {
+      "id": "AXE-216",
+      "name": "Eudora",
+      "style": "twin extended crescent wings; long trapezoid bit; heavy collar",
+      "role": "Reaper",
+      "tradeoff": "lower direct burst damage",
+      "section": "C5",
+      "status": "Regular axe"
+    },
+    {
+      "id": "AXE-217",
+      "name": "Kalliope",
+      "style": "twin extended crescent wings; swept leading toe; shielded haft joint",
+      "role": "Elite hunter",
+      "tradeoff": "conditional bonuses need eligible targets",
+      "section": "C5",
+      "status": "Regular axe"
+    },
+    {
+      "id": "AXE-252",
+      "name": "Bertha",
+      "style": "S-back head and projected toe; high toe; tapered release grip",
+      "role": "Execution throw",
+      "tradeoff": "slower release",
+      "section": "C6",
+      "status": "Regular axe"
+    },
+    {
+      "id": "AXE-253",
+      "name": "Clotilde",
+      "style": "S-back head and projected toe; bell-flared edge; short round haft",
+      "role": "Wide cut",
+      "tradeoff": "requires a defined multi-target footprint",
+      "section": "C6",
+      "status": "Regular axe"
+    },
+    {
+      "id": "AXE-254",
+      "name": "Edwina",
+      "style": "S-back head and projected toe; squared poll; forward-weighted grip",
+      "role": "Retriever",
+      "tradeoff": "Luck does not increase recovery unless explicitly allowed",
+      "section": "C6",
+      "status": "Regular axe"
+    },
+    {
+      "id": "AXE-255",
+      "name": "Ethel",
+      "style": "S-back head and projected toe; deep heel; flared hand stop",
+      "role": "Bleeder",
+      "tradeoff": "requires an authored status profile",
+      "section": "C6",
+      "status": "Regular axe"
+    },
+    {
+      "id": "AXE-256",
+      "name": "Gisela",
+      "style": "S-back head and projected toe; raked neck; slim release handle",
+      "role": "Long flight",
+      "tradeoff": "duration means flight/effect life, not free damage",
+      "section": "C6",
+      "status": "Regular axe"
+    },
+    {
+      "id": "AXE-257",
+      "name": "Millicent",
+      "style": "S-back head and projected toe; long toe; reinforced short haft",
+      "role": "Elite breaker",
+      "tradeoff": "conditional target bonuses",
+      "section": "C6",
+      "status": "Regular axe"
+    },
+    {
+      "id": "AXE-259",
+      "name": "Rosamund",
+      "style": "S-back head and projected toe; wide crescent; long throwing grip",
+      "role": "Salvager",
+      "tradeoff": "lower direct damage",
+      "section": "C6",
+      "status": "Regular axe"
+    },
+    {
+      "id": "AXE-260",
+      "name": "Thelma",
+      "style": "S-back head and projected toe; narrow flared bit; back-weighted haft",
+      "role": "Heavy cast",
+      "tradeoff": "slower release / heavier stack",
+      "section": "C6",
+      "status": "Regular axe"
+    },
+    {
+      "id": "AXE-261",
+      "name": "Adeline",
+      "style": "bell head and rounded lower heel; swept spine; compact straight grip",
+      "role": "Fast release",
+      "tradeoff": "lower per-axe damage",
+      "section": "C6",
+      "status": "Regular axe"
+    },
+    {
+      "id": "AXE-262",
+      "name": "Bertille",
+      "style": "bell head and rounded lower heel; high toe; tapered release grip",
+      "role": "Execution throw",
+      "tradeoff": "slower release",
+      "section": "C6",
+      "status": "Regular axe"
+    },
+    {
+      "id": "AXE-263",
+      "name": "Colette",
+      "style": "bell head and rounded lower heel; bell-flared edge; short round haft",
+      "role": "Wide cut",
+      "tradeoff": "requires a defined multi-target footprint",
+      "section": "C6",
+      "status": "Regular axe"
+    },
+    {
+      "id": "AXE-264",
+      "name": "Denise",
+      "style": "bell head and rounded lower heel; squared poll; forward-weighted grip",
+      "role": "Retriever",
+      "tradeoff": "Luck does not increase recovery unless explicitly allowed",
+      "section": "C6",
+      "status": "Regular axe"
+    },
+    {
+      "id": "AXE-265",
+      "name": "Estelle",
+      "style": "bell head and rounded lower heel; deep heel; flared hand stop",
+      "role": "Bleeder",
+      "tradeoff": "requires an authored status profile",
+      "section": "C6",
+      "status": "Regular axe"
+    },
+    {
+      "id": "AXE-266",
+      "name": "Fleur",
+      "style": "bell head and rounded lower heel; raked neck; slim release handle",
+      "role": "Long flight",
+      "tradeoff": "duration means flight/effect life, not free damage",
+      "section": "C6",
+      "status": "Regular axe"
+    },
+    {
+      "id": "AXE-267",
+      "name": "Genevieve",
+      "style": "bell head and rounded lower heel; long toe; reinforced short haft",
+      "role": "Elite breaker",
+      "tradeoff": "conditional target bonuses",
+      "section": "C6",
+      "status": "Regular axe"
+    },
+    {
+      "id": "AXE-268",
+      "name": "Heloise",
+      "style": "bell head and rounded lower heel; rounded belly; neutral-balance grip",
+      "role": "Steady hand",
+      "tradeoff": "lower peak damage",
+      "section": "C6",
+      "status": "Regular axe"
+    },
+    {
+      "id": "AXE-151",
+      "name": "Matilda",
+      "style": "short-beard head with recessed inlay channels; compact bit; high control grip",
+      "role": "Execution",
+      "tradeoff": "slower attack cadence",
+      "section": "C4",
+      "status": "Named Unique"
+    },
+    {
+      "id": "AXE-152",
+      "name": "Delila",
+      "style": "short-beard head with recessed inlay channels; extended beard; close-hand clearance",
+      "role": "Tempo",
+      "tradeoff": "lower damage per hit",
+      "section": "C4",
+      "status": "Named Unique"
+    },
+    {
+      "id": "AXE-153",
+      "name": "Judith",
+      "style": "short-beard head with recessed inlay channels; long toe; slim straight haft",
+      "role": "Sweeper",
+      "tradeoff": "higher weight / slower movement",
+      "section": "C4",
+      "status": "Named Unique"
+    },
+    {
+      "id": "AXE-201",
+      "name": "Ariadne",
+      "style": "twin compact triangular wings; wide paired wings; straight long haft",
+      "role": "Execution",
+      "tradeoff": "slower attack cadence",
+      "section": "C5",
+      "status": "Named Unique"
+    },
+    {
+      "id": "AXE-251",
+      "name": "Adelaide",
+      "style": "S-back head and projected toe; swept spine; compact straight grip",
+      "role": "Fast release",
+      "tradeoff": "lower per-axe damage",
+      "section": "C6",
+      "status": "Named Unique"
+    },
+    {
+      "id": "AXE-258",
+      "name": "Odette",
+      "style": "S-back head and projected toe; rounded belly; neutral-balance grip",
+      "role": "Steady hand",
+      "tradeoff": "lower peak damage",
+      "section": "C6",
+      "status": "Named Unique"
+    },
+    {
+      "id": "unique-danielle",
+      "name": "Danielle — The Opening Cut",
+      "style": "light one-handed silvered bearded axe; hooked heel, black cloth grip",
+      "role": "Attack-speed opening strikes",
+      "tradeoff": "partner finisher concept",
+      "status": "Named Unique concept"
+    },
+    {
+      "id": "unique-raquelle",
+      "name": "Raquelle — The Closing Argument",
+      "style": "one-handed broad bronze crescent axe; reinforced poll, crimson binding",
+      "role": "Heavy sweeping finisher",
+      "tradeoff": "partner opening required",
+      "status": "Named Unique concept"
+    }
+  ]
+}
