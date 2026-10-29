@@ -1,0 +1,3826 @@
+[
+  {
+    "Category": "Animals / birds",
+    "Name": "03 hawk",
+    "Variant": "Original",
+    "Path": "animals/birds/03-hawk.png",
+    "Bytes": 1440279,
+    "SHA256": "AEC4950E41A8AFA4310FB27087E9532E7C4C1AF14133C8918712DEFE04D5AB74"
+  },
+  {
+    "Category": "Animals / birds",
+    "Name": "04 pigeon",
+    "Variant": "Original",
+    "Path": "animals/birds/04-pigeon.png",
+    "Bytes": 1315993,
+    "SHA256": "A2FDFFA5F0390713DB25B8EC1A600FFBA7FC3D153DB1E6879835CE9E6652F0A3"
+  },
+  {
+    "Category": "Animals / mounts",
+    "Name": "07 horse",
+    "Variant": "Original",
+    "Path": "animals/mounts/07-horse.png",
+    "Bytes": 1658368,
+    "SHA256": "C93A0D198949F0E01A75AC6087D6BA918B24E1E5CB11650B7DBE7D321957DC80"
+  },
+  {
+    "Category": "Animals / mythical creatures",
+    "Name": "01 pegasus",
+    "Variant": "Original",
+    "Path": "animals/mythical-creatures/01-pegasus.png",
+    "Bytes": 1966873,
+    "SHA256": "6FBF6C057483F5077B8F7490C28292F2DFEDEE7268BB1E1758976AB445AC501B"
+  },
+  {
+    "Category": "Animals / mythical creatures",
+    "Name": "02 unicorn",
+    "Variant": "Original",
+    "Path": "animals/mythical-creatures/02-unicorn.png",
+    "Bytes": 1637898,
+    "SHA256": "E0E058220B37363492F744BCD12028903568F2231CD9ABAE3B9A672DD7D798E8"
+  },
+  {
+    "Category": "Equipment / Armor / boots",
+    "Name": "Combat Boots",
+    "Variant": "Game sprite",
+    "Path": "weapons/sprites/item-combat_boots.png",
+    "Bytes": 133279,
+    "SHA256": "AADD89CB62FEE66C8446B61F0613259F0B7D189EE0F43554FBDB68BCBA31B000"
+  },
+  {
+    "Category": "Equipment / Armor / boots",
+    "Name": "Combat Boots",
+    "Variant": "Original",
+    "Path": "weapons/items/combat_boots.png",
+    "Bytes": 1399374,
+    "SHA256": "AEF95AD69EE92E9212BECF76B72CD73E0705D419F611BB9E7A0C644FCCCCEBF1"
+  },
+  {
+    "Category": "Equipment / Armor / boots",
+    "Name": "Tactical Boots",
+    "Variant": "Game sprite",
+    "Path": "weapons/sprites/item-boots_t2.png",
+    "Bytes": 132492,
+    "SHA256": "EEC05CA82D8512499BAC20C269823FABCE07FB31A4ADF653D9D6D537637546A2"
+  },
+  {
+    "Category": "Equipment / Armor / boots",
+    "Name": "Tactical Boots",
+    "Variant": "Original",
+    "Path": "weapons/items/boots_t2.png",
+    "Bytes": 1526414,
+    "SHA256": "E11586983B9D8CF7E559B5FD8AF12E7D7F52F345C3C30CD998A637EB8A82580A"
+  },
+  {
+    "Category": "Equipment / Armor / boots",
+    "Name": "Work Boots",
+    "Variant": "Game sprite",
+    "Path": "weapons/sprites/item-boots_t1.png",
+    "Bytes": 114969,
+    "SHA256": "E2F38527500FE1AB579E1C1E678FE20AAAEF9E101FB769F75C5822413180679A"
+  },
+  {
+    "Category": "Equipment / Armor / boots",
+    "Name": "Work Boots",
+    "Variant": "Original",
+    "Path": "weapons/items/boots_t1.png",
+    "Bytes": 1342466,
+    "SHA256": "CB3B49A1DF80406C32FB9959A1BFF51F24F7291FA6DA895BF9D5DBD6623E7699"
+  },
+  {
+    "Category": "Equipment / Armor / gloves",
+    "Name": "Combat Gloves",
+    "Variant": "Game sprite",
+    "Path": "weapons/sprites/item-gloves_t2.png",
+    "Bytes": 146300,
+    "SHA256": "8D07A7E54456CB78C1C4A703A0184D543859BDB540788512035518286D5008C6"
+  },
+  {
+    "Category": "Equipment / Armor / gloves",
+    "Name": "Combat Gloves",
+    "Variant": "Original",
+    "Path": "weapons/items/gloves_t2.png",
+    "Bytes": 1393670,
+    "SHA256": "46FF2E6B8ADE68A089A5B43227DF4DF76EF72DF7B24409A6A2169CFC7895EBCD"
+  },
+  {
+    "Category": "Equipment / Armor / gloves",
+    "Name": "Leather Gloves",
+    "Variant": "Game sprite",
+    "Path": "weapons/sprites/item-leather_gloves.png",
+    "Bytes": 125932,
+    "SHA256": "93763FEF852DA0D6FBCAA337D7A8B244B2C747CDB9ECEA9C8776422DBD47DA07"
+  },
+  {
+    "Category": "Equipment / Armor / gloves",
+    "Name": "Leather Gloves",
+    "Variant": "Original",
+    "Path": "weapons/items/leather_gloves.png",
+    "Bytes": 1333633,
+    "SHA256": "A433003DE52D99A5633AE3772D480CB89162A2D35657126D042D41055FC79B26"
+  },
+  {
+    "Category": "Equipment / Armor / helmet",
+    "Name": "Ballistic Helmet T2",
+    "Variant": "Game sprite",
+    "Path": "weapons/sprites/item-helmet_t2.png",
+    "Bytes": 131343,
+    "SHA256": "62DB3DC58E580B61A603CF13F7C05FA9AC5C812552D02363F5C31993E5BE0D49"
+  },
+  {
+    "Category": "Equipment / Armor / helmet",
+    "Name": "Ballistic Helmet T2",
+    "Variant": "Original",
+    "Path": "weapons/items/helmet_t2.png",
+    "Bytes": 1367325,
+    "SHA256": "287BEAFE61D2A1EDB7C6D32FD3C9C477007462DE48CF97BB223BA6CE3DB6F3A5"
+  },
+  {
+    "Category": "Equipment / Armor / helmet",
+    "Name": "Composite Helmet",
+    "Variant": "Game sprite",
+    "Path": "weapons/sprites/item-composite_helmet.png",
+    "Bytes": 139902,
+    "SHA256": "B08B2DC2263D76E6C119A17495A9A30933029BB8177F4FB8D2C706EBF6F7881E"
+  },
+  {
+    "Category": "Equipment / Armor / helmet",
+    "Name": "Composite Helmet",
+    "Variant": "Original",
+    "Path": "weapons/items/composite_helmet.png",
+    "Bytes": 1391270,
+    "SHA256": "BEAB153FFB61DFBD3FC7ADA462C73B220AF9BC350999F3471C7CFC5A0766C0B5"
+  },
+  {
+    "Category": "Equipment / Armor / helmet",
+    "Name": "Construction Hard Hat",
+    "Variant": "Game sprite",
+    "Path": "weapons/sprites/item-helmet_t1.png",
+    "Bytes": 98677,
+    "SHA256": "3128A046C3882398D830987349034E105B1EC5DC5657DF62399147205BA3C876"
+  },
+  {
+    "Category": "Equipment / Armor / helmet",
+    "Name": "Construction Hard Hat",
+    "Variant": "Original",
+    "Path": "weapons/items/helmet_t1.png",
+    "Bytes": 1285847,
+    "SHA256": "627A2026FA20EA3AC125A97A31A4F84B01CCB54EAACE3DCBD103837DA5BE6AF4"
+  },
+  {
+    "Category": "Equipment / Armor / helmet",
+    "Name": "Perimeter Helmet",
+    "Variant": "Game sprite",
+    "Path": "weapons/sprites/item-perimeter_helmet.png",
+    "Bytes": 159796,
+    "SHA256": "3BE94F7C78A2C145EE7CA8277A80F34C297E9042C466F248AA96CA39B35093CD"
+  },
+  {
+    "Category": "Equipment / Armor / helmet",
+    "Name": "Perimeter Helmet",
+    "Variant": "Original",
+    "Path": "weapons/items/perimeter_helmet.png",
+    "Bytes": 1458196,
+    "SHA256": "E967D9272E63374199FAE3640A1483DE82C195A859189671276138880268890C"
+  },
+  {
+    "Category": "Equipment / Armor / helmet",
+    "Name": "Riot Helmet",
+    "Variant": "Game sprite",
+    "Path": "weapons/sprites/item-riot_helmet.png",
+    "Bytes": 146862,
+    "SHA256": "341313F451E5C283502022E0ECFDE1A1EF3FB9CF001EA7E0996D39FB2CCBC6B5"
+  },
+  {
+    "Category": "Equipment / Armor / helmet",
+    "Name": "Riot Helmet",
+    "Variant": "Original",
+    "Path": "weapons/items/riot_helmet.png",
+    "Bytes": 1376128,
+    "SHA256": "BA50E8FF0130F57D51103A48BEF1F82B0CF7804E3A2610108A7D7F2531875D90"
+  },
+  {
+    "Category": "Equipment / Armor / helmet",
+    "Name": "Scrap Helmet",
+    "Variant": "Game sprite",
+    "Path": "weapons/sprites/item-scrap_helmet.png",
+    "Bytes": 94574,
+    "SHA256": "9FBEE49C3C0432AF81F869A3E463CA51055444F597C5B855E86B09CB9DFD683F"
+  },
+  {
+    "Category": "Equipment / Armor / helmet",
+    "Name": "Scrap Helmet",
+    "Variant": "Original",
+    "Path": "weapons/items/scrap_helmet.png",
+    "Bytes": 1319443,
+    "SHA256": "BE787451EC286476A479C4501117786C3B40D6C346722B897CAFFD5071C8F09C"
+  },
+  {
+    "Category": "Equipment / Armor / mask",
+    "Name": "NBC Gas Mask",
+    "Variant": "Game sprite",
+    "Path": "weapons/sprites/item-gasmask.png",
+    "Bytes": 143164,
+    "SHA256": "8353069EDF9AE57CC2D2D3D07D77E4B284BA2A4D2A54091F91CDDB79F892B117"
+  },
+  {
+    "Category": "Equipment / Armor / mask",
+    "Name": "NBC Gas Mask",
+    "Variant": "Original",
+    "Path": "weapons/items/gasmask.png",
+    "Bytes": 1405306,
+    "SHA256": "911AD204F878A6EE5394389C05A06C655780091427485D0E27F523A3438CD4B3"
+  },
+  {
+    "Category": "Equipment / Armor / mask",
+    "Name": "Tactical Balaclava",
+    "Variant": "Game sprite",
+    "Path": "weapons/sprites/item-balaclava.png",
+    "Bytes": 110472,
+    "SHA256": "6D77273BBB07412FF924A718EC0AEE27AE0475B8EF06C0C755D8036F347D9E8E"
+  },
+  {
+    "Category": "Equipment / Armor / mask",
+    "Name": "Tactical Balaclava",
+    "Variant": "Original",
+    "Path": "weapons/items/balaclava.png",
+    "Bytes": 1374950,
+    "SHA256": "8A187DC7CECADF87482DD53F00F264B7C5B64F0B15D344D40AEDE9A88BC8DA16"
+  },
+  {
+    "Category": "Equipment / Armor / vest",
+    "Name": "Cargo Jacket",
+    "Variant": "Game sprite",
+    "Path": "weapons/sprites/item-cargo_jacket.png",
+    "Bytes": 149555,
+    "SHA256": "017E679085F46EB540BFCB2672997D82FE58A2F69A9E66B2191F6067D52478EA"
+  },
+  {
+    "Category": "Equipment / Armor / vest",
+    "Name": "Cargo Jacket",
+    "Variant": "Original",
+    "Path": "weapons/items/cargo_jacket.png",
+    "Bytes": 1472016,
+    "SHA256": "23C317C7C7E1442C3066EF34225E76DC9D0ADF3940291218F3BD998C4D8B8C0E"
+  },
+  {
+    "Category": "Equipment / Armor / vest",
+    "Name": "Heavy Plate Armor",
+    "Variant": "Game sprite",
+    "Path": "weapons/sprites/item-heavy_plate.png",
+    "Bytes": 146114,
+    "SHA256": "7427CD3F59C8DA334E4186D041CE3C98F295A1475EC6A9A727AE791DF738093F"
+  },
+  {
+    "Category": "Equipment / Armor / vest",
+    "Name": "Heavy Plate Armor",
+    "Variant": "Original",
+    "Path": "weapons/items/heavy_plate.png",
+    "Bytes": 1455392,
+    "SHA256": "97014C361BDF6E6665C924A3113ADB31121A8DAEB7BD666C654EABB4B8CE20D1"
+  },
+  {
+    "Category": "Equipment / Armor / vest",
+    "Name": "Old Padded Jacket",
+    "Variant": "Game sprite",
+    "Path": "weapons/sprites/item-old_padded_jacket.png",
+    "Bytes": 143393,
+    "SHA256": "AD33B79C28583410A7FCACFE98D6FEB177C40E28AB4EC24C0FCDAAC445E2DA76"
+  },
+  {
+    "Category": "Equipment / Armor / vest",
+    "Name": "Old Padded Jacket",
+    "Variant": "Original",
+    "Path": "weapons/items/old_padded_jacket.png",
+    "Bytes": 1472967,
+    "SHA256": "D20B9D40738F124E821C5F871D131968330EB9E5F3674143507FCE4AA6A7ECFD"
+  },
+  {
+    "Category": "Equipment / Armor / vest",
+    "Name": "Padded Jacket",
+    "Variant": "Game sprite",
+    "Path": "weapons/sprites/item-vest_t1.png",
+    "Bytes": 152078,
+    "SHA256": "2037CCA97913B32F32B8BF9D127575D9B15CACC8D3D5399BF643C4EC09D6B023"
+  },
+  {
+    "Category": "Equipment / Armor / vest",
+    "Name": "Padded Jacket",
+    "Variant": "Original",
+    "Path": "weapons/items/vest_t1.png",
+    "Bytes": 1493001,
+    "SHA256": "8A82D1C4C890286BBAD892BDA0F5B20ADEBC78AF0E501895940098460CA205E9"
+  },
+  {
+    "Category": "Equipment / Armor / vest",
+    "Name": "Plate Carrier",
+    "Variant": "Game sprite",
+    "Path": "weapons/sprites/item-plate_carrier.png",
+    "Bytes": 158660,
+    "SHA256": "35EEE407C41979864E26E2A5E9F8B60B08AA4721694145C7FF2BD4ABA447364E"
+  },
+  {
+    "Category": "Equipment / Armor / vest",
+    "Name": "Plate Carrier",
+    "Variant": "Original",
+    "Path": "weapons/items/plate_carrier.png",
+    "Bytes": 1493433,
+    "SHA256": "C74C63F93DE26101451877A4D0081CF16D17FAD02FB07193C0BB50061E0D7EBD"
+  },
+  {
+    "Category": "Equipment / Armor / vest",
+    "Name": "SAPI Plate Carrier",
+    "Variant": "Game sprite",
+    "Path": "weapons/sprites/item-vest_t3.png",
+    "Bytes": 179821,
+    "SHA256": "FEA6173349DB633FEF60EF97C0CC15CA3CE8D4B2F70A7848D09E3C95E8E19BEC"
+  },
+  {
+    "Category": "Equipment / Armor / vest",
+    "Name": "SAPI Plate Carrier",
+    "Variant": "Original",
+    "Path": "weapons/items/vest_t3.png",
+    "Bytes": 1797427,
+    "SHA256": "8AC9FFA659EED6F8DA229F2EAA3FB1765190D2EAF3D83A6E833DD94176DC55FA"
+  },
+  {
+    "Category": "Equipment / Armor / vest",
+    "Name": "Soft Armor Vest",
+    "Variant": "Game sprite",
+    "Path": "weapons/sprites/item-soft_armor_vest.png",
+    "Bytes": 153928,
+    "SHA256": "D0750C9440DEA357BA7C02ACEB521E175EB1E0472DD80D9A526AC75DB90B49FA"
+  },
+  {
+    "Category": "Equipment / Armor / vest",
+    "Name": "Soft Armor Vest",
+    "Variant": "Original",
+    "Path": "weapons/items/soft_armor_vest.png",
+    "Bytes": 1444024,
+    "SHA256": "DD737B1C5279CF9DF24F46A16D3B2B2B7D987E8049C2C8F8D6C784F887D9428F"
+  },
+  {
+    "Category": "Equipment / Armor / vest",
+    "Name": "Tactical Vest",
+    "Variant": "Game sprite",
+    "Path": "weapons/sprites/item-tactical_vest.png",
+    "Bytes": 153557,
+    "SHA256": "69CC545A51DFADB698E24C32A00FA578272EBE41941E0BE1BA172699FB12CCFD"
+  },
+  {
+    "Category": "Equipment / Armor / vest",
+    "Name": "Tactical Vest",
+    "Variant": "Original",
+    "Path": "weapons/items/tactical_vest.png",
+    "Bytes": 1463044,
+    "SHA256": "27027262408B53E7171563A9A63C6D83BFA4DD25AFC59E5C968685966EB2845B"
+  },
+  {
+    "Category": "Equipment / Gear / back",
+    "Name": "Ghost Wrap",
+    "Variant": "Game sprite",
+    "Path": "weapons/sprites/item-ghost_wrap.png",
+    "Bytes": 118773,
+    "SHA256": "03F5A2EBD26AC15C07931D9BF87DA8D93EF5C8CCC0F917E26C224B63545061FA"
+  },
+  {
+    "Category": "Equipment / Gear / back",
+    "Name": "Ghost Wrap",
+    "Variant": "Original",
+    "Path": "weapons/items/ghost_wrap.png",
+    "Bytes": 1325694,
+    "SHA256": "76C9E19AD309FC6DBCC826EA7E8C3617BF54D502F8051C000D8D846563540073"
+  },
+  {
+    "Category": "Equipment / Gear / back",
+    "Name": "Runner's Cloak",
+    "Variant": "Game sprite",
+    "Path": "weapons/sprites/item-runners_cloak.png",
+    "Bytes": 107938,
+    "SHA256": "00F90E0DEB7C8C0847AC903985531FA43F355C7025E0EC6845CDE74808E056AF"
+  },
+  {
+    "Category": "Equipment / Gear / back",
+    "Name": "Runner's Cloak",
+    "Variant": "Original",
+    "Path": "weapons/items/runners_cloak.png",
+    "Bytes": 1326502,
+    "SHA256": "D6A1F0FAE4DCE1A06732DDFF2F22813EA7DBE5F47026385411CA69CBC7955BFF"
+  },
+  {
+    "Category": "Equipment / Gear / backpack",
+    "Name": "Daypack",
+    "Variant": "Game sprite",
+    "Path": "weapons/sprites/item-backpack_sm.png",
+    "Bytes": 145241,
+    "SHA256": "B190E1FFEC0B461F0EC11EDA0F8623C8ED7A715450201D0348A35F0E74AFE63F"
+  },
+  {
+    "Category": "Equipment / Gear / backpack",
+    "Name": "Daypack",
+    "Variant": "Original",
+    "Path": "weapons/items/backpack_sm.png",
+    "Bytes": 1329141,
+    "SHA256": "7D1E3FB727538F7F308E6A0C4D41A09D4EF84A1855461737A5921C87C01D2D54"
+  },
+  {
+    "Category": "Equipment / Gear / backpack",
+    "Name": "Handmade Pouch",
+    "Variant": "Game sprite",
+    "Path": "weapons/sprites/item-handmade_pouch.png",
+    "Bytes": 149024,
+    "SHA256": "35FC29D95D84142EC8D98456C005BF22BF97086C5E79FD4AA367397EAAB00B5A"
+  },
+  {
+    "Category": "Equipment / Gear / backpack",
+    "Name": "Handmade Pouch",
+    "Variant": "Original",
+    "Path": "weapons/items/handmade_pouch.png",
+    "Bytes": 1400084,
+    "SHA256": "5AE2DC378BC8CBC5995B73C6349BFE65F12EAD2CA4518BEFAA72FF8276E041FE"
+  },
+  {
+    "Category": "Equipment / Gear / backpack",
+    "Name": "Military MOLLE Pack",
+    "Variant": "Game sprite",
+    "Path": "weapons/sprites/item-backpack_lg.png",
+    "Bytes": 160153,
+    "SHA256": "E2DE6D63A70F00947CFCDDB16F666DFF183669410FD9540C713129A02F749E4D"
+  },
+  {
+    "Category": "Equipment / Gear / backpack",
+    "Name": "Military MOLLE Pack",
+    "Variant": "Original",
+    "Path": "weapons/items/backpack_lg.png",
+    "Bytes": 1488629,
+    "SHA256": "0EB9B1DFBE4B66B4BC544919B21094BB7AAED0FB4FF2B751409805058816BD03"
+  },
+  {
+    "Category": "Equipment / Gear / backpack",
+    "Name": "MOLLE Pack",
+    "Variant": "Game sprite",
+    "Path": "weapons/sprites/item-molle_pack.png",
+    "Bytes": 160518,
+    "SHA256": "1C5EDFFE06F56427B4E78FF1A38A101FCC0CE16BAB6CE76382EDC79F7CB21474"
+  },
+  {
+    "Category": "Equipment / Gear / backpack",
+    "Name": "MOLLE Pack",
+    "Variant": "Original",
+    "Path": "weapons/items/molle_pack.png",
+    "Bytes": 1642797,
+    "SHA256": "92FF6A875126611421E0D09F23FECBBD93DB8DC14F53EAA91BE0F040F0F2A3C3"
+  },
+  {
+    "Category": "Equipment / Gear / backpack",
+    "Name": "Rucksack",
+    "Variant": "Game sprite",
+    "Path": "weapons/sprites/item-rucksack.png",
+    "Bytes": 149650,
+    "SHA256": "0CD3CDFDFE074017100D5DAE7B936B7C7D41317B1BD75EDF893E9295E00B73AE"
+  },
+  {
+    "Category": "Equipment / Gear / backpack",
+    "Name": "Rucksack",
+    "Variant": "Original",
+    "Path": "weapons/items/rucksack.png",
+    "Bytes": 1421792,
+    "SHA256": "500FC629A74486BF4E4902BAB77FCB8B3D500B0B143CC3A139DC887249CD04F7"
+  },
+  {
+    "Category": "Equipment / Gear / belt",
+    "Name": "Belt Pouch",
+    "Variant": "Game sprite",
+    "Path": "weapons/sprites/item-belt_pouch.png",
+    "Bytes": 97675,
+    "SHA256": "B84917AB1D8A931DB205A646792187C8795B6D15E91E586419DA011A8052DEB0"
+  },
+  {
+    "Category": "Equipment / Gear / belt",
+    "Name": "Belt Pouch",
+    "Variant": "Original",
+    "Path": "weapons/items/belt_pouch.png",
+    "Bytes": 1301659,
+    "SHA256": "5253481F1B4AA328B68855CE2687BE8DC33750D610C4C24472BB58048D0F2991"
+  },
+  {
+    "Category": "Equipment / Gear / belt",
+    "Name": "Satchel",
+    "Variant": "Game sprite",
+    "Path": "weapons/sprites/item-satchel.png",
+    "Bytes": 127997,
+    "SHA256": "BFF21A666690E01E46C7F8838899A0D34E02A3C9B54D4E2E74D7F9FD3C7EB450"
+  },
+  {
+    "Category": "Equipment / Gear / belt",
+    "Name": "Satchel",
+    "Variant": "Original",
+    "Path": "weapons/items/satchel.png",
+    "Bytes": 1468202,
+    "SHA256": "2BEDE1F9EE7240071C375C582995F37A4937EBE618E8129C011AC25DDAA93C82"
+  },
+  {
+    "Category": "Equipment / Gear / rig",
+    "Name": "Sensor Rig",
+    "Variant": "Game sprite",
+    "Path": "weapons/sprites/item-sensor_rig.png",
+    "Bytes": 146437,
+    "SHA256": "E6233936388CFD3289DAC30BE4A169E548875401E30A19E4DE43A1A2B44CA333"
+  },
+  {
+    "Category": "Equipment / Gear / rig",
+    "Name": "Sensor Rig",
+    "Variant": "Original",
+    "Path": "weapons/items/sensor_rig.png",
+    "Bytes": 1424416,
+    "SHA256": "7FC9FBBA1086F488342AC90E3192A2257C780D8D378AA32C0325C185918B4778"
+  },
+  {
+    "Category": "Equipment / Gear / rig",
+    "Name": "Tactical Chest Rig",
+    "Variant": "Game sprite",
+    "Path": "weapons/sprites/item-rig_t2.png",
+    "Bytes": 155944,
+    "SHA256": "6549DBE1CF196DB5D41818DF22217E823FE41DEA376DF19C99F40C94756B54B1"
+  },
+  {
+    "Category": "Equipment / Gear / rig",
+    "Name": "Tactical Chest Rig",
+    "Variant": "Original",
+    "Path": "weapons/items/rig_t2.png",
+    "Bytes": 1460187,
+    "SHA256": "9987A09F514197CEE1CB6DE9B20592D934FA4EDE745921889BAFB0037F6A6FBC"
+  },
+  {
+    "Category": "Equipment / Gear / trinket",
+    "Name": "Tactician's Lens",
+    "Variant": "Game sprite",
+    "Path": "weapons/sprites/item-tacticians_lens.png",
+    "Bytes": 120714,
+    "SHA256": "F97049F695DA97F854A95B36C93723CD575DD0D83112EBB551F26D63E438B139"
+  },
+  {
+    "Category": "Equipment / Gear / trinket",
+    "Name": "Tactician's Lens",
+    "Variant": "Original",
+    "Path": "weapons/items/tacticians_lens.png",
+    "Bytes": 1371443,
+    "SHA256": "3A395AB05DC5C5A6619B7B6BBF190023D4846658F70B87614DF95EDA5694A343"
+  },
+  {
+    "Category": "Equipment / Gear / trinket",
+    "Name": "Warlord's Sigil",
+    "Variant": "Game sprite",
+    "Path": "weapons/sprites/item-warlords_sigil.png",
+    "Bytes": 117942,
+    "SHA256": "AAAE816B47F2F0CA6515A41BF029C158F5A78B767657DA1C295FACB67AE02DFF"
+  },
+  {
+    "Category": "Equipment / Gear / trinket",
+    "Name": "Warlord's Sigil",
+    "Variant": "Original",
+    "Path": "weapons/items/warlords_sigil.png",
+    "Bytes": 1421044,
+    "SHA256": "3C5A82BCD427D6645A32EFEBC3E8713790A95B1BB459D5DA31C6CBDDA8C5FBEF"
+  },
+  {
+    "Category": "Food / Spoiled",
+    "Name": "rotten apple v1",
+    "Variant": "Original",
+    "Path": "weapons/items/rotten-apple-v1.png",
+    "Bytes": 727409,
+    "SHA256": "0441548DFEC32DD723D07D58D9228789D7AF6D1915D2CD76BCD4EA7BD8E74D41"
+  },
+  {
+    "Category": "Food / Spoiled",
+    "Name": "rotten bananas v1",
+    "Variant": "Original",
+    "Path": "weapons/items/rotten-bananas-v1.png",
+    "Bytes": 1058248,
+    "SHA256": "ABE97927D71ED31301C0F9B4F15BBB03EFA753BE06C1A49BD642DFED1BEA298D"
+  },
+  {
+    "Category": "Food / Spoiled",
+    "Name": "rotten bread loaf v1",
+    "Variant": "Original",
+    "Path": "weapons/items/rotten-bread-loaf-v1.png",
+    "Bytes": 1505348,
+    "SHA256": "7D748B13DE3C5F7A4ECC3CFEA8BC1BD630C594F5474AFD2A7B4AA9BB799CBC90"
+  },
+  {
+    "Category": "Food / Spoiled",
+    "Name": "rotten burger v1",
+    "Variant": "Original",
+    "Path": "weapons/items/rotten-burger-v1.png",
+    "Bytes": 947636,
+    "SHA256": "2A45D158234BD526A9DCFD9BA94B1160AA1255D0984F48ECB8B5A13A44912029"
+  },
+  {
+    "Category": "Food / Spoiled",
+    "Name": "rotten canned butter v1",
+    "Variant": "Original",
+    "Path": "weapons/items/rotten-canned-butter-v1.png",
+    "Bytes": 891132,
+    "SHA256": "DE7A958855129AE69163CDA711A93CA0F20C90AA4C8D53D89F7B63839972C91D"
+  },
+  {
+    "Category": "Food / Spoiled",
+    "Name": "rotten canned food v1",
+    "Variant": "Original",
+    "Path": "weapons/items/rotten-canned-food-v1.png",
+    "Bytes": 814260,
+    "SHA256": "F2E7AFA940206A1F2201E4AE4A5BE6C165240C5D1E53115C895B71B9B33BA64A"
+  },
+  {
+    "Category": "Food / Spoiled",
+    "Name": "rotten chili dog v1",
+    "Variant": "Original",
+    "Path": "weapons/items/rotten-chili-dog-v1.png",
+    "Bytes": 1568220,
+    "SHA256": "32D5FBFDAA3FFE5595B2B4C7FC65000FECDA821BAA50845820BC5194529ECF47"
+  },
+  {
+    "Category": "Food / Spoiled",
+    "Name": "rotten cola v1",
+    "Variant": "Original",
+    "Path": "weapons/items/rotten-cola-v1.png",
+    "Bytes": 864376,
+    "SHA256": "FE13C8E112DA339191E9F501366470FD29DF09BC36898DD5DF4DF3A18F79E0E9"
+  },
+  {
+    "Category": "Food / Spoiled",
+    "Name": "rotten common fish v1",
+    "Variant": "Original",
+    "Path": "weapons/items/rotten-common-fish-v1.png",
+    "Bytes": 936737,
+    "SHA256": "277CDF1AE19DE1E49E5CE12AEACD04B0C4448E471454C01BB23B11AB4B5FC45F"
+  },
+  {
+    "Category": "Food / Spoiled",
+    "Name": "rotten flour v1",
+    "Variant": "Original",
+    "Path": "weapons/items/rotten-flour-v1.png",
+    "Bytes": 923266,
+    "SHA256": "607B19553C7F74CFF6057C85A824ECFB18CE24D2AFCD4E5ED1C5C580B5D9A254"
+  },
+  {
+    "Category": "Food / Spoiled",
+    "Name": "rotten fries v1",
+    "Variant": "Original",
+    "Path": "weapons/items/rotten-fries-v1.png",
+    "Bytes": 703969,
+    "SHA256": "DA3C2D205ADC4B110A30C6C9F401D8AF25802494579B16B45FDBC6F8067476B3"
+  },
+  {
+    "Category": "Food / Spoiled",
+    "Name": "rotten grape jelly v1",
+    "Variant": "Original",
+    "Path": "weapons/items/rotten-grape-jelly-v1.png",
+    "Bytes": 947284,
+    "SHA256": "6762748889EBAB1E3E45A068A70B2A08AA9047E5B2B467531EA2A43FA33F7996"
+  },
+  {
+    "Category": "Food / Spoiled",
+    "Name": "rotten grapes v1",
+    "Variant": "Original",
+    "Path": "weapons/items/rotten-grapes-v1.png",
+    "Bytes": 862358,
+    "SHA256": "6B52BF5C58E137FF3726D6C73EE5B7192344B6BA1F3185D4F1F89E900AF90F2D"
+  },
+  {
+    "Category": "Food / Spoiled",
+    "Name": "rotten hard cheese v1",
+    "Variant": "Original",
+    "Path": "weapons/items/rotten-hard-cheese-v1.png",
+    "Bytes": 947711,
+    "SHA256": "E37EC92C8661222BFD1469AF1610C65C3C2A28C31689530EA4A71B93701627CA"
+  },
+  {
+    "Category": "Food / Spoiled",
+    "Name": "rotten honey v1",
+    "Variant": "Original",
+    "Path": "weapons/items/rotten-honey-v1.png",
+    "Bytes": 1086562,
+    "SHA256": "185F9434DD1D73BBA564556F6752312AF8E766D85B7263F49E6732D88DDD30D1"
+  },
+  {
+    "Category": "Food / Spoiled",
+    "Name": "rotten legendary fish v1",
+    "Variant": "Original",
+    "Path": "weapons/items/rotten-legendary-fish-v1.png",
+    "Bytes": 1125071,
+    "SHA256": "2067B5ECB42D438F62F44F7F51CB4B6E591CCE634845D6981CDBA0BCD9026D4B"
+  },
+  {
+    "Category": "Food / Spoiled",
+    "Name": "rotten meat v1",
+    "Variant": "Original",
+    "Path": "weapons/items/rotten-meat-v1.png",
+    "Bytes": 1458464,
+    "SHA256": "FEBA8B7E35DEADF811659F14D504FAE1782FAE9DD37842038B443C895E287477"
+  },
+  {
+    "Category": "Food / Spoiled",
+    "Name": "rotten mirepoix v1",
+    "Variant": "Original",
+    "Path": "weapons/items/rotten-mirepoix-v1.png",
+    "Bytes": 724473,
+    "SHA256": "1CF83E1B9A885AB8800C8BE8E199A77DA0DFED563343060E057AB0D051330D97"
+  },
+  {
+    "Category": "Food / Spoiled",
+    "Name": "rotten mixed vegetables v1",
+    "Variant": "Original",
+    "Path": "weapons/items/rotten-mixed-vegetables-v1.png",
+    "Bytes": 934789,
+    "SHA256": "2249042A4A904677E7BE509AD4B3DFA1A547F7AAACF9611A9831C7A42690664F"
+  },
+  {
+    "Category": "Food / Spoiled",
+    "Name": "rotten mre ration v1",
+    "Variant": "Original",
+    "Path": "weapons/items/rotten-mre-ration-v1.png",
+    "Bytes": 1060134,
+    "SHA256": "174E1F98F50ACCE0CB8D7BFEF57BC54E69026FE1F4DD1CBFA7408EF92DEA62CC"
+  },
+  {
+    "Category": "Food / Spoiled",
+    "Name": "rotten orange v1",
+    "Variant": "Original",
+    "Path": "weapons/items/rotten-orange-v1.png",
+    "Bytes": 1010784,
+    "SHA256": "DB87EE3EE9D77675171377D2C1E61DAD68D1CC2386A8BF4DFF84CE5252965067"
+  },
+  {
+    "Category": "Food / Spoiled",
+    "Name": "rotten pbj sandwich v1",
+    "Variant": "Original",
+    "Path": "weapons/items/rotten-pbj-sandwich-v1.png",
+    "Bytes": 1274647,
+    "SHA256": "FB8E4FFEADEF760D7A84CA7EFC867E2186B5E04EFE96E2C5D4378E875023AA8B"
+  },
+  {
+    "Category": "Food / Spoiled",
+    "Name": "rotten peanut butter v1",
+    "Variant": "Original",
+    "Path": "weapons/items/rotten-peanut-butter-v1.png",
+    "Bytes": 888797,
+    "SHA256": "D6EBB1D106566646351FE31FCDB5BCCA787132197AE66D75F2D51E9239FF69CA"
+  },
+  {
+    "Category": "Food / Spoiled",
+    "Name": "rotten peanuts v1",
+    "Variant": "Original",
+    "Path": "weapons/items/rotten-peanuts-v1.png",
+    "Bytes": 677134,
+    "SHA256": "92E9C548107966E880E3785305D1DB8D7DA6ADDEF5A4815CAF08A83C18B170F8"
+  },
+  {
+    "Category": "Food / Spoiled",
+    "Name": "rotten potato v1",
+    "Variant": "Original",
+    "Path": "weapons/items/rotten-potato-v1.png",
+    "Bytes": 1088093,
+    "SHA256": "FE11AFFE7B9E0E621814F1EFDB4417408EDBAF2EB8C85161A4044F2A22C9F210"
+  },
+  {
+    "Category": "Food / Spoiled",
+    "Name": "rotten powdered milk v1",
+    "Variant": "Original",
+    "Path": "weapons/items/rotten-powdered-milk-v1.png",
+    "Bytes": 956922,
+    "SHA256": "E6CAEF2E497889628FC807555B8CDD588989E76B77D1CBEF0FAA85B7DE84A434"
+  },
+  {
+    "Category": "Food / Spoiled",
+    "Name": "rotten raisins v1",
+    "Variant": "Original",
+    "Path": "weapons/items/rotten-raisins-v1.png",
+    "Bytes": 622876,
+    "SHA256": "F5386A86F4A7AD4848C8BC97046C143404C503B6123121715CE3D1BDC3B68436"
+  },
+  {
+    "Category": "Food / Spoiled",
+    "Name": "rotten sliced bread v1",
+    "Variant": "Original",
+    "Path": "weapons/items/rotten-sliced-bread-v1.png",
+    "Bytes": 988394,
+    "SHA256": "434C570A596ED32DE60F95300D609547A23B1F8F59D6DA8781C263CFC186C10D"
+  },
+  {
+    "Category": "Food / Spoiled",
+    "Name": "rotten steak potatoes v1",
+    "Variant": "Original",
+    "Path": "weapons/items/rotten-steak-potatoes-v1.png",
+    "Bytes": 696723,
+    "SHA256": "6012CA6A4C8A20A48319E2A446BFBEDC678F667F0302CB811B64A3EAB8F1BBCB"
+  },
+  {
+    "Category": "Food / Spoiled",
+    "Name": "rotten tacos v1",
+    "Variant": "Original",
+    "Path": "weapons/items/rotten-tacos-v1.png",
+    "Bytes": 1031832,
+    "SHA256": "BC7A3E88A524A456E002C1108ECC149CA3606640EF60A24F585AC98447098C69"
+  },
+  {
+    "Category": "Food / Spoiled",
+    "Name": "rotten uncommon fish v1",
+    "Variant": "Original",
+    "Path": "weapons/items/rotten-uncommon-fish-v1.png",
+    "Bytes": 1266068,
+    "SHA256": "524763C0814505C77DDA9582E470086288C2DA3CF2C104A23AE5E393769D4F65"
+  },
+  {
+    "Category": "Food / Supplies and meals",
+    "Name": "banana bunch v1",
+    "Variant": "Original",
+    "Path": "weapons/items/banana-bunch-v1.png",
+    "Bytes": 927367,
+    "SHA256": "DA7981EBA7AF8968BD065E19AD757BBB8A9881DB1A50C42E68585C6B3933C3A2"
+  },
+  {
+    "Category": "Food / Supplies and meals",
+    "Name": "chili dog v1",
+    "Variant": "Original",
+    "Path": "weapons/items/chili-dog-v1.png",
+    "Bytes": 1297391,
+    "SHA256": "307075F18BCDA514CA78C819A6448B909673CEE6FD9E74F8F932B2F403CA2534"
+  },
+  {
+    "Category": "Food / Supplies and meals",
+    "Name": "cola last can v1",
+    "Variant": "Original",
+    "Path": "weapons/items/cola-last-can-v1.png",
+    "Bytes": 873538,
+    "SHA256": "070B5DA78A51B5CE5139637CC94B5BF461D22F4D2BFE7FD93DF8192334FEF48B"
+  },
+  {
+    "Category": "Food / Supplies and meals",
+    "Name": "flour bag v1",
+    "Variant": "Original",
+    "Path": "weapons/items/flour-bag-v1.png",
+    "Bytes": 749510,
+    "SHA256": "551D5BB6B26158E3F273377AA3014256DC95C466E008E0B3C350880E1B358BD4"
+  },
+  {
+    "Category": "Food / Supplies and meals",
+    "Name": "grape jelly jar v1",
+    "Variant": "Original",
+    "Path": "weapons/items/grape-jelly-jar-v1.png",
+    "Bytes": 718153,
+    "SHA256": "4BF6567F4065FF3C68C05C592877778A8F2CAE92E9FD3DEC3754482E1C647633"
+  },
+  {
+    "Category": "Food / Supplies and meals",
+    "Name": "honey jar v1",
+    "Variant": "Original",
+    "Path": "weapons/items/honey-jar-v1.png",
+    "Bytes": 741090,
+    "SHA256": "4CF57E10D1B0A0E3D1632BE0AE1000261ED1C9555D61D42BF8046B4622B4B8C7"
+  },
+  {
+    "Category": "Food / Supplies and meals",
+    "Name": "legendary fish v1",
+    "Variant": "Original",
+    "Path": "weapons/items/legendary-fish-v1.png",
+    "Bytes": 1117920,
+    "SHA256": "D555125C85CA7BF91D048D3DA40BD42C247F188472D7170A1180D3AA0A7C34B0"
+  },
+  {
+    "Category": "Food / Supplies and meals",
+    "Name": "mirepoix v1",
+    "Variant": "Original",
+    "Path": "weapons/items/mirepoix-v1.png",
+    "Bytes": 646366,
+    "SHA256": "B26D6796BF4BF9F008B68476FFA26DE45B6F53AFADAF2AFBA2A09034D6CCBBD6"
+  },
+  {
+    "Category": "Food / Supplies and meals",
+    "Name": "pbj sandwich v1",
+    "Variant": "Original",
+    "Path": "weapons/items/pbj-sandwich-v1.png",
+    "Bytes": 915452,
+    "SHA256": "1C5BB52A01FEDE0AE97F8EDEA07B5FCB2A455C71F71ABA708D894CA67534FD73"
+  },
+  {
+    "Category": "Food / Supplies and meals",
+    "Name": "peanut butter jar v1",
+    "Variant": "Original",
+    "Path": "weapons/items/peanut-butter-jar-v1.png",
+    "Bytes": 789507,
+    "SHA256": "717B76A208269AD5ACABA444812E5ADCB0C18B1623B3C93BF934802B112BEB54"
+  },
+  {
+    "Category": "Food / Supplies and meals",
+    "Name": "peanuts bag v1",
+    "Variant": "Original",
+    "Path": "weapons/items/peanuts-bag-v1.png",
+    "Bytes": 598276,
+    "SHA256": "AEAE4C0E6883F23857C6A48A79FA1B3CDF84580D7DF5CE58C1034C130B6ACCEF"
+  },
+  {
+    "Category": "Food / Supplies and meals",
+    "Name": "sliced bread v1",
+    "Variant": "Original",
+    "Path": "weapons/items/sliced-bread-v1.png",
+    "Bytes": 881416,
+    "SHA256": "B221EF86A4FDED95CADF3BA44D0A731B1FB543871E1C920C03165BDE3901441E"
+  },
+  {
+    "Category": "Food / Supplies and meals",
+    "Name": "stockpile food icons v1",
+    "Variant": "Original",
+    "Path": "weapons/items/stockpile-food-icons-v1.png",
+    "Bytes": 907953,
+    "SHA256": "B2349DB13BBCDF5DBA9317EB1DCCEC0A8F34E4263DDEE2F4E929BE6449DFF663"
+  },
+  {
+    "Category": "Food / Supplies and meals",
+    "Name": "stockpile food icons v2",
+    "Variant": "Original",
+    "Path": "weapons/items/stockpile-food-icons-v2.png",
+    "Bytes": 1554702,
+    "SHA256": "45CB7859386BC35C47DE2E033D4DB4B7248688784E1612E4F0DA92D0FAE8CCD8"
+  },
+  {
+    "Category": "Food / Supplies and meals",
+    "Name": "tacos pair v1",
+    "Variant": "Original",
+    "Path": "weapons/items/tacos-pair-v1.png",
+    "Bytes": 968285,
+    "SHA256": "B94D08EDFAFE5F1A65B01216F9F1846A51290A44BB4E0175F05F8A0AC303269F"
+  },
+  {
+    "Category": "Humans / action poses",
+    "Name": "08 ranged aiming",
+    "Variant": "Original",
+    "Path": "humans/action-poses/08-ranged-aiming.png",
+    "Bytes": 1585033,
+    "SHA256": "C9E44332CA971A1A855E764D66A72BCA02339A5548C1BE7038AB2BFBB2563F42"
+  },
+  {
+    "Category": "Humans / action poses",
+    "Name": "09 melee swing",
+    "Variant": "Original",
+    "Path": "humans/action-poses/09-melee-swing.png",
+    "Bytes": 1580855,
+    "SHA256": "AD2403767BF9B77E3C7637D614501C69EDC0E61303FFDF62E6DB5CCA8956258B"
+  },
+  {
+    "Category": "Humans / action poses",
+    "Name": "10 wounded crawling",
+    "Variant": "Original",
+    "Path": "humans/action-poses/10-wounded-crawling.png",
+    "Bytes": 1389438,
+    "SHA256": "5C7BA16D6A6A89244D5358F2707646E2219FE18D52AE228FCA86C24B10B7E050"
+  },
+  {
+    "Category": "Humans / factions and npcs",
+    "Name": "04 militia guard",
+    "Variant": "Original",
+    "Path": "humans/factions-and-npcs/04-militia-guard.png",
+    "Bytes": 1350821,
+    "SHA256": "8956325857861B0B45B9583DF1D2544852CAC69AB17BAC04CD43083F0C22F0FF"
+  },
+  {
+    "Category": "Humans / factions and npcs",
+    "Name": "05 scout outrider",
+    "Variant": "Original",
+    "Path": "humans/factions-and-npcs/05-scout-outrider.png",
+    "Bytes": 1353607,
+    "SHA256": "FEDBF941D6C60E5192F58BE994E1F2B358AFDFA61E636A1E5832823E01A9B824"
+  },
+  {
+    "Category": "Humans / factions and npcs",
+    "Name": "06 faction enforcer",
+    "Variant": "Original",
+    "Path": "humans/factions-and-npcs/06-faction-enforcer.png",
+    "Bytes": 1558381,
+    "SHA256": "AD958A42240FB2D440347A532E2BB20EB428D008FEDCB73DCECE2AD75B593258"
+  },
+  {
+    "Category": "Humans / factions and npcs",
+    "Name": "07 drifter trader",
+    "Variant": "Original",
+    "Path": "humans/factions-and-npcs/07-drifter-trader.png",
+    "Bytes": 1628950,
+    "SHA256": "A7C0028D035FA2DB255CDD95EDC0AF1E18F180901440C08E0F5C778C36CAD41E"
+  },
+  {
+    "Category": "Humans / survivor loadouts",
+    "Name": "01 scavenger survivor",
+    "Variant": "Original",
+    "Path": "humans/survivor-loadouts/01-scavenger-survivor.png",
+    "Bytes": 1288985,
+    "SHA256": "09F9B3867D27D6A27EAF24AC4C1C18D4D168D7DAC5263720ABCFD6182709E62F"
+  },
+  {
+    "Category": "Humans / survivor loadouts",
+    "Name": "02 tactical operator",
+    "Variant": "Original",
+    "Path": "humans/survivor-loadouts/02-tactical-operator.png",
+    "Bytes": 1385488,
+    "SHA256": "8D1D1D82C99ED0AD4861D86C72730E442E4333AD5C8CB979F56480ABF2E6AA76"
+  },
+  {
+    "Category": "Humans / survivor loadouts",
+    "Name": "03 endgame veteran",
+    "Variant": "Original",
+    "Path": "humans/survivor-loadouts/03-endgame-veteran.png",
+    "Bytes": 1486319,
+    "SHA256": "5B46E993C8E8D5511FC770670602F33F5BB4AD2CF64BA9E9CD3CA9CDD4BF6ED8"
+  },
+  {
+    "Category": "Vehicles / bicycles",
+    "Name": "05 bicycle",
+    "Variant": "Original",
+    "Path": "Vehicles/bicycles/05-bicycle.png",
+    "Bytes": 2074728,
+    "SHA256": "7333D707C3B6566E37AC1B949C94023CB9398133D47C0213379AB051494ED4AC"
+  },
+  {
+    "Category": "Vehicles / bicycles",
+    "Name": "06 e bike",
+    "Variant": "Original",
+    "Path": "Vehicles/bicycles/06-e-bike.png",
+    "Bytes": 1667231,
+    "SHA256": "D3319DD6DA908E33841E7681194C0AF5593469662BA8DB567C928499F1D7159C"
+  },
+  {
+    "Category": "Vehicles / cars vans and trucks",
+    "Name": "08 coupe",
+    "Variant": "Original",
+    "Path": "Vehicles/cars-vans-and-trucks/08-coupe.png",
+    "Bytes": 1917467,
+    "SHA256": "199F2BC70DC02DD08B7225DB804B281CCBF0F18FDE3028DFD2343728ABE5FA72"
+  },
+  {
+    "Category": "Vehicles / cars vans and trucks",
+    "Name": "09 van",
+    "Variant": "Original",
+    "Path": "Vehicles/cars-vans-and-trucks/09-van.png",
+    "Bytes": 1764600,
+    "SHA256": "6CEBD500C8D12BA364A94CB8CF47E001A576E600A04D07900D3482531F572E4A"
+  },
+  {
+    "Category": "Vehicles / cars vans and trucks",
+    "Name": "11 four by four truck",
+    "Variant": "Original",
+    "Path": "Vehicles/cars-vans-and-trucks/11-four-by-four-truck.png",
+    "Bytes": 1794708,
+    "SHA256": "B1EEB33D3B833AA9BD1F3695F665C96B8918B9C7FEE829C00A2E69EE6939389B"
+  },
+  {
+    "Category": "Vehicles / motorcycles / lightcycles",
+    "Name": "04 cyan cyberpunk lightcycle",
+    "Variant": "Original",
+    "Path": "Vehicles/motorcycles/lightcycles/04-cyan-cyberpunk-lightcycle.png",
+    "Bytes": 1631372,
+    "SHA256": "8D9DF862794EA3F53EFFFDC1770761703D8E4EF42654DEBD100BF133B1BDD78F"
+  },
+  {
+    "Category": "Vehicles / motorcycles / lightcycles",
+    "Name": "05 crimson neo tokyo sportbike",
+    "Variant": "Original",
+    "Path": "Vehicles/motorcycles/lightcycles/05-crimson-neo-tokyo-sportbike.png",
+    "Bytes": 1931638,
+    "SHA256": "227252FD60AD4154A5DDA93AD3FA009EFB32BA360E5BCEACFB280737E3DC3AAD"
+  },
+  {
+    "Category": "Vehicles / motorcycles / sportbikes and dual sport",
+    "Name": "01 green ninja style sportbike",
+    "Variant": "Original",
+    "Path": "Vehicles/motorcycles/sportbikes-and-dual-sport/01-green-ninja-style-sportbike.png",
+    "Bytes": 1993103,
+    "SHA256": "C16ECED343464BA8C196221C21B67F5CD46DF2A3CFC16A90289376A5E4FD19E2"
+  },
+  {
+    "Category": "Vehicles / motorcycles / sportbikes and dual sport",
+    "Name": "02 red white cbr style racer",
+    "Variant": "Original",
+    "Path": "Vehicles/motorcycles/sportbikes-and-dual-sport/02-red-white-cbr-style-racer.png",
+    "Bytes": 2360427,
+    "SHA256": "E8C21208C69C96AEDDDF3B7A312FA4AA8CCC0BC9B7FDB5D0A082D004229518B7"
+  },
+  {
+    "Category": "Vehicles / motorcycles / sportbikes and dual sport",
+    "Name": "03 enduro dual sport scrambler",
+    "Variant": "Original",
+    "Path": "Vehicles/motorcycles/sportbikes-and-dual-sport/03-enduro-dual-sport-scrambler.png",
+    "Bytes": 1954303,
+    "SHA256": "0BE5518C95C0B3C6F9E6437670D1548C29D3C094E8B1A3256296D2745F4E1996"
+  },
+  {
+    "Category": "Vehicles / motorcycles / survival",
+    "Name": "10 motorcycle",
+    "Variant": "Original",
+    "Path": "Vehicles/motorcycles/survival/10-motorcycle.png",
+    "Bytes": 1979128,
+    "SHA256": "B8A2D920FA7A87251B5E3B354A047B83E29FA68C48158ABCD8E077053831EF8E"
+  },
+  {
+    "Category": "Weapons / Axes",
+    "Name": "AXE 001",
+    "Variant": "Game sprite",
+    "Path": "weapons/sprites/AXE-001.png",
+    "Bytes": 51430,
+    "SHA256": "3F60C3DE3ADD1706246EE13E603DF2193119FD99DD6A58B792D9BD410F0654C3"
+  },
+  {
+    "Category": "Weapons / Axes",
+    "Name": "AXE 001",
+    "Variant": "Original",
+    "Path": "weapons/axes/AXE-001.png",
+    "Bytes": 1264653,
+    "SHA256": "E61A80D364C9951B1FCFEBD2737DA3A3A2D94D00D7F799AAFA93653C05CD3CBA"
+  },
+  {
+    "Category": "Weapons / Axes",
+    "Name": "AXE 002",
+    "Variant": "Game sprite",
+    "Path": "weapons/sprites/AXE-002.png",
+    "Bytes": 42534,
+    "SHA256": "320404C975B26DE631B80FB5AAFBE0408F2DB9D97BB81108B7D9955719C9B12C"
+  },
+  {
+    "Category": "Weapons / Axes",
+    "Name": "AXE 002",
+    "Variant": "Original",
+    "Path": "weapons/axes/AXE-002.png",
+    "Bytes": 1209791,
+    "SHA256": "919D395A39F895B54CB5FC242417E8E0E0A98FA11EEB730479AD4CD74F7C9E44"
+  },
+  {
+    "Category": "Weapons / Axes",
+    "Name": "AXE 003",
+    "Variant": "Game sprite",
+    "Path": "weapons/sprites/AXE-003.png",
+    "Bytes": 51945,
+    "SHA256": "0D17D322536A6FCE0B262689253E256036DFDB4CDB193DEE17552EC443806DE4"
+  },
+  {
+    "Category": "Weapons / Axes",
+    "Name": "AXE 003",
+    "Variant": "Original",
+    "Path": "weapons/axes/AXE-003.png",
+    "Bytes": 1292537,
+    "SHA256": "239CC7A1EC4CDEBBF686D070568A86EE6F74AA8C959002061877C85E824C914E"
+  },
+  {
+    "Category": "Weapons / Axes",
+    "Name": "AXE 004",
+    "Variant": "Game sprite",
+    "Path": "weapons/sprites/AXE-004.png",
+    "Bytes": 44633,
+    "SHA256": "E8D5EE65B988ECFC6222E78DEFB1BF34BC15893A4B3A45044B9D49E7EA22714A"
+  },
+  {
+    "Category": "Weapons / Axes",
+    "Name": "AXE 004",
+    "Variant": "Original",
+    "Path": "weapons/axes/AXE-004.png",
+    "Bytes": 1248955,
+    "SHA256": "8A58C486157D1C3EBA74AA567883999CF7888BA5B991C2D12DD19DBE38DDEDB2"
+  },
+  {
+    "Category": "Weapons / Axes",
+    "Name": "AXE 005",
+    "Variant": "Game sprite",
+    "Path": "weapons/sprites/AXE-005.png",
+    "Bytes": 45633,
+    "SHA256": "41731FBA8AE64F237E36BF012398C42C096AE5C7801B442D5D3F24E2D01C16CE"
+  },
+  {
+    "Category": "Weapons / Axes",
+    "Name": "AXE 005",
+    "Variant": "Original",
+    "Path": "weapons/axes/AXE-005.png",
+    "Bytes": 1320018,
+    "SHA256": "69BF661BCC4598EA6093F49E23B3116A36DDDAD39E2068848D86D2CD1E11EFFF"
+  },
+  {
+    "Category": "Weapons / Axes",
+    "Name": "AXE 006",
+    "Variant": "Game sprite",
+    "Path": "weapons/sprites/AXE-006.png",
+    "Bytes": 30367,
+    "SHA256": "010ACF112E5ECEFD8D6290E5C3CDB2868CA12B4D64FF7996CA7E7DE0A5D5EEE9"
+  },
+  {
+    "Category": "Weapons / Axes",
+    "Name": "AXE 006",
+    "Variant": "Original",
+    "Path": "weapons/axes/AXE-006.png",
+    "Bytes": 1255246,
+    "SHA256": "95E5A46EBF43915F8D37C9B8159285EED7E313D59E7294836362F025DF670EE3"
+  },
+  {
+    "Category": "Weapons / Axes",
+    "Name": "AXE 007",
+    "Variant": "Game sprite",
+    "Path": "weapons/sprites/AXE-007.png",
+    "Bytes": 37910,
+    "SHA256": "6C73E8F06556D36B3EF00693204123238352F5A3DF8624CC3A445C9932BE7EBC"
+  },
+  {
+    "Category": "Weapons / Axes",
+    "Name": "AXE 007",
+    "Variant": "Original",
+    "Path": "weapons/axes/AXE-007.png",
+    "Bytes": 1268452,
+    "SHA256": "4EEEBBECB144BD2E9D45B7C677729B85ACA792D25F6B5D2D39CDD98822F85D33"
+  },
+  {
+    "Category": "Weapons / Axes",
+    "Name": "AXE 008",
+    "Variant": "Game sprite",
+    "Path": "weapons/sprites/AXE-008.png",
+    "Bytes": 39611,
+    "SHA256": "7E5EB0B346ADFF638B28E710DD031CA07766C353785411098B973DBD7E7C81E0"
+  },
+  {
+    "Category": "Weapons / Axes",
+    "Name": "AXE 008",
+    "Variant": "Original",
+    "Path": "weapons/axes/AXE-008.png",
+    "Bytes": 1275187,
+    "SHA256": "CAF0D4D4155F2AD9827C25C2581DFE9338D25523986CB73ED96C44FEC71DE499"
+  },
+  {
+    "Category": "Weapons / Axes",
+    "Name": "AXE 009",
+    "Variant": "Game sprite",
+    "Path": "weapons/sprites/AXE-009.png",
+    "Bytes": 41100,
+    "SHA256": "8A0CD1EC69F4D990C022E884E6BEA3AE0FDBE3071A7FB9E9DB184234D547E4DA"
+  },
+  {
+    "Category": "Weapons / Axes",
+    "Name": "AXE 009",
+    "Variant": "Original",
+    "Path": "weapons/axes/AXE-009.png",
+    "Bytes": 1301318,
+    "SHA256": "FE62FBAB9BA979731FEFC1C705D1326DC4AE47572FA1249CF9BC51D32960E5CA"
+  },
+  {
+    "Category": "Weapons / Axes",
+    "Name": "AXE 010",
+    "Variant": "Game sprite",
+    "Path": "weapons/sprites/AXE-010.png",
+    "Bytes": 34791,
+    "SHA256": "62E8BBFE5E90CA618A102C305B4CF9116648FA0E94DE3AB6D0446B9A05887CEF"
+  },
+  {
+    "Category": "Weapons / Axes",
+    "Name": "AXE 010",
+    "Variant": "Original",
+    "Path": "weapons/axes/AXE-010.png",
+    "Bytes": 1247991,
+    "SHA256": "F13024D534554416BF6FF40F6C7AF62F7A75B7441CB81021E39DA64EA0C5F1D5"
+  },
+  {
+    "Category": "Weapons / Axes",
+    "Name": "AXE 011",
+    "Variant": "Game sprite",
+    "Path": "weapons/sprites/AXE-011.png",
+    "Bytes": 46195,
+    "SHA256": "61E774A88284AB1A0C38E4B40363BD60E2C68DEE6CDCA469286EE3223E95C38F"
+  },
+  {
+    "Category": "Weapons / Axes",
+    "Name": "AXE 011",
+    "Variant": "Original",
+    "Path": "weapons/axes/AXE-011.png",
+    "Bytes": 1272697,
+    "SHA256": "59D42DE1B67894818A53F6021469678C760AB439D7AC3955CBA6563B6F3BCEB4"
+  },
+  {
+    "Category": "Weapons / Axes",
+    "Name": "AXE 012",
+    "Variant": "Game sprite",
+    "Path": "weapons/sprites/AXE-012.png",
+    "Bytes": 53307,
+    "SHA256": "840DB09770A4F05F2C385228CB626E13020CDEA96B9CF1E6F9797B95DAE6A831"
+  },
+  {
+    "Category": "Weapons / Axes",
+    "Name": "AXE 012",
+    "Variant": "Original",
+    "Path": "weapons/axes/AXE-012.png",
+    "Bytes": 1287000,
+    "SHA256": "A7B02B96DD39C145DD40B2AE842ED225A2F990F36D881055CD04AAEEFCCDC12B"
+  },
+  {
+    "Category": "Weapons / Axes",
+    "Name": "AXE 013",
+    "Variant": "Game sprite",
+    "Path": "weapons/sprites/AXE-013.png",
+    "Bytes": 63784,
+    "SHA256": "5F09C2194EF6EE24E1BC4931B77DA7D1B4D31D241CFBEC3E9ADCA198AC923C52"
+  },
+  {
+    "Category": "Weapons / Axes",
+    "Name": "AXE 013",
+    "Variant": "Original",
+    "Path": "weapons/axes/AXE-013.png",
+    "Bytes": 1379032,
+    "SHA256": "19F57C3A7CC2522AD7F38B5731066F92A2AB037BA77F3352655693738373F9FB"
+  },
+  {
+    "Category": "Weapons / Axes",
+    "Name": "AXE 014",
+    "Variant": "Game sprite",
+    "Path": "weapons/sprites/AXE-014.png",
+    "Bytes": 36854,
+    "SHA256": "7D54D6A79DC509B784212263560DA98F5232CDB61D46A9E3DC36EFDCD69BAEF5"
+  },
+  {
+    "Category": "Weapons / Axes",
+    "Name": "AXE 014",
+    "Variant": "Original",
+    "Path": "weapons/axes/AXE-014.png",
+    "Bytes": 1266251,
+    "SHA256": "BA1C4AEEF90EB75041500402B8BF218C5EFEA33DFB2D2E65FDCA451A267497FE"
+  },
+  {
+    "Category": "Weapons / Axes",
+    "Name": "AXE 015",
+    "Variant": "Game sprite",
+    "Path": "weapons/sprites/AXE-015.png",
+    "Bytes": 50806,
+    "SHA256": "104408382C180C720F600CBF564F40EFFD2CE85CCB8D21F7541DC48ADECD27EE"
+  },
+  {
+    "Category": "Weapons / Axes",
+    "Name": "AXE 015",
+    "Variant": "Original",
+    "Path": "weapons/axes/AXE-015.png",
+    "Bytes": 1296818,
+    "SHA256": "02083130A0CFD4CCFE164917F1FCB5C6D924F3A766F30522FC515C79E41EE1E1"
+  },
+  {
+    "Category": "Weapons / Axes",
+    "Name": "AXE 016",
+    "Variant": "Game sprite",
+    "Path": "weapons/sprites/AXE-016.png",
+    "Bytes": 35740,
+    "SHA256": "9F033DD8CEB7CEF51B2D1838651C96EB36466BC09D75BFB0F49860226F8D1269"
+  },
+  {
+    "Category": "Weapons / Axes",
+    "Name": "AXE 016",
+    "Variant": "Original",
+    "Path": "weapons/axes/AXE-016.png",
+    "Bytes": 1323904,
+    "SHA256": "5D2E9C349E5EFB93F4291019D5B1EB44F3DD40390E1E362B3310AA3E56BC2F1C"
+  },
+  {
+    "Category": "Weapons / Axes",
+    "Name": "AXE 017",
+    "Variant": "Game sprite",
+    "Path": "weapons/sprites/AXE-017.png",
+    "Bytes": 35707,
+    "SHA256": "6222B013B47FD9818BCC7A8FF7FEFABAFB2503D0086D2ADEC760C4293A1D62B9"
+  },
+  {
+    "Category": "Weapons / Axes",
+    "Name": "AXE 017",
+    "Variant": "Original",
+    "Path": "weapons/axes/AXE-017.png",
+    "Bytes": 1261168,
+    "SHA256": "07A0FE9699CC3C53280E2EEA584B6AAFF355FF39BA54B4690414862E5790C19B"
+  },
+  {
+    "Category": "Weapons / Axes",
+    "Name": "AXE 051",
+    "Variant": "Game sprite",
+    "Path": "weapons/sprites/AXE-051.png",
+    "Bytes": 36388,
+    "SHA256": "3D6B0FF77932C9B40806DCDACF8BA8CB3EB8EE8C9BC9583D0ABD70F1630760EB"
+  },
+  {
+    "Category": "Weapons / Axes",
+    "Name": "AXE 051",
+    "Variant": "Original",
+    "Path": "weapons/axes/AXE-051.png",
+    "Bytes": 1222916,
+    "SHA256": "2AF1E0D6CF7F33D1704AA77EC1F680457C9A0198E725DB5470EBF76C700CF316"
+  },
+  {
+    "Category": "Weapons / Axes",
+    "Name": "AXE 052",
+    "Variant": "Game sprite",
+    "Path": "weapons/sprites/AXE-052.png",
+    "Bytes": 32055,
+    "SHA256": "A42387C8EEC681F7102ADDCF0FD915BF2C5685FFA27AEF72BA857CC93E80586A"
+  },
+  {
+    "Category": "Weapons / Axes",
+    "Name": "AXE 052",
+    "Variant": "Original",
+    "Path": "weapons/axes/AXE-052.png",
+    "Bytes": 1205880,
+    "SHA256": "04C9AC0ACD5D530E2FEEA799AB5ED967B22970D31E277392909546477FE7DFA7"
+  },
+  {
+    "Category": "Weapons / Axes",
+    "Name": "AXE 053",
+    "Variant": "Game sprite",
+    "Path": "weapons/sprites/AXE-053.png",
+    "Bytes": 50960,
+    "SHA256": "2F9E1051B7BFBC15BFCA104F250A93CF385048793A182781DA2E35D701EE19E5"
+  },
+  {
+    "Category": "Weapons / Axes",
+    "Name": "AXE 053",
+    "Variant": "Original",
+    "Path": "weapons/axes/AXE-053.png",
+    "Bytes": 1301496,
+    "SHA256": "DA7761707C60EDA47C139EE2A7A691CD60CD9FDF98D065D5295DCA90E983E34D"
+  },
+  {
+    "Category": "Weapons / Axes",
+    "Name": "AXE 054",
+    "Variant": "Game sprite",
+    "Path": "weapons/sprites/AXE-054.png",
+    "Bytes": 42118,
+    "SHA256": "9B9206C56014636FBD8A5996B89CAE7793F860D1649F6D86665FC09502C49B3F"
+  },
+  {
+    "Category": "Weapons / Axes",
+    "Name": "AXE 054",
+    "Variant": "Original",
+    "Path": "weapons/axes/AXE-054.png",
+    "Bytes": 1256381,
+    "SHA256": "AE950FAE9D7E11A58877AAA05B470F3216FD3A03F158D0B8F5A034E253278054"
+  },
+  {
+    "Category": "Weapons / Axes",
+    "Name": "AXE 055",
+    "Variant": "Game sprite",
+    "Path": "weapons/sprites/AXE-055.png",
+    "Bytes": 35370,
+    "SHA256": "0266E31498888541C6CFEF442823067D508272A14A128C82555C6F343B28237E"
+  },
+  {
+    "Category": "Weapons / Axes",
+    "Name": "AXE 055",
+    "Variant": "Original",
+    "Path": "weapons/axes/AXE-055.png",
+    "Bytes": 1237771,
+    "SHA256": "7415A9E633314BEF810DEE258ACA4D91A5501BBAE4D893A8F05F4FD53B31FAC9"
+  },
+  {
+    "Category": "Weapons / Axes",
+    "Name": "AXE 056",
+    "Variant": "Game sprite",
+    "Path": "weapons/sprites/AXE-056.png",
+    "Bytes": 32503,
+    "SHA256": "36367A00D3602966AB30D0BBF90AD9C86032DC5A74C8959CC3B4D17EA878D4E3"
+  },
+  {
+    "Category": "Weapons / Axes",
+    "Name": "AXE 056",
+    "Variant": "Original",
+    "Path": "weapons/axes/AXE-056.png",
+    "Bytes": 1216709,
+    "SHA256": "027DE794442B2D3CDC6C4142E025B2D0CC64231AE24501CDB0BD50143247D7E0"
+  },
+  {
+    "Category": "Weapons / Axes",
+    "Name": "AXE 057",
+    "Variant": "Game sprite",
+    "Path": "weapons/sprites/AXE-057.png",
+    "Bytes": 43798,
+    "SHA256": "0B2F0709FADFD4152E3CC2BD17FABAA77ABA2C655D1B08CE3CBAE87F86C40F3B"
+  },
+  {
+    "Category": "Weapons / Axes",
+    "Name": "AXE 057",
+    "Variant": "Original",
+    "Path": "weapons/axes/AXE-057.png",
+    "Bytes": 1218593,
+    "SHA256": "E9959E048F8E463DB25CF986BBDF3BBE14A5FC4564B5F2323CB58AF58E5A32F5"
+  },
+  {
+    "Category": "Weapons / Axes",
+    "Name": "AXE 058",
+    "Variant": "Game sprite",
+    "Path": "weapons/sprites/AXE-058.png",
+    "Bytes": 34575,
+    "SHA256": "241933568B661B3F495DFD8B0F191666172EBD2DF631E0C307C71646C5E5E10C"
+  },
+  {
+    "Category": "Weapons / Axes",
+    "Name": "AXE 058",
+    "Variant": "Original",
+    "Path": "weapons/axes/AXE-058.png",
+    "Bytes": 1227322,
+    "SHA256": "4A400B10973D251CFF937DA8F727C7F08F0D9E5B812F050AE3778FC8C4B82E57"
+  },
+  {
+    "Category": "Weapons / Axes",
+    "Name": "AXE 059",
+    "Variant": "Game sprite",
+    "Path": "weapons/sprites/AXE-059.png",
+    "Bytes": 48396,
+    "SHA256": "C323B39DEA813DC0E32317565DC333E68A71D976D1C00A2BE38B0BBEC7769917"
+  },
+  {
+    "Category": "Weapons / Axes",
+    "Name": "AXE 059",
+    "Variant": "Original",
+    "Path": "weapons/axes/AXE-059.png",
+    "Bytes": 1255705,
+    "SHA256": "6F531D0FB9102B51929ED1F733BFD2D9A6ADE37C4479572EF76437633E82E191"
+  },
+  {
+    "Category": "Weapons / Axes",
+    "Name": "AXE 060",
+    "Variant": "Game sprite",
+    "Path": "weapons/sprites/AXE-060.png",
+    "Bytes": 43476,
+    "SHA256": "05221E42F27FF5E4885908E55E6C80DF92E2802248A0C10DE6EDD27ACA4ABB29"
+  },
+  {
+    "Category": "Weapons / Axes",
+    "Name": "AXE 060",
+    "Variant": "Original",
+    "Path": "weapons/axes/AXE-060.png",
+    "Bytes": 1297983,
+    "SHA256": "92850E67EF87766C4E554833B53ED9882096B7B5B5C093046F6663ECC48559FF"
+  },
+  {
+    "Category": "Weapons / Axes",
+    "Name": "AXE 061",
+    "Variant": "Game sprite",
+    "Path": "weapons/sprites/AXE-061.png",
+    "Bytes": 36555,
+    "SHA256": "174B8BE1A78D7BEC958AC8841F64CA8315C51B3A47A0DAF17E5B66F51EE647D9"
+  },
+  {
+    "Category": "Weapons / Axes",
+    "Name": "AXE 061",
+    "Variant": "Original",
+    "Path": "weapons/axes/AXE-061.png",
+    "Bytes": 1249884,
+    "SHA256": "48942A02F40677A54E8AAF30CBD7914C2A590920752E68964B3A7036FADC4279"
+  },
+  {
+    "Category": "Weapons / Axes",
+    "Name": "AXE 062",
+    "Variant": "Game sprite",
+    "Path": "weapons/sprites/AXE-062.png",
+    "Bytes": 35301,
+    "SHA256": "6674BE24F17E68312296055BC94C5B525CF56900BA3442E21140FD396EFED235"
+  },
+  {
+    "Category": "Weapons / Axes",
+    "Name": "AXE 062",
+    "Variant": "Original",
+    "Path": "weapons/axes/AXE-062.png",
+    "Bytes": 1273568,
+    "SHA256": "FF5CCE4583318F8C04A0E915C2551ABF8C148E4084EAFE100444F61FE8BF3417"
+  },
+  {
+    "Category": "Weapons / Axes",
+    "Name": "AXE 063",
+    "Variant": "Game sprite",
+    "Path": "weapons/sprites/AXE-063.png",
+    "Bytes": 65519,
+    "SHA256": "997D02497626491C44E1DF131176DBA767B60396FD2DE9315D108A1FC2BA742A"
+  },
+  {
+    "Category": "Weapons / Axes",
+    "Name": "AXE 063",
+    "Variant": "Original",
+    "Path": "weapons/axes/AXE-063.png",
+    "Bytes": 1329739,
+    "SHA256": "701EE8AE0B2FD6A668D246B802C451A47DABAAAEEB1240F2B036BD93AC16A093"
+  },
+  {
+    "Category": "Weapons / Axes",
+    "Name": "AXE 064",
+    "Variant": "Game sprite",
+    "Path": "weapons/sprites/AXE-064.png",
+    "Bytes": 42404,
+    "SHA256": "FDE8260F203E96CB9FF6BA558F133733EE6EEC97C0CEEE2D67B35D551BC87BE2"
+  },
+  {
+    "Category": "Weapons / Axes",
+    "Name": "AXE 064",
+    "Variant": "Original",
+    "Path": "weapons/axes/AXE-064.png",
+    "Bytes": 1316208,
+    "SHA256": "0D96B24F70ED30C9F586AED8DF18EC4AC3708C5817C8FE04856EB77A81E26BCB"
+  },
+  {
+    "Category": "Weapons / Axes",
+    "Name": "AXE 065",
+    "Variant": "Game sprite",
+    "Path": "weapons/sprites/AXE-065.png",
+    "Bytes": 38779,
+    "SHA256": "F5764BF7BCAD48F4CFA9D4209D8DB308BFCBB3110E0CA80784A02C2EDF2893B0"
+  },
+  {
+    "Category": "Weapons / Axes",
+    "Name": "AXE 065",
+    "Variant": "Original",
+    "Path": "weapons/axes/AXE-065.png",
+    "Bytes": 1279611,
+    "SHA256": "486AFE299EBEE1EFAB93DD7C0CA1819C9165F89078D190DB58647EE33B2AF689"
+  },
+  {
+    "Category": "Weapons / Axes",
+    "Name": "AXE 066",
+    "Variant": "Game sprite",
+    "Path": "weapons/sprites/AXE-066.png",
+    "Bytes": 36987,
+    "SHA256": "B2C6A3499F96E28A8D71C37B38BECED3699C5D248B13B5E068D7ED4EE2036E1F"
+  },
+  {
+    "Category": "Weapons / Axes",
+    "Name": "AXE 066",
+    "Variant": "Original",
+    "Path": "weapons/axes/AXE-066.png",
+    "Bytes": 1337757,
+    "SHA256": "81E15E48F7E975F5069653583360291B8A4B35C9D31B5E63497EBF1A7EDC8419"
+  },
+  {
+    "Category": "Weapons / Axes",
+    "Name": "AXE 067",
+    "Variant": "Game sprite",
+    "Path": "weapons/sprites/AXE-067.png",
+    "Bytes": 51313,
+    "SHA256": "43A908307881448FEE84AC95E48A0818969DC8FC16B13B22693A2013117ADFA7"
+  },
+  {
+    "Category": "Weapons / Axes",
+    "Name": "AXE 067",
+    "Variant": "Original",
+    "Path": "weapons/axes/AXE-067.png",
+    "Bytes": 1288092,
+    "SHA256": "F3B095BD07922AEB786AAD73BC1FFB211E3E0EEA9AE77AB1B837D5D79B711B30"
+  },
+  {
+    "Category": "Weapons / Axes",
+    "Name": "AXE 151",
+    "Variant": "Game sprite",
+    "Path": "weapons/sprites/AXE-151.png",
+    "Bytes": 56224,
+    "SHA256": "F056F295F2B638D7DEAC1C492EF4446DC29E1B687DFCED30A9BCA2CC0C3D15E1"
+  },
+  {
+    "Category": "Weapons / Axes",
+    "Name": "AXE 151",
+    "Variant": "Original",
+    "Path": "weapons/axes/AXE-151.png",
+    "Bytes": 1340293,
+    "SHA256": "484642122041E01490AD3232713D56A1B76B821A1F20A435DA3B5149CEB874A3"
+  },
+  {
+    "Category": "Weapons / Axes",
+    "Name": "AXE 152",
+    "Variant": "Game sprite",
+    "Path": "weapons/sprites/AXE-152.png",
+    "Bytes": 45260,
+    "SHA256": "38C403E396EDF5B7B9364BE4FA30DB9880EA7EE419FC2F94A5E38F29AE19284D"
+  },
+  {
+    "Category": "Weapons / Axes",
+    "Name": "AXE 152",
+    "Variant": "Original",
+    "Path": "weapons/axes/AXE-152.png",
+    "Bytes": 1325636,
+    "SHA256": "1E7F00F0A5AF7412422ABBE967B71351B49E066D330C50348C310980AA38F4C6"
+  },
+  {
+    "Category": "Weapons / Axes",
+    "Name": "AXE 153",
+    "Variant": "Game sprite",
+    "Path": "weapons/sprites/AXE-153.png",
+    "Bytes": 36268,
+    "SHA256": "75EBD705692523461F5885E58E6A7BC313BEC5ACAC080B771C4A0C99DB5C7AD0"
+  },
+  {
+    "Category": "Weapons / Axes",
+    "Name": "AXE 153",
+    "Variant": "Original",
+    "Path": "weapons/axes/AXE-153.png",
+    "Bytes": 1285859,
+    "SHA256": "B7E90DFE5D2AE620274CFBCBF8E09EA0401F030574FE5D29A965ADC35D5A91F3"
+  },
+  {
+    "Category": "Weapons / Axes",
+    "Name": "AXE 201",
+    "Variant": "Game sprite",
+    "Path": "weapons/sprites/AXE-201.png",
+    "Bytes": 47381,
+    "SHA256": "00AAF3971475411EE1FCD8A1A0E4F7343CC7AA74273150C767788271E4AF223C"
+  },
+  {
+    "Category": "Weapons / Axes",
+    "Name": "AXE 201",
+    "Variant": "Original",
+    "Path": "weapons/axes/AXE-201.png",
+    "Bytes": 1458221,
+    "SHA256": "472B7C55BD44FADB5F516E8C6350A90A264AECD525D1DDAB9DEB648497A867EB"
+  },
+  {
+    "Category": "Weapons / Axes",
+    "Name": "AXE 251",
+    "Variant": "Game sprite",
+    "Path": "weapons/sprites/AXE-251.png",
+    "Bytes": 51546,
+    "SHA256": "D826F0EF8584AD777DB2151F7A95501270D2C258B65A71A14633619298B74602"
+  },
+  {
+    "Category": "Weapons / Axes",
+    "Name": "AXE 251",
+    "Variant": "Original",
+    "Path": "weapons/axes/AXE-251.png",
+    "Bytes": 1446933,
+    "SHA256": "86547C1E681C98A656093D91FEBC2EC5BC2B755C0FC8F954965F40F788CE7660"
+  },
+  {
+    "Category": "Weapons / Axes",
+    "Name": "AXE 258",
+    "Variant": "Game sprite",
+    "Path": "weapons/sprites/AXE-258.png",
+    "Bytes": 43737,
+    "SHA256": "9AA16100C2CACF2BE3B9DA119C5C7FD2EDB1FD41F9AC912A025D23AAD850382F"
+  },
+  {
+    "Category": "Weapons / Axes",
+    "Name": "AXE 258",
+    "Variant": "Original",
+    "Path": "weapons/axes/AXE-258.png",
+    "Bytes": 1391954,
+    "SHA256": "F55ADFAD30A2F2FCB79A7F9F10EFA14832CDADAD8AE71412560225B5B3E7FFF4"
+  },
+  {
+    "Category": "Weapons / Axes",
+    "Name": "axe unique danielle",
+    "Variant": "Game sprite",
+    "Path": "weapons/sprites/axe-unique-danielle.png",
+    "Bytes": 46799,
+    "SHA256": "F3F4DEE7D70DA6D7556DA59D8893EE2DA48EAA6942306F7A52E24C2948D2C711"
+  },
+  {
+    "Category": "Weapons / Axes",
+    "Name": "axe unique raquelle",
+    "Variant": "Game sprite",
+    "Path": "weapons/sprites/axe-unique-raquelle.png",
+    "Bytes": 54033,
+    "SHA256": "C013E68F605572769A1989650DEC903D9F8059818F77ADCCDBBC80E0D216B103"
+  },
+  {
+    "Category": "Weapons / Axes",
+    "Name": "unique danielle",
+    "Variant": "Original",
+    "Path": "weapons/axes/unique-danielle.png",
+    "Bytes": 1327640,
+    "SHA256": "70810F294D07C978BE997AF00477F2DF260BDF07D0439E937EB2B3C01AEC2DDA"
+  },
+  {
+    "Category": "Weapons / Axes",
+    "Name": "unique raquelle",
+    "Variant": "Original",
+    "Path": "weapons/axes/unique-raquelle.png",
+    "Bytes": 1348221,
+    "SHA256": "4BE2189BCCC377467993FE7D66607876906E47F0AF525C70C232C38C4E2EDE89"
+  },
+  {
+    "Category": "Weapons / Concepts",
+    "Name": "concept machine pistol",
+    "Variant": "Game sprite",
+    "Path": "weapons/sprites/item-concept-machine-pistol.png",
+    "Bytes": 62355,
+    "SHA256": "11ADC69E95682FE8158D3D427FC53FD9A5797FF4079D842E5656A9A584CAB19D"
+  },
+  {
+    "Category": "Weapons / Concepts",
+    "Name": "concept machine pistol",
+    "Variant": "Original",
+    "Path": "weapons/items/concept-machine-pistol.png",
+    "Bytes": 1304406,
+    "SHA256": "3B24E2105369E31C6DB6A8EEC9846138FA86C188891978E2B83FA71793308153"
+  },
+  {
+    "Category": "Weapons / Concepts",
+    "Name": "concept palisade flare",
+    "Variant": "Game sprite",
+    "Path": "weapons/sprites/item-concept-palisade-flare.png",
+    "Bytes": 69780,
+    "SHA256": "BDBF430A75447478A5ED9B2DCA3C195000C40B45A86B52D2E6C34BB57F152665"
+  },
+  {
+    "Category": "Weapons / Concepts",
+    "Name": "concept palisade flare",
+    "Variant": "Original",
+    "Path": "weapons/items/concept-palisade-flare.png",
+    "Bytes": 1288841,
+    "SHA256": "10A09DE3DD66A241E837A3F4104B7CF1F11C8DB4140C5515AF8CFD46D21C0B9B"
+  },
+  {
+    "Category": "Weapons / Concepts",
+    "Name": "concept precision rifle",
+    "Variant": "Game sprite",
+    "Path": "weapons/sprites/item-concept-precision-rifle.png",
+    "Bytes": 25512,
+    "SHA256": "250A30F6E847C72B1D11EF41D9E5364334C513904888E9287234DD30223C8997"
+  },
+  {
+    "Category": "Weapons / Concepts",
+    "Name": "concept precision rifle",
+    "Variant": "Original",
+    "Path": "weapons/items/concept-precision-rifle.png",
+    "Bytes": 1394691,
+    "SHA256": "F0F068C6B55C692F32638FD93F409BCEF6DCC6255C34D50C9A07960C97C8C423"
+  },
+  {
+    "Category": "Weapons / Concepts",
+    "Name": "concept select fire",
+    "Variant": "Game sprite",
+    "Path": "weapons/sprites/item-concept-select-fire.png",
+    "Bytes": 38038,
+    "SHA256": "B0A99B285376D2259102D8C1CA4033324436A513A222BFEBF45E96957927C7FE"
+  },
+  {
+    "Category": "Weapons / Concepts",
+    "Name": "concept select fire",
+    "Variant": "Original",
+    "Path": "weapons/items/concept-select-fire.png",
+    "Bytes": 1328522,
+    "SHA256": "C71B5BA9D67EADB96DA3C2FB409F58962C6F69267751F55C6383ADBAC89B0942"
+  },
+  {
+    "Category": "Weapons / Concepts",
+    "Name": "concept semi pistol",
+    "Variant": "Game sprite",
+    "Path": "weapons/sprites/item-concept-semi-pistol.png",
+    "Bytes": 79370,
+    "SHA256": "964D6E6B229B8A0D50965FEAA8B0328666C28096D5F75691374EAC098BD2A24B"
+  },
+  {
+    "Category": "Weapons / Concepts",
+    "Name": "concept semi pistol",
+    "Variant": "Original",
+    "Path": "weapons/items/concept-semi-pistol.png",
+    "Bytes": 1316175,
+    "SHA256": "03386D097762066ABB7DE23171514DAFDDDD02BA570D2FD48E871BCA0DB951F5"
+  },
+  {
+    "Category": "Weapons / Concepts",
+    "Name": "concept support rifle",
+    "Variant": "Game sprite",
+    "Path": "weapons/sprites/item-concept-support-rifle.png",
+    "Bytes": 28444,
+    "SHA256": "E8ABC042EC20C34CAD62D9CB2C015AB24FA7ADBEF2133CF7A7AA1BDA0AC9F13D"
+  },
+  {
+    "Category": "Weapons / Concepts",
+    "Name": "concept support rifle",
+    "Variant": "Original",
+    "Path": "weapons/items/concept-support-rifle.png",
+    "Bytes": 1404107,
+    "SHA256": "0E5A5772171B5C62FA9235B2AD2595ED89E2D4437CDD5C24DFF3C8B9751AB66E"
+  },
+  {
+    "Category": "Weapons / Concepts",
+    "Name": "concept watchfire",
+    "Variant": "Game sprite",
+    "Path": "weapons/sprites/item-concept-watchfire.png",
+    "Bytes": 26628,
+    "SHA256": "898C47D4434216A674D4202620B387DFBF688C47A8049FE2AF21414FF58CE5A2"
+  },
+  {
+    "Category": "Weapons / Concepts",
+    "Name": "concept watchfire",
+    "Variant": "Original",
+    "Path": "weapons/items/concept-watchfire.png",
+    "Bytes": 1311285,
+    "SHA256": "4DCA4FF857D76080F9226C558593D94D59CF3117CF7957F3E6D25E22B4F87772"
+  },
+  {
+    "Category": "Weapons / Legacy",
+    "Name": "legacy w combat knife",
+    "Variant": "Game sprite",
+    "Path": "weapons/sprites/item-legacy-w_combat_knife.png",
+    "Bytes": 26219,
+    "SHA256": "577D1C3CF2DF7FFB52A4D73BC31A271306E2A1403D58B3AD311578B599A46AA3"
+  },
+  {
+    "Category": "Weapons / Legacy",
+    "Name": "legacy w combat knife",
+    "Variant": "Original",
+    "Path": "weapons/items/legacy-w_combat_knife.png",
+    "Bytes": 1225545,
+    "SHA256": "67DF9CF4C8D87CB42891A533F5B6F1E02D7785100C7D40BC1F85FC7800988A75"
+  },
+  {
+    "Category": "Weapons / Legacy",
+    "Name": "legacy w hunting rifle",
+    "Variant": "Game sprite",
+    "Path": "weapons/sprites/item-legacy-w_hunting_rifle.png",
+    "Bytes": 17539,
+    "SHA256": "C3AF5EDC130C6095BFF7FC4BF7D2F593F5A27457867F73979BC9EF73BAB9A788"
+  },
+  {
+    "Category": "Weapons / Legacy",
+    "Name": "legacy w hunting rifle",
+    "Variant": "Original",
+    "Path": "weapons/items/legacy-w_hunting_rifle.png",
+    "Bytes": 1293022,
+    "SHA256": "923CB9D522E11C725DF6E4412A2868F24468F30381E68B524D73B926B9B11B5A"
+  },
+  {
+    "Category": "Weapons / Legacy",
+    "Name": "legacy w machete",
+    "Variant": "Game sprite",
+    "Path": "weapons/sprites/item-legacy-w_machete.png",
+    "Bytes": 22992,
+    "SHA256": "E15DA4E6F1131E4663B64045042BE9A6D13DE28B4FD24A8F099B386E3A732BCE"
+  },
+  {
+    "Category": "Weapons / Legacy",
+    "Name": "legacy w machete",
+    "Variant": "Original",
+    "Path": "weapons/items/legacy-w_machete.png",
+    "Bytes": 1266613,
+    "SHA256": "1965AEAF7BAAF2C9C8E8D860C049EB6B544FB11800EA467D8F799E9208EADC5E"
+  },
+  {
+    "Category": "Weapons / Legacy",
+    "Name": "legacy w pipe rifle",
+    "Variant": "Game sprite",
+    "Path": "weapons/sprites/item-legacy-w_pipe_rifle.png",
+    "Bytes": 22032,
+    "SHA256": "C18643075AD58A63136CA3A6267B5409E35264358782F86FC139FBFC6A689489"
+  },
+  {
+    "Category": "Weapons / Legacy",
+    "Name": "legacy w pipe rifle",
+    "Variant": "Original",
+    "Path": "weapons/items/legacy-w_pipe_rifle.png",
+    "Bytes": 1272618,
+    "SHA256": "5BF9DE5ED611E7BE8DA7A10C002BA4FF2EA25409F1BD1F35D939DA6F4C3F976D"
+  },
+  {
+    "Category": "Weapons / Legacy",
+    "Name": "legacy w pistol",
+    "Variant": "Game sprite",
+    "Path": "weapons/sprites/item-legacy-w_pistol.png",
+    "Bytes": 82031,
+    "SHA256": "4F158442DC766A6B7C20C145ECF0578BBA9E628FBFE3DFDC66923EA753F914E5"
+  },
+  {
+    "Category": "Weapons / Legacy",
+    "Name": "legacy w pistol",
+    "Variant": "Original",
+    "Path": "weapons/items/legacy-w_pistol.png",
+    "Bytes": 1379400,
+    "SHA256": "22A89BB16B1F267B8D4DAEF060F98D0174A3C2D8B4EFDCD875A98B49966C4CE2"
+  },
+  {
+    "Category": "Weapons / Legacy",
+    "Name": "legacy w revolver",
+    "Variant": "Game sprite",
+    "Path": "weapons/sprites/item-legacy-w_revolver.png",
+    "Bytes": 46832,
+    "SHA256": "FAA4F0B415EC3C78FDF9DB8CBFA8978DD7AA4AADC0E9D89B29C760AC44C87135"
+  },
+  {
+    "Category": "Weapons / Legacy",
+    "Name": "legacy w revolver",
+    "Variant": "Original",
+    "Path": "weapons/items/legacy-w_revolver.png",
+    "Bytes": 1372402,
+    "SHA256": "5777937671FFA26E256416C6893FD934772BF8DA3F5BDFAB0896A7068875915A"
+  },
+  {
+    "Category": "Weapons / Legacy",
+    "Name": "legacy w shotgun",
+    "Variant": "Game sprite",
+    "Path": "weapons/sprites/item-legacy-w_shotgun.png",
+    "Bytes": 37935,
+    "SHA256": "A513D06A5B9CFFA1475803C05389B64E20999A6F5B1D2F2D8D85EE674FB293DE"
+  },
+  {
+    "Category": "Weapons / Legacy",
+    "Name": "legacy w shotgun",
+    "Variant": "Original",
+    "Path": "weapons/items/legacy-w_shotgun.png",
+    "Bytes": 1355959,
+    "SHA256": "919DF1ACAEEB4E5CC067CA95C39407F893F3321C9D1DA0A322E0D72599C2EB9A"
+  },
+  {
+    "Category": "Weapons / Legacy",
+    "Name": "legacy w sledgehammer",
+    "Variant": "Game sprite",
+    "Path": "weapons/sprites/item-legacy-w_sledgehammer.png",
+    "Bytes": 24283,
+    "SHA256": "112D52DD74F35F034423266DE8D7EB8C533F7414F9760510BB52AF73BED39717"
+  },
+  {
+    "Category": "Weapons / Legacy",
+    "Name": "legacy w sledgehammer",
+    "Variant": "Original",
+    "Path": "weapons/items/legacy-w_sledgehammer.png",
+    "Bytes": 1316571,
+    "SHA256": "D767D9E7B54BAD5CEBD967348F53F1604C19126E24860ED7FA29FBE2BD4022E9"
+  },
+  {
+    "Category": "Weapons / Legacy",
+    "Name": "legacy w smg",
+    "Variant": "Game sprite",
+    "Path": "weapons/sprites/item-legacy-w_smg.png",
+    "Bytes": 31037,
+    "SHA256": "377C017F5D9BD780015247DF7C891DF7B9D5CD8DDA4B7FB5C799BA6486F47D79"
+  },
+  {
+    "Category": "Weapons / Legacy",
+    "Name": "legacy w smg",
+    "Variant": "Original",
+    "Path": "weapons/items/legacy-w_smg.png",
+    "Bytes": 1427725,
+    "SHA256": "20B4EEA7C478D14C6ABC8007147A49F0203D690702F4E396D62F4A16119B7EB9"
+  },
+  {
+    "Category": "Weapons / melee",
+    "Name": "Combat Axe",
+    "Variant": "Game sprite",
+    "Path": "weapons/sprites/item-combat_axe.png",
+    "Bytes": 47281,
+    "SHA256": "F7A13E0CB0CF76806BA24D560BBF9C85347CF43445F0F7C9665F9EC359AB5379"
+  },
+  {
+    "Category": "Weapons / melee",
+    "Name": "Combat Axe",
+    "Variant": "Original",
+    "Path": "weapons/items/combat_axe.png",
+    "Bytes": 1355832,
+    "SHA256": "D6DB7E868F49BF519C48DBCA0B0D7B081CA3E758AC449099BD6AFD410B468D1D"
+  },
+  {
+    "Category": "Weapons / melee",
+    "Name": "Combat Knife",
+    "Variant": "Game sprite",
+    "Path": "weapons/sprites/item-combat_knife.png",
+    "Bytes": 26219,
+    "SHA256": "577D1C3CF2DF7FFB52A4D73BC31A271306E2A1403D58B3AD311578B599A46AA3"
+  },
+  {
+    "Category": "Weapons / melee",
+    "Name": "Combat Knife",
+    "Variant": "Original",
+    "Path": "weapons/items/combat_knife.png",
+    "Bytes": 1225545,
+    "SHA256": "67DF9CF4C8D87CB42891A533F5B6F1E02D7785100C7D40BC1F85FC7800988A75"
+  },
+  {
+    "Category": "Weapons / melee",
+    "Name": "Crowbar",
+    "Variant": "Game sprite",
+    "Path": "weapons/sprites/item-crowbar.png",
+    "Bytes": 32079,
+    "SHA256": "14D989E3D3C88BDF6FB036080837803DE9553A60D22B5E99961DE8934A9BE1FD"
+  },
+  {
+    "Category": "Weapons / melee",
+    "Name": "Crowbar",
+    "Variant": "Original",
+    "Path": "weapons/items/crowbar.png",
+    "Bytes": 1263327,
+    "SHA256": "A80BCAD40A770D1DD399108D31F547FA6850202294B274B2993350BF1CDA0D78"
+  },
+  {
+    "Category": "Weapons / melee",
+    "Name": "Iron Knuckles",
+    "Variant": "Game sprite",
+    "Path": "weapons/sprites/item-iron_knuckles.png",
+    "Bytes": 67859,
+    "SHA256": "B58C65E96FAA9EC1AFE0E9533B68B99E1070D450CED487C8E49E33242F0ED612"
+  },
+  {
+    "Category": "Weapons / melee",
+    "Name": "Iron Knuckles",
+    "Variant": "Original",
+    "Path": "weapons/items/iron_knuckles.png",
+    "Bytes": 1292096,
+    "SHA256": "F40EBB326AD02BAC38E61E4B0B75827A151041A1A7DD09AB21DF2963B0C05862"
+  },
+  {
+    "Category": "Weapons / melee",
+    "Name": "Jet-Assisted Sledge",
+    "Variant": "Game sprite",
+    "Path": "weapons/sprites/item-jet_sledge.png",
+    "Bytes": 33486,
+    "SHA256": "943385C0755B09D7349912D8D2FA5D9BE187541272E09DB2741361F646B943B2"
+  },
+  {
+    "Category": "Weapons / melee",
+    "Name": "Jet-Assisted Sledge",
+    "Variant": "Original",
+    "Path": "weapons/items/jet_sledge.png",
+    "Bytes": 1446829,
+    "SHA256": "739530F50376C0B485FE9D3C9A9D92698E8C9DEC9F479AD4F496650B50ED14C5"
+  },
+  {
+    "Category": "Weapons / melee",
+    "Name": "Machete Blade",
+    "Variant": "Game sprite",
+    "Path": "weapons/sprites/item-machete_blade.png",
+    "Bytes": 28959,
+    "SHA256": "817CAFF877815FE3747857754B3115903C054A8A79D686ECA16246B72F53F9BE"
+  },
+  {
+    "Category": "Weapons / melee",
+    "Name": "Machete Blade",
+    "Variant": "Original",
+    "Path": "weapons/items/machete_blade.png",
+    "Bytes": 1280490,
+    "SHA256": "C699529285F81C275AD017D9E0CD95191520D358441ADA1C59E1FF7B3B76FE43"
+  },
+  {
+    "Category": "Weapons / melee",
+    "Name": "Military Machete",
+    "Variant": "Game sprite",
+    "Path": "weapons/sprites/item-machete.png",
+    "Bytes": 22992,
+    "SHA256": "E15DA4E6F1131E4663B64045042BE9A6D13DE28B4FD24A8F099B386E3A732BCE"
+  },
+  {
+    "Category": "Weapons / melee",
+    "Name": "Military Machete",
+    "Variant": "Original",
+    "Path": "weapons/items/machete.png",
+    "Bytes": 1266613,
+    "SHA256": "1965AEAF7BAAF2C9C8E8D860C049EB6B544FB11800EA467D8F799E9208EADC5E"
+  },
+  {
+    "Category": "Weapons / melee",
+    "Name": "Nail Bat",
+    "Variant": "Game sprite",
+    "Path": "weapons/sprites/item-bat.png",
+    "Bytes": 34917,
+    "SHA256": "60887FBB557C25A2B36309EC42ADCACF98BA8116ED1E65880D72342839AD5F36"
+  },
+  {
+    "Category": "Weapons / melee",
+    "Name": "Nail Bat",
+    "Variant": "Original",
+    "Path": "weapons/items/bat.png",
+    "Bytes": 1277499,
+    "SHA256": "F4C9F30364224E8D6FC8BE1DEDF4081FE3740ACFAECB70C217653427CD1031C1"
+  },
+  {
+    "Category": "Weapons / melee",
+    "Name": "Pocket Knife",
+    "Variant": "Game sprite",
+    "Path": "weapons/sprites/item-pocket_knife.png",
+    "Bytes": 34640,
+    "SHA256": "7AA6B6553923C561EAC34DB1A8A3C4CA2662549F9B7946478BA4917E35903BC0"
+  },
+  {
+    "Category": "Weapons / melee",
+    "Name": "Pocket Knife",
+    "Variant": "Original",
+    "Path": "weapons/items/pocket_knife.png",
+    "Bytes": 1200438,
+    "SHA256": "27EF425A2D8A2E184C4983E58F5BCF051926785925AA9804813F6FFA682E4679"
+  },
+  {
+    "Category": "Weapons / melee",
+    "Name": "Shock Baton",
+    "Variant": "Game sprite",
+    "Path": "weapons/sprites/item-shock_baton.png",
+    "Bytes": 36647,
+    "SHA256": "547EAC486C3BECD93C438A82DFF882B6F89CF8D59C732203B41A35FDEBA6B0E4"
+  },
+  {
+    "Category": "Weapons / melee",
+    "Name": "Shock Baton",
+    "Variant": "Original",
+    "Path": "weapons/items/shock_baton.png",
+    "Bytes": 1260101,
+    "SHA256": "70B29CB0E4430BE809268909181815F992F84DCDB15308F837FCC2A64161FA12"
+  },
+  {
+    "Category": "Weapons / melee",
+    "Name": "Spike Board",
+    "Variant": "Game sprite",
+    "Path": "weapons/sprites/item-spike_board.png",
+    "Bytes": 50859,
+    "SHA256": "9FCF00472C1F662E4791D408D3A4CB0FA560D36333661F1ECF7212F10B0479ED"
+  },
+  {
+    "Category": "Weapons / melee",
+    "Name": "Spike Board",
+    "Variant": "Original",
+    "Path": "weapons/items/spike_board.png",
+    "Bytes": 1348936,
+    "SHA256": "B9C36962AB7101F637677B9EA9211D65F87A1677E0FD415449DDFCE6832D641F"
+  },
+  {
+    "Category": "Weapons / melee",
+    "Name": "Steel Baton",
+    "Variant": "Game sprite",
+    "Path": "weapons/sprites/item-steel_baton.png",
+    "Bytes": 24957,
+    "SHA256": "FC322D62C7CFEEB2629682B191D9DF0EF927D16C7278CD1035B6EDAD24ED9AA1"
+  },
+  {
+    "Category": "Weapons / melee",
+    "Name": "Steel Baton",
+    "Variant": "Original",
+    "Path": "weapons/items/steel_baton.png",
+    "Bytes": 1230750,
+    "SHA256": "890DD7ACB77B1D16D6178DEDB95B6B5C41D1A5C41B384C303B3352CC606AA06D"
+  },
+  {
+    "Category": "Weapons / primary",
+    "Name": "AK-74 Carbine",
+    "Variant": "Game sprite",
+    "Path": "weapons/sprites/item-rifle.png",
+    "Bytes": 29337,
+    "SHA256": "5FF8557B294DF55B6E66600393A99C395BFB909C6CCA018747C5BCC11CCE55DD"
+  },
+  {
+    "Category": "Weapons / primary",
+    "Name": "AK-74 Carbine",
+    "Variant": "Original",
+    "Path": "weapons/items/rifle.png",
+    "Bytes": 1348347,
+    "SHA256": "6CDFF0DD6DAE0B0AC5F886F0F318DD08213DDF578D174A77FFBB5A44B6BEC839"
+  },
+  {
+    "Category": "Weapons / primary",
+    "Name": "Arc Carbine",
+    "Variant": "Game sprite",
+    "Path": "weapons/sprites/item-arc_carbine.png",
+    "Bytes": 38984,
+    "SHA256": "2D4C79A4910877B55C2E74E4B87E5C1DA55B2C60234AFDC555C4CEDB04F0FC8B"
+  },
+  {
+    "Category": "Weapons / primary",
+    "Name": "Arc Carbine",
+    "Variant": "Original",
+    "Path": "weapons/items/arc_carbine.png",
+    "Bytes": 1431748,
+    "SHA256": "E1B95E1028E292F22F1405D1C7C50ECF8322C0C46FB4471AED31D8B58352564C"
+  },
+  {
+    "Category": "Weapons / primary",
+    "Name": "Compound Bow",
+    "Variant": "Game sprite",
+    "Path": "weapons/sprites/item-compound_bow.png",
+    "Bytes": 62505,
+    "SHA256": "98A7BF033D4DFF8490B326FF86B84C84A727384F33A48501EE58172595999183"
+  },
+  {
+    "Category": "Weapons / primary",
+    "Name": "Compound Bow",
+    "Variant": "Original",
+    "Path": "weapons/items/compound_bow.png",
+    "Bytes": 1355998,
+    "SHA256": "5D9ABB9C15651623C8CA99B55A0ECB037A5879F87DF4671327ABEC9C1F4BA1D6"
+  },
+  {
+    "Category": "Weapons / primary",
+    "Name": "Crossbow",
+    "Variant": "Original",
+    "Path": "weapons/items/crossbow.png",
+    "Bytes": 1541860,
+    "SHA256": "67201AF1E9EF68D96519C775CB355880A62047958F98156D3037FFFA0620DAF7"
+  },
+  {
+    "Category": "Weapons / primary",
+    "Name": "Flamethrower",
+    "Variant": "Original",
+    "Path": "weapons/items/flamethrower.png",
+    "Bytes": 1633621,
+    "SHA256": "F4EC25A523650ED153AF501380562FABAE386406334B83BCBB663DB44336CEF7"
+  },
+  {
+    "Category": "Weapons / primary",
+    "Name": "Improvised Pipe Shotgun",
+    "Variant": "Game sprite",
+    "Path": "weapons/sprites/item-pipe_shotgun.png",
+    "Bytes": 30743,
+    "SHA256": "DD8F6D80EA851BD81B3E604997A5FEE9F408AE58DC946EA26F56134D20794E56"
+  },
+  {
+    "Category": "Weapons / primary",
+    "Name": "Improvised Pipe Shotgun",
+    "Variant": "Original",
+    "Path": "weapons/items/pipe_shotgun.png",
+    "Bytes": 1306202,
+    "SHA256": "0C512A8AC7DC4FEE7A52FBF9354382455ECBF39A90D022C46742F29277EA417F"
+  },
+  {
+    "Category": "Weapons / primary",
+    "Name": "Sawn-Off Shotgun",
+    "Variant": "Game sprite",
+    "Path": "weapons/sprites/item-shotgun.png",
+    "Bytes": 37935,
+    "SHA256": "A513D06A5B9CFFA1475803C05389B64E20999A6F5B1D2F2D8D85EE674FB293DE"
+  },
+  {
+    "Category": "Weapons / primary",
+    "Name": "Sawn-Off Shotgun",
+    "Variant": "Original",
+    "Path": "weapons/items/shotgun.png",
+    "Bytes": 1355959,
+    "SHA256": "919DF1ACAEEB4E5CC067CA95C39407F893F3321C9D1DA0A322E0D72599C2EB9A"
+  },
+  {
+    "Category": "Weapons / primary",
+    "Name": "Suppressed SMG",
+    "Variant": "Game sprite",
+    "Path": "weapons/sprites/item-suppressed.png",
+    "Bytes": 31037,
+    "SHA256": "377C017F5D9BD780015247DF7C891DF7B9D5CD8DDA4B7FB5C799BA6486F47D79"
+  },
+  {
+    "Category": "Weapons / primary",
+    "Name": "Suppressed SMG",
+    "Variant": "Original",
+    "Path": "weapons/items/suppressed.png",
+    "Bytes": 1427725,
+    "SHA256": "20B4EEA7C478D14C6ABC8007147A49F0203D690702F4E396D62F4A16119B7EB9"
+  },
+  {
+    "Category": "Weapons / primary",
+    "Name": "Void Pulse Rifle",
+    "Variant": "Game sprite",
+    "Path": "weapons/sprites/item-void_pulse_rifle.png",
+    "Bytes": 37851,
+    "SHA256": "8662E58810B735C1CEDEE32BB468228F1BB55B34BF00138C53E62567DF09A442"
+  },
+  {
+    "Category": "Weapons / primary",
+    "Name": "Void Pulse Rifle",
+    "Variant": "Original",
+    "Path": "weapons/items/void_pulse_rifle.png",
+    "Bytes": 1440552,
+    "SHA256": "013C4DA17742844E9BF62E05496E8990D52BDDE709B164274D3EA3A43D200785"
+  },
+  {
+    "Category": "Weapons / secondary",
+    "Name": ".357 Revolver",
+    "Variant": "Game sprite",
+    "Path": "weapons/sprites/item-revolver.png",
+    "Bytes": 46832,
+    "SHA256": "FAA4F0B415EC3C78FDF9DB8CBFA8978DD7AA4AADC0E9D89B29C760AC44C87135"
+  },
+  {
+    "Category": "Weapons / secondary",
+    "Name": ".357 Revolver",
+    "Variant": "Original",
+    "Path": "weapons/items/revolver.png",
+    "Bytes": 1372402,
+    "SHA256": "5777937671FFA26E256416C6893FD934772BF8DA3F5BDFAB0896A7068875915A"
+  },
+  {
+    "Category": "Weapons / secondary",
+    "Name": "9mm Pistol",
+    "Variant": "Game sprite",
+    "Path": "weapons/sprites/item-pistol.png",
+    "Bytes": 82031,
+    "SHA256": "4F158442DC766A6B7C20C145ECF0578BBA9E628FBFE3DFDC66923EA753F914E5"
+  },
+  {
+    "Category": "Weapons / secondary",
+    "Name": "9mm Pistol",
+    "Variant": "Original",
+    "Path": "weapons/items/pistol.png",
+    "Bytes": 1379400,
+    "SHA256": "22A89BB16B1F267B8D4DAEF060F98D0174A3C2D8B4EFDCD875A98B49966C4CE2"
+  },
+  {
+    "Category": "Weapons / secondary",
+    "Name": "Pipe Pistol",
+    "Variant": "Game sprite",
+    "Path": "weapons/sprites/item-pipe_pistol.png",
+    "Bytes": 54698,
+    "SHA256": "B3DABD51294DD19BBCC4267118BE1E842C5CF0A7D3D447A1E1173F5A267F3E0F"
+  },
+  {
+    "Category": "Weapons / secondary",
+    "Name": "Pipe Pistol",
+    "Variant": "Original",
+    "Path": "weapons/items/pipe_pistol.png",
+    "Bytes": 1268536,
+    "SHA256": "8653ACEA8F970DA420B1909EF839AE2BE018032808025DF11570408F111895FF"
+  },
+  {
+    "Category": "Weapons / secondary",
+    "Name": "Shock Pistol",
+    "Variant": "Game sprite",
+    "Path": "weapons/sprites/item-shock_pistol.png",
+    "Bytes": 63716,
+    "SHA256": "048D2C4C23B29F8DDACF79FDDEFC98BF8E3D55A3914BD90B8352B160B37A9693"
+  },
+  {
+    "Category": "Weapons / secondary",
+    "Name": "Shock Pistol",
+    "Variant": "Original",
+    "Path": "weapons/items/shock_pistol.png",
+    "Bytes": 1356631,
+    "SHA256": "35D640F1AF543D2BF62C5C14AADC7AD94B08A9554F64D914DEADE98AE6A2AC33"
+  },
+  {
+    "Category": "Weapons / Special and utility",
+    "Name": "battery machete",
+    "Variant": "Game sprite",
+    "Path": "weapons/sprites/battery-machete.png",
+    "Bytes": 28017,
+    "SHA256": "2D9D60F0893FBF7BE858EC00EA036F0AF33B432F4DC4DD2038245AE3153AA685"
+  },
+  {
+    "Category": "Weapons / Special and utility",
+    "Name": "battery machete",
+    "Variant": "Original",
+    "Path": "weapons/battery-machete.png",
+    "Bytes": 1446192,
+    "SHA256": "6EE447845D39F0F6220148AA4C0191AD1FAB0912E0B224EA070494603FE94310"
+  },
+  {
+    "Category": "Weapons / Special and utility",
+    "Name": "chemical sprayer rig prop",
+    "Variant": "Game sprite",
+    "Path": "weapons/sprites/chemical-sprayer-rig-prop.png",
+    "Bytes": 82852,
+    "SHA256": "C80C29E2CE231F66947DCBFAAD6423B35DF97F96185BBD9843A3EB40794A68B7"
+  },
+  {
+    "Category": "Weapons / Special and utility",
+    "Name": "chemical sprayer rig prop",
+    "Variant": "Original",
+    "Path": "weapons/chemical-sprayer-rig-prop.png",
+    "Bytes": 1633621,
+    "SHA256": "F4EC25A523650ED153AF501380562FABAE386406334B83BCBB663DB44336CEF7"
+  },
+  {
+    "Category": "Weapons / Special and utility",
+    "Name": "cold haze",
+    "Variant": "Game sprite",
+    "Path": "weapons/sprites/item-cold_haze.png",
+    "Bytes": 96386,
+    "SHA256": "C6000BF761DEC84839A1446B9A722E2CFAD0B4FEA1BC4E98164C6BB3B3D7A99F"
+  },
+  {
+    "Category": "Weapons / Special and utility",
+    "Name": "cold haze",
+    "Variant": "Original",
+    "Path": "weapons/items/cold_haze.png",
+    "Bytes": 1291323,
+    "SHA256": "18AF6835F7581FC86FBC193140E9E1471AFDA9D191E99A65E5ED7B8593AD40E0"
+  },
+  {
+    "Category": "Weapons / Special and utility",
+    "Name": "flashbang",
+    "Variant": "Game sprite",
+    "Path": "weapons/sprites/item-flashbang.png",
+    "Bytes": 63062,
+    "SHA256": "C489744D651893FB1E47020D290A5ECBE2AFDC833C8960E7045B37BCF58E101C"
+  },
+  {
+    "Category": "Weapons / Special and utility",
+    "Name": "flashbang",
+    "Variant": "Original",
+    "Path": "weapons/items/flashbang.png",
+    "Bytes": 1187444,
+    "SHA256": "258E4BB00283FFF91A291E379DF3BF19DF464D57B9F7F2598911EC5E80A86DA8"
+  },
+  {
+    "Category": "Weapons / Special and utility",
+    "Name": "grenade",
+    "Variant": "Game sprite",
+    "Path": "weapons/sprites/item-grenade.png",
+    "Bytes": 86901,
+    "SHA256": "408F4521EA5860637F9ECA62290E5F3803816B56FDD7A01B1B1547B33ECFD7B8"
+  },
+  {
+    "Category": "Weapons / Special and utility",
+    "Name": "grenade",
+    "Variant": "Original",
+    "Path": "weapons/items/grenade.png",
+    "Bytes": 1222790,
+    "SHA256": "26CE248B771223D6FBA1667E9740251A7B05ACE4757B72DC07E6AFAFAC27F0C3"
+  },
+  {
+    "Category": "Weapons / Special and utility",
+    "Name": "improvised tactical crossbow",
+    "Variant": "Game sprite",
+    "Path": "weapons/sprites/improvised-tactical-crossbow.png",
+    "Bytes": 39164,
+    "SHA256": "A0419646D37EF2161E324825CC38104F5EFA9EB84F6DA1C56A91889A885B993F"
+  },
+  {
+    "Category": "Weapons / Special and utility",
+    "Name": "improvised tactical crossbow",
+    "Variant": "Original",
+    "Path": "weapons/improvised-tactical-crossbow.png",
+    "Bytes": 1541860,
+    "SHA256": "67201AF1E9EF68D96519C775CB355880A62047958F98156D3037FFFA0620DAF7"
+  },
+  {
+    "Category": "Weapons / Special and utility",
+    "Name": "set checkpoint covenant",
+    "Variant": "Game sprite",
+    "Path": "weapons/sprites/item-set-checkpoint-covenant.png",
+    "Bytes": 100233,
+    "SHA256": "972B8A368F1786C96B2A565B90B8D9659A35E0C7FE274B33F9448B46AB3617E9"
+  },
+  {
+    "Category": "Weapons / Special and utility",
+    "Name": "set checkpoint covenant",
+    "Variant": "Original",
+    "Path": "weapons/items/set-checkpoint-covenant.png",
+    "Bytes": 1450773,
+    "SHA256": "5095F37BC800F88E883CFFE4B0A3E1CB1E9C44A6B9DA1175C0EEA348F45DDAEE"
+  },
+  {
+    "Category": "Weapons / Special and utility",
+    "Name": "set duet of iron",
+    "Variant": "Game sprite",
+    "Path": "weapons/sprites/item-set-duet-of-iron.png",
+    "Bytes": 89598,
+    "SHA256": "25591F72180A3E1B686F6AE0726F4A5502B40F2E1DE090FD5D50E427852867EA"
+  },
+  {
+    "Category": "Weapons / Special and utility",
+    "Name": "set duet of iron",
+    "Variant": "Original",
+    "Path": "weapons/items/set-duet-of-iron.png",
+    "Bytes": 1368501,
+    "SHA256": "1F4C2594C52742FFD08D2C38553BE9FE835454A1BA17830ABEA8F51D5EE37C94"
+  },
+  {
+    "Category": "Weapons / Special and utility",
+    "Name": "set night courier",
+    "Variant": "Game sprite",
+    "Path": "weapons/sprites/item-set-night-courier.png",
+    "Bytes": 36993,
+    "SHA256": "24857CC1EB5E94264D19C3686068BF6067F4B2B318E37FA8DD09048BA6532B5D"
+  },
+  {
+    "Category": "Weapons / Special and utility",
+    "Name": "set night courier",
+    "Variant": "Original",
+    "Path": "weapons/items/set-night-courier.png",
+    "Bytes": 1421050,
+    "SHA256": "BBD6A5D38EAA0B298A0FA08069FE884E54443384C45F839FADA23DA04E26C763"
+  },
+  {
+    "Category": "Weapons / Special and utility",
+    "Name": "singularity seed",
+    "Variant": "Game sprite",
+    "Path": "weapons/sprites/item-singularity_seed.png",
+    "Bytes": 87971,
+    "SHA256": "C4F03392BE1AD31DE4C2A506E4F3D1142F09232035D7AF51BA14983AFA391F10"
+  },
+  {
+    "Category": "Weapons / Special and utility",
+    "Name": "singularity seed",
+    "Variant": "Original",
+    "Path": "weapons/items/singularity_seed.png",
+    "Bytes": 1224251,
+    "SHA256": "C845359A49882FAB3AF28E5B344328A98AE5DDCCD824CF5FA87982D9C574927B"
+  },
+  {
+    "Category": "Weapons / Special and utility",
+    "Name": "smoke vial",
+    "Variant": "Game sprite",
+    "Path": "weapons/sprites/item-smoke_vial.png",
+    "Bytes": 60757,
+    "SHA256": "D01B306066E718FF42682096544FA2386B20FBA74CF32578E0AD62530C2FE381"
+  },
+  {
+    "Category": "Weapons / Special and utility",
+    "Name": "smoke vial",
+    "Variant": "Original",
+    "Path": "weapons/items/smoke_vial.png",
+    "Bytes": 1219435,
+    "SHA256": "27CBE6D13D049CB83E007FF6C8E1E9A92BE2AC59BBF9548F25CC242170B4310D"
+  },
+  {
+    "Category": "Weapons / Special and utility",
+    "Name": "thermal gel",
+    "Variant": "Game sprite",
+    "Path": "weapons/sprites/item-thermal_gel.png",
+    "Bytes": 68798,
+    "SHA256": "CF6D883D292B9991A1115557FA180427175E27FE0506EABD4B20014A17D21AD7"
+  },
+  {
+    "Category": "Weapons / Special and utility",
+    "Name": "thermal gel",
+    "Variant": "Original",
+    "Path": "weapons/items/thermal_gel.png",
+    "Bytes": 1238171,
+    "SHA256": "DB25834D6CAB96D48656DEB4F3DA71A3178FC541AB22D5E5D2FDC683988F75FA"
+  },
+  {
+    "Category": "Weapons / Special and utility",
+    "Name": "unique duskplate",
+    "Variant": "Game sprite",
+    "Path": "weapons/sprites/item-unique-duskplate.png",
+    "Bytes": 120400,
+    "SHA256": "87E9A5F1D97FDD165F13326CB608EA38AFBC6A92A1FA6C888361D485EB76ABF9"
+  },
+  {
+    "Category": "Weapons / Special and utility",
+    "Name": "unique duskplate",
+    "Variant": "Original",
+    "Path": "weapons/items/unique-duskplate.png",
+    "Bytes": 1448491,
+    "SHA256": "8F090A429C06E18A18018521D3A1F8421298C671D95DA0AB1C8A48721AF2EC50"
+  },
+  {
+    "Category": "Weapons / Special and utility",
+    "Name": "unique hushline",
+    "Variant": "Game sprite",
+    "Path": "weapons/sprites/item-unique-hushline.png",
+    "Bytes": 44932,
+    "SHA256": "C2DB5EE77DDB90691677A77F2560A219FD2D44DEE318AEE89EDE064C0B85E847"
+  },
+  {
+    "Category": "Weapons / Special and utility",
+    "Name": "unique hushline",
+    "Variant": "Original",
+    "Path": "weapons/items/unique-hushline.png",
+    "Bytes": 1457752,
+    "SHA256": "DEE413364CEB59EEC479824CEFC6F219B7C6C236B606A6B28303D07DEEBF1FC2"
+  },
+  {
+    "Category": "Weapons / Special and utility",
+    "Name": "unique lamplighter",
+    "Variant": "Game sprite",
+    "Path": "weapons/sprites/item-unique-lamplighter.png",
+    "Bytes": 74337,
+    "SHA256": "6057C74F16DACF4A5415DDDF347BD3314EA798FA69B979508DCE6077ECF43A47"
+  },
+  {
+    "Category": "Weapons / Special and utility",
+    "Name": "unique lamplighter",
+    "Variant": "Original",
+    "Path": "weapons/items/unique-lamplighter.png",
+    "Bytes": 1278829,
+    "SHA256": "C0144B74D75C6D54B6682ADE7337F19C3F4A396F3DFE3D229C937F5AEE4AB642"
+  },
+  {
+    "Category": "Zombies / Animations",
+    "Name": "075 phantasm grayscales",
+    "Variant": "Animated preview",
+    "Path": "zombies/animations/grayscales/075-phantasm-grayscales.gif",
+    "Bytes": 961538,
+    "SHA256": "B378DE7C6CD4ADCCF588756EBFA8C0361B7613B1FA2EEC77E818294CADB833AF"
+  },
+  {
+    "Category": "Zombies / Animations",
+    "Name": "075 phantasm grayscales sheet",
+    "Variant": "Sprite sheet",
+    "Path": "zombies/animations/grayscales/075-phantasm-grayscales-sheet.png",
+    "Bytes": 1908063,
+    "SHA256": "B705AF2FD4E14FB89C6E416901EB273B3E49484F44E68DBB53FA6B1856D1E2F3"
+  },
+  {
+    "Category": "Zombies / Animations",
+    "Name": "090 surgical grayscales",
+    "Variant": "Animated preview",
+    "Path": "zombies/animations/grayscales/090-surgical-grayscales.gif",
+    "Bytes": 1012636,
+    "SHA256": "15CC9F1C17F325E3E748A0981332AE61776C9CE1ECA7EE20A65AEE89C1F0B848"
+  },
+  {
+    "Category": "Zombies / Animations",
+    "Name": "090 surgical grayscales sheet",
+    "Variant": "Sprite sheet",
+    "Path": "zombies/animations/grayscales/090-surgical-grayscales-sheet.png",
+    "Bytes": 2231935,
+    "SHA256": "F67DB14B59C35CCE2B94C46620969C09507487344E84B2FD1C17A8BA6D590647"
+  },
+  {
+    "Category": "Zombies / Animations",
+    "Name": "frame 01",
+    "Variant": "Animation frame",
+    "Path": "zombies/animations/grayscales/075-phantasm-grayscales/frame-01.png",
+    "Bytes": 598033,
+    "SHA256": "18D5BBA63240CFB85F92C85A05A61A33D0F79DD588FDCE33C0994B264B35AA63"
+  },
+  {
+    "Category": "Zombies / Animations",
+    "Name": "frame 01",
+    "Variant": "Animation frame",
+    "Path": "zombies/animations/grayscales/090-surgical-grayscales/frame-01.png",
+    "Bytes": 680645,
+    "SHA256": "6D1BD2F12B600E67301918BCAB8F465DD5D4D442CED481379F7CA379226DF9D9"
+  },
+  {
+    "Category": "Zombies / Animations",
+    "Name": "frame 02",
+    "Variant": "Animation frame",
+    "Path": "zombies/animations/grayscales/075-phantasm-grayscales/frame-02.png",
+    "Bytes": 586621,
+    "SHA256": "0CE74C079F76786392B27C555B53B54C749DF74DD9C76107E0C472BFEC7B842C"
+  },
+  {
+    "Category": "Zombies / Animations",
+    "Name": "frame 02",
+    "Variant": "Animation frame",
+    "Path": "zombies/animations/grayscales/090-surgical-grayscales/frame-02.png",
+    "Bytes": 681952,
+    "SHA256": "ABF9023AE01884DB98CA1329885AEBA3A84D78A66FBA4A4E8316928CB272276A"
+  },
+  {
+    "Category": "Zombies / Animations",
+    "Name": "frame 03",
+    "Variant": "Animation frame",
+    "Path": "zombies/animations/grayscales/075-phantasm-grayscales/frame-03.png",
+    "Bytes": 614360,
+    "SHA256": "8CA3E94E0F7757CD21873AA075885EC58F7057FCC3C8E5842BB1812EAAC86D10"
+  },
+  {
+    "Category": "Zombies / Animations",
+    "Name": "frame 03",
+    "Variant": "Animation frame",
+    "Path": "zombies/animations/grayscales/090-surgical-grayscales/frame-03.png",
+    "Bytes": 682848,
+    "SHA256": "A9BF6A05F440AE88D71131703B584F116F158F7ECD9E344B9441579D5B5C0691"
+  },
+  {
+    "Category": "Zombies / Animations",
+    "Name": "frame 04",
+    "Variant": "Animation frame",
+    "Path": "zombies/animations/grayscales/075-phantasm-grayscales/frame-04.png",
+    "Bytes": 595186,
+    "SHA256": "6A81F3D63AD4BE2024D7ACFE65B84C9A280D9E1D00C88655DEEAE70C3FB4F146"
+  },
+  {
+    "Category": "Zombies / Animations",
+    "Name": "frame 04",
+    "Variant": "Animation frame",
+    "Path": "zombies/animations/grayscales/090-surgical-grayscales/frame-04.png",
+    "Bytes": 684295,
+    "SHA256": "947F58C66A4D70E4224D8893CF62E6C18ECEBCE2A696CAC1389B92CFC25D6ACA"
+  },
+  {
+    "Category": "Zombies / Bestiary originals / Tier A",
+    "Name": "084 centipede host",
+    "Variant": "Original",
+    "Path": "zombies/generated-originals/bestiary-49-108/tier-A/084-centipede-host.png",
+    "Bytes": 1647858,
+    "SHA256": "4E1255EEBA91A690D4141C3C7465322ED6FADDA68CBD606ECAD24C46F4CA08D0"
+  },
+  {
+    "Category": "Zombies / Bestiary originals / Tier A",
+    "Name": "085 apex hunter",
+    "Variant": "Original",
+    "Path": "zombies/generated-originals/bestiary-49-108/tier-A/085-apex-hunter.png",
+    "Bytes": 1542577,
+    "SHA256": "F469F7D810E18EBEFA80F121A4F17365D047A82188D14CE1A126E7FBAAF3B885"
+  },
+  {
+    "Category": "Zombies / Bestiary originals / Tier A",
+    "Name": "086 slag titan",
+    "Variant": "Original",
+    "Path": "zombies/generated-originals/bestiary-49-108/tier-A/086-slag-titan.png",
+    "Bytes": 1823586,
+    "SHA256": "992D319116365212086D3BD4BA6BA5777C72F50F58B6BA59AE20EAB0688F27B8"
+  },
+  {
+    "Category": "Zombies / Bestiary originals / Tier A",
+    "Name": "087 toxic behemoth",
+    "Variant": "Original",
+    "Path": "zombies/generated-originals/bestiary-49-108/tier-A/087-toxic-behemoth.png",
+    "Bytes": 1721450,
+    "SHA256": "09017A8567387648891A90D12C2CC601F14802F971949E64607EF331F997A77B"
+  },
+  {
+    "Category": "Zombies / Bestiary originals / Tier A",
+    "Name": "088 bio electric monstrosity",
+    "Variant": "Original",
+    "Path": "zombies/generated-originals/bestiary-49-108/tier-A/088-bio-electric-monstrosity.png",
+    "Bytes": 1958816,
+    "SHA256": "26E28261F066D1468D93DD6D258E4686825781FC848DCE61098902CF6239631C"
+  },
+  {
+    "Category": "Zombies / Bestiary originals / Tier A",
+    "Name": "089 subterranean stalker",
+    "Variant": "Original",
+    "Path": "zombies/generated-originals/bestiary-49-108/tier-A/089-subterranean-stalker.png",
+    "Bytes": 1427841,
+    "SHA256": "704AB2D85F6003E4CB648444E597D179819DB7C6ED7D85160E3AF866449C8794"
+  },
+  {
+    "Category": "Zombies / Bestiary originals / Tier A",
+    "Name": "090 surgical abomination",
+    "Variant": "Original",
+    "Path": "zombies/generated-originals/bestiary-49-108/tier-A/090-surgical-abomination.png",
+    "Bytes": 1577297,
+    "SHA256": "8C6FF35F36E6400C5F56A66B4BADEAB61A422A8283534353DF7F4F17C01437DF"
+  },
+  {
+    "Category": "Zombies / Bestiary originals / Tier A",
+    "Name": "091 dread dreadnought",
+    "Variant": "Original",
+    "Path": "zombies/generated-originals/bestiary-49-108/tier-A/091-dread-dreadnought.png",
+    "Bytes": 1760358,
+    "SHA256": "769A827A7D7A36C4CDAEC2E791B17D10FA18535B0EE79F5C0C56964AA2971C8A"
+  },
+  {
+    "Category": "Zombies / Bestiary originals / Tier B",
+    "Name": "076 exoskeleton remnant",
+    "Variant": "Original",
+    "Path": "zombies/generated-originals/bestiary-49-108/tier-B/076-exoskeleton-remnant.png",
+    "Bytes": 1640232,
+    "SHA256": "D5F2024587CF8ED774EF73DD4F948978CC5A6E857A6DA1D3DD2A68A2748CBB8A"
+  },
+  {
+    "Category": "Zombies / Bestiary originals / Tier B",
+    "Name": "077 blight screamer",
+    "Variant": "Original",
+    "Path": "zombies/generated-originals/bestiary-49-108/tier-B/077-blight-screamer.png",
+    "Bytes": 1536535,
+    "SHA256": "387AACEEEF97E1A353D8F028087FF5AE594F68F0C9D33B0A13FDD538BE8D4D4E"
+  },
+  {
+    "Category": "Zombies / Bestiary originals / Tier B",
+    "Name": "078 needle limb freak",
+    "Variant": "Original",
+    "Path": "zombies/generated-originals/bestiary-49-108/tier-B/078-needle-limb-freak.png",
+    "Bytes": 1434683,
+    "SHA256": "E6533E20F90EE74E27199E264F2B377682751432E5A2844BA599A04A6789A573"
+  },
+  {
+    "Category": "Zombies / Bestiary originals / Tier B",
+    "Name": "079 gloom assassin",
+    "Variant": "Original",
+    "Path": "zombies/generated-originals/bestiary-49-108/tier-B/079-gloom-assassin.png",
+    "Bytes": 1372749,
+    "SHA256": "2AF259492CC79DC6CD02E852DB0B13508C6583CC710B1BCD33E383B47807B02E"
+  },
+  {
+    "Category": "Zombies / Bestiary originals / Tier B",
+    "Name": "080 chain whip warden",
+    "Variant": "Original",
+    "Path": "zombies/generated-originals/bestiary-49-108/tier-B/080-chain-whip-warden.png",
+    "Bytes": 1496060,
+    "SHA256": "3B99627E9FE5179E28AEE678BE15BBB1ED3F820D46A8771F24BC391C5361C0A8"
+  },
+  {
+    "Category": "Zombies / Bestiary originals / Tier B",
+    "Name": "081 caustic mortar",
+    "Variant": "Original",
+    "Path": "zombies/generated-originals/bestiary-49-108/tier-B/081-caustic-mortar.png",
+    "Bytes": 1551883,
+    "SHA256": "4497251B082F4F3954B7C69E581976FCE69D95CB66401C7A7799830794E74716"
+  },
+  {
+    "Category": "Zombies / Bestiary originals / Tier B",
+    "Name": "082 cryo executioner",
+    "Variant": "Original",
+    "Path": "zombies/generated-originals/bestiary-49-108/tier-B/082-cryo-executioner.png",
+    "Bytes": 1657216,
+    "SHA256": "526FAEBBCAC62F2902FAF2980083B79DA6404C6395DD20C52AF6F4E0D6B2AE9A"
+  },
+  {
+    "Category": "Zombies / Bestiary originals / Tier B",
+    "Name": "083 napalm stalker",
+    "Variant": "Original",
+    "Path": "zombies/generated-originals/bestiary-49-108/tier-B/083-napalm-stalker.png",
+    "Bytes": 1611728,
+    "SHA256": "56721952F676A3380751E4EEFF8FA3AAC74C63635597528FC7A8883D99B6E108"
+  },
+  {
+    "Category": "Zombies / Bestiary originals / Tier Boss",
+    "Name": "100 the iron titan",
+    "Variant": "Original",
+    "Path": "zombies/generated-originals/bestiary-49-108/tier-Boss/100-the-iron-titan.png",
+    "Bytes": 2468833,
+    "SHA256": "40B3474623AB2C89804FA728F9DB41E1601A02A91FAE4DD6C5BD76C2E8E628F6"
+  },
+  {
+    "Category": "Zombies / Bestiary originals / Tier Boss",
+    "Name": "101 the hivemind core",
+    "Variant": "Original",
+    "Path": "zombies/generated-originals/bestiary-49-108/tier-Boss/101-the-hivemind-core.png",
+    "Bytes": 2625631,
+    "SHA256": "1582C253A056AC31DFA4B85612BF8CF6B8D3AFFC4CFBB0E1CEC04AB45600A7D2"
+  },
+  {
+    "Category": "Zombies / Bestiary originals / Tier Boss",
+    "Name": "102 the ash emperor",
+    "Variant": "Original",
+    "Path": "zombies/generated-originals/bestiary-49-108/tier-Boss/102-the-ash-emperor.png",
+    "Bytes": 2058694,
+    "SHA256": "CC9F609990BBB3D67588DEAACDC2041A6684029F192366259CE8EFBF40C231EC"
+  },
+  {
+    "Category": "Zombies / Bestiary originals / Tier Boss",
+    "Name": "103 the void harbinger",
+    "Variant": "Original",
+    "Path": "zombies/generated-originals/bestiary-49-108/tier-Boss/103-the-void-harbinger.png",
+    "Bytes": 2211668,
+    "SHA256": "25BAF7EECBC494B414F51E61B9654CC88083BFA8375809DFAFF17249A3D3EBF0"
+  },
+  {
+    "Category": "Zombies / Bestiary originals / Tier Boss",
+    "Name": "104 the undying goliath",
+    "Variant": "Original",
+    "Path": "zombies/generated-originals/bestiary-49-108/tier-Boss/104-the-undying-goliath.png",
+    "Bytes": 2174589,
+    "SHA256": "D4382D71A7E9D4CD01EF31BAD8D810B57C0A69684E4BC7DF1EE5F8B643E05A2A"
+  },
+  {
+    "Category": "Zombies / Bestiary originals / Tier Boss",
+    "Name": "105 the storm sovereign",
+    "Variant": "Original",
+    "Path": "zombies/generated-originals/bestiary-49-108/tier-Boss/105-the-storm-sovereign.png",
+    "Bytes": 2063496,
+    "SHA256": "B7AFC16FC46D3E32229EC16C6EC2E20F6EFCDA63ACD5FECBAB3435279587613A"
+  },
+  {
+    "Category": "Zombies / Bestiary originals / Tier Boss",
+    "Name": "106 the plague archon",
+    "Variant": "Original",
+    "Path": "zombies/generated-originals/bestiary-49-108/tier-Boss/106-the-plague-archon.png",
+    "Bytes": 2033030,
+    "SHA256": "892C02ACA6FAB2B3244F0D312CB7381844205ED40869EB34C1A0776FE3385C3C"
+  },
+  {
+    "Category": "Zombies / Bestiary originals / Tier Boss",
+    "Name": "107 the sub zero colossus",
+    "Variant": "Original",
+    "Path": "zombies/generated-originals/bestiary-49-108/tier-Boss/107-the-sub-zero-colossus.png",
+    "Bytes": 2419039,
+    "SHA256": "2A4DEE75EAFB05ABC41723FB4C70D9FD338440B33B11BA53C48AE0EC97B5AFCE"
+  },
+  {
+    "Category": "Zombies / Bestiary originals / Tier Boss",
+    "Name": "108 the apex prime",
+    "Variant": "Original",
+    "Path": "zombies/generated-originals/bestiary-49-108/tier-Boss/108-the-apex-prime.png",
+    "Bytes": 2163603,
+    "SHA256": "61D357EE03C8DBFE31C91CC968B810AA731B9D1FB6712B63E55F63152CCAB258"
+  },
+  {
+    "Category": "Zombies / Bestiary originals / Tier C",
+    "Name": "068 riot pacifier",
+    "Variant": "Original",
+    "Path": "zombies/generated-originals/bestiary-49-108/tier-C/068-riot-pacifier.png",
+    "Bytes": 1513476,
+    "SHA256": "F45DA5BF30EC676E1D3A0D16A2F311E0CF18AC59A12BE8C3CA7F752246724886"
+  },
+  {
+    "Category": "Zombies / Bestiary originals / Tier C",
+    "Name": "069 thermite walker",
+    "Variant": "Original",
+    "Path": "zombies/generated-originals/bestiary-49-108/tier-C/069-thermite-walker.png",
+    "Bytes": 1634343,
+    "SHA256": "4D0286BEE7665047B065D632346B54CAA8A56AA8397DC008602E1E7DADE47767"
+  },
+  {
+    "Category": "Zombies / Bestiary originals / Tier C",
+    "Name": "070 plague matron",
+    "Variant": "Original",
+    "Path": "zombies/generated-originals/bestiary-49-108/tier-C/070-plague-matron.png",
+    "Bytes": 1605901,
+    "SHA256": "D572F6305E08A1E42504F08E5EA31DC9FE583DDA1FA476F02C66A1EABA445AC9"
+  },
+  {
+    "Category": "Zombies / Bestiary originals / Tier C",
+    "Name": "071 volt surger",
+    "Variant": "Original",
+    "Path": "zombies/generated-originals/bestiary-49-108/tier-C/071-volt-surger.png",
+    "Bytes": 1415768,
+    "SHA256": "EEA09B627B09D60D627CB21F4C615FF0055C2B5478423CD5B84A0AFC2D787D3F"
+  },
+  {
+    "Category": "Zombies / Bestiary originals / Tier C",
+    "Name": "072 slag enforcer",
+    "Variant": "Original",
+    "Path": "zombies/generated-originals/bestiary-49-108/tier-C/072-slag-enforcer.png",
+    "Bytes": 1556851,
+    "SHA256": "632462341CA755C7B67B3BA723E9ABFD01741A80225202B40464B820CE84421C"
+  },
+  {
+    "Category": "Zombies / Bestiary originals / Tier C",
+    "Name": "073 corrosive bloat",
+    "Variant": "Original",
+    "Path": "zombies/generated-originals/bestiary-49-108/tier-C/073-corrosive-bloat.png",
+    "Bytes": 1622398,
+    "SHA256": "F201D15CD888A6629DE59D69B8B2DED2CDB6609269D2750E90DCCBF862760326"
+  },
+  {
+    "Category": "Zombies / Bestiary originals / Tier C",
+    "Name": "074 leaping strangle imp",
+    "Variant": "Original",
+    "Path": "zombies/generated-originals/bestiary-49-108/tier-C/074-leaping-strangle-imp.png",
+    "Bytes": 1337626,
+    "SHA256": "42E11D6C5D5DAD48F97482DEC8F4AED0AFEDE54AB9CC9E648AD6617494113546"
+  },
+  {
+    "Category": "Zombies / Bestiary originals / Tier C",
+    "Name": "075 phantasm walker",
+    "Variant": "Original",
+    "Path": "zombies/generated-originals/bestiary-49-108/tier-C/075-phantasm-walker.png",
+    "Bytes": 1416602,
+    "SHA256": "9EC3210B99AAABFD694C54FB54987104057CC3EF722B73E7AF6DDC4C792DDF74"
+  },
+  {
+    "Category": "Zombies / Bestiary originals / Tier D",
+    "Name": "061 goo vomiter",
+    "Variant": "Original",
+    "Path": "zombies/generated-originals/bestiary-49-108/tier-D/061-goo-vomiter.png",
+    "Bytes": 1525079,
+    "SHA256": "6F1C63654230B1EBFC96FCD8B5E133A952845A1906BB7B4B2C3C07C67B8FCAED"
+  },
+  {
+    "Category": "Zombies / Bestiary originals / Tier D",
+    "Name": "062 shatter bone bruiser",
+    "Variant": "Original",
+    "Path": "zombies/generated-originals/bestiary-49-108/tier-D/062-shatter-bone-bruiser.png",
+    "Bytes": 1494767,
+    "SHA256": "904E3F71C27470302482BD44A7A3FBB072C872C4252F1C61234939AAC79C3CB2"
+  },
+  {
+    "Category": "Zombies / Bestiary originals / Tier D",
+    "Name": "063 grave digger",
+    "Variant": "Original",
+    "Path": "zombies/generated-originals/bestiary-49-108/tier-D/063-grave-digger.png",
+    "Bytes": 1346337,
+    "SHA256": "4925DBE22EF6C409E49B1907471C918A8D85D386EDDA5F15A8400D4699CD4356"
+  },
+  {
+    "Category": "Zombies / Bestiary originals / Tier D",
+    "Name": "064 wire bound crawler",
+    "Variant": "Original",
+    "Path": "zombies/generated-originals/bestiary-49-108/tier-D/064-wire-bound-crawler.png",
+    "Bytes": 1498918,
+    "SHA256": "1065B870A641371E86B65F38727919CC71F43A29546138DA0069E7F9D63818D1"
+  },
+  {
+    "Category": "Zombies / Bestiary originals / Tier D",
+    "Name": "065 frost smite",
+    "Variant": "Original",
+    "Path": "zombies/generated-originals/bestiary-49-108/tier-D/065-frost-smite.png",
+    "Bytes": 1579607,
+    "SHA256": "8EC9B97361DDA5AD9431CC46B9D7FAD7568297B6300B5BAF40E4BC482BE2C149"
+  },
+  {
+    "Category": "Zombies / Bestiary originals / Tier D",
+    "Name": "066 flash blind stalker",
+    "Variant": "Original",
+    "Path": "zombies/generated-originals/bestiary-49-108/tier-D/066-flash-blind-stalker.png",
+    "Bytes": 1355604,
+    "SHA256": "F0FBCB7CB511D20D0ED048A65A7CF9C5E21B2D1DF544A4B6465AFCB9C382C556"
+  },
+  {
+    "Category": "Zombies / Bestiary originals / Tier D",
+    "Name": "067 decay launcher",
+    "Variant": "Original",
+    "Path": "zombies/generated-originals/bestiary-49-108/tier-D/067-decay-launcher.png",
+    "Bytes": 1333307,
+    "SHA256": "532DBB9BAAE3152FA571E84B5DFF2B4FBEC12AAD73D6447F142919664CA1FDB6"
+  },
+  {
+    "Category": "Zombies / Bestiary originals / Tier E",
+    "Name": "054 siren stumper",
+    "Variant": "Original",
+    "Path": "zombies/generated-originals/bestiary-49-108/tier-E/054-siren-stumper.png",
+    "Bytes": 1453745,
+    "SHA256": "05C8998DF2F7045BDFC0930365681FE5B7211D316976EFE0E603001AEA29A53E"
+  },
+  {
+    "Category": "Zombies / Bestiary originals / Tier E",
+    "Name": "055 cinder runner",
+    "Variant": "Original",
+    "Path": "zombies/generated-originals/bestiary-49-108/tier-E/055-cinder-runner.png",
+    "Bytes": 1365972,
+    "SHA256": "1A4EC27743A7875B465A44E9796ED105A05AE78155B40B57F4445AE009DAD45D"
+  },
+  {
+    "Category": "Zombies / Bestiary originals / Tier E",
+    "Name": "056 muck lurker",
+    "Variant": "Original",
+    "Path": "zombies/generated-originals/bestiary-49-108/tier-E/056-muck-lurker.png",
+    "Bytes": 1336689,
+    "SHA256": "D2627EBCD7C469D20B1DB40D9F75DFC71E8EBA2040C5F85F5417AD9E8713AC59"
+  },
+  {
+    "Category": "Zombies / Bestiary originals / Tier E",
+    "Name": "057 hollow leaper",
+    "Variant": "Original",
+    "Path": "zombies/generated-originals/bestiary-49-108/tier-E/057-hollow-leaper.png",
+    "Bytes": 1279008,
+    "SHA256": "E398983EF2CB5FC289F9C07F3C241B3BD0E69AAA0C4A49D2EA0DC6431C05C5D9"
+  },
+  {
+    "Category": "Zombies / Bestiary originals / Tier E",
+    "Name": "058 rusted guard",
+    "Variant": "Original",
+    "Path": "zombies/generated-originals/bestiary-49-108/tier-E/058-rusted-guard.png",
+    "Bytes": 1468936,
+    "SHA256": "05DBF67342E880B39C02C85C43E155A50D66535CD72891D0F822DC9CBA64F582"
+  },
+  {
+    "Category": "Zombies / Bestiary originals / Tier E",
+    "Name": "059 spore carrier",
+    "Variant": "Original",
+    "Path": "zombies/generated-originals/bestiary-49-108/tier-E/059-spore-carrier.png",
+    "Bytes": 1418982,
+    "SHA256": "F6832116136D2A45CC0BB4E9FEB9FDD47BDACC3A63F086D8B059D6FBE52D684C"
+  },
+  {
+    "Category": "Zombies / Bestiary originals / Tier E",
+    "Name": "060 static shuffler",
+    "Variant": "Original",
+    "Path": "zombies/generated-originals/bestiary-49-108/tier-E/060-static-shuffler.png",
+    "Bytes": 1352388,
+    "SHA256": "7AEB0C7A68E94CABB41D603158D52E2708A1FFD45FBC063661E8F1E344E17FA0"
+  },
+  {
+    "Category": "Zombies / Bestiary originals / Tier F",
+    "Name": "049 soggy slump",
+    "Variant": "Original",
+    "Path": "zombies/generated-originals/bestiary-49-108/tier-F/049-soggy-slump.png",
+    "Bytes": 1422397,
+    "SHA256": "E7075F74BCA1B87058B5C941236BE2D929D4DD11C928C1527411C93B2059AF8E"
+  },
+  {
+    "Category": "Zombies / Bestiary originals / Tier F",
+    "Name": "050 ashen wanderer",
+    "Variant": "Original",
+    "Path": "zombies/generated-originals/bestiary-49-108/tier-F/050-ashen-wanderer.png",
+    "Bytes": 1324003,
+    "SHA256": "ABE1E5F55826064179D859795A8D7A6689821BB93FB797418BC3C4DBB38447FE"
+  },
+  {
+    "Category": "Zombies / Bestiary originals / Tier F",
+    "Name": "051 lumbering courier",
+    "Variant": "Original",
+    "Path": "zombies/generated-originals/bestiary-49-108/tier-F/051-lumbering-courier.png",
+    "Bytes": 1394135,
+    "SHA256": "5BD870BDACF8F52E99635AD6FC2EAEC46EF24A534BD973D270BE6BFF0F77A13B"
+  },
+  {
+    "Category": "Zombies / Bestiary originals / Tier F",
+    "Name": "052 tangled drifter",
+    "Variant": "Original",
+    "Path": "zombies/generated-originals/bestiary-49-108/tier-F/052-tangled-drifter.png",
+    "Bytes": 1430540,
+    "SHA256": "4393E050203B5D9508AF4A81817B8ABF09BA3D0CD121E2F69D67B00D8D875B93"
+  },
+  {
+    "Category": "Zombies / Bestiary originals / Tier F",
+    "Name": "053 frail husk",
+    "Variant": "Original",
+    "Path": "zombies/generated-originals/bestiary-49-108/tier-F/053-frail-husk.png",
+    "Bytes": 1319037,
+    "SHA256": "E24F888D38E791306898279B84370656713768C79F732651DD91FECA7E88C006"
+  },
+  {
+    "Category": "Zombies / Bestiary originals / Tier S",
+    "Name": "092 marrow collector",
+    "Variant": "Original",
+    "Path": "zombies/generated-originals/bestiary-49-108/tier-S/092-marrow-collector.png",
+    "Bytes": 1860516,
+    "SHA256": "78322913C617CFBA89E5E15519EA2E8B8DCE8977379D29EFF2888470F1584060"
+  },
+  {
+    "Category": "Zombies / Bestiary originals / Tier S",
+    "Name": "093 inferno engine",
+    "Variant": "Original",
+    "Path": "zombies/generated-originals/bestiary-49-108/tier-S/093-inferno-engine.png",
+    "Bytes": 2161592,
+    "SHA256": "F287AFA530DABAC3216BE3D0C2303A4135C58CE574F2269F867BB4832CA74BCE"
+  },
+  {
+    "Category": "Zombies / Bestiary originals / Tier S",
+    "Name": "094 void phantom",
+    "Variant": "Original",
+    "Path": "zombies/generated-originals/bestiary-49-108/tier-S/094-void-phantom.png",
+    "Bytes": 1671270,
+    "SHA256": "260452A169F74C6EA5EDBF4E3B799AB64412AED082615AF9A4E795417842AF5C"
+  },
+  {
+    "Category": "Zombies / Bestiary originals / Tier S",
+    "Name": "095 grave overlord",
+    "Variant": "Original",
+    "Path": "zombies/generated-originals/bestiary-49-108/tier-S/095-grave-overlord.png",
+    "Bytes": 1715243,
+    "SHA256": "1FCD63CEF9BC26C6E03CE5B73E9A574EABE45D818A55F00D112969D603586AAE"
+  },
+  {
+    "Category": "Zombies / Bestiary originals / Tier S",
+    "Name": "096 epitaph warden",
+    "Variant": "Original",
+    "Path": "zombies/generated-originals/bestiary-49-108/tier-S/096-epitaph-warden.png",
+    "Bytes": 1747202,
+    "SHA256": "6F7E75666909F458FAB3F74CDCA3EAA7DACEEC89A4531DD7F203B131BA3FED29"
+  },
+  {
+    "Category": "Zombies / Bestiary originals / Tier S",
+    "Name": "097 toxin sovereign",
+    "Variant": "Original",
+    "Path": "zombies/generated-originals/bestiary-49-108/tier-S/097-toxin-sovereign.png",
+    "Bytes": 1862433,
+    "SHA256": "FEE5A12CC725BEE3082B3334F75E7A0D08FDEA9B8AD9242B36A3390845A188DA"
+  },
+  {
+    "Category": "Zombies / Bestiary originals / Tier S",
+    "Name": "098 storm caller",
+    "Variant": "Original",
+    "Path": "zombies/generated-originals/bestiary-49-108/tier-S/098-storm-caller.png",
+    "Bytes": 1942925,
+    "SHA256": "067CBA8EBC761E78063F17AD25F28932B1632BEA504A1BF173F6DDBEC0F86B86"
+  },
+  {
+    "Category": "Zombies / Bestiary originals / Tier S",
+    "Name": "099 glacial leviathan",
+    "Variant": "Original",
+    "Path": "zombies/generated-originals/bestiary-49-108/tier-S/099-glacial-leviathan.png",
+    "Bytes": 2160132,
+    "SHA256": "8339F07EC6A0DBDD4E5D2025437DD0AD540B62E35D5CB0C651C7E81179CD920D"
+  },
+  {
+    "Category": "Zombies / Game sprites",
+    "Name": "049 soggy slump",
+    "Variant": "Game sprite",
+    "Path": "zombies/049-soggy-slump.png",
+    "Bytes": 2314,
+    "SHA256": "6332F1527C1F36042F64620A5DDF0BF03A4AA877BAA7136702E27A4A73C938E8"
+  },
+  {
+    "Category": "Zombies / Game sprites",
+    "Name": "050 ashen wanderer",
+    "Variant": "Game sprite",
+    "Path": "zombies/050-ashen-wanderer.png",
+    "Bytes": 2101,
+    "SHA256": "B6735C9311E7C637E47905C60A6E73DBFF5789520D26B5D7B7572A2E327D6EAF"
+  },
+  {
+    "Category": "Zombies / Game sprites",
+    "Name": "051 lumbering courier",
+    "Variant": "Game sprite",
+    "Path": "zombies/051-lumbering-courier.png",
+    "Bytes": 3085,
+    "SHA256": "4B3DABF421E2B279FBC1F736C3AF7DC0F81BCD3B19AF0B17528044016C057B01"
+  },
+  {
+    "Category": "Zombies / Game sprites",
+    "Name": "052 tangled drifter",
+    "Variant": "Game sprite",
+    "Path": "zombies/052-tangled-drifter.png",
+    "Bytes": 2831,
+    "SHA256": "AD21DCF224132C5211978E3248CAC676256A0DBC4B7DB08A575694A549C0853B"
+  },
+  {
+    "Category": "Zombies / Game sprites",
+    "Name": "053 frail husk",
+    "Variant": "Game sprite",
+    "Path": "zombies/053-frail-husk.png",
+    "Bytes": 2041,
+    "SHA256": "B70EA942E9F7CB57DB6B0439C99D7D6A05EA1D48F4DAEA228A873FF0C77EA867"
+  },
+  {
+    "Category": "Zombies / Game sprites",
+    "Name": "054 siren stumper",
+    "Variant": "Game sprite",
+    "Path": "zombies/054-siren-stumper.png",
+    "Bytes": 3587,
+    "SHA256": "0336373735B75B86CB5910B30BC45D6551C7B24FB49543DEBF9B60D9055D7942"
+  },
+  {
+    "Category": "Zombies / Game sprites",
+    "Name": "055 cinder runner",
+    "Variant": "Game sprite",
+    "Path": "zombies/055-cinder-runner.png",
+    "Bytes": 3872,
+    "SHA256": "3C6D03E157A78137DB6D55A60FF9574869EA69B0563361F6A75CBF413A4E472B"
+  },
+  {
+    "Category": "Zombies / Game sprites",
+    "Name": "056 muck lurker",
+    "Variant": "Game sprite",
+    "Path": "zombies/056-muck-lurker.png",
+    "Bytes": 5901,
+    "SHA256": "2AC19896298BDF7F0F8E4B4E76C4E7ED840185C23C0CA8261CC167AB8521FE84"
+  },
+  {
+    "Category": "Zombies / Game sprites",
+    "Name": "057 hollow leaper",
+    "Variant": "Game sprite",
+    "Path": "zombies/057-hollow-leaper.png",
+    "Bytes": 2980,
+    "SHA256": "7A1AB91296F2E13F5082CCEB7E2AB5BEC90E2B35D9A93D3BC1DD9264AC8A588B"
+  },
+  {
+    "Category": "Zombies / Game sprites",
+    "Name": "058 rusted guard",
+    "Variant": "Game sprite",
+    "Path": "zombies/058-rusted-guard.png",
+    "Bytes": 3000,
+    "SHA256": "77769E70FB9EC8817C854B11CE8AF25C7895EA821983E8117501BBDE366050BE"
+  },
+  {
+    "Category": "Zombies / Game sprites",
+    "Name": "059 spore carrier",
+    "Variant": "Game sprite",
+    "Path": "zombies/059-spore-carrier.png",
+    "Bytes": 3111,
+    "SHA256": "25F72AF1821D6F5653FDF1C572846DE9DBF7BA2C6A14E8728CBB2C4AF99874DC"
+  },
+  {
+    "Category": "Zombies / Game sprites",
+    "Name": "060 static shuffler",
+    "Variant": "Game sprite",
+    "Path": "zombies/060-static-shuffler.png",
+    "Bytes": 2742,
+    "SHA256": "F923B971B59AD9D93B5FECCA189E3F64D2C6A35207EB541FA780A400F9F4540A"
+  },
+  {
+    "Category": "Zombies / Game sprites",
+    "Name": "061 goo vomiter",
+    "Variant": "Game sprite",
+    "Path": "zombies/061-goo-vomiter.png",
+    "Bytes": 3814,
+    "SHA256": "44A2E9D02E179265F8FD1D3BD313919E2B180FDA3CF2AB013477088EEB648E9F"
+  },
+  {
+    "Category": "Zombies / Game sprites",
+    "Name": "062 shatter bone bruiser",
+    "Variant": "Game sprite",
+    "Path": "zombies/062-shatter-bone-bruiser.png",
+    "Bytes": 4724,
+    "SHA256": "0E95563594D6DF676DFD033FAA403CD0773DBD10BF29B4AC105C9C7C87FBEF34"
+  },
+  {
+    "Category": "Zombies / Game sprites",
+    "Name": "063 grave digger",
+    "Variant": "Game sprite",
+    "Path": "zombies/063-grave-digger.png",
+    "Bytes": 3678,
+    "SHA256": "18CE9D9B6EFF78DBDAEF9FD53716D507C87DC274B18C4B8D2219CE0BB1BAC1AB"
+  },
+  {
+    "Category": "Zombies / Game sprites",
+    "Name": "064 wire bound crawler",
+    "Variant": "Game sprite",
+    "Path": "zombies/064-wire-bound-crawler.png",
+    "Bytes": 3181,
+    "SHA256": "48D60FF3CCCBBFF2DD410FC8A41452EBE54806D66D9AC57283FDB62262761AD5"
+  },
+  {
+    "Category": "Zombies / Game sprites",
+    "Name": "065 frost smite",
+    "Variant": "Game sprite",
+    "Path": "zombies/065-frost-smite.png",
+    "Bytes": 3196,
+    "SHA256": "C5F5CD6450D3F03B12AE483E304DB6826D7B7BD638815E96CF1C7286D8B953A5"
+  },
+  {
+    "Category": "Zombies / Game sprites",
+    "Name": "066 flash blind stalker",
+    "Variant": "Game sprite",
+    "Path": "zombies/066-flash-blind-stalker.png",
+    "Bytes": 2240,
+    "SHA256": "7B065900C2F34DDAE4E6548EB8AB95442F6252FB809250BE4FFE335E4EFB9151"
+  },
+  {
+    "Category": "Zombies / Game sprites",
+    "Name": "067 decay launcher",
+    "Variant": "Game sprite",
+    "Path": "zombies/067-decay-launcher.png",
+    "Bytes": 3282,
+    "SHA256": "97DEFAFE4A4BAE3C6749E79D285A64DA0ED8E8F0029ED68D1CF09FD5C0F2ED2E"
+  },
+  {
+    "Category": "Zombies / Game sprites",
+    "Name": "068 riot pacifier",
+    "Variant": "Game sprite",
+    "Path": "zombies/068-riot-pacifier.png",
+    "Bytes": 3362,
+    "SHA256": "A512315010B638024DB476263FCB155CCCAFF4DFF2200572736B31898D3932DE"
+  },
+  {
+    "Category": "Zombies / Game sprites",
+    "Name": "069 thermite walker",
+    "Variant": "Game sprite",
+    "Path": "zombies/069-thermite-walker.png",
+    "Bytes": 4646,
+    "SHA256": "C65FB45B7C93222F4E3744249EA749F9CD2BBEEBF634296DFD254B7EA4FC3C34"
+  },
+  {
+    "Category": "Zombies / Game sprites",
+    "Name": "070 plague matron",
+    "Variant": "Game sprite",
+    "Path": "zombies/070-plague-matron.png",
+    "Bytes": 5508,
+    "SHA256": "59593367513D30A8D985B170ED249AEF67DA94E564E7ED01F2182CCF18768AE7"
+  },
+  {
+    "Category": "Zombies / Game sprites",
+    "Name": "071 volt surger",
+    "Variant": "Game sprite",
+    "Path": "zombies/071-volt-surger.png",
+    "Bytes": 3550,
+    "SHA256": "1BBAD3C43E1C305886C6ACE94CBE561AE318045E4C43ED2AC10148A8AE2F5F36"
+  },
+  {
+    "Category": "Zombies / Game sprites",
+    "Name": "072 slag enforcer",
+    "Variant": "Game sprite",
+    "Path": "zombies/072-slag-enforcer.png",
+    "Bytes": 4913,
+    "SHA256": "92817CB822A8B45C7EAB31E2690E8AF6312E19EB0D73F2A005EA128B9D7D0D9D"
+  },
+  {
+    "Category": "Zombies / Game sprites",
+    "Name": "073 corrosive bloat",
+    "Variant": "Game sprite",
+    "Path": "zombies/073-corrosive-bloat.png",
+    "Bytes": 4340,
+    "SHA256": "FA8521A6C2BD2725446D14C115728C2EB679930F5EB93CFFD1FA655CC0E1A66C"
+  },
+  {
+    "Category": "Zombies / Game sprites",
+    "Name": "074 leaping strangle imp",
+    "Variant": "Game sprite",
+    "Path": "zombies/074-leaping-strangle-imp.png",
+    "Bytes": 3304,
+    "SHA256": "BBCCE3403A25CCF28A9337EF39AAADBB35E1AF53D78458BCBF6FF1DE74419962"
+  },
+  {
+    "Category": "Zombies / Game sprites",
+    "Name": "075 phantasm walker",
+    "Variant": "Game sprite",
+    "Path": "zombies/075-phantasm-walker.png",
+    "Bytes": 2627,
+    "SHA256": "423CCE2EA5C1BDFD10856DC3CF65B4CAAA89FE4E67AD6A049FC21028AC29F135"
+  },
+  {
+    "Category": "Zombies / Game sprites",
+    "Name": "076 exoskeleton remnant",
+    "Variant": "Game sprite",
+    "Path": "zombies/076-exoskeleton-remnant.png",
+    "Bytes": 4589,
+    "SHA256": "E72AA284EFE4C2124A149A17A7FC07C04EC9BAE0CEA888BBAF34422D0747CE94"
+  },
+  {
+    "Category": "Zombies / Game sprites",
+    "Name": "077 blight screamer",
+    "Variant": "Game sprite",
+    "Path": "zombies/077-blight-screamer.png",
+    "Bytes": 5528,
+    "SHA256": "FA5396308762A5F2E46414454EC0AAEAFE2A9F59CC3092A918B3A82132650FFE"
+  },
+  {
+    "Category": "Zombies / Game sprites",
+    "Name": "078 needle limb freak",
+    "Variant": "Game sprite",
+    "Path": "zombies/078-needle-limb-freak.png",
+    "Bytes": 2900,
+    "SHA256": "E955EAE30645AAC78FE0A889F0E88C9A15273DC326E66E01003E70C1C2B529E9"
+  },
+  {
+    "Category": "Zombies / Game sprites",
+    "Name": "079 gloom assassin",
+    "Variant": "Game sprite",
+    "Path": "zombies/079-gloom-assassin.png",
+    "Bytes": 4438,
+    "SHA256": "838DE6F0155AFAA6F2A2D2B6726073B4AD49A53BF220CD643A2F114300B56133"
+  },
+  {
+    "Category": "Zombies / Game sprites",
+    "Name": "080 chain whip warden",
+    "Variant": "Game sprite",
+    "Path": "zombies/080-chain-whip-warden.png",
+    "Bytes": 4910,
+    "SHA256": "BFC6E55556CE3E13E0F3D9247D6847430136A245A18CBD34315554D53D6D0B85"
+  },
+  {
+    "Category": "Zombies / Game sprites",
+    "Name": "081 caustic mortar",
+    "Variant": "Game sprite",
+    "Path": "zombies/081-caustic-mortar.png",
+    "Bytes": 5443,
+    "SHA256": "25F2017BC7890A985FBD6D5B5E6702CD96D5F6AD93DCB8D328C8DEBB6C30ADFA"
+  },
+  {
+    "Category": "Zombies / Game sprites",
+    "Name": "082 cryo executioner",
+    "Variant": "Game sprite",
+    "Path": "zombies/082-cryo-executioner.png",
+    "Bytes": 4817,
+    "SHA256": "EF4A8210CBBC521197946499FF879CCA88D82B3656CA4762FB4A38A967681446"
+  },
+  {
+    "Category": "Zombies / Game sprites",
+    "Name": "083 napalm stalker",
+    "Variant": "Game sprite",
+    "Path": "zombies/083-napalm-stalker.png",
+    "Bytes": 7437,
+    "SHA256": "915CC02D84372D2CEF49A6E12A448F2C22271F0D02059FCF69AB00F4A276C6C0"
+  },
+  {
+    "Category": "Zombies / Game sprites",
+    "Name": "084 centipede host",
+    "Variant": "Game sprite",
+    "Path": "zombies/084-centipede-host.png",
+    "Bytes": 5871,
+    "SHA256": "C7CFB76FCC8FAB69D87938ABE94099BD9B02C9DCF57A0AA581912DBFC8203F3B"
+  },
+  {
+    "Category": "Zombies / Game sprites",
+    "Name": "085 apex hunter",
+    "Variant": "Game sprite",
+    "Path": "zombies/085-apex-hunter.png",
+    "Bytes": 10099,
+    "SHA256": "CC82CE286FA75E37107D8836FD39DAF3F0D90D4EC76586DF7DABB319484415EB"
+  },
+  {
+    "Category": "Zombies / Game sprites",
+    "Name": "086 slag titan",
+    "Variant": "Game sprite",
+    "Path": "zombies/086-slag-titan.png",
+    "Bytes": 7532,
+    "SHA256": "CBDA6FBFF54246B7886DA635C051266352917BEBF6F00FE47FA93421DBDA95D4"
+  },
+  {
+    "Category": "Zombies / Game sprites",
+    "Name": "087 toxic behemoth",
+    "Variant": "Game sprite",
+    "Path": "zombies/087-toxic-behemoth.png",
+    "Bytes": 8085,
+    "SHA256": "868DF47D439878DED408B1DFABAF615C9FB5EBA3744BBDED2EB933C66C9C3228"
+  },
+  {
+    "Category": "Zombies / Game sprites",
+    "Name": "088 bio electric monstrosity",
+    "Variant": "Game sprite",
+    "Path": "zombies/088-bio-electric-monstrosity.png",
+    "Bytes": 9171,
+    "SHA256": "E5E976DAA94B13ECABFFF0C9B654271C2E44A0A1E07DCD0E56D4E7E5091A51D1"
+  },
+  {
+    "Category": "Zombies / Game sprites",
+    "Name": "089 subterranean stalker",
+    "Variant": "Game sprite",
+    "Path": "zombies/089-subterranean-stalker.png",
+    "Bytes": 8636,
+    "SHA256": "D3FA2BED0D75C3F3BB6068E4590AD76359023B0CE20916274B2435B4CA6B44A3"
+  },
+  {
+    "Category": "Zombies / Game sprites",
+    "Name": "090 surgical abomination",
+    "Variant": "Game sprite",
+    "Path": "zombies/090-surgical-abomination.png",
+    "Bytes": 6171,
+    "SHA256": "A16A96B6F2F65E3B6F0975FC011E72D4C5FCDEF7979F6BF455B74C80B4E26E1F"
+  },
+  {
+    "Category": "Zombies / Game sprites",
+    "Name": "091 dread dreadnought",
+    "Variant": "Game sprite",
+    "Path": "zombies/091-dread-dreadnought.png",
+    "Bytes": 7823,
+    "SHA256": "4516322607DDFD030902DFB933B0042053709F3D2C53B25F2E7C1B93D7A2BB16"
+  },
+  {
+    "Category": "Zombies / Game sprites",
+    "Name": "092 marrow collector",
+    "Variant": "Game sprite",
+    "Path": "zombies/092-marrow-collector.png",
+    "Bytes": 8176,
+    "SHA256": "82F1CC30E4C3D9DCEA40C45BDD034E8AAD1065086F52B47BE49E9A92FD3EA84B"
+  },
+  {
+    "Category": "Zombies / Game sprites",
+    "Name": "093 inferno engine",
+    "Variant": "Game sprite",
+    "Path": "zombies/093-inferno-engine.png",
+    "Bytes": 12247,
+    "SHA256": "8962E415F84EC0E8152938A07CA682B8B88AD8D35AC09B00596CD67A8E9486B0"
+  },
+  {
+    "Category": "Zombies / Game sprites",
+    "Name": "094 void phantom",
+    "Variant": "Game sprite",
+    "Path": "zombies/094-void-phantom.png",
+    "Bytes": 4612,
+    "SHA256": "A5E718A9EA50AA4A34B154E6633A0DAD428BB946BCC7263306DB21C218316C3E"
+  },
+  {
+    "Category": "Zombies / Game sprites",
+    "Name": "095 grave overlord",
+    "Variant": "Game sprite",
+    "Path": "zombies/095-grave-overlord.png",
+    "Bytes": 8139,
+    "SHA256": "9E6B3369D1EB43DEBF568B3C68BB37575FCABC025773D7CD0411FE97D139331A"
+  },
+  {
+    "Category": "Zombies / Game sprites",
+    "Name": "096 epitaph warden",
+    "Variant": "Game sprite",
+    "Path": "zombies/096-epitaph-warden.png",
+    "Bytes": 10408,
+    "SHA256": "DB91632ADD539197F2C11EFA51720BE3D89584413A8D338B580DE86274ABD06A"
+  },
+  {
+    "Category": "Zombies / Game sprites",
+    "Name": "097 toxin sovereign",
+    "Variant": "Game sprite",
+    "Path": "zombies/097-toxin-sovereign.png",
+    "Bytes": 10643,
+    "SHA256": "FBBF7A3D9760E7864C40A846551EC4889900662520C2FC4DA2F8F1A9E3E383F9"
+  },
+  {
+    "Category": "Zombies / Game sprites",
+    "Name": "098 storm caller",
+    "Variant": "Game sprite",
+    "Path": "zombies/098-storm-caller.png",
+    "Bytes": 6592,
+    "SHA256": "2E7D2C6FD3297488248C2E62DB1C31114C75D7DE55210DD6EDEA5E2CD466F4E5"
+  },
+  {
+    "Category": "Zombies / Game sprites",
+    "Name": "099 glacial leviathan",
+    "Variant": "Game sprite",
+    "Path": "zombies/099-glacial-leviathan.png",
+    "Bytes": 7652,
+    "SHA256": "6BD17D539CB0A9C18AFD7C6F00846A0805786D55ADD65C038DA90DD4A8A4C8EB"
+  },
+  {
+    "Category": "Zombies / Game sprites",
+    "Name": "100 the iron titan",
+    "Variant": "Game sprite",
+    "Path": "zombies/100-the-iron-titan.png",
+    "Bytes": 16860,
+    "SHA256": "CFF31A143D4A71F4D7EBD60EAC4863786EE3C8B7996559EC08436170FE1721F2"
+  },
+  {
+    "Category": "Zombies / Game sprites",
+    "Name": "101 the hivemind core",
+    "Variant": "Game sprite",
+    "Path": "zombies/101-the-hivemind-core.png",
+    "Bytes": 11855,
+    "SHA256": "E433E8CA33076E48FA5D1694CB7FD3534BB3C7980D04E67AEFEC65894AF534CB"
+  },
+  {
+    "Category": "Zombies / Game sprites",
+    "Name": "102 the ash emperor",
+    "Variant": "Game sprite",
+    "Path": "zombies/102-the-ash-emperor.png",
+    "Bytes": 13638,
+    "SHA256": "8898B60E00E079C0B0003B6498893D6D713DAEBAF8DB50C51BB7DEB071A7EE34"
+  },
+  {
+    "Category": "Zombies / Game sprites",
+    "Name": "103 the void harbinger",
+    "Variant": "Game sprite",
+    "Path": "zombies/103-the-void-harbinger.png",
+    "Bytes": 10847,
+    "SHA256": "ADCBD603CA513E3F03B682283BD6C545318D1E4A857D6B7D5BD022988746F3B8"
+  },
+  {
+    "Category": "Zombies / Game sprites",
+    "Name": "104 the undying goliath",
+    "Variant": "Game sprite",
+    "Path": "zombies/104-the-undying-goliath.png",
+    "Bytes": 15117,
+    "SHA256": "3DD8B08A8FF478EE9DF83AF18C605CDF1F03261DAD1301097969A63C01FEC9AE"
+  },
+  {
+    "Category": "Zombies / Game sprites",
+    "Name": "105 the storm sovereign",
+    "Variant": "Game sprite",
+    "Path": "zombies/105-the-storm-sovereign.png",
+    "Bytes": 14082,
+    "SHA256": "EBA988A5A269A9AA565D49E1853B48661437E9DF20E686D2C8B2CA1D87205B08"
+  },
+  {
+    "Category": "Zombies / Game sprites",
+    "Name": "106 the plague archon",
+    "Variant": "Game sprite",
+    "Path": "zombies/106-the-plague-archon.png",
+    "Bytes": 16887,
+    "SHA256": "1F4D58C18EBF0CA4D52EF0FA8EFD77B302540A66058C2934B10E34EC7DFB979B"
+  },
+  {
+    "Category": "Zombies / Game sprites",
+    "Name": "107 the sub zero colossus",
+    "Variant": "Game sprite",
+    "Path": "zombies/107-the-sub-zero-colossus.png",
+    "Bytes": 10656,
+    "SHA256": "541FE7EE45FDC0D9E8F406BD654B6E4606C26246A5925692CE0D22718825CAA1"
+  },
+  {
+    "Category": "Zombies / Game sprites",
+    "Name": "108 the apex prime",
+    "Variant": "Game sprite",
+    "Path": "zombies/108-the-apex-prime.png",
+    "Bytes": 14137,
+    "SHA256": "8F55D39AD7141C0E5E710EF88A394DAC413D736D7FDAAE4D647A467A919EB111"
+  },
+  {
+    "Category": "Zombies / Original key poses",
+    "Name": "01 audio distractor",
+    "Variant": "Original",
+    "Path": "zombies/generated-originals/key-poses/01-audio-distractor.png",
+    "Bytes": 2174437,
+    "SHA256": "043D0AC3FD8D9AC85DBA0FF3C42B5BD7E9F0B0687EAC30C8AF3AFAB13E63A7FA"
+  },
+  {
+    "Category": "Zombies / Original key poses",
+    "Name": "02 battle cry leader",
+    "Variant": "Original",
+    "Path": "zombies/generated-originals/key-poses/02-battle-cry-leader.png",
+    "Bytes": 1878170,
+    "SHA256": "F149FBEBA37CF3A0A74DF8D1BBA34FE6133C19E713BFA5933CB80D6CF4088563"
+  },
+  {
+    "Category": "Zombies / Original key poses",
+    "Name": "03 anti trap runner",
+    "Variant": "Original",
+    "Path": "zombies/generated-originals/key-poses/03-anti-trap-runner.png",
+    "Bytes": 1866979,
+    "SHA256": "6F922F76154A6BF951C0C1B57DF815E209188D880F82239081817BD1E64D9D66"
+  },
+  {
+    "Category": "Zombies / Original key poses",
+    "Name": "04 frozen heavy",
+    "Variant": "Original",
+    "Path": "zombies/generated-originals/key-poses/04-frozen-heavy.png",
+    "Bytes": 3154549,
+    "SHA256": "2E0B4A05E92690251B2A9E98D8BFC1F48EEA2F0A92E412BF23B95C4834841222"
+  },
+  {
+    "Category": "Zombies / Original key poses",
+    "Name": "05 domehead scrap heavy",
+    "Variant": "Original",
+    "Path": "zombies/generated-originals/key-poses/05-domehead-scrap-heavy.png",
+    "Bytes": 2300091,
+    "SHA256": "2EF39522477E43E0B574806BB17B5E206906746F29D8EC23DDD3E3402B488FE9"
+  },
+  {
+    "Category": "Zombies / Original key poses",
+    "Name": "06 acid sprayer",
+    "Variant": "Original",
+    "Path": "zombies/generated-originals/key-poses/06-acid-sprayer.png",
+    "Bytes": 1713806,
+    "SHA256": "1E92E24CBDCF491FD21E5863ED08FFEEE67F02F78BEEB80794C73F862E9FCBC1"
+  },
+  {
+    "Category": "Zombies / Original key poses",
+    "Name": "07 barbed shackler",
+    "Variant": "Original",
+    "Path": "zombies/generated-originals/key-poses/07-barbed-shackler.png",
+    "Bytes": 2363981,
+    "SHA256": "56C6FD5D177E927CAA44F7DEA9F23D86C6820E35268DCCA23C4720DB10DEBA94"
+  },
+  {
+    "Category": "Zombies / Original key poses",
+    "Name": "08 obsidian bladewall",
+    "Variant": "Original",
+    "Path": "zombies/generated-originals/key-poses/08-obsidian-bladewall.png",
+    "Bytes": 1748693,
+    "SHA256": "D8D8D12D52C046A60E63169FE25B51F2D22F3512BD6078FB3E45AAEF7708CE97"
+  },
+  {
+    "Category": "Zombies / Original key poses",
+    "Name": "09 burrower",
+    "Variant": "Original",
+    "Path": "zombies/generated-originals/key-poses/09-burrower.png",
+    "Bytes": 2887311,
+    "SHA256": "4FF24CA1DF29655BDAF3B58E4CBA9BFA82EC186CBEE88BDA71ECEB5130F27FEF"
+  },
+  {
+    "Category": "Zombies / Original key poses",
+    "Name": "10 volatile biomass",
+    "Variant": "Original",
+    "Path": "zombies/generated-originals/key-poses/10-volatile-biomass.png",
+    "Bytes": 2228695,
+    "SHA256": "1E813439C0D24FA7EA5C79824C5921B4F7A00996EA60EE36F2B8DD06531FB7AE"
+  },
+  {
+    "Category": "Zombies / Original key poses",
+    "Name": "11 unstable mutation",
+    "Variant": "Original",
+    "Path": "zombies/generated-originals/key-poses/11-unstable-mutation.png",
+    "Bytes": 2994619,
+    "SHA256": "419C6890BD7A09B3AC553E1A588C2843DA361D52D9921A7A94DA45E4C1B255CE"
+  },
+  {
+    "Category": "Zombies / Original key poses",
+    "Name": "12 unbound boss",
+    "Variant": "Original",
+    "Path": "zombies/generated-originals/key-poses/12-unbound-boss.png",
+    "Bytes": 2721031,
+    "SHA256": "FE6229A0974D2FE4839FABD2226F3C80A43530CB71404CE9BB97E2627CBEBCD7"
+  }
+]

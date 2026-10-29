@@ -69,12 +69,34 @@ ZI._summary = function() {
   const level = ZI.leaderLevel ? ZI.leaderLevel() : 1;
   return { level, distance };
 };
-ZI.getActiveSlot = function() { return ZI._readJSON(ZI.SAVE_ACTIVE_KEY, null); };
+// Oct 29: a damaged active pointer reads as "no file selected" (was shown as "Slot undefined").
+ZI.getActiveSlot = function() {
+  const a = ZI._readJSON(ZI.SAVE_ACTIVE_KEY, null);
+  return a && typeof a === 'object' && (a.mode === 'camp' || a.mode === 'solo') && Number.isInteger(a.slot) && a.slot >= 1 && a.slot <= ZI.SAVE_SLOT_COUNT ? a : null;
+};
+// A snapshot is usable when it is an object of strings whose JSON-looking values parse (catches truncated writes).
+ZI._validSnapshot = function(snap) {
+  if (!snap || typeof snap !== 'object' || Array.isArray(snap)) return false;
+  const vals = Object.values(snap); if (!vals.length) return false;
+  return vals.every(v => { if (typeof v !== 'string') return false; const t = v.trim(); if (t[0] !== '{' && t[0] !== '[') return true; try { JSON.parse(t); return true; } catch (e) { return false; } });
+};
+// Real progress (Oct 29): the keys a first page load writes on its own (clock, empty jobs, zero XP) are not progress,
+// so a brand-new player no longer sees a phantom "Imported progress" file.
+ZI._hasRealProgress = function() {
+  const sum = o => o && typeof o === 'object' ? Object.values(o).reduce((a, v) => a + (Number(v) || 0), 0) : 0;
+  if (sum(ZI._readJSON('zi_stat_xp', null)) > 0) return true;
+  if ((Number(localStorage.getItem('zi_character_xp')) || 0) > 0) return true;
+  if ((parseInt(localStorage.getItem('zi_wander_total')) || 0) > 0) return true;
+  const stash = ZI._readJSON('zi_stash', null), items = stash && (Array.isArray(stash) ? stash : stash.items);
+  if (Array.isArray(items) && items.length) return true;
+  const jobs = ZI._readJSON('zi_jobs', null); if (jobs && Array.isArray(jobs.jobs) && jobs.jobs.length) return true;
+  return false;
+};
 ZI.listSlots = function(mode) {
   const idx = ZI._readJSON(ZI.SAVE_INDEX_KEY, {});
   // One-time safety: if progress exists but no file has ever been saved, keep it
   // as Slot 1 of the first mode opened so nothing already played is lost.
-  if (!idx.camp && !idx.solo && ZI._gameKeys().length) {
+  if (!idx.camp && !idx.solo && ZI._hasRealProgress()) {
     idx[mode] = { 1: { savedAt: Date.now(), label: 'Imported progress', summary: ZI._summary() } };
     localStorage.setItem('zisave_data_' + mode + '_1', JSON.stringify(ZI._snapshot()));
     localStorage.setItem(ZI.SAVE_INDEX_KEY, JSON.stringify(idx));
@@ -85,6 +107,15 @@ ZI.listSlots = function(mode) {
     localStorage.setItem(ZI.SAVE_ACTIVE_KEY, JSON.stringify({ mode, slot: 1 }));
   }
   const m = idx[mode] || {};
+  // Repair (Oct 29): a file whose card is missing from a damaged index but whose data is intact is listed again.
+  let repaired = false;
+  for (let n = 1; n <= ZI.SAVE_SLOT_COUNT; n++) {
+    if (m[n] && typeof m[n] === 'object') continue;
+    const snap = ZI._readJSON('zisave_data_' + mode + '_' + n, null), prev = ZI._readJSON('zisave_prev_' + mode + '_' + n, null);
+    if (ZI._validSnapshot(snap) || ZI._validSnapshot(prev)) { m[n] = { savedAt: null, label: (mode === 'camp' ? 'Camp Leader' : 'Solo Survivor') + ' — File ' + n + ' (recovered)', summary: null }; repaired = true; }
+    else if (m[n] != null) { delete m[n]; }
+  }
+  if (repaired) { const fresh = ZI._readJSON(ZI.SAVE_INDEX_KEY, {}); fresh[mode] = Object.assign({}, fresh[mode] && typeof fresh[mode] === 'object' ? fresh[mode] : {}, m); try { localStorage.setItem(ZI.SAVE_INDEX_KEY, JSON.stringify(fresh)); } catch (e) {} }
   // The active file mirrors live progress — refresh its card so it never shows stale numbers.
   const act = ZI.getActiveSlot();
   if (act && act.mode === mode && m[act.slot]) m[act.slot] = Object.assign({}, m[act.slot], { summary: ZI._summary() });
@@ -95,7 +126,10 @@ ZI.listSlots = function(mode) {
 ZI._writeSlot = function(mode, slot, label) {
   const idx = ZI._readJSON(ZI.SAVE_INDEX_KEY, {});
   idx[mode] = idx[mode] || {};
-  localStorage.setItem('zisave_data_' + mode + '_' + slot, JSON.stringify(ZI._snapshot()));
+  // Oct 29: keep the previous good copy of this file, so one damaged write can be recovered from.
+  const dataKey = 'zisave_data_' + mode + '_' + slot, prev = localStorage.getItem(dataKey);
+  if (prev) { let ok = false; try { ok = ZI._validSnapshot(JSON.parse(prev)); } catch (e) {} if (ok) try { localStorage.setItem('zisave_prev_' + mode + '_' + slot, prev); } catch (e) {} }
+  localStorage.setItem(dataKey, JSON.stringify(ZI._snapshot()));
   idx[mode][slot] = { savedAt: Date.now(), label: label || (idx[mode][slot] && idx[mode][slot].label) || ((mode === 'camp' ? 'Camp Leader' : 'Solo Survivor') + ' — File ' + slot), summary: ZI._summary() };
   localStorage.setItem(ZI.SAVE_INDEX_KEY, JSON.stringify(idx));
 };
@@ -120,8 +154,15 @@ ZI.loadSlot = function(mode, slot) {
   // Continue on the file that is already live (Oct 28): live storage is newer than its last snapshot, so keep it.
   const a = ZI.getActiveSlot();
   if (a && a.mode === mode && a.slot === slot && ZI._gameKeys().length) { ZI._writeSlot(mode, slot, null); ZI._boot(mode, slot); return true; }
-  const snap = ZI._readJSON('zisave_data_' + mode + '_' + slot, null);
-  if (!snap || typeof snap !== 'object' || Array.isArray(snap)) return false;
+  let snap = ZI._readJSON('zisave_data_' + mode + '_' + slot, null);
+  if (!ZI._validSnapshot(snap)) {
+    // Oct 29: fall back to the previous good copy of this file; if there is none, refuse (the screen says why).
+    const prev = ZI._readJSON('zisave_prev_' + mode + '_' + slot, null);
+    if (!ZI._validSnapshot(prev)) return false;
+    snap = prev;
+    try { localStorage.setItem('zisave_data_' + mode + '_' + slot, JSON.stringify(prev)); } catch (e) {} // heal the damaged copy
+    try { const idx = ZI._readJSON(ZI.SAVE_INDEX_KEY, {}); if (idx[mode] && idx[mode][slot]) { idx[mode][slot].restoredFromBackupAt = Date.now(); localStorage.setItem(ZI.SAVE_INDEX_KEY, JSON.stringify(idx)); } } catch (e) {}
+  }
   ZI._autosaveBeforeSwitch(mode, slot);  // keep the file being left
   // Older snapshots have no per-slot last-seen: use the file's save time so its absence is still capped at 24 h.
   if (snap[ZI.OFFLINE_LAST_SEEN_KEY] == null) {
@@ -167,6 +208,7 @@ ZI.deleteSlot = function(mode, slot) {
   if (idx[mode]) delete idx[mode][slot];
   localStorage.setItem(ZI.SAVE_INDEX_KEY, JSON.stringify(idx));
   localStorage.removeItem('zisave_data_' + mode + '_' + slot);
+  localStorage.removeItem('zisave_prev_' + mode + '_' + slot);
   const a = ZI.getActiveSlot();
   if (a && a.mode === mode && a.slot === slot) localStorage.removeItem(ZI.SAVE_ACTIVE_KEY);
 };

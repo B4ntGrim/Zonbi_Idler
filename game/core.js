@@ -90,7 +90,7 @@ ZI._clock = function() {
   // current rate — so changing the rate never jumps the day forward for the time already played.
   const rate = c.rate == null ? 0.5 : c.rate;
   if (rate !== ZI.CLOCK_RATE) {
-    const now = Date.now(), t = (c.day - 1) * 86400 + c.base + Math.floor((now - c.at) / 1000 * rate);
+    const now = Date.now(), t = (c.day - 1) * 86400 + c.base + Math.floor(Math.max(0, now - c.at) / 1000 * rate);
     c = { day: Math.floor(t / 86400) + 1, base: t % 86400, at: now, rate: ZI.CLOCK_RATE };
     try { localStorage.setItem(ZI.CLOCK_KEY, JSON.stringify(c)); } catch (e) {}
   }
@@ -99,7 +99,9 @@ ZI._clock = function() {
 // Total game seconds since Day 1 00:00.
 ZI.gameTotalSeconds = function() {
   const c = ZI._clock();
-  return (c.day - 1) * 86400 + c.base + Math.floor((Date.now() - c.at) / 1000 * ZI.CLOCK_RATE);
+  // Oct 29: a PC clock set backwards never runs the calendar backwards (no Year 0 / negative days); it holds until
+  // real time passes the saved moment again.
+  return (c.day - 1) * 86400 + c.base + Math.floor(Math.max(0, Date.now() - c.at) / 1000 * ZI.CLOCK_RATE);
 };
 ZI.getGameTime = function() {
   const t = ZI.gameTotalSeconds();

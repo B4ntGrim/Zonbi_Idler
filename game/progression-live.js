@@ -142,7 +142,11 @@
   };
   // Offline settle (app closed): drain, but never past the mild tier; the survivor eats and sleeps on their own.
   L.settleOffline = function () {
-    const s = L.getStatus(), now = ZI.gameTotalSeconds(), dh = Math.max(0, (now - (s.lastGameSec || now)) / 3600);
+    const s = L.getStatus(), now = ZI.gameTotalSeconds();
+    let dh = Math.max(0, (now - (s.lastGameSec || now)) / 3600);
+    // Oct 29: respect the CLOCK-01 24-real-hour offline cap (the calendar still moves for the full absence).
+    const w = ZI.offlineWindow && ZI.offlineWindow();
+    if (w && Number.isFinite(w.creditedMs) && ZI.REAL_MS_PER_GAME_HOUR > 0) dh = Math.min(dh, w.creditedMs / ZI.REAL_MS_PER_GAME_HOUR);
     const floor = L.CONFIG.tierEdges[2]; // never below the Hungry / Fatigued band
     const before = { hunger: L.tierOf(s.nutrition), rest: L.tierOf(s.rest) };
     s.nutrition = Math.max(Math.min(s.nutrition, floor), s.nutrition - L.CONFIG.nutritionLossPerGameDay * dh / 24);

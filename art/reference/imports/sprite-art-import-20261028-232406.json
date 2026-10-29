@@ -1,0 +1,752 @@
+[
+  {
+    "Source": "E:\\Zed_Idler\\uploads\\Zombie Art\\Bestiary 49-108\\049-soggy-slump.png",
+    "Destination": "E:\\Zed_Idler\\art\\zombies\\generated-originals\\bestiary-49-108\\tier-F\\049-soggy-slump.png",
+    "SHA256": "E7075F74BCA1B87058B5C941236BE2D929D4DD11C928C1527411C93B2059AF8E",
+    "Status": "copied"
+  },
+  {
+    "Source": "E:\\Zed_Idler\\uploads\\Zombie Art\\Bestiary 49-108\\050-ashen-wanderer.png",
+    "Destination": "E:\\Zed_Idler\\art\\zombies\\generated-originals\\bestiary-49-108\\tier-F\\050-ashen-wanderer.png",
+    "SHA256": "ABE1E5F55826064179D859795A8D7A6689821BB93FB797418BC3C4DBB38447FE",
+    "Status": "copied"
+  },
+  {
+    "Source": "E:\\Zed_Idler\\uploads\\Zombie Art\\Bestiary 49-108\\051-lumbering-courier.png",
+    "Destination": "E:\\Zed_Idler\\art\\zombies\\generated-originals\\bestiary-49-108\\tier-F\\051-lumbering-courier.png",
+    "SHA256": "5BD870BDACF8F52E99635AD6FC2EAEC46EF24A534BD973D270BE6BFF0F77A13B",
+    "Status": "copied"
+  },
+  {
+    "Source": "E:\\Zed_Idler\\uploads\\Zombie Art\\Bestiary 49-108\\052-tangled-drifter.png",
+    "Destination": "E:\\Zed_Idler\\art\\zombies\\generated-originals\\bestiary-49-108\\tier-F\\052-tangled-drifter.png",
+    "SHA256": "4393E050203B5D9508AF4A81817B8ABF09BA3D0CD121E2F69D67B00D8D875B93",
+    "Status": "copied"
+  },
+  {
+    "Source": "E:\\Zed_Idler\\uploads\\Zombie Art\\Bestiary 49-108\\053-frail-husk.png",
+    "Destination": "E:\\Zed_Idler\\art\\zombies\\generated-originals\\bestiary-49-108\\tier-F\\053-frail-husk.png",
+    "SHA256": "E24F888D38E791306898279B84370656713768C79F732651DD91FECA7E88C006",
+    "Status": "copied"
+  },
+  {
+    "Source": "E:\\Zed_Idler\\uploads\\Zombie Art\\Bestiary 49-108\\054-siren-stumper.png",
+    "Destination": "E:\\Zed_Idler\\art\\zombies\\generated-originals\\bestiary-49-108\\tier-E\\054-siren-stumper.png",
+    "SHA256": "05C8998DF2F7045BDFC0930365681FE5B7211D316976EFE0E603001AEA29A53E",
+    "Status": "copied"
+  },
+  {
+    "Source": "E:\\Zed_Idler\\uploads\\Zombie Art\\Bestiary 49-108\\055-cinder-runner.png",
+    "Destination": "E:\\Zed_Idler\\art\\zombies\\generated-originals\\bestiary-49-108\\tier-E\\055-cinder-runner.png",
+    "SHA256": "1A4EC27743A7875B465A44E9796ED105A05AE78155B40B57F4445AE009DAD45D",
+    "Status": "copied"
+  },
+  {
+    "Source": "E:\\Zed_Idler\\uploads\\Zombie Art\\Bestiary 49-108\\056-muck-lurker.png",
+    "Destination": "E:\\Zed_Idler\\art\\zombies\\generated-originals\\bestiary-49-108\\tier-E\\056-muck-lurker.png",
+    "SHA256": "D2627EBCD7C469D20B1DB40D9F75DFC71E8EBA2040C5F85F5417AD9E8713AC59",
+    "Status": "copied"
+  },
+  {
+    "Source": "E:\\Zed_Idler\\uploads\\Zombie Art\\Bestiary 49-108\\057-hollow-leaper.png",
+    "Destination": "E:\\Zed_Idler\\art\\zombies\\generated-originals\\bestiary-49-108\\tier-E\\057-hollow-leaper.png",
+    "SHA256": "E398983EF2CB5FC289F9C07F3C241B3BD0E69AAA0C4A49D2EA0DC6431C05C5D9",
+    "Status": "copied"
+  },
+  {
+    "Source": "E:\\Zed_Idler\\uploads\\Zombie Art\\Bestiary 49-108\\058-rusted-guard.png",
+    "Destination": "E:\\Zed_Idler\\art\\zombies\\generated-originals\\bestiary-49-108\\tier-E\\058-rusted-guard.png",
+    "SHA256": "05DBF67342E880B39C02C85C43E155A50D66535CD72891D0F822DC9CBA64F582",
+    "Status": "copied"
+  },
+  {
+    "Source": "E:\\Zed_Idler\\uploads\\Zombie Art\\Bestiary 49-108\\059-spore-carrier.png",
+    "Destination": "E:\\Zed_Idler\\art\\zombies\\generated-originals\\bestiary-49-108\\tier-E\\059-spore-carrier.png",
+    "SHA256": "F6832116136D2A45CC0BB4E9FEB9FDD47BDACC3A63F086D8B059D6FBE52D684C",
+    "Status": "copied"
+  },
+  {
+    "Source": "E:\\Zed_Idler\\uploads\\Zombie Art\\Bestiary 49-108\\060-static-shuffler.png",
+    "Destination": "E:\\Zed_Idler\\art\\zombies\\generated-originals\\bestiary-49-108\\tier-E\\060-static-shuffler.png",
+    "SHA256": "7AEB0C7A68E94CABB41D603158D52E2708A1FFD45FBC063661E8F1E344E17FA0",
+    "Status": "copied"
+  },
+  {
+    "Source": "E:\\Zed_Idler\\uploads\\Zombie Art\\Bestiary 49-108\\061-goo-vomiter.png",
+    "Destination": "E:\\Zed_Idler\\art\\zombies\\generated-originals\\bestiary-49-108\\tier-D\\061-goo-vomiter.png",
+    "SHA256": "6F1C63654230B1EBFC96FCD8B5E133A952845A1906BB7B4B2C3C07C67B8FCAED",
+    "Status": "copied"
+  },
+  {
+    "Source": "E:\\Zed_Idler\\uploads\\Zombie Art\\Bestiary 49-108\\062-shatter-bone-bruiser.png",
+    "Destination": "E:\\Zed_Idler\\art\\zombies\\generated-originals\\bestiary-49-108\\tier-D\\062-shatter-bone-bruiser.png",
+    "SHA256": "904E3F71C27470302482BD44A7A3FBB072C872C4252F1C61234939AAC79C3CB2",
+    "Status": "copied"
+  },
+  {
+    "Source": "E:\\Zed_Idler\\uploads\\Zombie Art\\Bestiary 49-108\\063-grave-digger.png",
+    "Destination": "E:\\Zed_Idler\\art\\zombies\\generated-originals\\bestiary-49-108\\tier-D\\063-grave-digger.png",
+    "SHA256": "4925DBE22EF6C409E49B1907471C918A8D85D386EDDA5F15A8400D4699CD4356",
+    "Status": "copied"
+  },
+  {
+    "Source": "E:\\Zed_Idler\\uploads\\Zombie Art\\Bestiary 49-108\\064-wire-bound-crawler.png",
+    "Destination": "E:\\Zed_Idler\\art\\zombies\\generated-originals\\bestiary-49-108\\tier-D\\064-wire-bound-crawler.png",
+    "SHA256": "1065B870A641371E86B65F38727919CC71F43A29546138DA0069E7F9D63818D1",
+    "Status": "copied"
+  },
+  {
+    "Source": "E:\\Zed_Idler\\uploads\\Zombie Art\\Bestiary 49-108\\065-frost-smite.png",
+    "Destination": "E:\\Zed_Idler\\art\\zombies\\generated-originals\\bestiary-49-108\\tier-D\\065-frost-smite.png",
+    "SHA256": "8EC9B97361DDA5AD9431CC46B9D7FAD7568297B6300B5BAF40E4BC482BE2C149",
+    "Status": "copied"
+  },
+  {
+    "Source": "E:\\Zed_Idler\\uploads\\Zombie Art\\Bestiary 49-108\\066-flash-blind-stalker.png",
+    "Destination": "E:\\Zed_Idler\\art\\zombies\\generated-originals\\bestiary-49-108\\tier-D\\066-flash-blind-stalker.png",
+    "SHA256": "F0FBCB7CB511D20D0ED048A65A7CF9C5E21B2D1DF544A4B6465AFCB9C382C556",
+    "Status": "copied"
+  },
+  {
+    "Source": "E:\\Zed_Idler\\uploads\\Zombie Art\\Bestiary 49-108\\067-decay-launcher.png",
+    "Destination": "E:\\Zed_Idler\\art\\zombies\\generated-originals\\bestiary-49-108\\tier-D\\067-decay-launcher.png",
+    "SHA256": "532DBB9BAAE3152FA571E84B5DFF2B4FBEC12AAD73D6447F142919664CA1FDB6",
+    "Status": "copied"
+  },
+  {
+    "Source": "E:\\Zed_Idler\\uploads\\Zombie Art\\Bestiary 49-108\\068-riot-pacifier.png",
+    "Destination": "E:\\Zed_Idler\\art\\zombies\\generated-originals\\bestiary-49-108\\tier-C\\068-riot-pacifier.png",
+    "SHA256": "F45DA5BF30EC676E1D3A0D16A2F311E0CF18AC59A12BE8C3CA7F752246724886",
+    "Status": "copied"
+  },
+  {
+    "Source": "E:\\Zed_Idler\\uploads\\Zombie Art\\Bestiary 49-108\\069-thermite-walker.png",
+    "Destination": "E:\\Zed_Idler\\art\\zombies\\generated-originals\\bestiary-49-108\\tier-C\\069-thermite-walker.png",
+    "SHA256": "4D0286BEE7665047B065D632346B54CAA8A56AA8397DC008602E1E7DADE47767",
+    "Status": "copied"
+  },
+  {
+    "Source": "E:\\Zed_Idler\\uploads\\Zombie Art\\Bestiary 49-108\\070-plague-matron.png",
+    "Destination": "E:\\Zed_Idler\\art\\zombies\\generated-originals\\bestiary-49-108\\tier-C\\070-plague-matron.png",
+    "SHA256": "D572F6305E08A1E42504F08E5EA31DC9FE583DDA1FA476F02C66A1EABA445AC9",
+    "Status": "copied"
+  },
+  {
+    "Source": "E:\\Zed_Idler\\uploads\\Zombie Art\\Bestiary 49-108\\071-volt-surger.png",
+    "Destination": "E:\\Zed_Idler\\art\\zombies\\generated-originals\\bestiary-49-108\\tier-C\\071-volt-surger.png",
+    "SHA256": "EEA09B627B09D60D627CB21F4C615FF0055C2B5478423CD5B84A0AFC2D787D3F",
+    "Status": "copied"
+  },
+  {
+    "Source": "E:\\Zed_Idler\\uploads\\Zombie Art\\Bestiary 49-108\\072-slag-enforcer.png",
+    "Destination": "E:\\Zed_Idler\\art\\zombies\\generated-originals\\bestiary-49-108\\tier-C\\072-slag-enforcer.png",
+    "SHA256": "632462341CA755C7B67B3BA723E9ABFD01741A80225202B40464B820CE84421C",
+    "Status": "copied"
+  },
+  {
+    "Source": "E:\\Zed_Idler\\uploads\\Zombie Art\\Bestiary 49-108\\073-corrosive-bloat.png",
+    "Destination": "E:\\Zed_Idler\\art\\zombies\\generated-originals\\bestiary-49-108\\tier-C\\073-corrosive-bloat.png",
+    "SHA256": "F201D15CD888A6629DE59D69B8B2DED2CDB6609269D2750E90DCCBF862760326",
+    "Status": "copied"
+  },
+  {
+    "Source": "E:\\Zed_Idler\\uploads\\Zombie Art\\Bestiary 49-108\\074-leaping-strangle-imp.png",
+    "Destination": "E:\\Zed_Idler\\art\\zombies\\generated-originals\\bestiary-49-108\\tier-C\\074-leaping-strangle-imp.png",
+    "SHA256": "42E11D6C5D5DAD48F97482DEC8F4AED0AFEDE54AB9CC9E648AD6617494113546",
+    "Status": "copied"
+  },
+  {
+    "Source": "E:\\Zed_Idler\\uploads\\Zombie Art\\Bestiary 49-108\\075-phantasm-walker.png",
+    "Destination": "E:\\Zed_Idler\\art\\zombies\\generated-originals\\bestiary-49-108\\tier-C\\075-phantasm-walker.png",
+    "SHA256": "9EC3210B99AAABFD694C54FB54987104057CC3EF722B73E7AF6DDC4C792DDF74",
+    "Status": "copied"
+  },
+  {
+    "Source": "E:\\Zed_Idler\\uploads\\Zombie Art\\Bestiary 49-108\\076-exoskeleton-remnant.png",
+    "Destination": "E:\\Zed_Idler\\art\\zombies\\generated-originals\\bestiary-49-108\\tier-B\\076-exoskeleton-remnant.png",
+    "SHA256": "D5F2024587CF8ED774EF73DD4F948978CC5A6E857A6DA1D3DD2A68A2748CBB8A",
+    "Status": "copied"
+  },
+  {
+    "Source": "E:\\Zed_Idler\\uploads\\Zombie Art\\Bestiary 49-108\\077-blight-screamer.png",
+    "Destination": "E:\\Zed_Idler\\art\\zombies\\generated-originals\\bestiary-49-108\\tier-B\\077-blight-screamer.png",
+    "SHA256": "387AACEEEF97E1A353D8F028087FF5AE594F68F0C9D33B0A13FDD538BE8D4D4E",
+    "Status": "copied"
+  },
+  {
+    "Source": "E:\\Zed_Idler\\uploads\\Zombie Art\\Bestiary 49-108\\078-needle-limb-freak.png",
+    "Destination": "E:\\Zed_Idler\\art\\zombies\\generated-originals\\bestiary-49-108\\tier-B\\078-needle-limb-freak.png",
+    "SHA256": "E6533E20F90EE74E27199E264F2B377682751432E5A2844BA599A04A6789A573",
+    "Status": "copied"
+  },
+  {
+    "Source": "E:\\Zed_Idler\\uploads\\Zombie Art\\Bestiary 49-108\\079-gloom-assassin.png",
+    "Destination": "E:\\Zed_Idler\\art\\zombies\\generated-originals\\bestiary-49-108\\tier-B\\079-gloom-assassin.png",
+    "SHA256": "2AF259492CC79DC6CD02E852DB0B13508C6583CC710B1BCD33E383B47807B02E",
+    "Status": "copied"
+  },
+  {
+    "Source": "E:\\Zed_Idler\\uploads\\Zombie Art\\Bestiary 49-108\\080-chain-whip-warden.png",
+    "Destination": "E:\\Zed_Idler\\art\\zombies\\generated-originals\\bestiary-49-108\\tier-B\\080-chain-whip-warden.png",
+    "SHA256": "3B99627E9FE5179E28AEE678BE15BBB1ED3F820D46A8771F24BC391C5361C0A8",
+    "Status": "copied"
+  },
+  {
+    "Source": "E:\\Zed_Idler\\uploads\\Zombie Art\\Bestiary 49-108\\081-caustic-mortar.png",
+    "Destination": "E:\\Zed_Idler\\art\\zombies\\generated-originals\\bestiary-49-108\\tier-B\\081-caustic-mortar.png",
+    "SHA256": "4497251B082F4F3954B7C69E581976FCE69D95CB66401C7A7799830794E74716",
+    "Status": "copied"
+  },
+  {
+    "Source": "E:\\Zed_Idler\\uploads\\Zombie Art\\Bestiary 49-108\\082-cryo-executioner.png",
+    "Destination": "E:\\Zed_Idler\\art\\zombies\\generated-originals\\bestiary-49-108\\tier-B\\082-cryo-executioner.png",
+    "SHA256": "526FAEBBCAC62F2902FAF2980083B79DA6404C6395DD20C52AF6F4E0D6B2AE9A",
+    "Status": "copied"
+  },
+  {
+    "Source": "E:\\Zed_Idler\\uploads\\Zombie Art\\Bestiary 49-108\\083-napalm-stalker.png",
+    "Destination": "E:\\Zed_Idler\\art\\zombies\\generated-originals\\bestiary-49-108\\tier-B\\083-napalm-stalker.png",
+    "SHA256": "56721952F676A3380751E4EEFF8FA3AAC74C63635597528FC7A8883D99B6E108",
+    "Status": "copied"
+  },
+  {
+    "Source": "E:\\Zed_Idler\\uploads\\Zombie Art\\Bestiary 49-108\\084-centipede-host.png",
+    "Destination": "E:\\Zed_Idler\\art\\zombies\\generated-originals\\bestiary-49-108\\tier-A\\084-centipede-host.png",
+    "SHA256": "4E1255EEBA91A690D4141C3C7465322ED6FADDA68CBD606ECAD24C46F4CA08D0",
+    "Status": "copied"
+  },
+  {
+    "Source": "E:\\Zed_Idler\\uploads\\Zombie Art\\Bestiary 49-108\\085-apex-hunter.png",
+    "Destination": "E:\\Zed_Idler\\art\\zombies\\generated-originals\\bestiary-49-108\\tier-A\\085-apex-hunter.png",
+    "SHA256": "F469F7D810E18EBEFA80F121A4F17365D047A82188D14CE1A126E7FBAAF3B885",
+    "Status": "copied"
+  },
+  {
+    "Source": "E:\\Zed_Idler\\uploads\\Zombie Art\\Bestiary 49-108\\086-slag-titan.png",
+    "Destination": "E:\\Zed_Idler\\art\\zombies\\generated-originals\\bestiary-49-108\\tier-A\\086-slag-titan.png",
+    "SHA256": "992D319116365212086D3BD4BA6BA5777C72F50F58B6BA59AE20EAB0688F27B8",
+    "Status": "copied"
+  },
+  {
+    "Source": "E:\\Zed_Idler\\uploads\\Zombie Art\\Bestiary 49-108\\087-toxic-behemoth.png",
+    "Destination": "E:\\Zed_Idler\\art\\zombies\\generated-originals\\bestiary-49-108\\tier-A\\087-toxic-behemoth.png",
+    "SHA256": "09017A8567387648891A90D12C2CC601F14802F971949E64607EF331F997A77B",
+    "Status": "copied"
+  },
+  {
+    "Source": "E:\\Zed_Idler\\uploads\\Zombie Art\\Bestiary 49-108\\088-bio-electric-monstrosity.png",
+    "Destination": "E:\\Zed_Idler\\art\\zombies\\generated-originals\\bestiary-49-108\\tier-A\\088-bio-electric-monstrosity.png",
+    "SHA256": "26E28261F066D1468D93DD6D258E4686825781FC848DCE61098902CF6239631C",
+    "Status": "copied"
+  },
+  {
+    "Source": "E:\\Zed_Idler\\uploads\\Zombie Art\\Bestiary 49-108\\089-subterranean-stalker.png",
+    "Destination": "E:\\Zed_Idler\\art\\zombies\\generated-originals\\bestiary-49-108\\tier-A\\089-subterranean-stalker.png",
+    "SHA256": "704AB2D85F6003E4CB648444E597D179819DB7C6ED7D85160E3AF866449C8794",
+    "Status": "copied"
+  },
+  {
+    "Source": "E:\\Zed_Idler\\uploads\\Zombie Art\\Bestiary 49-108\\090-surgical-abomination.png",
+    "Destination": "E:\\Zed_Idler\\art\\zombies\\generated-originals\\bestiary-49-108\\tier-A\\090-surgical-abomination.png",
+    "SHA256": "8C6FF35F36E6400C5F56A66B4BADEAB61A422A8283534353DF7F4F17C01437DF",
+    "Status": "copied"
+  },
+  {
+    "Source": "E:\\Zed_Idler\\uploads\\Zombie Art\\Bestiary 49-108\\091-dread-dreadnought.png",
+    "Destination": "E:\\Zed_Idler\\art\\zombies\\generated-originals\\bestiary-49-108\\tier-A\\091-dread-dreadnought.png",
+    "SHA256": "769A827A7D7A36C4CDAEC2E791B17D10FA18535B0EE79F5C0C56964AA2971C8A",
+    "Status": "copied"
+  },
+  {
+    "Source": "E:\\Zed_Idler\\uploads\\Zombie Art\\Bestiary 49-108\\092-marrow-collector.png",
+    "Destination": "E:\\Zed_Idler\\art\\zombies\\generated-originals\\bestiary-49-108\\tier-S\\092-marrow-collector.png",
+    "SHA256": "78322913C617CFBA89E5E15519EA2E8B8DCE8977379D29EFF2888470F1584060",
+    "Status": "copied"
+  },
+  {
+    "Source": "E:\\Zed_Idler\\uploads\\Zombie Art\\Bestiary 49-108\\093-inferno-engine.png",
+    "Destination": "E:\\Zed_Idler\\art\\zombies\\generated-originals\\bestiary-49-108\\tier-S\\093-inferno-engine.png",
+    "SHA256": "F287AFA530DABAC3216BE3D0C2303A4135C58CE574F2269F867BB4832CA74BCE",
+    "Status": "copied"
+  },
+  {
+    "Source": "E:\\Zed_Idler\\uploads\\Zombie Art\\Bestiary 49-108\\094-void-phantom.png",
+    "Destination": "E:\\Zed_Idler\\art\\zombies\\generated-originals\\bestiary-49-108\\tier-S\\094-void-phantom.png",
+    "SHA256": "260452A169F74C6EA5EDBF4E3B799AB64412AED082615AF9A4E795417842AF5C",
+    "Status": "copied"
+  },
+  {
+    "Source": "E:\\Zed_Idler\\uploads\\Zombie Art\\Bestiary 49-108\\095-grave-overlord.png",
+    "Destination": "E:\\Zed_Idler\\art\\zombies\\generated-originals\\bestiary-49-108\\tier-S\\095-grave-overlord.png",
+    "SHA256": "1FCD63CEF9BC26C6E03CE5B73E9A574EABE45D818A55F00D112969D603586AAE",
+    "Status": "copied"
+  },
+  {
+    "Source": "E:\\Zed_Idler\\uploads\\Zombie Art\\Bestiary 49-108\\096-epitaph-warden.png",
+    "Destination": "E:\\Zed_Idler\\art\\zombies\\generated-originals\\bestiary-49-108\\tier-S\\096-epitaph-warden.png",
+    "SHA256": "6F7E75666909F458FAB3F74CDCA3EAA7DACEEC89A4531DD7F203B131BA3FED29",
+    "Status": "copied"
+  },
+  {
+    "Source": "E:\\Zed_Idler\\uploads\\Zombie Art\\Bestiary 49-108\\097-toxin-sovereign.png",
+    "Destination": "E:\\Zed_Idler\\art\\zombies\\generated-originals\\bestiary-49-108\\tier-S\\097-toxin-sovereign.png",
+    "SHA256": "FEE5A12CC725BEE3082B3334F75E7A0D08FDEA9B8AD9242B36A3390845A188DA",
+    "Status": "copied"
+  },
+  {
+    "Source": "E:\\Zed_Idler\\uploads\\Zombie Art\\Bestiary 49-108\\098-storm-caller.png",
+    "Destination": "E:\\Zed_Idler\\art\\zombies\\generated-originals\\bestiary-49-108\\tier-S\\098-storm-caller.png",
+    "SHA256": "067CBA8EBC761E78063F17AD25F28932B1632BEA504A1BF173F6DDBEC0F86B86",
+    "Status": "copied"
+  },
+  {
+    "Source": "E:\\Zed_Idler\\uploads\\Zombie Art\\Bestiary 49-108\\099-glacial-leviathan.png",
+    "Destination": "E:\\Zed_Idler\\art\\zombies\\generated-originals\\bestiary-49-108\\tier-S\\099-glacial-leviathan.png",
+    "SHA256": "8339F07EC6A0DBDD4E5D2025437DD0AD540B62E35D5CB0C651C7E81179CD920D",
+    "Status": "copied"
+  },
+  {
+    "Source": "E:\\Zed_Idler\\uploads\\Zombie Art\\Bestiary 49-108\\100-the-iron-titan.png",
+    "Destination": "E:\\Zed_Idler\\art\\zombies\\generated-originals\\bestiary-49-108\\tier-Boss\\100-the-iron-titan.png",
+    "SHA256": "40B3474623AB2C89804FA728F9DB41E1601A02A91FAE4DD6C5BD76C2E8E628F6",
+    "Status": "copied"
+  },
+  {
+    "Source": "E:\\Zed_Idler\\uploads\\Zombie Art\\Bestiary 49-108\\101-the-hivemind-core.png",
+    "Destination": "E:\\Zed_Idler\\art\\zombies\\generated-originals\\bestiary-49-108\\tier-Boss\\101-the-hivemind-core.png",
+    "SHA256": "1582C253A056AC31DFA4B85612BF8CF6B8D3AFFC4CFBB0E1CEC04AB45600A7D2",
+    "Status": "copied"
+  },
+  {
+    "Source": "E:\\Zed_Idler\\uploads\\Zombie Art\\Bestiary 49-108\\102-the-ash-emperor.png",
+    "Destination": "E:\\Zed_Idler\\art\\zombies\\generated-originals\\bestiary-49-108\\tier-Boss\\102-the-ash-emperor.png",
+    "SHA256": "CC9F609990BBB3D67588DEAACDC2041A6684029F192366259CE8EFBF40C231EC",
+    "Status": "copied"
+  },
+  {
+    "Source": "E:\\Zed_Idler\\uploads\\Zombie Art\\Bestiary 49-108\\103-the-void-harbinger.png",
+    "Destination": "E:\\Zed_Idler\\art\\zombies\\generated-originals\\bestiary-49-108\\tier-Boss\\103-the-void-harbinger.png",
+    "SHA256": "25BAF7EECBC494B414F51E61B9654CC88083BFA8375809DFAFF17249A3D3EBF0",
+    "Status": "copied"
+  },
+  {
+    "Source": "E:\\Zed_Idler\\uploads\\Zombie Art\\Bestiary 49-108\\104-the-undying-goliath.png",
+    "Destination": "E:\\Zed_Idler\\art\\zombies\\generated-originals\\bestiary-49-108\\tier-Boss\\104-the-undying-goliath.png",
+    "SHA256": "D4382D71A7E9D4CD01EF31BAD8D810B57C0A69684E4BC7DF1EE5F8B643E05A2A",
+    "Status": "copied"
+  },
+  {
+    "Source": "E:\\Zed_Idler\\uploads\\Zombie Art\\Bestiary 49-108\\105-the-storm-sovereign.png",
+    "Destination": "E:\\Zed_Idler\\art\\zombies\\generated-originals\\bestiary-49-108\\tier-Boss\\105-the-storm-sovereign.png",
+    "SHA256": "B7AFC16FC46D3E32229EC16C6EC2E20F6EFCDA63ACD5FECBAB3435279587613A",
+    "Status": "copied"
+  },
+  {
+    "Source": "E:\\Zed_Idler\\uploads\\Zombie Art\\Bestiary 49-108\\106-the-plague-archon.png",
+    "Destination": "E:\\Zed_Idler\\art\\zombies\\generated-originals\\bestiary-49-108\\tier-Boss\\106-the-plague-archon.png",
+    "SHA256": "892C02ACA6FAB2B3244F0D312CB7381844205ED40869EB34C1A0776FE3385C3C",
+    "Status": "copied"
+  },
+  {
+    "Source": "E:\\Zed_Idler\\uploads\\Zombie Art\\Bestiary 49-108\\107-the-sub-zero-colossus.png",
+    "Destination": "E:\\Zed_Idler\\art\\zombies\\generated-originals\\bestiary-49-108\\tier-Boss\\107-the-sub-zero-colossus.png",
+    "SHA256": "2A4DEE75EAFB05ABC41723FB4C70D9FD338440B33B11BA53C48AE0EC97B5AFCE",
+    "Status": "copied"
+  },
+  {
+    "Source": "E:\\Zed_Idler\\uploads\\Zombie Art\\Bestiary 49-108\\108-the-apex-prime.png",
+    "Destination": "E:\\Zed_Idler\\art\\zombies\\generated-originals\\bestiary-49-108\\tier-Boss\\108-the-apex-prime.png",
+    "SHA256": "61D357EE03C8DBFE31C91CC968B810AA731B9D1FB6712B63E55F63152CCAB258",
+    "Status": "copied"
+  },
+  {
+    "Source": "C:\\Users\\Samuel\\.codex\\.chatgpt-projects\\g-p-6ac13e53ed8c819181cd711c64d27081\\output\\zombie-art\\01-audio-distractor.png",
+    "Destination": "E:\\Zed_Idler\\art\\zombies\\generated-originals\\key-poses\\01-audio-distractor.png",
+    "SHA256": "043D0AC3FD8D9AC85DBA0FF3C42B5BD7E9F0B0687EAC30C8AF3AFAB13E63A7FA",
+    "Status": "copied"
+  },
+  {
+    "Source": "C:\\Users\\Samuel\\.codex\\.chatgpt-projects\\g-p-6ac13e53ed8c819181cd711c64d27081\\output\\zombie-art\\02-battle-cry-leader.png",
+    "Destination": "E:\\Zed_Idler\\art\\zombies\\generated-originals\\key-poses\\02-battle-cry-leader.png",
+    "SHA256": "F149FBEBA37CF3A0A74DF8D1BBA34FE6133C19E713BFA5933CB80D6CF4088563",
+    "Status": "copied"
+  },
+  {
+    "Source": "C:\\Users\\Samuel\\.codex\\.chatgpt-projects\\g-p-6ac13e53ed8c819181cd711c64d27081\\output\\zombie-art\\03-anti-trap-runner.png",
+    "Destination": "E:\\Zed_Idler\\art\\zombies\\generated-originals\\key-poses\\03-anti-trap-runner.png",
+    "SHA256": "6F922F76154A6BF951C0C1B57DF815E209188D880F82239081817BD1E64D9D66",
+    "Status": "copied"
+  },
+  {
+    "Source": "C:\\Users\\Samuel\\.codex\\.chatgpt-projects\\g-p-6ac13e53ed8c819181cd711c64d27081\\output\\zombie-art\\04-frozen-heavy.png",
+    "Destination": "E:\\Zed_Idler\\art\\zombies\\generated-originals\\key-poses\\04-frozen-heavy.png",
+    "SHA256": "2E0B4A05E92690251B2A9E98D8BFC1F48EEA2F0A92E412BF23B95C4834841222",
+    "Status": "copied"
+  },
+  {
+    "Source": "C:\\Users\\Samuel\\.codex\\.chatgpt-projects\\g-p-6ac13e53ed8c819181cd711c64d27081\\output\\zombie-art\\05-domehead-scrap-heavy.png",
+    "Destination": "E:\\Zed_Idler\\art\\zombies\\generated-originals\\key-poses\\05-domehead-scrap-heavy.png",
+    "SHA256": "2EF39522477E43E0B574806BB17B5E206906746F29D8EC23DDD3E3402B488FE9",
+    "Status": "copied"
+  },
+  {
+    "Source": "C:\\Users\\Samuel\\.codex\\.chatgpt-projects\\g-p-6ac13e53ed8c819181cd711c64d27081\\output\\zombie-art\\06-acid-sprayer.png",
+    "Destination": "E:\\Zed_Idler\\art\\zombies\\generated-originals\\key-poses\\06-acid-sprayer.png",
+    "SHA256": "1E92E24CBDCF491FD21E5863ED08FFEEE67F02F78BEEB80794C73F862E9FCBC1",
+    "Status": "copied"
+  },
+  {
+    "Source": "C:\\Users\\Samuel\\.codex\\.chatgpt-projects\\g-p-6ac13e53ed8c819181cd711c64d27081\\output\\zombie-art\\07-barbed-shackler.png",
+    "Destination": "E:\\Zed_Idler\\art\\zombies\\generated-originals\\key-poses\\07-barbed-shackler.png",
+    "SHA256": "56C6FD5D177E927CAA44F7DEA9F23D86C6820E35268DCCA23C4720DB10DEBA94",
+    "Status": "copied"
+  },
+  {
+    "Source": "C:\\Users\\Samuel\\.codex\\.chatgpt-projects\\g-p-6ac13e53ed8c819181cd711c64d27081\\output\\zombie-art\\08-obsidian-bladewall.png",
+    "Destination": "E:\\Zed_Idler\\art\\zombies\\generated-originals\\key-poses\\08-obsidian-bladewall.png",
+    "SHA256": "D8D8D12D52C046A60E63169FE25B51F2D22F3512BD6078FB3E45AAEF7708CE97",
+    "Status": "copied"
+  },
+  {
+    "Source": "C:\\Users\\Samuel\\.codex\\.chatgpt-projects\\g-p-6ac13e53ed8c819181cd711c64d27081\\output\\zombie-art\\09-burrower.png",
+    "Destination": "E:\\Zed_Idler\\art\\zombies\\generated-originals\\key-poses\\09-burrower.png",
+    "SHA256": "4FF24CA1DF29655BDAF3B58E4CBA9BFA82EC186CBEE88BDA71ECEB5130F27FEF",
+    "Status": "copied"
+  },
+  {
+    "Source": "C:\\Users\\Samuel\\.codex\\.chatgpt-projects\\g-p-6ac13e53ed8c819181cd711c64d27081\\output\\zombie-art\\10-volatile-biomass.png",
+    "Destination": "E:\\Zed_Idler\\art\\zombies\\generated-originals\\key-poses\\10-volatile-biomass.png",
+    "SHA256": "1E813439C0D24FA7EA5C79824C5921B4F7A00996EA60EE36F2B8DD06531FB7AE",
+    "Status": "copied"
+  },
+  {
+    "Source": "C:\\Users\\Samuel\\.codex\\.chatgpt-projects\\g-p-6ac13e53ed8c819181cd711c64d27081\\output\\zombie-art\\11-unstable-mutation.png",
+    "Destination": "E:\\Zed_Idler\\art\\zombies\\generated-originals\\key-poses\\11-unstable-mutation.png",
+    "SHA256": "419C6890BD7A09B3AC553E1A588C2843DA361D52D9921A7A94DA45E4C1B255CE",
+    "Status": "copied"
+  },
+  {
+    "Source": "C:\\Users\\Samuel\\.codex\\.chatgpt-projects\\g-p-6ac13e53ed8c819181cd711c64d27081\\output\\zombie-art\\12-unbound-boss.png",
+    "Destination": "E:\\Zed_Idler\\art\\zombies\\generated-originals\\key-poses\\12-unbound-boss.png",
+    "SHA256": "FE6229A0974D2FE4839FABD2226F3C80A43530CB71404CE9BB97E2627CBEBCD7",
+    "Status": "copied"
+  },
+  {
+    "Source": "E:\\Zed_Idler\\uploads\\Zombie Art\\Bestiary 49-108\\humans\\01-scavenger-survivor.png",
+    "Destination": "E:\\Zed_Idler\\art\\humans\\survivor-loadouts\\01-scavenger-survivor.png",
+    "SHA256": "09F9B3867D27D6A27EAF24AC4C1C18D4D168D7DAC5263720ABCFD6182709E62F",
+    "Status": "copied"
+  },
+  {
+    "Source": "E:\\Zed_Idler\\uploads\\Zombie Art\\Bestiary 49-108\\humans\\02-tactical-operator.png",
+    "Destination": "E:\\Zed_Idler\\art\\humans\\survivor-loadouts\\02-tactical-operator.png",
+    "SHA256": "8D1D1D82C99ED0AD4861D86C72730E442E4333AD5C8CB979F56480ABF2E6AA76",
+    "Status": "copied"
+  },
+  {
+    "Source": "E:\\Zed_Idler\\uploads\\Zombie Art\\Bestiary 49-108\\humans\\03-endgame-veteran.png",
+    "Destination": "E:\\Zed_Idler\\art\\humans\\survivor-loadouts\\03-endgame-veteran.png",
+    "SHA256": "5B46E993C8E8D5511FC770670602F33F5BB4AD2CF64BA9E9CD3CA9CDD4BF6ED8",
+    "Status": "copied"
+  },
+  {
+    "Source": "E:\\Zed_Idler\\uploads\\Zombie Art\\Bestiary 49-108\\humans\\04-militia-guard.png",
+    "Destination": "E:\\Zed_Idler\\art\\humans\\factions-and-npcs\\04-militia-guard.png",
+    "SHA256": "8956325857861B0B45B9583DF1D2544852CAC69AB17BAC04CD43083F0C22F0FF",
+    "Status": "copied"
+  },
+  {
+    "Source": "E:\\Zed_Idler\\uploads\\Zombie Art\\Bestiary 49-108\\humans\\05-scout-outrider.png",
+    "Destination": "E:\\Zed_Idler\\art\\humans\\factions-and-npcs\\05-scout-outrider.png",
+    "SHA256": "FEDBF941D6C60E5192F58BE994E1F2B358AFDFA61E636A1E5832823E01A9B824",
+    "Status": "copied"
+  },
+  {
+    "Source": "E:\\Zed_Idler\\uploads\\Zombie Art\\Bestiary 49-108\\humans\\06-faction-enforcer.png",
+    "Destination": "E:\\Zed_Idler\\art\\humans\\factions-and-npcs\\06-faction-enforcer.png",
+    "SHA256": "AD958A42240FB2D440347A532E2BB20EB428D008FEDCB73DCECE2AD75B593258",
+    "Status": "copied"
+  },
+  {
+    "Source": "E:\\Zed_Idler\\uploads\\Zombie Art\\Bestiary 49-108\\humans\\07-drifter-trader.png",
+    "Destination": "E:\\Zed_Idler\\art\\humans\\factions-and-npcs\\07-drifter-trader.png",
+    "SHA256": "A7C0028D035FA2DB255CDD95EDC0AF1E18F180901440C08E0F5C778C36CAD41E",
+    "Status": "copied"
+  },
+  {
+    "Source": "E:\\Zed_Idler\\uploads\\Zombie Art\\Bestiary 49-108\\humans\\08-ranged-aiming.png",
+    "Destination": "E:\\Zed_Idler\\art\\humans\\action-poses\\08-ranged-aiming.png",
+    "SHA256": "C9E44332CA971A1A855E764D66A72BCA02339A5548C1BE7038AB2BFBB2563F42",
+    "Status": "copied"
+  },
+  {
+    "Source": "E:\\Zed_Idler\\uploads\\Zombie Art\\Bestiary 49-108\\humans\\09-melee-swing.png",
+    "Destination": "E:\\Zed_Idler\\art\\humans\\action-poses\\09-melee-swing.png",
+    "SHA256": "AD2403767BF9B77E3C7637D614501C69EDC0E61303FFDF62E6DB5CCA8956258B",
+    "Status": "copied"
+  },
+  {
+    "Source": "E:\\Zed_Idler\\uploads\\Zombie Art\\Bestiary 49-108\\humans\\10-wounded-crawling.png",
+    "Destination": "E:\\Zed_Idler\\art\\humans\\action-poses\\10-wounded-crawling.png",
+    "SHA256": "5C7BA16D6A6A89244D5358F2707646E2219FE18D52AE228FCA86C24B10B7E050",
+    "Status": "copied"
+  },
+  {
+    "Source": "E:\\Zed_Idler\\uploads\\Zombie Art\\Bestiary 49-108\\animations\\075-phantasm-grayscales-sheet.png",
+    "Destination": "E:\\Zed_Idler\\art\\zombies\\animations\\grayscales\\075-phantasm-grayscales-sheet.png",
+    "SHA256": "B705AF2FD4E14FB89C6E416901EB273B3E49484F44E68DBB53FA6B1856D1E2F3",
+    "Status": "copied"
+  },
+  {
+    "Source": "E:\\Zed_Idler\\uploads\\Zombie Art\\Bestiary 49-108\\animations\\075-phantasm-grayscales.gif",
+    "Destination": "E:\\Zed_Idler\\art\\zombies\\animations\\grayscales\\075-phantasm-grayscales.gif",
+    "SHA256": "B378DE7C6CD4ADCCF588756EBFA8C0361B7613B1FA2EEC77E818294CADB833AF",
+    "Status": "copied"
+  },
+  {
+    "Source": "E:\\Zed_Idler\\uploads\\Zombie Art\\Bestiary 49-108\\animations\\090-surgical-grayscales-sheet.png",
+    "Destination": "E:\\Zed_Idler\\art\\zombies\\animations\\grayscales\\090-surgical-grayscales-sheet.png",
+    "SHA256": "F67DB14B59C35CCE2B94C46620969C09507487344E84B2FD1C17A8BA6D590647",
+    "Status": "copied"
+  },
+  {
+    "Source": "E:\\Zed_Idler\\uploads\\Zombie Art\\Bestiary 49-108\\animations\\090-surgical-grayscales.gif",
+    "Destination": "E:\\Zed_Idler\\art\\zombies\\animations\\grayscales\\090-surgical-grayscales.gif",
+    "SHA256": "15CC9F1C17F325E3E748A0981332AE61776C9CE1ECA7EE20A65AEE89C1F0B848",
+    "Status": "copied"
+  },
+  {
+    "Source": "E:\\Zed_Idler\\uploads\\Zombie Art\\Bestiary 49-108\\animations\\075-phantasm-grayscales\\frame-01.png",
+    "Destination": "E:\\Zed_Idler\\art\\zombies\\animations\\grayscales\\075-phantasm-grayscales\\frame-01.png",
+    "SHA256": "18D5BBA63240CFB85F92C85A05A61A33D0F79DD588FDCE33C0994B264B35AA63",
+    "Status": "copied"
+  },
+  {
+    "Source": "E:\\Zed_Idler\\uploads\\Zombie Art\\Bestiary 49-108\\animations\\075-phantasm-grayscales\\frame-02.png",
+    "Destination": "E:\\Zed_Idler\\art\\zombies\\animations\\grayscales\\075-phantasm-grayscales\\frame-02.png",
+    "SHA256": "0CE74C079F76786392B27C555B53B54C749DF74DD9C76107E0C472BFEC7B842C",
+    "Status": "copied"
+  },
+  {
+    "Source": "E:\\Zed_Idler\\uploads\\Zombie Art\\Bestiary 49-108\\animations\\075-phantasm-grayscales\\frame-03.png",
+    "Destination": "E:\\Zed_Idler\\art\\zombies\\animations\\grayscales\\075-phantasm-grayscales\\frame-03.png",
+    "SHA256": "8CA3E94E0F7757CD21873AA075885EC58F7057FCC3C8E5842BB1812EAAC86D10",
+    "Status": "copied"
+  },
+  {
+    "Source": "E:\\Zed_Idler\\uploads\\Zombie Art\\Bestiary 49-108\\animations\\075-phantasm-grayscales\\frame-04.png",
+    "Destination": "E:\\Zed_Idler\\art\\zombies\\animations\\grayscales\\075-phantasm-grayscales\\frame-04.png",
+    "SHA256": "6A81F3D63AD4BE2024D7ACFE65B84C9A280D9E1D00C88655DEEAE70C3FB4F146",
+    "Status": "copied"
+  },
+  {
+    "Source": "E:\\Zed_Idler\\uploads\\Zombie Art\\Bestiary 49-108\\animations\\090-surgical-grayscales\\frame-01.png",
+    "Destination": "E:\\Zed_Idler\\art\\zombies\\animations\\grayscales\\090-surgical-grayscales\\frame-01.png",
+    "SHA256": "6D1BD2F12B600E67301918BCAB8F465DD5D4D442CED481379F7CA379226DF9D9",
+    "Status": "copied"
+  },
+  {
+    "Source": "E:\\Zed_Idler\\uploads\\Zombie Art\\Bestiary 49-108\\animations\\090-surgical-grayscales\\frame-02.png",
+    "Destination": "E:\\Zed_Idler\\art\\zombies\\animations\\grayscales\\090-surgical-grayscales\\frame-02.png",
+    "SHA256": "ABF9023AE01884DB98CA1329885AEBA3A84D78A66FBA4A4E8316928CB272276A",
+    "Status": "copied"
+  },
+  {
+    "Source": "E:\\Zed_Idler\\uploads\\Zombie Art\\Bestiary 49-108\\animations\\090-surgical-grayscales\\frame-03.png",
+    "Destination": "E:\\Zed_Idler\\art\\zombies\\animations\\grayscales\\090-surgical-grayscales\\frame-03.png",
+    "SHA256": "A9BF6A05F440AE88D71131703B584F116F158F7ECD9E344B9441579D5B5C0691",
+    "Status": "copied"
+  },
+  {
+    "Source": "E:\\Zed_Idler\\uploads\\Zombie Art\\Bestiary 49-108\\animations\\090-surgical-grayscales\\frame-04.png",
+    "Destination": "E:\\Zed_Idler\\art\\zombies\\animations\\grayscales\\090-surgical-grayscales\\frame-04.png",
+    "SHA256": "947F58C66A4D70E4224D8893CF62E6C18ECEBCE2A696CAC1389B92CFC25D6ACA",
+    "Status": "copied"
+  },
+  {
+    "Source": "E:\\Zed_Idler\\uploads\\Zombie Art\\Wildlife and Vehicles\\01-pegasus.png",
+    "Destination": "E:\\Zed_Idler\\art\\animals\\mythical-creatures\\01-pegasus.png",
+    "SHA256": "6FBF6C057483F5077B8F7490C28292F2DFEDEE7268BB1E1758976AB445AC501B",
+    "Status": "copied"
+  },
+  {
+    "Source": "E:\\Zed_Idler\\uploads\\Zombie Art\\Wildlife and Vehicles\\02-unicorn.png",
+    "Destination": "E:\\Zed_Idler\\art\\animals\\mythical-creatures\\02-unicorn.png",
+    "SHA256": "E0E058220B37363492F744BCD12028903568F2231CD9ABAE3B9A672DD7D798E8",
+    "Status": "copied"
+  },
+  {
+    "Source": "E:\\Zed_Idler\\uploads\\Zombie Art\\Wildlife and Vehicles\\03-hawk.png",
+    "Destination": "E:\\Zed_Idler\\art\\animals\\birds\\03-hawk.png",
+    "SHA256": "AEC4950E41A8AFA4310FB27087E9532E7C4C1AF14133C8918712DEFE04D5AB74",
+    "Status": "copied"
+  },
+  {
+    "Source": "E:\\Zed_Idler\\uploads\\Zombie Art\\Wildlife and Vehicles\\04-pigeon.png",
+    "Destination": "E:\\Zed_Idler\\art\\animals\\birds\\04-pigeon.png",
+    "SHA256": "A2FDFFA5F0390713DB25B8EC1A600FFBA7FC3D153DB1E6879835CE9E6652F0A3",
+    "Status": "copied"
+  },
+  {
+    "Source": "E:\\Zed_Idler\\uploads\\Zombie Art\\Wildlife and Vehicles\\05-bicycle.png",
+    "Destination": "E:\\Zed_Idler\\art\\Vehicles\\bicycles\\05-bicycle.png",
+    "SHA256": "7333D707C3B6566E37AC1B949C94023CB9398133D47C0213379AB051494ED4AC",
+    "Status": "copied"
+  },
+  {
+    "Source": "E:\\Zed_Idler\\uploads\\Zombie Art\\Wildlife and Vehicles\\06-e-bike.png",
+    "Destination": "E:\\Zed_Idler\\art\\Vehicles\\bicycles\\06-e-bike.png",
+    "SHA256": "D3319DD6DA908E33841E7681194C0AF5593469662BA8DB567C928499F1D7159C",
+    "Status": "copied"
+  },
+  {
+    "Source": "E:\\Zed_Idler\\uploads\\Zombie Art\\Wildlife and Vehicles\\07-horse.png",
+    "Destination": "E:\\Zed_Idler\\art\\animals\\mounts\\07-horse.png",
+    "SHA256": "C93A0D198949F0E01A75AC6087D6BA918B24E1E5CB11650B7DBE7D321957DC80",
+    "Status": "copied"
+  },
+  {
+    "Source": "E:\\Zed_Idler\\uploads\\Zombie Art\\Wildlife and Vehicles\\08-coupe.png",
+    "Destination": "E:\\Zed_Idler\\art\\Vehicles\\cars-vans-and-trucks\\08-coupe.png",
+    "SHA256": "199F2BC70DC02DD08B7225DB804B281CCBF0F18FDE3028DFD2343728ABE5FA72",
+    "Status": "copied"
+  },
+  {
+    "Source": "E:\\Zed_Idler\\uploads\\Zombie Art\\Wildlife and Vehicles\\09-van.png",
+    "Destination": "E:\\Zed_Idler\\art\\Vehicles\\cars-vans-and-trucks\\09-van.png",
+    "SHA256": "6CEBD500C8D12BA364A94CB8CF47E001A576E600A04D07900D3482531F572E4A",
+    "Status": "copied"
+  },
+  {
+    "Source": "E:\\Zed_Idler\\uploads\\Zombie Art\\Wildlife and Vehicles\\10-motorcycle.png",
+    "Destination": "E:\\Zed_Idler\\art\\Vehicles\\motorcycles\\survival\\10-motorcycle.png",
+    "SHA256": "B8A2D920FA7A87251B5E3B354A047B83E29FA68C48158ABCD8E077053831EF8E",
+    "Status": "copied"
+  },
+  {
+    "Source": "E:\\Zed_Idler\\uploads\\Zombie Art\\Wildlife and Vehicles\\11-four-by-four-truck.png",
+    "Destination": "E:\\Zed_Idler\\art\\Vehicles\\cars-vans-and-trucks\\11-four-by-four-truck.png",
+    "SHA256": "B1EEB33D3B833AA9BD1F3695F665C96B8918B9C7FEE829C00A2E69EE6939389B",
+    "Status": "copied"
+  },
+  {
+    "Source": "E:\\Zed_Idler\\uploads\\Zombie Art\\Sportbikes and Lightcycles\\01-green-ninja-style-sportbike.png",
+    "Destination": "E:\\Zed_Idler\\art\\Vehicles\\motorcycles\\sportbikes-and-dual-sport\\01-green-ninja-style-sportbike.png",
+    "SHA256": "C16ECED343464BA8C196221C21B67F5CD46DF2A3CFC16A90289376A5E4FD19E2",
+    "Status": "copied"
+  },
+  {
+    "Source": "E:\\Zed_Idler\\uploads\\Zombie Art\\Sportbikes and Lightcycles\\02-red-white-cbr-style-racer.png",
+    "Destination": "E:\\Zed_Idler\\art\\Vehicles\\motorcycles\\sportbikes-and-dual-sport\\02-red-white-cbr-style-racer.png",
+    "SHA256": "E8C21208C69C96AEDDDF3B7A312FA4AA8CCC0BC9B7FDB5D0A082D004229518B7",
+    "Status": "copied"
+  },
+  {
+    "Source": "E:\\Zed_Idler\\uploads\\Zombie Art\\Sportbikes and Lightcycles\\03-enduro-dual-sport-scrambler.png",
+    "Destination": "E:\\Zed_Idler\\art\\Vehicles\\motorcycles\\sportbikes-and-dual-sport\\03-enduro-dual-sport-scrambler.png",
+    "SHA256": "0BE5518C95C0B3C6F9E6437670D1548C29D3C094E8B1A3256296D2745F4E1996",
+    "Status": "copied"
+  },
+  {
+    "Source": "E:\\Zed_Idler\\uploads\\Zombie Art\\Sportbikes and Lightcycles\\04-cyan-cyberpunk-lightcycle.png",
+    "Destination": "E:\\Zed_Idler\\art\\Vehicles\\motorcycles\\lightcycles\\04-cyan-cyberpunk-lightcycle.png",
+    "SHA256": "8D9DF862794EA3F53EFFFDC1770761703D8E4EF42654DEBD100BF133B1BDD78F",
+    "Status": "copied"
+  },
+  {
+    "Source": "E:\\Zed_Idler\\uploads\\Zombie Art\\Sportbikes and Lightcycles\\05-crimson-neo-tokyo-sportbike.png",
+    "Destination": "E:\\Zed_Idler\\art\\Vehicles\\motorcycles\\lightcycles\\05-crimson-neo-tokyo-sportbike.png",
+    "SHA256": "227252FD60AD4154A5DDA93AD3FA009EFB32BA360E5BCEACFB280737E3DC3AAD",
+    "Status": "copied"
+  },
+  {
+    "Source": "E:\\Zed_Idler\\uploads\\Zombie Art\\encounter-affliction-map.json",
+    "Destination": "E:\\Zed_Idler\\art\\reference\\generated-sprite-sources\\encounter-affliction-map.json",
+    "SHA256": "1BBBCFD6866152EF6D2681F42685EECE8404C5468E9E041BA8C89953DE7C1CA7",
+    "Status": "copied"
+  },
+  {
+    "Source": "E:\\Zed_Idler\\uploads\\Zombie Art\\encounter-affliction-map.md",
+    "Destination": "E:\\Zed_Idler\\art\\reference\\generated-sprite-sources\\encounter-affliction-map.md",
+    "SHA256": "F9AA515543F9CE5541582F6010619A14007624975FA987E496DBA524397E1819",
+    "Status": "copied"
+  },
+  {
+    "Source": "E:\\Zed_Idler\\uploads\\Zombie Art\\Bestiary 49-108\\grayscales-animation-index.json",
+    "Destination": "E:\\Zed_Idler\\art\\reference\\generated-sprite-sources\\Bestiary 49-108\\grayscales-animation-index.json",
+    "SHA256": "66246A96C9A2F41A3EC033EC27BF17B963103727103FB214A5B4C26A278092E4",
+    "Status": "copied"
+  },
+  {
+    "Source": "E:\\Zed_Idler\\uploads\\Zombie Art\\Bestiary 49-108\\index.csv",
+    "Destination": "E:\\Zed_Idler\\art\\reference\\generated-sprite-sources\\Bestiary 49-108\\index.csv",
+    "SHA256": "4BA92E1E2BD89C5C2ECF9A66B040B36A48C1E20C15FBAEFF8DFD55D60CB76AC7",
+    "Status": "copied"
+  },
+  {
+    "Source": "E:\\Zed_Idler\\uploads\\Zombie Art\\Bestiary 49-108\\prompts.md",
+    "Destination": "E:\\Zed_Idler\\art\\reference\\generated-sprite-sources\\Bestiary 49-108\\prompts.md",
+    "SHA256": "216955FBC68886A70968CEE23D90ED99F28C3D67C3598697382B6157B072CDE8",
+    "Status": "copied"
+  },
+  {
+    "Source": "E:\\Zed_Idler\\uploads\\Zombie Art\\Bestiary 49-108\\README.md",
+    "Destination": "E:\\Zed_Idler\\art\\reference\\generated-sprite-sources\\Bestiary 49-108\\README.md",
+    "SHA256": "C5D3FFE55F7111FB2E0562214A7587DD1823F70F4F34DD8861167AE4A481BC8E",
+    "Status": "copied"
+  },
+  {
+    "Source": "E:\\Zed_Idler\\uploads\\Zombie Art\\Bestiary 49-108\\survivors-and-cues-asset-index.json",
+    "Destination": "E:\\Zed_Idler\\art\\reference\\generated-sprite-sources\\Bestiary 49-108\\survivors-and-cues-asset-index.json",
+    "SHA256": "F2EB1C5D87A396B65653C0CC9367917E5FDE21CDDFB77ED6F64F2F53AA4F307B",
+    "Status": "copied"
+  },
+  {
+    "Source": "E:\\Zed_Idler\\uploads\\Zombie Art\\Bestiary 49-108\\survivors-and-cues-prompts.md",
+    "Destination": "E:\\Zed_Idler\\art\\reference\\generated-sprite-sources\\Bestiary 49-108\\survivors-and-cues-prompts.md",
+    "SHA256": "01BC5B15FC5101489E1A825B64AD47A1E2EC5627561E2884BC924D7DF4200BFC",
+    "Status": "copied"
+  },
+  {
+    "Source": "E:\\Zed_Idler\\uploads\\Zombie Art\\Bestiary 49-108\\survivors-and-cues-readme.md",
+    "Destination": "E:\\Zed_Idler\\art\\reference\\generated-sprite-sources\\Bestiary 49-108\\survivors-and-cues-readme.md",
+    "SHA256": "1CC33C3C395753DBD98E1E3815B826E786B2C9748379394C5A0D5EA890284406",
+    "Status": "copied"
+  },
+  {
+    "Source": "E:\\Zed_Idler\\uploads\\Zombie Art\\Sportbikes and Lightcycles\\manifest.json",
+    "Destination": "E:\\Zed_Idler\\art\\reference\\generated-sprite-sources\\Sportbikes and Lightcycles\\manifest.json",
+    "SHA256": "5E2AF043770B4B2C4167EABA3A4167DDF9669847476F32F798B5C57CBFE4929A",
+    "Status": "copied"
+  },
+  {
+    "Source": "E:\\Zed_Idler\\uploads\\Zombie Art\\Sportbikes and Lightcycles\\prompts.md",
+    "Destination": "E:\\Zed_Idler\\art\\reference\\generated-sprite-sources\\Sportbikes and Lightcycles\\prompts.md",
+    "SHA256": "06BD275B1503FB86A047C5F6AAA801F13F8428BCC9434D0FE530EE3BFAF3E483",
+    "Status": "copied"
+  },
+  {
+    "Source": "E:\\Zed_Idler\\uploads\\Zombie Art\\Wildlife and Vehicles\\manifest.json",
+    "Destination": "E:\\Zed_Idler\\art\\reference\\generated-sprite-sources\\Wildlife and Vehicles\\manifest.json",
+    "SHA256": "17F43DFA2BFFB3E0364EEB77F3E360B665BA104CD447CF29ADB108537DC6C827",
+    "Status": "copied"
+  },
+  {
+    "Source": "E:\\Zed_Idler\\uploads\\Zombie Art\\Wildlife and Vehicles\\prompts.md",
+    "Destination": "E:\\Zed_Idler\\art\\reference\\generated-sprite-sources\\Wildlife and Vehicles\\prompts.md",
+    "SHA256": "98C48E9B77B0E9F8F0AC523B352189994BBF537B613C1D7F32FD56CF6E2C0D3F",
+    "Status": "copied"
+  },
+  {
+    "Source": "C:\\Users\\Samuel\\.codex\\.chatgpt-projects\\g-p-6ac13e53ed8c819181cd711c64d27081\\output\\zombie-art\\prompts.md",
+    "Destination": "E:\\Zed_Idler\\art\\reference\\generated-sprite-sources\\original-key-poses\\prompts.md",
+    "SHA256": "CD613702525CD56B564AC93ADADC8987EA198259247EA8AAD70BC71CC7628A4F",
+    "Status": "copied"
+  },
+  {
+    "Source": "C:\\Users\\Samuel\\.codex\\.chatgpt-projects\\g-p-6ac13e53ed8c819181cd711c64d27081\\output\\zombie-art\\README.md",
+    "Destination": "E:\\Zed_Idler\\art\\reference\\generated-sprite-sources\\original-key-poses\\README.md",
+    "SHA256": "08F8F3207E5E9F0F7A07B92525A68A7A189C6332B81821647583BD2205219E2F",
+    "Status": "copied"
+  }
+]

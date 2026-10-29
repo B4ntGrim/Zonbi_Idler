@@ -1,10 +1,10 @@
 "use strict";
 
-function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
 function _toConsumableArray(r) { return _arrayWithoutHoles(r) || _iterableToArray(r) || _unsupportedIterableToArray(r) || _nonIterableSpread(); }
 function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
 function _iterableToArray(r) { if ("undefined" != typeof Symbol && null != r[Symbol.iterator] || null != r["@@iterator"]) return Array.from(r); }
 function _arrayWithoutHoles(r) { if (Array.isArray(r)) return _arrayLikeToArray(r); }
+function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
 function ownKeys(e, r) { var t = Object.keys(e); if (Object.getOwnPropertySymbols) { var o = Object.getOwnPropertySymbols(e); r && (o = o.filter(function (r) { return Object.getOwnPropertyDescriptor(e, r).enumerable; })), t.push.apply(t, o); } return t; }
 function _objectSpread(e) { for (var r = 1; r < arguments.length; r++) { var t = null != arguments[r] ? arguments[r] : {}; r % 2 ? ownKeys(Object(t), !0).forEach(function (r) { _defineProperty(e, r, t[r]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys(Object(t)).forEach(function (r) { Object.defineProperty(e, r, Object.getOwnPropertyDescriptor(t, r)); }); } return e; }
 function _defineProperty(e, r, t) { return (r = _toPropertyKey(r)) in e ? Object.defineProperty(e, r, { value: t, enumerable: !0, configurable: !0, writable: !0 }) : e[r] = t, e; }
@@ -1309,6 +1309,8 @@ window.SatelliteTraversalScreen = function SatelliteTraversalScreen(_ref22) {
   // ── Outbreak start: persisted random starting cell + "You are Here" ──
   var _React$useState17 = React.useState(function () {
       var p = readJ('zi_trav_pos', null);
+      // Damaged position (Oct 29): anything that is not a map cell is treated as missing, so a new start is picked.
+      if (p && (_typeof(p) !== 'object' || Array.isArray(p) || !(Number.isFinite(p.gx) || Number.isFinite(p.row)))) p = null;
       if (p && p.gx == null && p.row != null) {
         p = ZI.zoneFromCell(ZI.worldCell(p.col, p.row, 'scavenge'));
         writeJ('zi_trav_pos', p);
@@ -4283,7 +4285,7 @@ window.WANDER_TUT_STEPS = [{
 }, {
   tut: 'cmds',
   title: 'Tools and what trains you',
-  body: 'Heal, scout and push are your hands-on tools; the patrol keeps fighting on its own either way. What your survivor does trains them: healing builds First Aid, scouting and pushing build Stealth, looting builds Scavenging, and each policy encounter trains the skills it tests. Skills you stop using go rusty. When you come back, the log shows what happened while you were gone.'
+  body: 'Heal, scout and push are your hands-on tools; the patrol keeps fighting on its own either way. What your survivor does trains them: healing builds First Aid, scouting and pushing build Stealth, looting builds Scavenging, and each policy encounter trains the skills it tests. Skills you stop using never lose progress. When you come back, the log shows what happened while you were gone.'
 }];
 window.WanderTutorialView = function WanderTutorialView(_ref34) {
   var rootRef = _ref34.rootRef,
@@ -8085,7 +8087,7 @@ window.ZombieCodexScreen = function ZombieCodexScreen() {
     };
   }, [expanded]);
   var expandedRoster = ZI.BESTIARY_EXPANDED || []; // ids 49-108: art + description only, never spawned (bestiary-expanded.js)
-  var devMode = catFilter === 'dev';
+  var devMode = catFilter === 'dev' && !!(ZI.isDevView && ZI.isDevView());
   var A = window.ZI_ART || {};
   // The zombie's art, exactly as Wandering shows it: processed sprite where one is mapped, else the painted SVG.
   var artBox = function artBox(z, dev) {
@@ -8188,11 +8190,11 @@ window.ZombieCodexScreen = function ZombieCodexScreen() {
     id: 'elite',
     label: 'Elites',
     icon: '💀'
-  }, {
+  }].concat(_toConsumableArray(ZI.isDevView && ZI.isDevView() ? [{
     id: 'dev',
     label: 'In development',
     icon: '🧪'
-  }];
+  }] : []));
   var catOf = function catOf(z) {
     var txt = [z.base, z.name, z.ability].concat(z.traits || []).join(' ');
     if (z.tier === 'S' || z.tier === 'BOSS') return 'elite';

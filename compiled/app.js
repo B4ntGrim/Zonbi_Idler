@@ -1530,7 +1530,12 @@ function SaveFilesScreen(_ref25) {
     }) : '';
   };
   var act = function act(slot, action) {
-    if (action === 'new' || action === 'overwrite') ZI.startNewInSlot(mode, slot);else if (action === 'load') ZI.loadSlot(mode, slot);else if (action === 'delete') {
+    if (action === 'new' || action === 'overwrite') ZI.startNewInSlot(mode, slot);else if (action === 'load') {
+      if (!ZI.loadSlot(mode, slot)) setNotice({
+        ok: false,
+        text: "File ".concat(slot, " is damaged and has no good backup copy, so it cannot be loaded. Your other files are safe. You can Import an exported copy into it, or Delete it.")
+      });
+    } else if (action === 'delete') {
       ZI.deleteSlot(mode, slot);
       setConfirm(null);
       force(function (n) {

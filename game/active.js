@@ -23,7 +23,7 @@ ZI.ACTIVE_TABLE = {
   policyVentureMax: { ethical: 0, immoral: 1, criminal: 2, heinous: 3 }, // default: venture if risk index ≤ this
   xp: { moveOnScale: 0.2, ventureScale: 0.6 },
   scout: { exactOddsLevel: 15, reduceRiskLevel: 30 },  // D1: Discovery 30+ lowers the actual risk one tier (min Low)
-  charges: { baseHeal: 2, baseScout: 2, commandPerkLevel: 40, commandPerkHeal: 1, kit: { medkit: { kind:'heal', charges: 2 }, scout_kit: { kind:'scout', charges: 2 } } },
+  charges: { baseHeal: 0, baseScout: 2, commandPerkLevel: 40, commandPerkHeal: 0, kit: { medkit: { kind:'heal', charges: 2 }, scout_kit: { kind:'scout', charges: 2 } } },
   // Batch 3A field load (spec 14.4). overloadStressMult = the Normal-difficulty value; difficulty scaling comes later.
   load: { limitPct: 125, speedAtLimit: 0.75, overloadStressMult: 2 }, // BAL-A A5 (Sam, Oct 19): overload above 100% doubles stress gains (was 1.15)
   push: { maxPressure: 3, encounterRateMult: 0.15, tierBoost: 1 },
@@ -93,8 +93,12 @@ ZI.baseChargeMax = function() {
   const C = ZI.ACTIVE_TABLE.charges, perk = (ZI.effectiveLevel ? ZI.effectiveLevel('command') : 1) >= C.commandPerkLevel ? C.commandPerkHeal : 0;
   return { heal: C.baseHeal + perk, scout: C.baseScout };
 };
+// Oct 29 (consumable-only healing, approved rule): healing comes only from Medkits (2 charges each). Stored base heal
+// charges from older saves are clamped to the new maximum (0) and are never turned into Medkits. Scout is unchanged.
 ZI.getBaseCharges = function() {
-  return Object.assign(ZI.baseChargeMax(), ZI._rj(ZI.CHARGES_KEY, {}));
+  const st = ZI._rj(ZI.CHARGES_KEY, {}), out = Object.assign(ZI.baseChargeMax(), st && typeof st === 'object' && !Array.isArray(st) ? st : {});
+  if (!(ZI.baseChargeMax().heal > 0)) out.heal = 0; // consumable-only: stored free heals from older saves are dropped
+  return out;
 };
 ZI.refillBaseCharges = function() { ZI._wj(ZI.CHARGES_KEY, ZI.baseChargeMax()); ZI._notifyInventory && ZI._notifyInventory(); };
 ZI.isKit = function(id) { return !!ZI.ACTIVE_TABLE.charges.kit[id]; };

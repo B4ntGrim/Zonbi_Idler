@@ -1,0 +1,40 @@
+{
+  "mode": "built-in image_gen",
+  "assets": [
+    {
+      "id": "01-green-ninja-style-sportbike",
+      "name": "Kawasaki Ninja-Style Sportbike",
+      "prompt": "2D side-scrolling pixel art sprite of an aggressive, post-collapse green sportbike motorcycle. Angular aerodynamic fairings, low clip-on handlebars, knobby dual-sport tires fitted to sleek alloy wheels, dual sharp LED headlights, and a rusted aftermarket exhaust pipe. 16-bit retro dark survival style, vibrant Kawasaki-green bodywork with weathered scratches and mud splatters, dark solid background.",
+      "finalPrompt": "2D side-scrolling pixel art sprite of an aggressive, post-collapse green sportbike motorcycle. Angular aerodynamic fairings, low clip-on handlebars, knobby dual-sport tires fitted to sleek alloy wheels, dual sharp LED headlights, and a rusted aftermarket exhaust pipe. 16-bit retro dark survival style, vibrant Kawasaki-green bodywork with weathered scratches and mud splatters, dark solid background.\nAsset type: standalone static game sprite for Zed Idler. Strict side profile, entire motorcycle and both wheels fully inside the canvas with clear margins. No rider. Crisp square pixel clusters, detailed 16-bit / 32-bit retro pixel rendering, readable weathered materials. Isolated on uniform near-black background. Single asset, no panels, no captions, no watermark. Preserve distinct chassis and equipment described above.",
+      "source": "C:\\Users\\Samuel\\.codex\\generated_images\\01a16f4e-156b-7990-98d3-8887280dd508\\exec-06b00bdc-5381-4393-97a9-8f9f2a294aa0.png"
+    },
+    {
+      "id": "02-red-white-cbr-style-racer",
+      "name": "Honda CBR-Style Street Racer",
+      "prompt": "2D side-scrolling pixel art sprite of a modified Japanese sportbike motorcycle. Compact, streamlined body with exposed engine bay, taped-up cracked windshield, strapped canvas saddlebags tucked behind the tail section, and reinforced frame sliders. 16-bit retro dark survival style, desaturated red and white racing livery with road grime and rust accents, solid dark background.",
+      "finalPrompt": "2D side-scrolling pixel art sprite of a modified Japanese sportbike motorcycle. Compact, streamlined body with exposed engine bay, taped-up cracked windshield, strapped canvas saddlebags tucked behind the tail section, and reinforced frame sliders. 16-bit retro dark survival style, desaturated red and white racing livery with road grime and rust accents, solid dark background.\nAsset type: standalone static game sprite for Zed Idler. Strict side profile, entire motorcycle and both wheels fully inside the canvas with clear margins. No rider. Crisp square pixel clusters, detailed 16-bit / 32-bit retro pixel rendering, readable weathered materials. Isolated on uniform near-black background. Single asset, no panels, no captions, no watermark. Preserve distinct chassis and equipment described above.",
+      "source": "C:\\Users\\Samuel\\.codex\\generated_images\\01a16f4e-156b-7990-98d3-8887280dd508\\exec-a2ee6540-17e0-41f7-99fb-85ac08a081a4.png"
+    },
+    {
+      "id": "03-enduro-dual-sport-scrambler",
+      "name": "Enduro / Dual-Sport Scrambler",
+      "prompt": "2D side-scrolling pixel art sprite of a high-clearance Japanese dual-sport adventure bike. High front fender, aggressive off-road knobby tires, raised exhaust, wire-mesh headlight guard, and a rear rack holding a strapped jerry can. 16-bit dark survival style, weathered matte-black and industrial yellow accents, dark solid background.",
+      "finalPrompt": "2D side-scrolling pixel art sprite of a high-clearance Japanese dual-sport adventure bike. High front fender, aggressive off-road knobby tires, raised exhaust, wire-mesh headlight guard, and a rear rack holding a strapped jerry can. 16-bit dark survival style, weathered matte-black and industrial yellow accents, dark solid background.\nAsset type: standalone static game sprite for Zed Idler. Strict side profile, entire motorcycle and both wheels fully inside the canvas with clear margins. No rider. Crisp square pixel clusters, detailed 16-bit / 32-bit retro pixel rendering, readable weathered materials. Isolated on uniform near-black background. Single asset, no panels, no captions, no watermark. Preserve distinct chassis and equipment described above.",
+      "source": "C:\\Users\\Samuel\\.codex\\generated_images\\01a16f4e-156b-7990-98d3-8887280dd508\\exec-0e1aebb2-3100-488f-bbb9-cdd7aac4472c.png"
+    },
+    {
+      "id": "04-cyan-cyberpunk-lightcycle",
+      "name": "Cyberpunk Lightcycle",
+      "prompt": "2D side-scrolling pixel art sprite of a low-slung, futuristic neon lightcycle motorcycle. Enclosed hubless wheels, sweeping aerodynamic chassis, a sleek prone riding position layout, and vivid glowing cyan neon light strips embedded along the rim edges and bodylines. 16-bit retro dark survival style, high-contrast pitch-black body with intense luminescent cyan glow effects, dark solid background.",
+      "finalPrompt": "2D side-scrolling pixel art sprite of a low-slung, futuristic neon lightcycle motorcycle. Enclosed hubless wheels, sweeping aerodynamic chassis, a sleek prone riding position layout, and vivid glowing cyan neon light strips embedded along the rim edges and bodylines. 16-bit retro dark survival style, high-contrast pitch-black body with intense luminescent cyan glow effects, dark solid background.\nAsset type: standalone static game sprite for Zed Idler. Strict side profile, entire motorcycle and both wheels fully inside the canvas with clear margins. No rider. Crisp square pixel clusters, detailed 16-bit / 32-bit retro pixel rendering, readable weathered materials. Isolated on uniform near-black background. Single asset, no panels, no captions, no watermark. Preserve distinct chassis and equipment described above.",
+      "source": "C:\\Users\\Samuel\\.codex\\generated_images\\01a16f4e-156b-7990-98d3-8887280dd508\\exec-211b92f1-bd4e-4aa3-bb6e-f7b66dfc95e2.png"
+    },
+    {
+      "id": "05-crimson-neo-tokyo-sportbike",
+      "name": "Post-Apocalyptic Neo-Tokyo Sportbike",
+      "prompt": "2D side-scrolling pixel art sprite of a heavy futuristic sportbike. Recumbent low-rider chassis, oversized solid-disc wheels, high-tech digital console display, exposed heavy wiring, and pulsing neon-red energy lines tracing the fairings. 16-bit dark retro style, weathered crimson-red metallic paint with glowing energy accents, solid dark background.",
+      "finalPrompt": "2D side-scrolling pixel art sprite of a heavy futuristic sportbike. Recumbent low-rider chassis, oversized solid-disc wheels, high-tech digital console display, exposed heavy wiring, and pulsing neon-red energy lines tracing the fairings. 16-bit dark retro style, weathered crimson-red metallic paint with glowing energy accents, solid dark background.\nAsset type: standalone static game sprite for Zed Idler. Strict side profile, entire motorcycle and both wheels fully inside the canvas with clear margins. No rider. Crisp square pixel clusters, detailed 16-bit / 32-bit retro pixel rendering, readable weathered materials. Isolated on uniform near-black background. Single asset, no panels, no captions, no watermark. Preserve distinct chassis and equipment described above.",
+      "source": "C:\\Users\\Samuel\\.codex\\generated_images\\01a16f4e-156b-7990-98d3-8887280dd508\\exec-4eb900d7-57df-496b-8cfd-191d84f6970b.png"
+    }
+  ]
+}
