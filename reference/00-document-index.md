@@ -288,4 +288,5 @@ Scope stays Solo-only. Map circuit building and survival expansion remain separa
 | `reference/wandering-tab-spec.md` | §3 decay and §13.3 base heal charges marked superseded (Oct 29) |
 | `reference/food-01-nutrition-slice.md` | P6/P8 superseded by the Oct 28 Auto-Eat Shop rule |
 | `archive/design-handoff-oct27-evening.md` | Archived; `DESIGN_HANDOFF.md` is the Oct 29 handoff |
-
+| `reports/char-crawler-ops-2026-10-29/REPORT.md` | Character Creation on New Game, Crawler with the Halved trait (new saves), Operations page (Oct 29) |
+| `reference/operations-schedule-proposal.md` | Proposal; Oct 29 note: the read-only Operations page is built, mechanics still proposed |

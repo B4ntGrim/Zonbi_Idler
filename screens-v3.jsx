@@ -163,6 +163,7 @@ window.ZI_ART.zombieLook = function(type) {
   if (has('frost')) Object.assign(base, { skin:['#9ab0bc','#6a808c','#c4d6e0'], shirt:['#3a4450','#262e36'], eye:'#bff4ff', feats:['ice'] });
   if (has('armored','chrome','weapon','keyring','chained','stun')) { base.feats = base.feats.concat(has('chained') ? ['chain'] : ['helmet']); if (has('armored','weapon')) base.feats.push('plates'); }
   if (has('maggot','wretched','hermit','grayscale','randomfan')) base.feats = base.feats.concat(['maggots','holes']);
+  if (has('crawler')) Object.assign(base, { scale: 0.6, feats: base.feats.concat(['holes']) }); // Oct 29: Crawler (Halved) reads low to the ground; no sprite exported yet
   return base;
 };
 window.ZI_ART.zombieSvg = function(type, frame = 0) {
@@ -1834,7 +1835,8 @@ window.WanderingScreen = function WanderingScreen({ route, setScreen }) {
   // Narrow screens (phones): the scene sits above the combat log at full width instead of beside it. Display only.
   const [narrow, setNarrow] = React.useState(() => (window.innerWidth || 1024) < 760);
   React.useEffect(() => { const f = () => setNarrow((window.innerWidth || 1024) < 760); window.addEventListener('resize', f); return () => window.removeEventListener('resize', f); }, []);
-  const [activeSurvivor] = React.useState({ name:'Yael Strom', class:'ranger', hp:100, atk:18, def:8, init:14 });
+  // Oct 29: name and gender come from Character Creation (zi_survivor_profile); older saves keep the defaults.
+  const [activeSurvivor] = React.useState(() => { const p = window.ZI.getSurvivorProfile ? window.ZI.getSurvivorProfile() : null; return { name: (p && p.name) || 'Yael Strom', gender: p ? p.gender : undefined, class:'ranger', hp:100, atk:18, def:8, init:14 }; });
   const [score, setScore] = React.useState(() => {
     const r = (window.ZI.getWanderRun && window.ZI.getWanderRun()) || {};
     return { kills: r.kills || 0, xp: r.xp || 0, mats: r.mats || 0 };
@@ -1912,7 +1914,7 @@ window.WanderingScreen = function WanderingScreen({ route, setScreen }) {
     xp: z.xp, spd: z.spd, armor: z.armor, currentHp: z.hp, bestiaryId: z.id,
     tier: z.tier, weakness: z.weakness || [], loot: z.loot, drops: z.loot,
   });
-  const bestiaryPool = (window.ZI.BESTIARY || []).map(mapBestiary);
+  const bestiaryPool = (window.ZI.fieldBestiary ? window.ZI.fieldBestiary() : (window.ZI.BESTIARY || [])).map(mapBestiary); // Oct 29: includes the Crawler in new saves
   const undeadTypes = bestiaryPool.length ? bestiaryPool : [
     { type:'shambler', name:'Shambler', hp:25, atk:8, def:0, init:5, xp:10, tier:'F', weakness:['Blunt'], drops:'Cloth, scrap', currentHp:25 },
     { type:'runner', name:'Runner', hp:18, atk:14, def:0, init:18, xp:18, tier:'E', weakness:['Obstacles'], drops:'Cloth', currentHp:18 },
@@ -3209,7 +3211,7 @@ window.ZombieCodexScreen = function ZombieCodexScreen() {
     return <div data-codex-art="svg" style={box}><div style={{ transformOrigin:'50% 100%', transform: pose, lineHeight:0 }} dangerouslySetInnerHTML={{ __html: A.zombieSvg ? A.zombieSvg(type, codexFrame) : '' }}/></div>;
   };
 
-  const roster = ZI.BESTIARY || [];
+  const roster = ZI.fieldBestiary ? ZI.fieldBestiary() : (ZI.BESTIARY || []); // Oct 29: the roster this save can meet
   const tiers = ZI.BESTIARY_TIERS || {};
   const discovered = (ZI.getDiscovered && ZI.getDiscovered()) || new Set();
   const isKnown = (z) => discovered.has(z.id) || discovered.has(z.base) || discovered.has((z.name||'').toLowerCase());

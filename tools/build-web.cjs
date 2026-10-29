@@ -36,7 +36,7 @@ const compile = (code, filename) => Babel.transform(code, {
 }).code;
 const hash = s => crypto.createHash('sha256').update(s).digest('hex').slice(0, 10);
 const write = (rel, data) => { produced.add(path.normalize(rel)); const p = path.join(OUT, rel); fs.mkdirSync(path.dirname(p), { recursive: true }); fs.writeFileSync(p, data); };
-let copied = 0, skipped = 0, pruned = 0;
+let copied = 0, skipped = 0, pruned = 0; const stale = [];
 const produced = new Set();
 const copyFile = (rel) => {
   produced.add(path.normalize(rel));
@@ -54,7 +54,7 @@ let html = fs.readFileSync(path.join(ROOT, PAGE), 'utf8');
 const problems = [];
 if (!REACT_DEV.test(html) || !REACTDOM_DEV.test(html) || !BABEL_TAG.test(html)) problems.push('expected React 18.3.1 development + @babel/standalone tags were not found in ' + PAGE);
 html = html.replace(REACT_DEV, REACT_PROD).replace(REACTDOM_DEV, REACTDOM_PROD).replace(BABEL_TAG, '');
-fs.rmSync(path.join(OUT, 'compiled'), { recursive: true, force: true });
+// compiled/ files are overwritten in place; stale ones are removed by the prune step below.
 const compiledList = [];
 // 1. External JSX files, in page order.
 html = html.replace(/<script type="text\/babel" src="([^"?]+)(\?v=[^"]*)?"><\/script>/g, (m, src, v) => {
@@ -79,9 +79,10 @@ write('index.html', html); write(PAGE, html); write('.nojekyll', '');
 // 4. Remove files left from an earlier build whose source is gone (never touches .git).
 const prune = (rel) => fs.readdirSync(path.join(OUT, rel), { withFileTypes: true }).forEach(e => {
   const r = path.join(rel, e.name); if (r === '.git') return;
-  if (e.isDirectory()) { prune(r); if (!fs.readdirSync(path.join(OUT, r)).length) fs.rmdirSync(path.join(OUT, r)); }
-  else if (!produced.has(path.normalize(r))) { fs.unlinkSync(path.join(OUT, r)); pruned++; }
+  if (e.isDirectory()) { prune(r); if (!fs.readdirSync(path.join(OUT, r)).length) try { fs.rmdirSync(path.join(OUT, r)); } catch (err) {} }
+  else if (!produced.has(path.normalize(r))) { try { fs.unlinkSync(path.join(OUT, r)); pruned++; } catch (err) { stale.push(r); } }
 });
 prune('');
+if (stale.length) console.warn('build-web: could not remove ' + stale.length + ' stale file(s) (delete them by hand): ' + stale.slice(0, 5).join(', '));
 compiledList.forEach(([s, o, n]) => console.log('compiled ' + s + ' → ' + o + ' (' + Math.round(n / 1024) + ' KB)'));
 console.log(JSON.stringify({ out: OUT, compiled: compiledList.length, copied, unchanged: skipped, removed: pruned, ms: Date.now() - t0 }));

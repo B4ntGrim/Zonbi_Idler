@@ -104,13 +104,13 @@ ZI.wanderMounted = false;
 ZI.CHECKPOINT_EVERY = 250;
 ZI._bgZombie = function(lap, rng) {
   rng = rng || Math.random;
-  const pool = (ZI.BESTIARY || []).filter(z => {
+  const pool = (ZI.fieldBestiary ? ZI.fieldBestiary() : (ZI.BESTIARY || [])).filter(z => { // Oct 29: + roster additions for new saves (Crawler)
     const rank = { F:0, E:1, D:2, C:3, B:4, A:5, S:6, BOSS:7 }[z.tier] ?? 0;
     return rank <= Math.min(7, Math.floor(lap / 1.5));
   });
   const z = pool.length ? pool[Math.floor(rng() * pool.length)] : null;
   return z ? { name: z.name, hp: z.hp, atk: z.dmg, xp: z.xp, seesThrough: ZI.retreatEvadeCounters ? ZI.retreatEvadeCounters(z) : false,
-               bestiaryId: z.id, tier: z.tier, armor: z.armor || 0 } // BEST1 (Sam, Oct 17): carry the picked record's existing id, tier and armor; spd/traits intentionally excluded
+               bestiaryId: z.id, tier: z.tier, armor: z.armor || 0, ...(z.attackEvery > 1 ? { attackEvery: z.attackEvery } : {}) } // BEST1 (Sam, Oct 17): carry the picked record's existing id, tier and armor; spd/traits intentionally excluded
            : { name: 'Shambler', hp: 25, atk: 8, xp: 10 };
 };
 

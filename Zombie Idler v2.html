@@ -13,8 +13,8 @@
 <script src="image-slot.js"></script>
 <script src="game/core.js?v=20261029-proposals1"></script>
 <script src="game/world.js?v=1792640900000"></script>
-<script src="game/save.js?v=20261029-proposals1"></script>
-<script src="game/stats.js?v=20261029-proposals1"></script>
+<script src="game/save.js?v=20261029-charops1"></script>
+<script src="game/stats.js?v=20261029-charops1"></script>
 <script src="game/progression.js?v=20261028-stat02c"></script>
 <script src="game/items.js?v=20261028-wander-pace"></script>
 <script src="game/crafting.js?v=1791700100000"></script>
@@ -23,7 +23,7 @@
 <script src="game/camp.js?v=20261025-clock-parity"></script>
 <script src="game/jobs.js?v=20261025-clock-parity"></script>
 <script src="game/economy.js?v=20261027-shop1"></script>
-<script src="game/wandering.js?v=20261028-wander-pace"></script>
+<script src="game/wandering.js?v=20261029-charops1"></script>
 <script src="game/fort.js?v=1791700100000"></script>
 <script src="game/infiltration.js?v=20261026-infiltration1"></script>
 <script src="game/active.js?v=20261029-proposals1"></script>
@@ -31,7 +31,9 @@
 <script src="game/survival-data.js?v=1791700100000"></script>
 <script src="game/bootstrap.js?v=20261025-clock-parity"></script>
 <script src="game/progression-live.js?v=20261029-proposals1"></script>
-<script src="bestiary-data.js?v=1791700100000"></script>
+<script src="game/character.js?v=20261029-charops1"></script>
+<script src="game/operations.js?v=20261029-charops1"></script>
+<script src="bestiary-data.js?v=20261029-charops1"></script>
 <script src="pixel-art.js?v=1791700100000"></script>
 <script src="zombie-sprites.js?v=20261027-animfix"></script>
 <script src="bestiary-expanded.js?v=20261024-codex"></script>
@@ -43,9 +45,11 @@
 <script type="text/babel" src="crafting-frame-proposals.jsx?v=20261027-craft-proposals7"></script>
 <script type="text/babel" src="tweaks-panel.jsx?v=1791700100000"></script>
 <script type="text/babel" src="progression-ui.jsx?v=20261028-stat02c"></script>
+<script type="text/babel" src="character-creation.jsx?v=20261029-charops2"></script>
+<script type="text/babel" src="operations-ui.jsx?v=20261029-charops1"></script>
 <script type="text/babel" src="screens-v2.jsx?v=20261028-stat02"></script>
 <script type="text/babel" src="screens-v2b.jsx?v=20261027-shop1"></script>
-<script type="text/babel" src="screens-v3.jsx?v=20261029-proposals1"></script>
+<script type="text/babel" src="screens-v3.jsx?v=20261029-charops1"></script>
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -655,6 +659,7 @@ function useTopBarResources() {
 }
 
 function ResourceChip({ label, value, block }) {
+  const [rmatOpen, setRmatOpen] = useState(false);
   const colors = {
     Food:'var(--green2)', Scrap:'var(--text2)', Ammo:'var(--amber)', Medicine:'var(--blue)',
     Fuel:'var(--red2)', RMAT:'var(--purple)',
@@ -664,6 +669,34 @@ function ResourceChip({ label, value, block }) {
     ? (value.pending ? 'var(--text3)' : getNutritionLevel(value.current).color)
     : value.pending ? 'var(--text3)' : (colors[label] || 'var(--text2)');
   const shown = value.pending ? '—' : label === 'Nutrition' ? `${Math.round(value.current)}%` : fmt(value.current);
+  if (label === 'RMAT') {
+    const holdings = ZI.getRmatHoldings ? ZI.getRmatHoldings() : {};
+    const tiers = ZI.RMAT_TIERS || [];
+    return (
+      <div onMouseEnter={() => setRmatOpen(true)} onMouseLeave={() => setRmatOpen(false)} style={{ position:'relative', display:'flex', alignItems:'center', height:'100%', width:block?'100%':'auto', flexShrink:0 }}>
+        <button type="button" aria-label={`RMAT total ${shown}; show holdings by tier`} aria-expanded={rmatOpen} onFocus={() => setRmatOpen(true)} onBlur={() => setRmatOpen(false)} style={{
+          display:'flex', alignItems:'center', gap:5, padding:'0 10px', height:'100%', width:block?'100%':'auto', whiteSpace:'nowrap', cursor:'help',
+          background:'transparent', border:0, borderRight:block?'none':'1px solid var(--border)', color:'inherit', fontFamily:'inherit',
+        }}>
+          <span style={{fontFamily:'var(--font-mono)', fontSize:10, color:'var(--text3)', letterSpacing:'0.08em'}}>RMAT</span>
+          <span style={{fontFamily:'var(--font-mono)', fontSize:12, color, fontWeight:'bold'}}>{shown}</span>
+        </button>
+        {rmatOpen && (
+          <div role="region" aria-label="RMAT holdings by tier" style={{ position:'absolute', top:block?0:'100%', left:block?'100%':0, zIndex:250, minWidth:210, padding:8, background:'var(--bg2)', border:'1px solid var(--purple)', boxShadow:'0 8px 24px rgba(0,0,0,0.65)' }}>
+            <div style={{fontFamily:'var(--font-mono)', fontSize:9, color:'var(--text3)', letterSpacing:'0.08em', marginBottom:5}}>RMAT HOLDINGS · TOTAL {shown}</div>
+            {tiers.map(tier => {
+              const key = 'T' + tier.tier;
+              return <div key={key} style={{display:'flex', alignItems:'center', gap:7, padding:'3px 2px', borderTop:'1px solid var(--border)'}}>
+                <span style={{fontFamily:'var(--font-mono)', fontSize:10, color:tier.color, width:22}}>{key}</span>
+                <span style={{fontFamily:'var(--font-body)', fontSize:11, color:'var(--text)', flex:1}}>{tier.name}</span>
+                <span style={{fontFamily:'var(--font-mono)', fontSize:11, color:tier.color, fontWeight:'bold'}}>{fmt(holdings[key] || 0)}</span>
+              </div>;
+            })}
+          </div>
+        )}
+      </div>
+    );
+  }
   return (
     <div title={value.pending ? `${label}: not built yet` : undefined} style={{
       display:'flex', alignItems:'center', gap:5, padding:'0 10px', flexShrink:0, whiteSpace:'nowrap',
@@ -819,6 +852,7 @@ function SaveFilesScreen({ mode, onBack }) {
   const [, force] = useState(0);
   const [confirm, setConfirm] = useState(null); // { slot, action }
   const [notice, setNotice] = useState(null);   // { ok, text } — export/import result
+  const [creating, setCreating] = useState(null); // Oct 29: slot number while the Character Creation steps are open
   const fileInput = React.useRef(null);
   const importTarget = React.useRef(null);
   const isCamp = mode === 'camp';
@@ -826,7 +860,8 @@ function SaveFilesScreen({ mode, onBack }) {
   const slots = ZI.listSlots(mode);
   const fmt = (ts) => ts ? new Date(ts).toLocaleString([], { month:'short', day:'numeric', hour:'2-digit', minute:'2-digit' }) : '';
   const act = (slot, action) => {
-    if (action === 'new' || action === 'overwrite') ZI.startNewInSlot(mode, slot);
+    // Oct 29: New Game opens Character Creation; the save is created only after "Start Surviving".
+    if (action === 'new' || action === 'overwrite') { setConfirm(null); if (window.CharacterCreationScreen && ZI.CHAR_CREATION) setCreating(slot); else ZI.startNewInSlot(mode, slot); }
     else if (action === 'load') { if (!ZI.loadSlot(mode, slot)) setNotice({ ok:false, text:`File ${slot} is damaged and has no good backup copy, so it cannot be loaded. Your other files are safe. You can Import an exported copy into it, or Delete it.` }); }
     else if (action === 'delete') { ZI.deleteSlot(mode, slot); setConfirm(null); force(n => n + 1); }
     else if (action === 'export') {
@@ -852,6 +887,11 @@ function SaveFilesScreen({ mode, onBack }) {
     };
     rd.readAsText(f);
   };
+  if (creating) return (
+    <div style={{ position:'relative', height:'100%', overflow:'hidden', background:'var(--bg)' }}>
+      <CharacterCreationScreen mode={mode} slot={creating} onCancel={() => setCreating(null)} onConfirm={(profile) => ZI.startNewInSlot(mode, creating, profile)}/>
+    </div>
+  );
   return (
     <div style={{ position:'relative', height:'100%', overflow:'hidden' }}>
     <SplashBackdrop/>
@@ -4299,8 +4339,10 @@ function App() {
       case 'solo-loading':  return ZI.hasWorkingVehicle()
         ? <LootLoadingScreen route={activeRoute} onComplete={() => setScreen('traversal')}/>
         : <SatelliteTraversalScreen setScreen={setScreen} setActiveRoute={setActiveRoute}/>;
-      case 'camp-schedule': return <ScheduleScreenV2 mode="camp"/>;
-      case 'solo-schedule': return <ScheduleScreenV2 mode="solo"/>;
+      // Oct 29: the Schedule tab shows the Operations page (reference/operations-schedule-proposal.md); the old mock
+      // timeline (ScheduleScreenV2) stays in screens-v2b.jsx for rollback.
+      case 'camp-schedule': return window.OperationsScreen ? <OperationsScreen mode="camp" setScreen={navigate}/> : <ScheduleScreenV2 mode="camp"/>;
+      case 'solo-schedule': return window.OperationsScreen ? <OperationsScreen mode="solo" setScreen={navigate}/> : <ScheduleScreenV2 mode="solo"/>;
       case 'rmat-crafting': return <RmatCraftingScreen/>;
       case 'stockpile':     return <StockpileScreen initialTab={preparingRoute ? 'loadout' : 'recycler'} onNavigate={navigate}
         preparationPanel={preparingRoute && routePlan ? <RouteLoadoutPreparation

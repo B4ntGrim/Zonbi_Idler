@@ -1,6 +1,7 @@
 # Operations and Schedule redesign — proposal
 
 **Status:** Proposal only. No implementation is authorized by this document.
+**Oct 29 (Sam asked to build it):** the read-only **Operations page** is built on the Schedule tab (Now and next · Plan with availability labels · Base schedule; Camp Leader vs Solo). Every chore, POI, psychological tier and radio/NPC mechanic below is still a proposal and shows as "Design proposal". See `reports/char-crawler-ops-2026-10-29/REPORT.md` §3.
 **Scope:** Redesign the Schedule tab around camp and survivor operations, with distinct Camp Leader and Solo Survivor experiences and connections to Traversal, Routes, factions, and reputation.
 
 ## Design goal
@@ -107,6 +108,30 @@ These are proposed stages, not implemented mechanics. Exact triggers and effects
 ## Traversal, Routes, and field intelligence
 
 Traversal discoveries should have a path into Routes and faction interactions. Candidate information includes POIs discovered while away from the base and routes opened or made available. The Schedule/Operations view may show the circuit's status and what was brought back or learned, then link to the relevant route or report action.
+
+### Grocery Store POI [PROPOSED]
+
+Add grocery stores as a repeatable Traversal point of interest. The existing POI framework already names stores as a future example, but this is a design proposal only; grocery stores are not currently implemented. A discovered store should connect field scavenging to the Solo Survivor's return review and cooking activity: recovered food/supplies can be reviewed on return, then used by a later meal-preparation operation. Keep POI placement and persistence within the shared POI framework, with each store retaining its own identity and state.
+
+Open design items include: what kinds of food and supplies can be found; whether any food spoils; how stores deplete or recover stock on revisits; whether the site is dangerous, contested, or sometimes already cleared; and how loot weight/capacity affects what can be brought home. Do not promise a fixed haul or invent nutrition/cooking effects before those rules are designed.
+
+### Pharmacy POI [PROPOSED]
+
+Develop Pharmacy from existing project content into an interactive Traversal POI. The current project already lists Pharmacy as a source of Medical materials and has a “Pharmacy Run” scene brief; that is not yet the same as a persistent, interactive POI. The POI should reuse the existing medical-material/item economy where possible and connect returned supplies to Solo Survivor treatment and medical stock management in Operations.
+
+Ownership/stance can vary by Pharmacy instance: **neutral, non-aligned and protected from faction attacks, but not automatically friendly**; or **faction-held**, with interaction depending on that faction and the player's standing. This stance variation is accepted as the direction for the proposal; exact access, trade, treatment, and defense rules remain open.
+
+At a neutral Pharmacy, the player may scavenge for free. If a quest is offered there or through an associated encounter, it is a separate undertaking the player chooses to accept and complete; accepting a quest is not a prerequisite for basic scavenging. Quest types and rewards remain open.
+
+**Tutorial-linked quest candidate [PROPOSED]:** as a first quest after the Jester sequence, a Pharmacy asks the player to deliver medical supplies to a nearby Church and escort a field medic. The player must protect the medic and complete the delivery. Completing the quest grants access to the Church's own interaction interface at that Traversal square. This is a distinct POI screen with the Church's proposed offerings, not an item called a page and not the normal square action menu (Travel, Loot, Scout, Hide, Make Camp). Treat this as an optional offered quest, not a replacement for the existing Jester tutorial/faction-introduction quest. Which Church offerings become available remains subject to the existing Church design brief and its parked status.
+
+### Laundromat POI [PROPOSED]
+
+Add a repeatable, persistent Traversal POI that connects clothing upkeep to the proposed laundry/scent system. Laundromats can offer both (1) operating a working washer to clean clothes and (2) scavenging detergent, repair parts, containers, or other laundry supplies. The site's role/condition determines which use is emphasized; a rough initial balance could be about half service-focused and half supply-focused, with some sites offering both. Treat 50/50 as a starting proposal to tune, not a fixed rule. The laundromat should use its own POI interaction interface rather than only the generic square actions.
+
+Open design items: whether any machines still work; which resources a wash consumes; whether washing clothes lowers scent and associated stress; whether the player can wash at the site or must return clothes to base; what salvage remains; and how the site changes or depletes after visits. Keep resource and stress formulas open until the underlying laundry system is designed.
+
+Keep a Pharmacy distinct from a clinic or infirmary: a pharmacy is primarily a place to search for medicines and medical supplies, while treatment facilities/actions belong to their own systems. Open design items include the eligible existing loot, whether shelves deplete or are contested, entry/search risks, visit limits, how supplies are carried home, and whether any pharmacy-specific action is needed. Do not assume a pharmacy can treat injuries or introduce new medicine effects as part of this proposal.
 
 ### Route-return processing [PROPOSED]
 

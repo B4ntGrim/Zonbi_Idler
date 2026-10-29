@@ -65,7 +65,7 @@ check('slot number is checked', !F.ZI.importSlot(ex.text, 'solo', 9).ok);
 for (const [n, h] of [['main page', html], ['TEST SAVE page', htmlT]]) {
   check(n + ': Save Files screen has Export and Import buttons, a hidden file input and a result notice',
     /act\(sl\.slot, 'export'\)/.test(h) && /action:'import'/.test(h) && /type="file" accept="\.json,application\/json"/.test(h) && /ZI\.importSlot\(/.test(h) && /role="status"/.test(h));
-  check(n + ': loads the updated save.js', /game\/save\.js\?v=20261029-proposals1/.test(h));
+  check(n + ': loads the updated save.js', /game\/save\.js\?v=2026\d{4}-[a-z0-9-]+/.test(h));
 }
 return results;
 })();

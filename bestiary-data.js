@@ -107,3 +107,43 @@ ZI.LOOT_SAMPLES = [
   { itemId:'ITM_04401', name:'Rebis Flesh Sample',      zombie:'Rebis Specimen',       category:'Research',         rarity:'Epic',      value:13, weight:0.5,  unique:false, lore:'anomaly_zone|research|rare_craft' },
   { itemId:'ITM_04402', name:'Unstable Mutation Core',  zombie:'Rebis Specimen',       category:'Mod',              rarity:'Legendary', value:13, weight:0.5,  unique:true,  lore:'anomaly_zone|end_game|research' },
 ];
+
+// ─── REUSABLE ZOMBIE TRAITS + ROSTER ADDITIONS (Oct 29) ──────────────────────
+// Source: Google Doc "Zed Idler — Crawler Sprite & Halved Trait" (team review draft, Oct 27); Sam asked on Oct 29 for the
+// Crawler with the Halved trait in new games. Halved = 50% max HP, 50% damage per hit, 50% attack frequency (twice the
+// interval). Animation speed is a separate visual setting and is NOT halved. Halved is reusable but is assigned to the
+// Crawler only (draft review gate 6). The original 45-entry ZI.BESTIARY is unchanged; additions live in
+// ZI.BESTIARY_ROSTER with a minRoster number, and ZI.fieldBestiary() returns the roster a save actually meets.
+ZI.ZOMBIE_TRAITS = {
+  halved: { label: 'Halved', maxHpMultiplier: 0.5, damageMultiplier: 0.5, attackRateMultiplier: 0.5,
+    desc: 'Torn in half. Half the health, half the bite, attacks half as often.' },
+};
+// Applied once, when the record is built (never again at fight time), using the engine's whole-number stats.
+ZI.applyZombieTrait = function(base, traitId) {
+  const t = ZI.ZOMBIE_TRAITS[traitId]; if (!t || !base) return base;
+  const out = Object.assign({}, base);
+  out.hp = Math.max(1, Math.round(base.hp * t.maxHpMultiplier));
+  out.dmg = Math.max(1, Math.round(base.dmg * t.damageMultiplier));
+  out.attackEvery = Math.max(1, Math.round((base.attackEvery || 1) / t.attackRateMultiplier)); // turns between attacks
+  out.mechTraits = (base.mechTraits || []).concat([traitId]);
+  return out;
+};
+ZI.BESTIARY_ROSTER = [
+  // Crawler: a Simple Shambler (id 1) torn in half. Tier F is PROVISIONAL (the draft leaves the tier to a bestiary
+  // review; a halved F-tier body is the weakest choice that keeps it in the opening pool). Sprite: none exported yet,
+  // so the field and Codex fall back to the drawn (SVG) zombie, as the draft requires until a validated atlas exists.
+  ZI.applyZombieTrait(Object.assign({}, ZI.BESTIARY.find(z => z.id === 1), {
+    id: 46, name: 'Crawler', tier: 'F', base: 'Crawler', traits: ['Halved', 'Soiled', 'Low to the ground'],
+    weakness: ['Blunt weapons', 'Stomps'], ability: 'Drags itself after the living; half a body, half the threat',
+    loot: 'Torn cloth', biome: 'Streets, Suburbs', minRoster: 2, // XP stays the base 10: the draft does not halve rewards
+    notes: 'Reusable Halved trait (50% HP, 50% damage, attacks every second turn). Tier provisional. New saves only.',
+  }), 'halved'),
+];
+ZI.saveRosterVersion = function() {
+  try { const v = parseInt(localStorage.getItem('zi_roster_v'), 10); return Number.isInteger(v) && v > 0 ? v : 1; } catch (e) { return 1; }
+};
+// The zombies this save can meet: the original 45, plus additions whose minRoster the save has reached.
+ZI.fieldBestiary = function() {
+  const v = ZI.saveRosterVersion();
+  return (ZI.BESTIARY || []).concat((ZI.BESTIARY_ROSTER || []).filter(z => (z.minRoster || 1) <= v));
+};

@@ -1,5 +1,12 @@
 # CODE_STATE — current implementation facts
 
+## Character Creation · Crawler · Operations (October 29)
+
+- **Character Creation:** New Game opens `CharacterCreationScreen` (`character-creation.jsx`; data/rules `game/character.js`): 4 steps, profile saved as `zi_survivor_profile` via `ZI.startNewInSlot(mode, slot, profile)`; professions = `ZI.LEADER_ARCHETYPES` (existing starting XP via `chooseLeader`); appearance placeholders, cosmetic only; gender = art only. Wandering `activeSurvivor` reads name/gender.
+- **Crawler / Halved:** `ZI.ZOMBIE_TRAITS`, `ZI.applyZombieTrait`, `ZI.BESTIARY_ROSTER` (Crawler id 46, tier F provisional, HP 20, dmg 2, `attackEvery 2`, `minRoster 2`), `ZI.fieldBestiary()` (field pool, watched scene, Codex). `resolveAttack` skips turns for `attackEvery > 1`. New saves set `zi_roster_v = 2` (`ZI.ROSTER_VERSION`); old saves keep the 45.
+- **Operations page:** Schedule tab → `OperationsScreen` (`operations-ui.jsx`; read-only data `game/operations.js`: `OPS_CATALOG`, `opsNow`, `opsActivityStatus`, `opsCampDuties`). `ScheduleScreenV2` kept, unused.
+- Tests: `tests/char-crawler-ops.test.js` (31). Full suite 972/972. Report: `reports/char-crawler-ops-2026-10-29/REPORT.md`.
+
 ## Proposals applied (October 29)
 
 - **Rust retired** (`game/stats.js`): `skillRust` always `{ state:'fresh', eff:1 }`; `settleSkillDecay` never subtracts XP (clock only); `effectiveLevel` = injury (+ stress in `active.js`) under the −20% cap. `zi_skill_decay` / `zi_decay_clock` kept.
