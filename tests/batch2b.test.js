@@ -11,7 +11,7 @@ const mkEnv = (seedStore) => {
   const fw = { localStorage: ls, sessionStorage: ls, console, Date, Math, JSON, setInterval:()=>0, clearInterval:()=>{}, setTimeout:()=>0, clearTimeout:()=>{},
     document:{ hidden:false, addEventListener(){}, querySelectorAll:()=>[] }, addEventListener(){}, location:{ reload(){} } };
   fw.window = fw;
-  new Function('fw', 'with(fw){' + src + '}')(fw);
+  /* Oct 29: consumable-only healing ships (base heals 0); this suite tests heal-charge mechanics with the legacy base charges. Shipped rule: tests/proposals-oct29.test.js */ new Function('fw', 'with(fw){' + (src).replace('baseHeal: 0, baseScout: 2, commandPerkLevel: 40, commandPerkHeal: 0', 'baseHeal: 2, baseScout: 2, commandPerkLevel: 40, commandPerkHeal: 1') + '}')(fw);
   return { ZI: fw.ZI, store };
 };
 const run0 = (ZI) => Object.assign(ZI.defaultWanderRun(), { active:true, hp:100, maxHeals:3, healPct:30, moveSpeed:3 });
@@ -54,7 +54,9 @@ const until = (ZI, st, sec, rng, away, step) => { const ev = []; let t = 0; step
   ZI.applyInjury('test', false); /* BAL-A (authorized, Oct 19): the injury is stored as remaining time (D7) */
   ZI.setStress(80);
   const eff = ZI.effectiveLevel('combat');
-  check('B5: rust + injury + stress capped at −20%', eff === Math.max(1, Math.floor(L * 0.8)), L + ' → ' + eff);
+  // Oct 29 (Sam): rust retired, so 40 idle days add nothing; injury + stress still apply under the −20% cap.
+  const j = ZI.getInjury(), pen = Math.min(ZI.ACTIVE_TABLE.levelPenaltyCap, (j && j.skills.includes('combat') ? j.pct : 0) + ZI.stressStage().levelPenalty);
+  check('B5: injury + stress (no rust) capped at −20%', eff === Math.max(1, Math.floor(L * (1 - pen))) && eff >= Math.floor(L * 0.8), L + ' → ' + eff + ' (pen ' + pen + ')');
 }
 // ── B6 action XP through emitAction ──
 {

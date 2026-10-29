@@ -1,0 +1,27 @@
+STAT-02 simulation output (game/progression.js, 4000 runs per build, seeded)
+damage    {"runs":4000,"medianFirstCap":90,"medianDamageCap":90,"neverDamagePct":11.450000000000001,"capBefore100Pct":84.325}
+balanced  {"runs":4000,"medianFirstCap":101,"medianDamageCap":101,"neverDamagePct":100,"capBefore100Pct":0}
+survival  {"runs":4000,"medianFirstCap":101,"medianDamageCap":101,"neverDamagePct":100,"capBefore100Pct":0}
+
+XP curve: a = 906.05
+L10 totalXP 11321 hours 0.4
+L20 totalXP 34272 hours 1.4
+L25 totalXP 52450 hours 2.1
+L35 totalXP 111476 hours 4.4
+L50 totalXP 310034 hours 12.3
+L70 totalXP 1129913 hours 44.9
+L75 totalXP 1553573 hours 61.7
+L80 totalXP 2134024 hours 84.7
+L85 totalXP 2929290 hours 116.3
+L90 totalXP 4018875 hours 159.5
+L95 totalXP 5511700 hours 218.8
+L100 totalXP 7556999 hours 300.0
+
+Total picks L2-100: 91  checkpoints: 10:2 20:2 35:1 50:2 70:2 85:2 90:2 95:2 100:2
+
+Max HP by rank (k=1.5): 0=40.00  6=47.01  12=52.93  18=57.50  24=60.00
+Damage by rank (k=1.5): 0=1.000  6=1.105  12=1.194  18=1.263  24=1.300
+
+Stacking example (Hungry+Fatigued+Sick): {"hpRegen":-0.325,"attackSpeed":-0.169,"evasion":-0.13,"damage":-0.065}
+Offline 72 game h, 0 rations, start badly off: {"hunger":"Hungry","rest":"Rested","wounds":"Wounded","sickness":"Sick","morale":"Uneasy"}
+Offline 16 game h, 5 rations: Ate twice, slept well, used 2 rations

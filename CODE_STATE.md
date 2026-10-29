@@ -1,5 +1,37 @@
 # CODE_STATE — current implementation facts
 
+## Proposals applied (October 29)
+
+- **Rust retired** (`game/stats.js`): `skillRust` always `{ state:'fresh', eff:1 }`; `settleSkillDecay` never subtracts XP (clock only); `effectiveLevel` = injury (+ stress in `active.js`) under the −20% cap. `zi_skill_decay` / `zi_decay_clock` kept.
+- **Catch-up XP** `ZI.CATCHUP` (`enabled:false`, `graceDays`/`rampDays` null = pending Sam): applied inside `ZI.awardXp`; state `zi_prof_catchup_v1` (written only when enabled).
+- **Consumable-only healing** (`game/active.js`): `ACTIVE_TABLE.charges.baseHeal 0`, `commandPerkHeal 0`; `getBaseCharges` drops stored heals when the max is 0. Test suites that exercise heal mechanics inject the legacy 2 base heals into their copy.
+- **Codex** "In development" tab only with `?dev`. **Clock** monotonic (`gameTotalSeconds` clamps `now − at ≥ 0`). **Offline status** capped at the credited window.
+- **Saves** (`game/save.js`): `getActiveSlot` validates; `_hasRealProgress` gates the one-time import; `_validSnapshot`; `zisave_prev_<mode>_<n>` backup on every write; `loadSlot` falls back to it; `listSlots` re-lists intact files missing from the index.
+- Tests: `tests/proposals-oct29.test.js` (33). Full suite **941 / 941**. Report: `reports/proposals-2026-10-29/REPORT.md`.
+
+## Save Export/Import + web build (October 28)
+
+- `game/save.js`: `ZI.exportSlot` / `ZI.parseSaveExport` / `ZI.importSlot` (format `zed-idler-save` v1, FNV-1a checksum; refuses damaged, edited, newer, wrong-mode files). Save Files screen (both pages): Export / Import buttons + result notice. Tests: `tests/export-import.test.js` (24).
+- `tools/build-web.cjs` → `dist/`: precompiles `.jsx` + inline babel script (same options as @babel/standalone) into `compiled/`, React production builds, no Babel download; index.html + .nojekyll. Vendored Babel: `tools/vendor/`. Hosted copy = `dist/` on `gh-pages` (B4ntGrim/Zonbi_Idler). Report: `reports/export-build-2026-10-28/REPORT.md`.
+
+## Save fixes (October 28)
+
+- `game/progression-live.js` `L.getState` repairs/replaces a damaged `zi_prog_v1` instead of throwing (was a permanent blank screen).
+- `game/save.js`: Continue on the live file keeps live storage (refreshes its snapshot); switching files autosaves the file being left (`_autosaveBeforeSwitch`); `ZI.autosave` every 60 s (`AUTOSAVE_MS`) + `pagehide`/hidden, never recreates a deleted file; snapshots carry `zi_offline_last_seen` (per-slot CLOCK-01 window; older snapshots fall back to `savedAt`).
+- Tests: `tests/save-fixes.test.js` (19). Full suite 866 passed / 18 failed (pre-existing). Report: `reports/save-fixes-2026-10-28/REPORT.md`.
+- Hosting: branch `gh-pages` holds the deployable runtime (`index.html` = copy of `Zombie Idler v2.html`, `.nojekyll`). Pages still has to be enabled in repo settings.
+
+## STAT-02 progression — live (October 28)
+
+- `game/progression.js` (`ZI.PROG`): pure maths — Melvor-style XP curve (`a × 1.065^L`, ≈ 7,557,000 to L100), 10 stats with integer ranks 0–30 (`k = 1.5`; 24 → 30 by the Oct 28 audit, needs Sam's OK; Shield and Movement Speed hidden via `CONFIG.hiddenStats`, so 8 stats are offered), picks (even levels to 35, every level after, checkpoints 10/20/35/50/70/85/90/95/100; L35 = 1 pick; 91 picks), offers with soft pity (`1 + 0.35 × misses`), status tiers with ±15% stacking, seeded simulation.
+- `game/progression-live.js` (`ZI.PROG.LIVE`), loaded **after** `game/bootstrap.js` in both pages, wraps: `ZI.getCharacterLevel` (new curve; main level from lifetime skill XP, `zi_prog_v1.skill = { lifetime, lastTotal, start }`, main XP = 111.848 × (start + lifetime)^0.87 — refit of the Step 3 doc's 117.553 × S^0.86 after the 1.4 m/s walk, see `reports/STAT-02/AUDIT.md`; never goes down), `ZI.applyWanderingXp` (adds picks; no longer adds XP), `ZI.maxHp` (+Max HP bonus, status mods), `STAT_FORMULAS.survivorStatBlock` (Damage ×, Crit/Evasion points, Crit Damage, Armor % via `armorPct`, Attack Speed → initiative), `WANDER_REST_TABLE.restHpPerMinutePct` (getter: HP Regen), `ZI.spendCampUse` (Rest → 100). Adds `ZI.getNutrition()` (top-bar chip now live) and Shop item `qol_autoeat` (flag `autoEat`).
+- Save keys: `zi_prog_v1` (ranks, misses, pending picks, open offer, lastLevel, migratedFrom), `zi_prog_curve_ver` (2 = migrated), `zi_status_v1` (nutrition, rest, lastGameSec, lastAway). Migration keeps each save's level and refits `zi_character_xp`; earned picks are granted once.
+- Status: Hunger −25/game day, Rest −12.5/game day (world clock). Wounds ← injury + Wandering HP; Morale ← Broken / stress ≥ 70; Sickness has no live source (Healthy). Offline: floor at Hungry/Fatigued, up to 3 meals from camp food, sleep if away ≥ 8 game h; summary in `lastAway`. Eating by hand until Auto-Eat is owned (`autoEatRequiresShop`).
+- `game/stats.js` `resolveAttack`: one guarded line applies `def.armorPct` (no effect when unset, so existing fights and tests are unchanged).
+- UI: `progression-ui.jsx` → `SurvivorProgressPanel` at the top of the Stats screen (`screens-v2.jsx`). Values only; never ranks, k, pity or formulas.
+- Not live: Shield and Movement Speed (no mechanic), XP source mix (character XP still only from banked Wandering scores), stats during the bootstrap offline Wandering replay. Open handoffs H6–H10 in `reports/STAT-02/REPORT.md`.
+- Tests: `tests/stat-02-progression.test.js` (30), `tests/stat-02-live.test.js` (44), all pass. Full suite 847 passed / 2 failed (existing `describeGearItem`, `itemStatLines`). Older suites load their own module lists without the STAT-02 files, so they still test the pre-STAT-02 rules.
+
 ## Proposed crafting frame cards (October 27)
 
 - The standalone Weapons page and Stockpile weapon links were removed at Sam's direction. The display-only cards now live inside **Crafting → Proposed frame cards**; recipe details can link to a matching proposed preview. Every frame remains visibly marked **PROPOSED**, and no preview approves or grants a recipe/item.

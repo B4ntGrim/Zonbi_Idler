@@ -1,0 +1,16 @@
+CODE_STATE.md
+DESIGN_HANDOFF.md
+archive/design-handoff-oct27-evening.md
+handoff/to-cloud/2026-10-29/MANIFEST.md
+handoff/to-cloud/2026-10-29/e-inventory-2.tsv
+handoff/to-cloud/2026-10-29/e-inventory.tsv
+handoff/to-cloud/2026-10-29/files-part1.txt
+handoff/to-cloud/2026-10-29/files-part2.txt
+reference/00-document-index.md
+reference/operations-schedule-proposal.md
+reports/proposals-2026-10-29/REPORT.md
+reports/proposals-2026-10-29/scripts/exportui.js
+reports/proposals-2026-10-29/scripts/h.js
+reports/proposals-2026-10-29/scripts/progguard.js
+reports/proposals-2026-10-29/scripts/propui.js
+reports/proposals-2026-10-29/scripts/saves.js

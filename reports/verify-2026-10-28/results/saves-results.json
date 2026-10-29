@@ -1,0 +1,80 @@
+{
+ "results": [
+  {
+   "name": "setup: 1,000 XP saved, then 500 more unsaved",
+   "ok": true,
+   "detail": {
+    "xp": 1500,
+    "screenText": "ZOMBIE IDLER 💾 Save · Slot 1 ⚙ SOLO SURVIVOR ▾ +5 YEAR 1 · DAY 1 14:07 ROUTES TRAVERSAL SCHEDULE SHOP CRAFTING ▾ MORE ⚠ EVENT AFFLICTIONS Health HP 100/100 No ",
+    "active": {
+     "mode": "solo",
+     "slot": 1
+    },
+    "jobs": []
+   }
+  },
+  {
+   "name": "refresh keeps unsaved progress in live storage",
+   "ok": true,
+   "detail": {
+    "xp": 1500,
+    "screenText": "ZOMBIE IDLER 💾 Save · Slot 1 ⚙ SOLO SURVIVOR ▾ +5 YEAR 1 · DAY 1 14:19 ROUTES TRAVERSAL SCHEDULE SHOP CRAFTING STOCKPILE ▾ MORE ⚠ EVENT AFFLICTIONS Health HP 1",
+    "active": {
+     "mode": "solo",
+     "slot": 1
+    },
+    "jobs": []
+   }
+  },
+  {
+   "name": "refresh returns the player to the game screen (not the mode picker)",
+   "ok": true,
+   "detail": "ZOMBIE IDLER 💾 Save · Slot 1 ⚙ SOLO SURVIVOR ▾ +5 YEAR 1 · DAY 1 14:19 ROUTES TRAVERSAL SCHEDULE SHOP CRAFTING STOCKPILE ▾ MORE ⚠ EVENT AFFLICTIONS Health HP 1"
+  },
+  {
+   "name": "refresh 30 s after New Game returns to the game screen",
+   "ok": false,
+   "detail": "ZOMBIE IDLER TWO SURVIVAL FANTASIES. ONE APOCALYPSE. CAMP LEADER The Overseer Command a fragile settlement. Automate production, assign survivors, and defend ag"
+  },
+  {
+   "name": "after close/reopen, live progress is still in storage before any click",
+   "ok": true,
+   "detail": {
+    "xp": 1500,
+    "screenText": "ZOMBIE IDLER TWO SURVIVAL FANTASIES. ONE APOCALYPSE. CAMP LEADER The Overseer Command a fragile settlement. Automate production, assign survivors, and defend ag",
+    "active": {
+     "mode": "solo",
+     "slot": 1
+    },
+    "jobs": []
+   }
+  },
+  {
+   "name": "Continue on the slot you were just playing keeps progress made since the last 💾 Save",
+   "ok": false,
+   "detail": {
+    "before": 1500,
+    "after": 1000
+   }
+  },
+  {
+   "name": "slot 1 left for 48 h while slot 2 was played: its 30-h job gets at most 24 h of credit",
+   "ok": false,
+   "detail": {
+    "slot1Jobs": [],
+    "realHoursAway": 48.00908166666667
+   }
+  },
+  {
+   "name": "two open tabs: both XP grants survive in storage",
+   "ok": true,
+   "detail": {
+    "tab1": 1200,
+    "tab2": 1200,
+    "stored": 1200,
+    "expected": 1200
+   }
+  }
+ ],
+ "errors": []
+}

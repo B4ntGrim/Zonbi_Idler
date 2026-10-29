@@ -15,7 +15,7 @@ const mkEnv = (opt) => {
   let M = Math; if (opt.mathSeed != null) { let s = opt.mathSeed >>> 0; M = Object.create(Math); M.random = () => { s = (s * 1103515245 + 12345) % 2147483648; return s / 2147483648; }; }
   const fw = { localStorage: ls, sessionStorage: ls, console:{ log(){}, warn(){}, error(){} }, Date: D, Math: M, JSON, setInterval:()=>0, clearInterval:()=>{}, setTimeout:()=>0, clearTimeout:()=>{}, document: doc, addEventListener(){}, location:{ reload(){} } }; fw.window = fw;
   if (opt.preClock) { const pc = opt.preClock; fw.ZI = { _installedClock: () => { pc.reads = (pc.reads || 0) + 1; return pc.t; } }; } // harness clock in place before load
-  new Function('fw', 'with(fw){' + (opt.code || src) + '}')(fw); fw.ZI.wanderMounted = false;
+  /* Oct 29: consumable-only healing ships (base heals 0); this suite tests heal-charge mechanics with the legacy base charges. Shipped rule: tests/proposals-oct29.test.js */ /* Oct 29: this suite checks retreat/sim timing, not pace; it pins the pre-Oct-28 3 m/s pace its timings were written for. The real pace (1.4 m/s) is tested in fx4. */ new Function('fw', 'with(fw){' + ((opt.code || src)).replace('baseHeal: 0, baseScout: 2, commandPerkLevel: 40, commandPerkHeal: 0', 'baseHeal: 2, baseScout: 2, commandPerkLevel: 40, commandPerkHeal: 1').replace('PACE: { walk: { base: 1.4, perCond: 0 }, jog: { base: 1.4, perCond: 0.28 }, run: { base: 1.4, perCond: 0.6066666666666667 } }', 'PACE: { walk: { base: 3, perCond: 0 }, jog: { base: 3, perCond: 0.6 }, run: { base: 3, perCond: 1.3 } }') + '}')(fw); fw.ZI.wanderMounted = false;
   return { ZI: fw.ZI, store, fw };
 };
 // A simulated clock installed into ZI.clockNow(); reads are counted.

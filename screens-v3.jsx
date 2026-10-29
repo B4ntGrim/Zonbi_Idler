@@ -703,6 +703,8 @@ window.SatelliteTraversalScreen = function SatelliteTraversalScreen({ setScreen,
   // ── Outbreak start: persisted random starting cell + "You are Here" ──
   const [pos, setPos] = React.useState(() => {
     let p = readJ('zi_trav_pos', null);
+    // Damaged position (Oct 29): anything that is not a map cell is treated as missing, so a new start is picked.
+    if (p && (typeof p !== 'object' || Array.isArray(p) || !(Number.isFinite(p.gx) || Number.isFinite(p.row)))) p = null;
     if (p && p.gx == null && p.row != null) { p = ZI.zoneFromCell(ZI.worldCell(p.col, p.row, 'scavenge')); writeJ('zi_trav_pos', p); } // migrate old saves
     if (!p) {
       const open = [];
@@ -887,6 +889,8 @@ window.SatelliteTraversalScreen = function SatelliteTraversalScreen({ setScreen,
         const chance = ZI.lootSafeChance(cell);
         const roll = Math.floor(Math.random() * 100) + 1;
         const got = grantRandomMats(cell.rmatTier || 0);
+        const foodGot = ZI.PROG && ZI.PROG.LIVE && ZI.PROG.LIVE.rollLocationFood ? ZI.PROG.LIVE.rollLocationFood(cell) : 0; // STAT-02: real food from locations
+        if (foodGot) got.push(`${foodGot} Canned Food`);
         const nl = { ...looted, [key]: true }; setLooted(nl); writeJ('zi_trav_looted', nl);
         if (roll <= chance) {
           ZI.emitAction && ZI.emitAction('loot', 1 + cell.difficulty * 0.3); // Scavenging XP only on a clean search
@@ -1660,7 +1664,7 @@ window.WANDER_TUT_STEPS = [
     { tut:'distance', title:'Distance, laps and checkpoints', body:'The further you travel, the tougher the zombies — each full bar is a lap (💀 ×1.1, ×1.2…). Checkpoints every 250 m are kept even if you\'re downed, and you can jump back to any of them on the slider below.' },
     { tut:'actions', title:'Policy, pace and risk', body:'Your standing policy (the first button) decides what your survivor meets while you\'re away and whether they fight or slip past zombies. Ethical is slow and safe; Criminal pays more and makes enemies. Heal spends a first-aid charge; Walk, Jog and Run trade safety for speed. More actions holds Idle Run, Run Back, your Gear and equipped consumables.' },
     { tut:'log', title:'The combat log', body:'Every hit, kill, loot drop and checkpoint is recorded here, along with a recap of anything that happened while you were away. Check it to see what\'s been hurting you and what you picked up.' },
-    { tut:'cmds', title:'Tools and what trains you', body:'Heal, scout and push are your hands-on tools; the patrol keeps fighting on its own either way. What your survivor does trains them: healing builds First Aid, scouting and pushing build Stealth, looting builds Scavenging, and each policy encounter trains the skills it tests. Skills you stop using go rusty. When you come back, the log shows what happened while you were gone.' },
+    { tut:'cmds', title:'Tools and what trains you', body:'Heal, scout and push are your hands-on tools; the patrol keeps fighting on its own either way. What your survivor does trains them: healing builds First Aid, scouting and pushing build Stealth, looting builds Scavenging, and each policy encounter trains the skills it tests. Skills you stop using never lose progress. When you come back, the log shows what happened while you were gone.' },
 ];
 window.WanderTutorialView = function WanderTutorialView({ rootRef, onDone, STEPS, i, setI }) {
   const [rect, setRect] = React.useState(null);
@@ -1746,6 +1750,8 @@ window.WanderingScreen = function WanderingScreen({ route, setScreen }) {
     metro: ['#414247','#2a2b2e','#191a1c'],
     perimeter: ['#41463d','#2a3028','#1a201a'],
   })[zone && zone.biome] || ['#40382f','#29231e','#191511'];
+  // The source panoramas put their near ground at different heights; place the survivor's boots on that ground line.
+  const sceneGroundBottomPct = ({ mountain:14, suburbia:14, metro:16, perimeter:15 })[zone && zone.biome] || 14;
   const zoneCoord = zone ? String.fromCharCode(65 + zone.col) + (zone.row + 1) : null;
 
   // Encounter state
@@ -1773,7 +1779,7 @@ window.WanderingScreen = function WanderingScreen({ route, setScreen }) {
   // FX4 (Q5): heal strength is the shared rule ZI.SurvivorRules.healPct(); the screen no longer computes or writes it.
   const FREE_KILLS = 10;
   const [killCmdsUsed, setKillCmdsUsed] = React.useState(0);
-  // Movement: walk = 3m/tick. Jog/run scale with the survivor's Athletics stat.
+  // Movement: Walk uses the shared 1.4 m/s baseline; Jog/Run scale with Athletics conditioning.
   // 1–10 conditioning, from the survivor's real Athletics level (rust applied).
   const ATHLETICS = window.ZI.SurvivorRules.conditioning(); // FX4: the shared rule's conditioning value (display only)
   // FX4 (D-FX4a): pace is a saved player setting; the screen opens on it and saves each change. Speed is computed by rule.
@@ -1842,6 +1848,7 @@ window.WanderingScreen = function WanderingScreen({ route, setScreen }) {
   const [cmdsLeft, setCmdsLeft] = React.useState((window.ZI.cmdsRemaining && window.ZI.cmdsRemaining()) || 60);
   const [animFrame, setAnimFrame] = React.useState(0);
   const [survivorFrame, setSurvivorFrame] = React.useState(0);
+  const [restFrame, setRestFrame] = React.useState(0);
   const [sceneHeight, setSceneHeight] = React.useState(340);
   const [sceneWidth, setSceneWidth] = React.useState(1000);
   const sceneRef = React.useRef(null);
@@ -1857,12 +1864,18 @@ window.WanderingScreen = function WanderingScreen({ route, setScreen }) {
   // frame on one baseline. aspect = cell width / height; body = average walking figure height / cell height.
   const SURVIVOR_SHEETS = { fist:{ file:'survivor-walk-punch-v4', aspect:0.9455, body:0.922 }, melee:{ file:'survivor-melee-swing-v4', aspect:1.1298, body:0.9209 } };
   const survivorSheet = SURVIVOR_SHEETS[meleeEquipped ? 'melee' : 'fist'];
-  const survivorBodyPx = actorSize * survivorSheet.body;
+  // Match ordinary zombie height to the visible survivor figure. Close-combat sheets fill actorSize;
+  // the ranged SVG is rendered at a fixed 84×112 regardless of its larger positioning wrapper.
+  const survivorSpriteHeight = closeCombatLoadout ? actorSize : 112;
+  const survivorBodyPx = survivorSpriteHeight * survivorSheet.body;
   // Zombie size by tier, relative to the survivor: F-D are human sized, then C 52 / B 56 / A 62 / S 70 / BOSS 84 on the
   // 48 px tier scale (zombie-sprites.js). If the boss would not fit under the HP bar, every tier shrinks together.
   const TIER_BODY = { F:48, E:48, D:48, C:52, B:56, A:62, S:70, BOSS:84 };
+  // The close-combat punch frames have a shorter visible alpha bound than the walk frames (about 237px vs 277px
+  // in each 300px cell). Scale enemies to the crouched survivor during a strike so both poses stay visually aligned.
+  const PUNCH_BODY_SCALE = 0.8584;
   const tierFit = Math.min(1, (sceneHeight * 0.88 - 46) / (survivorBodyPx * 84 / 48));
-  const zombieHeightForTier = (tier) => Math.round(survivorBodyPx * (TIER_BODY[tier] || 48) / 48 * tierFit);
+  const zombieHeightForTier = (tier) => Math.round(survivorBodyPx * (TIER_BODY[tier] || 48) / 48 * tierFit * (closeCombatLoadout && survivorStriking ? PUNCH_BODY_SCALE : 1));
   // Walk timing: one step of the v4 cycle covers 0.316 of the body height. The scenery scrolls at exactly that speed
   // so the planted foot stays put on the ground (no sliding / walking in place). Display only.
   const STEP_SECONDS = { walk:0.7, jog:0.48, run:0.36 };
@@ -1930,6 +1943,23 @@ window.WanderingScreen = function WanderingScreen({ route, setScreen }) {
   // The survivor walks (cycle runs, scenery scrolls) only while travelling: not in a fight, resting, pinned or down.
   const wanderRunNow = (window.ZI.getWanderRun && window.ZI.getWanderRun()) || {};
   const survivorWalking = !encounter && !downed && !wanderRunNow.resting && !wanderRunNow.paused;
+  const retreatCauses = [wanderRunNow.withdrawCauses && wanderRunNow.withdrawCauses.primary, ...((wanderRunNow.withdrawCauses && wanderRunNow.withdrawCauses.also) || [])];
+  const hpRetreatCause = retreatCauses.some(c => c && c.rule === 'hp');
+  const retreatRules = window.ZI.getRetreatRules ? window.ZI.getRetreatRules() : { hpFloorPct:30 };
+  const lowHpAtRetreatFloor = wanderRunNow.hp != null && window.ZI.retreatHpBelow
+    ? window.ZI.retreatHpBelow(wanderRunNow.hp, window.ZI.maxHp ? window.ZI.maxHp() : 100, retreatRules.hpFloorPct)
+    : false;
+  const injuredCombatPose = encounter && !downed && closeCombatLoadout && !meleeEquipped && !!window.ZI.retreatHpBelow
+    && window.ZI.retreatHpBelow(playerHp, hpMax, retreatRules.hpFloorPct);
+  const injuredReturnPose = !downed && (wanderRunNow.withdrawing || (wanderRunNow.retreatHold && (hpRetreatCause || lowHpAtRetreatFloor)));
+  const checkpointRestPose = !downed && wanderRunNow.resting && wanderRunNow.restAt === 'checkpoint';
+  const recoveryFrame = checkpointRestPose ? restFrame : Math.floor(survivorFrame / 2) % 4;
+  const recoveryBackgroundPosition = `${recoveryFrame * 100 / 3}% ${checkpointRestPose ? 100 : 0}%`;
+  React.useEffect(() => {
+    if (!checkpointRestPose) { setRestFrame(0); return; }
+    const t = setInterval(() => setRestFrame(f => (f + 1) % 8), 250);
+    return () => clearInterval(t);
+  }, [checkpointRestPose]);
   const walkingRef = React.useRef(true); walkingRef.current = survivorWalking;
   // Standing frame when not walking: guard stance in a fight (fist row 4 col 2, melee row 3 col 1), else mid-stride.
   const survivorCell = survivorWalking ? survivorFrame : encounter ? (meleeEquipped ? 8 : 13) : 2;
@@ -2015,7 +2045,7 @@ window.WanderingScreen = function WanderingScreen({ route, setScreen }) {
         const eTot = hits.reduce((s, h) => s + (h.by !== 's' && h.d > 0 ? h.d : 0), 0); if (eTot > 0) setHpLag(l => l + eTot);
         hits.forEach((h, i) => setTimeout(() => {
           if (h.by === 's') {
-            if (h.d > 0) { ehp = Math.max(0, ehp - h.d); const now = ehp; popDmg('zombie', h.d); setEncounter(e => (e && e.id === vis.id ? { ...e, currentHp: now } : e)); setZombieAnim({ [vis.id]: 'hit' }); if (closeCombatRef.current) { setSurvivorStriking(true); setSurvivorStrikeId(n => n + 1); clearTimeout(survivorStrikeTimer.current); survivorStrikeTimer.current = setTimeout(() => setSurvivorStriking(false), 960); } setTimeout(() => setZombieAnim({}), 150); }
+            if (h.d > 0) { ehp = Math.max(0, ehp - h.d); const now = ehp; popDmg('zombie', h.d); setEncounter(e => (e && e.id === vis.id ? { ...e, currentHp: now } : e)); setZombieAnim({ [vis.id]: 'hit' }); if (closeCombatRef.current) { setSurvivorStriking(true); setSurvivorStrikeId(n => n + 1); clearTimeout(survivorStrikeTimer.current); survivorStrikeTimer.current = setTimeout(() => setSurvivorStriking(false), 1080); } setTimeout(() => setZombieAnim({}), 150); }
           } else if (h.d > 0) { popDmg('player', h.d); setHpLag(l => Math.max(0, l - h.d)); setZombieAnim({ [vis.id]:'attack' }); setTimeout(() => setZombieAnim(a => a[vis.id] === 'attack' ? {} : a), 380); }
           if (i === hits.length - 1 && killed) setEncounter(e => (e && e.id === vis.id ? { ...e, currentHp: 0 } : e));
         }, 250 + i * gap));
@@ -2343,7 +2373,7 @@ window.WanderingScreen = function WanderingScreen({ route, setScreen }) {
             border:`1px solid ${moveMode === 'run' ? 'var(--red2)' : moveMode === 'jog' ? 'var(--green)' : 'var(--border)'}`,
           }}
           title={`Athletics ${ATHLETICS}/10 · ${moveSpeed.toFixed(1)} m/s`}>
-          {moveMode === 'walk' ? '🚶 Walk 3m/s' : moveMode === 'jog' ? `🏃 Jog ${moveSpeed.toFixed(1)}m/s` : `⚡ Run ${moveSpeed.toFixed(1)}m/s`}
+          {moveMode === 'walk' ? `🚶 Walk ${moveSpeed.toFixed(1)}m/s` : moveMode === 'jog' ? `🏃 Jog ${moveSpeed.toFixed(1)}m/s` : `⚡ Run ${moveSpeed.toFixed(1)}m/s`}
         </button>
           <div style={{ position:'relative' }}>
             <button onClick={() => setHudMenu(o => !o)} style={{
@@ -2419,6 +2449,8 @@ window.WanderingScreen = function WanderingScreen({ route, setScreen }) {
         }}>
           <style>{`
             @keyframes ziFistFrames { 0% { background-position:0% 66.667%; transform:translateX(0); } 12% { background-position:33.333% 66.667%; } 24% { background-position:66.667% 66.667%; } 36% { background-position:100% 66.667%; transform:translateX(2px); } 48% { background-position:0% 100%; transform:translateX(4px); } 60% { background-position:33.333% 100%; transform:translateX(3px); } 72% { background-position:66.667% 100%; transform:translateX(1px); } 86% { background-position:100% 100%; transform:translateX(0); } 100% { background-position:0% 66.667%; transform:translateX(0); } }
+            @keyframes ziInjuredMaleFistFrames { 0% { background-position:0% 0%; transform:translateX(0); } 13% { background-position:33.333% 0%; } 26% { background-position:66.667% 0%; } 39% { background-position:100% 0%; transform:translateX(2px); } 52% { background-position:0% 33.333%; transform:translateX(4px); } 65% { background-position:33.333% 33.333%; transform:translateX(3px); } 78% { background-position:66.667% 33.333%; transform:translateX(1px); } 91% { background-position:100% 33.333%; transform:translateX(0); } 100% { background-position:0% 0%; transform:translateX(0); } }
+            @keyframes ziInjuredFemaleFistFrames { 0% { background-position:0% 0%; transform:translateX(0); } 13% { background-position:33.333% 0%; } 26% { background-position:66.667% 0%; } 39% { background-position:100% 0%; transform:translateX(2px); } 52% { background-position:0% 100%; transform:translateX(4px); } 65% { background-position:33.333% 100%; transform:translateX(3px); } 78% { background-position:66.667% 100%; transform:translateX(1px); } 91% { background-position:100% 100%; transform:translateX(0); } 100% { background-position:0% 0%; transform:translateX(0); } }
             @keyframes ziMeleeFrames { 0% { background-position:0% 66.667%; transform:translateX(0); } 12% { background-position:33.333% 66.667%; } 24% { background-position:66.667% 66.667%; transform:translateX(-1px); } 36% { background-position:100% 66.667%; transform:translateX(-2px); } 48% { background-position:0% 100%; transform:translateX(3px); } 60% { background-position:33.333% 100%; transform:translateX(5px); } 74% { background-position:66.667% 100%; transform:translateX(3px); } 88% { background-position:100% 100%; transform:translateX(1px); } 100% { background-position:0% 66.667%; transform:translateX(0); } }
             @keyframes ziArcFlash { 0% { opacity:0; transform:scale(.7); } 20% { opacity:1; transform:scale(1); } 100% { opacity:0; transform:scale(1.12); } }
             @keyframes ziWheelPulse { 0%,100% { opacity:.58; } 50% { opacity:1; } }
@@ -2446,8 +2478,12 @@ window.WanderingScreen = function WanderingScreen({ route, setScreen }) {
             .zi-survivor-pixel.pace-walk { transform:none; }
             .zi-survivor-pixel.pace-jog { transform:rotate(-1.5deg); }
             .zi-survivor-pixel.pace-run { transform:rotate(-3deg); }
+            .zi-survivor-pixel.recovery-pose { transform:none !important; }
             .zi-survivor-art { position:absolute; inset:0; background-repeat:no-repeat; image-rendering:auto; transform-origin:50% 100%; }
+            .zi-recovery-art { image-rendering:pixelated; }
             .zi-survivor-art.fist-strike { background-size:400% 400% !important; animation:ziFistFrames .76s steps(1,end) both; }
+            .zi-survivor-art.injured-fist-strike.male { background-size:400% 400% !important; animation:ziInjuredMaleFistFrames 1.04s steps(1,end) both; }
+            .zi-survivor-art.injured-fist-strike.female { background-size:400% 200% !important; animation:ziInjuredFemaleFistFrames 1.04s steps(1,end) both; }
             .zi-survivor-art.melee-strike { background-size:400% 400% !important; animation:ziMeleeFrames .88s steps(1,end) both; }
             .zi-pixel-burst { position:absolute; right:22%; bottom:39%; width:34px; height:34px; z-index:24; pointer-events:none; animation:ziArcFlash .5s steps(4,end) both; }
             .zi-pixel-burst i { position:absolute; display:block; width:2px; height:2px; background:#b8ff9c; box-shadow:0 0 3px currentColor; }
@@ -2733,27 +2769,50 @@ window.WanderingScreen = function WanderingScreen({ route, setScreen }) {
           })}
 
           {/* Survivor sprite (left side, four-pose pace cycle) */}
-          <div className={`zi-survivor-pixel pace-${moveMode}`} data-survivor-walking={survivorWalking ? '1' : '0'} style={{
+          <div className={`zi-survivor-pixel pace-${moveMode}${injuredReturnPose || checkpointRestPose ? ' recovery-pose' : ''}`} data-survivor-walking={survivorWalking ? '1' : '0'} data-survivor-pose={checkpointRestPose ? 'campfire-rest' : injuredReturnPose ? 'injured-return' : undefined} style={{
             position:'absolute',
-            left: '14%', bottom: closeCombatLoadout ? `calc(12% - ${Math.round(actorSize * 0.031)}px)` : '12%',
-            width: closeCombatLoadout ? Math.round(actorSize * survivorSheet.aspect) : actorSize, height: actorSize,
+            left: '14%', bottom: closeCombatLoadout && !injuredReturnPose && !checkpointRestPose ? `calc(${sceneGroundBottomPct}% - ${Math.round(actorSize * 0.031)}px)` : `${sceneGroundBottomPct}%`,
+            width: injuredReturnPose ? Math.round(actorSize * 0.875) : checkpointRestPose ? Math.round(actorSize * 0.875) : injuredCombatPose ? Math.round(actorSize * (activeSurvivor.gender === 'female' ? 1 : 1.31)) : closeCombatLoadout ? Math.round(actorSize * (survivorWalking && !meleeEquipped ? 1 : survivorSheet.aspect)) : actorSize, height: actorSize,
             zIndex: 10,
           }}>
             {dmgPops.filter(p => p.who === 'player').map(p => <div key={p.id} className="zi-dmg" style={{ top:-14, marginLeft:p.dx }}>-{p.n}</div>)}
+            {(injuredReturnPose || checkpointRestPose) && !injuredCombatPose && <div
+              className="zi-survivor-art zi-recovery-art"
+              role="img"
+              aria-label={checkpointRestPose ? 'Survivor resting by a campfire and poking the embers with a stick' : 'Injured survivor limping back to the checkpoint'}
+              style={{
+                backgroundImage:`url("assets/wandering-characters/${checkpointRestPose ? 'survivor-campfire-rest-v4' : 'survivor-injured-campfire-v1'}.png")`,
+                backgroundSize:'400% 200%',
+                backgroundPosition:checkpointRestPose ? `${(recoveryFrame % 4) * 100 / 3}% ${Math.floor(recoveryFrame / 4) * 100}%` : `${recoveryBackgroundPosition}`,
+                filter:'drop-shadow(1px 0 #080a0d) drop-shadow(-1px 0 #080a0d) drop-shadow(0 1px #080a0d)',
+              }}/>} 
             {/* Close-combat sheets show legible walk cycles, bare-fist punches, or a melee swing. */}
-            {closeCombatLoadout && <div
+            {injuredCombatPose && <div
+              key={`injured-${survivorStrikeId}`}
+              className={`zi-survivor-art${survivorStriking ? ` injured-fist-strike ${activeSurvivor.gender === 'female' ? 'female' : 'male'}` : ''}`}
+              role="img"
+              aria-label={survivorStriking ? 'Injured survivor striking with the right fist while guarding with the left arm' : 'Injured survivor guarding during combat'}
+              style={{
+                backgroundImage:`url("assets/wandering-characters/survivor-injured-strike-${activeSurvivor.gender === 'female' ? 'female' : 'male'}-v1.png")`,
+                backgroundSize:activeSurvivor.gender === 'female' ? '400% 200%' : '400% 400%',
+                backgroundPosition:'0% 0%',
+                filter:'drop-shadow(1px 0 #080a0d) drop-shadow(-1px 0 #080a0d) drop-shadow(0 1px #080a0d)',
+              }}/>} 
+            {!injuredReturnPose && !checkpointRestPose && !injuredCombatPose && closeCombatLoadout && <div
               key={survivorStrikeId}
               className={`zi-survivor-art${survivorStriking ? (meleeEquipped ? ' melee-strike' : ' fist-strike') : ''}`}
               role="img"
               aria-label={meleeEquipped ? 'Survivor holding a melee weapon' : 'Unarmed survivor'}
               style={{
-                backgroundImage:`url("assets/wandering-characters/${survivorSheet.file}.png")`,
-                backgroundSize:'400% 400%',
-                backgroundPosition:survivorStriking ? undefined : `${(survivorCell % 4) * 33.3333}% ${Math.floor(survivorCell / 4) * 33.3333}%`,
+                backgroundImage:`url("assets/wandering-characters/${survivorWalking && !meleeEquipped ? 'survivor-walk-v5' : survivorSheet.file}.png")`,
+                backgroundSize:survivorWalking && !meleeEquipped ? '400% 200%' : '400% 400%',
+                backgroundPosition:survivorStriking ? undefined : survivorWalking && !meleeEquipped
+                  ? `${(survivorCell % 4) * 33.3333}% ${Math.floor(survivorCell / 4) * 100}%`
+                  : `${(survivorCell % 4) * 33.3333}% ${Math.floor(survivorCell / 4) * 33.3333}%`,
                 filter:'drop-shadow(1px 0 #080a0d) drop-shadow(-1px 0 #080a0d) drop-shadow(0 1px #080a0d)',
               }}/>}
             {/* Ranged weapons keep their existing held-weapon art and muzzle effects. */}
-            {!closeCombatLoadout && <svg viewBox="0 0 36 48" width="84" height="112" shapeRendering="crispEdges" style={{ position:'absolute', inset:0, overflow:'visible', imageRendering:'pixelated', filter:'drop-shadow(1px 0 #080a0d) drop-shadow(-1px 0 #080a0d) drop-shadow(0 1px #080a0d)' }}>
+            {!injuredReturnPose && !checkpointRestPose && !closeCombatLoadout && <svg viewBox="0 0 36 48" width="84" height="112" shapeRendering="crispEdges" style={{ position:'absolute', inset:0, overflow:'visible', imageRendering:'pixelated', filter:'drop-shadow(1px 0 #080a0d) drop-shadow(-1px 0 #080a0d) drop-shadow(0 1px #080a0d)' }}>
               {window.ZI_ART.survivorRuns(weaponKind).map((r, i) => <rect key={i} x={r.x} y={r.y} width={r.w} height="1" fill={r.c}/>)}
               {encounter && (animFrame % 6 === 0 || animFrame % 6 === 2) && weaponFx.muzzle && <g>
                 <rect x={weaponFx.muzzle[0]} y={weaponFx.muzzle[1] - 1} width="3" height="3" fill="#f0d060"/>
@@ -2859,7 +2918,7 @@ window.WanderingScreen = function WanderingScreen({ route, setScreen }) {
             } else if (rn.withdrawing) { title = 'Withdrawing...'; sub = `${Math.round(rn.withdrawLeftM || 0)} m to the checkpoint · the road is quiet; only slow crawlers follow`; } // BAL-A A1
             else if (rn.retreatHold) title = 'On hold';
             return (
-              <div style={{ position:'absolute', top:'50%', left:'50%', transform:'translate(-50%,-50%)', display:'flex', flexDirection:'column', alignItems:'center', gap:6, textAlign:'center', maxWidth:'80%' }}>
+              <div style={{ position:'absolute', top:injuredReturnPose || checkpointRestPose ? '16%' : '50%', left:'50%', transform:'translate(-50%,-50%)', display:'flex', flexDirection:'column', alignItems:'center', gap:6, textAlign:'center', maxWidth:'80%' }}>
                 <div style={{ fontFamily:'var(--font-title)', fontSize:14, color:'var(--text3)', letterSpacing:'0.3em', textTransform:'uppercase', animation:'threat-pulse 2s ease-in-out infinite' }}>{title}</div>
                 {sub && <div style={{ fontFamily:'var(--font-mono)', fontSize:11, color:'var(--text2)' }}>{sub}</div>}
                 {ruleLine && <div data-retreat-line="1" style={{ fontFamily:'var(--font-mono)', fontSize:10, color:'var(--text3)' }}>{ruleLine}</div>}
@@ -3132,7 +3191,7 @@ window.ZombieCodexScreen = function ZombieCodexScreen() {
   const [codexFrame, setCodexFrame] = React.useState(0);
   React.useEffect(() => { if (expanded == null) return; const t = setInterval(() => setCodexFrame(f => (f + 1) % 4), 250); return () => clearInterval(t); }, [expanded]);
   const expandedRoster = ZI.BESTIARY_EXPANDED || []; // ids 49-108: art + description only, never spawned (bestiary-expanded.js)
-  const devMode = catFilter === 'dev';
+  const devMode = catFilter === 'dev' && !!(ZI.isDevView && ZI.isDevView());
   const A = window.ZI_ART || {};
   // The zombie's art, exactly as Wandering shows it: processed sprite where one is mapped, else the painted SVG.
   const artBox = (z, dev) => {
@@ -3167,7 +3226,8 @@ window.ZombieCodexScreen = function ZombieCodexScreen() {
     { id:'hazard',  label:'Hazards',     icon:'☣' },
     { id:'special', label:'Specialists', icon:'✦' },
     { id:'elite',   label:'Elites',      icon:'💀' },
-    { id:'dev',     label:'In development', icon:'🧪' },
+    // Oct 26 decision (Addendum 6): the reveal-all "In development" tab is a developer tool, shown only with ?dev.
+    ...(ZI.isDevView && ZI.isDevView() ? [{ id:'dev',     label:'In development', icon:'🧪' }] : []),
   ];
   const catOf = (z) => {
     const txt = [z.base, z.name, z.ability].concat(z.traits || []).join(' ');
@@ -3776,6 +3836,20 @@ window.StockpileScreen = function StockpileScreen({ initialTab = 'recycler', pre
   const gearStats = Z.resolveLoadoutStats(loadout);
   const equip = (id) => { const it = Z.getGearItem(id); const r = Z.equipGear(id, it.slot); if (r) { setLoadout({ ...r.loadout }); setStash([ ...r.stash ]); } };
   const unequip = (slotId) => { const r = Z.unequipGear(slotId); setLoadout({ ...r.loadout }); setStash([ ...r.stash ]); };
+  const FOOD_SPRITE_INDEX = {
+    canned_food:0, ration:1, apple:2, orange:3, grapes:4, raisins:5, cola:6, cola_can:6,
+    burger:7, fries:8, potato:9, bread:10, steak_potatoes:11, fish_common:12, fish_uncommon:13,
+    fish_legendary:14, powdered_milk:15, hard_cheese:16, canned_butter:17, meat:18, vegetables:19,
+  };
+  const itemVisual = (it, size=18) => {
+    const spriteIndex = it ? FOOD_SPRITE_INDEX[it.id] : undefined;
+    if (spriteIndex !== undefined) return <span role="img" aria-label={it.name} title={it.name} style={{
+      display:'inline-block', flex:`0 0 ${size}px`, width:size, height:size,
+      backgroundImage:'url("art/weapons/items/stockpile-food-icons-v2.png")', backgroundSize:'500% 400%',
+      backgroundPosition:`${(spriteIndex % 5) * 25}% ${Math.floor(spriteIndex / 5) * 100 / 3}%`, backgroundRepeat:'no-repeat', imageRendering:'pixelated',
+    }}/>;
+    return <span aria-hidden="true" style={{ fontSize:size * 0.82, lineHeight:1, flexShrink:0 }}>{it && it.icon || '📦'}</span>;
+  };
   const repair = (id) => { const it = Z.getGearItem(id); if (!it) return; const d = Z.itemDurability(it); if (!d || d.current >= d.max) return; if (!Z.canAffordRepair(it)) return; const cost = Z.repairCost(it); const M = window.ZI_MATERIALS||{}; Object.entries(cost.materials).forEach(([k,q])=>{ if(M[k]) M[k].current=Math.max(0,M[k].current-q); }); Object.entries(cost.rmat||{}).forEach(([k,q])=>Z.addRmat(k,-q)); Z.enqueueJob('repair', id, Math.max(30, Math.round((d.max-d.current)*2)), {}); setLoadout({ ...Z.getLoadout() }); };
   const filterCat = { ALL:null, WEAPONS:'weapon', ARMOR:'armor', GEAR:'gear', ITEMS:'consumable' }[gearFilter];
   // Group stash item ids → counts, then filter.
@@ -3847,8 +3921,9 @@ window.StockpileScreen = function StockpileScreen({ initialTab = 'recycler', pre
               <div style={{ padding:'0 10px 10px', display:'grid', gridTemplateColumns:'repeat(auto-fill, minmax(200px,1fr))', gap:6 }}>
                 {Object.keys(stashCounts).map(id => Z.getGearItem(id)).filter(Boolean).map(it => {
                   const dur = Z.itemDurability(it);
-                  return <div key={it.id} style={{ padding:8, background:'var(--bg3)', border:'1px solid var(--border)', borderTop:`2px solid ${rc(it.rarity)}` }}>
-                    <div style={{ display:'flex', gap:6, alignItems:'center' }}><span>{it.icon}</span><span style={{ flex:1, fontFamily:'var(--font-body)', fontSize:13 }}>{it.name}</span><b style={{ fontFamily:'var(--font-mono)', fontSize:12, color:'var(--amber)' }}>×{stashCounts[it.id]}</b></div>
+                  const isFood = FOOD_SPRITE_INDEX[it.id] !== undefined;
+                  return <div key={it.id} style={{ padding:8, background:isFood ? 'rgba(61,207,142,0.08)' : 'var(--bg3)', border:'1px solid var(--border)', borderTop:`2px solid ${isFood ? 'var(--green)' : rc(it.rarity)}` }}>
+                    <div style={{ display:'flex', gap:8, alignItems:'center' }}>{itemVisual(it, isFood ? 42 : 18)}<span style={{ flex:1, fontFamily:'var(--font-body)', fontSize:13 }}>{it.name}</span><b style={{ fontFamily:'var(--font-mono)', fontSize:12, color:'var(--amber)' }}>×{stashCounts[it.id]}</b></div>
                     <div style={{ fontFamily:'var(--font-mono)', fontSize:9, color:'var(--text2)', marginTop:4 }}>{it.rarity}{dur ? ` · Condition ${Math.round(dur.current)}/${dur.max}` : ''}</div>
                   </div>;
                 })}
@@ -3894,7 +3969,7 @@ window.StockpileScreen = function StockpileScreen({ initialTab = 'recycler', pre
                               {it ? (
                                 <>
                                   <div style={{ display:'flex', alignItems:'center', gap:6 }}>
-                                    <span style={{ fontSize:15 }}>{it.icon}</span>
+                                    {itemVisual(it, 28)}
                                     <div style={{ minWidth:0, flex:1 }}>
                                       <div style={{ fontFamily:'var(--font-mono)', fontSize:9, color: worn ? '#f06a5a' : 'var(--text)', whiteSpace:'nowrap', overflow:'hidden', textOverflow:'ellipsis' }}>{it.name}{worn ? ' (worn)' : ''}</div>
                                       <div style={{ fontFamily:'var(--font-mono)', fontSize:8, color:'var(--text3)' }}>{s.label}</div>
@@ -3958,7 +4033,7 @@ window.StockpileScreen = function StockpileScreen({ initialTab = 'recycler', pre
                         border:'1px solid var(--border)', borderTop:`2px solid ${rc(it.rarity)}`,
                         display:'flex', alignItems:'center', gap:7,
                       }}>
-                        <span style={{ fontSize:15 }}>{it.icon}</span>
+                        {itemVisual(it, it.id === 'canned_food' || it.id === 'ration' ? 36 : 18)}
                         <div style={{ minWidth:0, flex:1 }}>
                           <div style={{ fontFamily:'var(--font-mono)', fontSize:9, color:'var(--text)', whiteSpace:'nowrap', overflow:'hidden', textOverflow:'ellipsis' }}>
                             {it.name}{stashCounts[it.id] > 1 ? ` ×${stashCounts[it.id]}` : ''}

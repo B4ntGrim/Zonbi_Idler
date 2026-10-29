@@ -93,7 +93,8 @@ for (const [seedN, secs, over, pol, label] of [
   const oneDay = mkEnv(seed()); oneDay.ZI.decayHeartbeat(t0 + day); oneDay.ZI.settleSkillDecay(t0 + day);
   const lossOne = 50000 - JSON.parse(oneDay.store.zi_stat_xp).combat;
   log('  decay loss: open 3 days ' + lossOpen + ' · closed 3 days ' + lossClosed + ' · open 1 day ' + lossOne);
-  check('A4: open 3-day session ≈ 3 days of decay (hourly settles)', lossOpen > 2.8 * lossOne && lossOpen < 3.05 * lossOne, lossOpen + ' vs 3×' + lossOne);
+  // Oct 29 (Sam, Profession Rust Replacement): settles still run on their clock but never remove XP.
+  check('A4: open 3-day session removes no XP (rust decay retired Oct 29)', lossOpen === 0 && lossOne === 0, lossOpen + ' / ' + lossOne);
   check('A4: closed 3 days still capped at 1 day', Math.abs(lossClosed - lossOne) <= 1, lossClosed + ' vs ' + lossOne);
   check('A4: lastSettledUtc stored and advanced', JSON.parse(open.store.zi_decay_clock).lastSettledUtc === t0 + 72 * 3600000);
   // Settle on read: a level read after an hour of open time settles.

@@ -1,52 +1,76 @@
-# CURRENT_BATCH — CLOCK-01: Continuous clock and calendar
+# CURRENT_BATCH — STAT-02: Progression Curve, Stat Picks & Status States
 
-**Source:** `reference/clock-01-slice.md`. If this file and the slice disagree, stop and ask.
-**Status:** **LOCKED by Sam (Oct 24).** Issued to Code as `CURRENT_BATCH.md`.
+**Status (Oct 29):** Live. Step 3 applied (Sam's H6–H10 answers plus the audit). Open: no repeatable food source (AUDIT §6), the 24 → 30 ranks change needs Sam's OK, and the RMAT income check against the Auto-Eat price. Oct 29 proposals (rust retired, consumable-only healing, save hardening) are recorded in `reports/proposals-2026-10-29/REPORT.md`; they are not part of this contract.
 
-**Goal.** One clock that keeps running while the game is closed, shows Year, Day and time, and moves by clear, limited amounts when the player hides or makes camp.
 
-## Decided behavior
+**Batch ID:** STAT-02 (proposed)
+**Source of truth:** "Stat Progression — Addendum v4" plus the decisions locked by voice on Oct 28, 2026 (listed below)
+**Target:** E:\Zed_Idler (Unity / C#)
+**Handoff:** Copy this contract into CURRENT_BATCH.md. Save the report to reports/STAT-02/.
 
-1. **Rate.** `ZI.REAL_MS_PER_GAME_HOUR = 60000` (O2, T8). Old clocks settle at their saved rate (no jump).
-2. **Continuous clock (CL1).** On load, the clock shows the full real time away, converted at the current rate.
-3. **Calendar (CL2).** New `ZI.getCalendar()` returns `{ year, day, hh, mm }` from total game seconds: `totalDay = floor(t / 86400) + 1`; `year = floor((totalDay - 1) / 364) + 1`; `day = ((totalDay - 1) mod 364) + 1`. The header in both pages shows "Year X, Day Y, HH:MM". Integer maths only.
-4. **Hide (CL3).** `TRAVERSAL_TABLE.hideGameHours = 12`. At most **2 uses in any rolling 24 real hours** (`TRAV_HIDE_MAX_PER_24H = 2`, O1). Each use becomes available again 24 real hours after its own use; at the cap, the button is greyed and shows when the next use returns. The Hide cost label shows "12 game hours".
-5. **Make camp (CL4–CL5).** Moves the clock to 06:00 of the **next calendar day** (O3), from any time of day. It becomes available 24 real hours after its last successful use; at the cap, the button is greyed and shows when it is available again. Timezone changes and local midnight do not refill it early. Everything else Make camp does today stays (camp cell, saved-return clearing, Command XP once per local calendar day).
-6. **Offline credit (CL6).** For each absence, calculate one shared processing window of at most 24 **real** hours and use it for all offline systems: Wandering, camp schedule, crafting and builds, and route runs. This is a server-capacity limit; it is not a player-facing explanation or status message. The calendar still advances for the full absence (O4). Time beyond the window receives no offline progress, as in FX2.
-7. **Rescale (T9).** Each duration stored in game time is scaled so its real length stays the same at the new rate, **except the Elder Jester's stay**, which remains 3–5 full game days. At the new rate that stay lasts about 72–120 real minutes. Code lists each affected duration with its old and new value in the report.
-8. **Injury treatment (O5).** `treatInjury(playMinutes)` subtracts the supplied real play minutes, not game days; clamp at zero and clear the injury when exhausted. Remove the dead legacy injury functions in `stats.js`. Make camp does not call `treatInjury` or treat injuries.
-9. **Stale comments (A2).** Update the hard-coded "6 real seconds" / "2.4 real minutes" comments.
+## Scope change (Sam decision)
 
-## Likely files
+The main draft and Addendum v4 said "no live-game changes". **Sam has now asked for these systems to be implemented in the game code.** That guard is lifted for this batch only. Before overwriting any existing XP, stat or save logic, Code must report what it found in the existing code (Design Handoff), and must keep save migration safe.
 
-`game/core.js` (rate, calendar, passTime) · `game/stats.js` (`TRAVERSAL_TABLE`, rolling Hide timestamps, camp cooldown timestamp, dead injury copies) · `game/camp.js` (offline cap) · `game/active.js` (injury treatment, Jester stay) · `game/routes.js` · `game/crafting.js` (only if rescaling recipe data) · `screens-v2.jsx` (header) · `screens-v3.jsx` (Hide, Make camp and cooldowns) · both HTML pages (`craftRealSec`, header) · new save data for Hide uses and last successful camp time · new `tests/clock-01.test.js` · `CODE_STATE.md`.
+## Goal
 
-## Acceptance checks (new suite `tests/clock-01.test.js`)
+Implement the locked progression maths, the stat-pick system and the status-state system as configurable data-driven systems.
 
-1. Calendar: total day 1 → Year 1, Day 1; 364 → Year 1, Day 364; 365 → Year 2, Day 1; 728 → Year 2, Day 364; 729 → Year 3, Day 1. Time shows HH:MM with leading zeros.
-2. Both pages show "Year X, Day Y, HH:MM" in the header. No layout break at phone width or desktop width.
-3. Closing the game for 1, 8 and 24 real hours moves the calendar by exactly that time at the current rate (± 1 game minute). Closing it for 30 real hours moves the calendar 30 hours' worth (O4) but credits only 24 hours of progress.
-4. **Online/offline equivalence (CL7).** From the same seeded save, run 1, 8 and 24 real hours online and offline. Game clock, Wandering results, camp schedule, crafting and route progress differ by no more than 1 game minute.
-5. Hide moves the clock exactly 12 game hours; a second Hide works; a third is refused; at the cap the button shows when the next use returns; each use returns exactly 24 real hours after it was spent, independent of local midnight or timezone.
-6. Make camp lands at exactly 06:00 of the next calendar day (O3) from 00:00, 05:59, 06:00, 12:00 and 23:59.
-7. Make camp becomes available exactly 24 real hours after its last successful use; earlier attempts are greyed with the remaining cooldown; crossing local midnight or changing timezone does not refill it.
-8. Hide and Make camp cooldowns use elapsed real time and are unaffected by device timezone changes.
-9. An old save (6-second rate) loads without jumping the day.
-10. Injury treatment removes play time, not game days; a treatment never wipes an injury in one step unless its play time is used up.
-11. No `NaN`, negative or non-integer values in the saved clock; no console errors in either page.
-12. **Regression:** all existing suites pass.
+## Decided behaviour
 
-## Smoke test (Sam, TEST SAVE)
+### 1. XP curve
+- XP to next level at level L = `a × 1.065^L`, with `a ≈ 906.1`. Total XP from L1 to L100 is about 7,557,000.
+- XP comes from **active play only**: regular encounters, elites/bosses, objectives/discoveries.
+- Source budget per active hour: 60% / 25% / 15% of 25,190 XP. Per-event values use the phase table in Addendum v4. All values configurable (ScriptableObject or a JSON config).
 
-1. Note the Year, Day and time. Close the game for about an hour. Reopen: the time moved forward about an hour's worth.
-2. Hide twice; confirm the clock moves 12 game hours each time and the button greys out at the cap.
-3. Make camp; confirm you wake at 06:00. Try again; confirm it is greyed until midnight.
-4. Check the header at phone width.
+### 2. Core stats and ranks
+- 10 core stats: Max HP 40→60, HP Regen 10→20, Shield 50→80, Armor 0→40%, Evasion 1→25%, Damage 1.00→1.30×, Crit Chance 1→35%, Crit Damage 2.00→3.00×, Attack Speed 100→150%, Move Speed 1.07→1.25×.
+- Store an **integer rank** from 0 to 24 per stat. Never accumulate rounded increments.
+- Derived value: `start + (cap − start) × (1 − (1 − r/24)^k)` with **k = 1.5 for all stats** (single global config value; allow a per-stat override field, unused for now).
+- Keep base, level ranks, gear and temporary effects as separate components in the stat index.
+
+### 3. Stat picks
+- **Levels 2–35:** a standard pick on even levels only. **Levels 36–100:** a standard pick every level.
+- **Checkpoint bonus picks** at levels **10, 20, 35, 50, 70, 85, 90, 95, 100**, each from a fresh offer.
+- Each offer shows 3 distinct uncapped stats. Capped stats never appear.
+- **Soft pity on offers:** each stat has a hidden miss counter that goes up by 1 each offer it is not shown and resets to 0 when shown. Draw weight = `1 + 0.35 × misses`, weighted sampling without replacement. The value 0.35 is configurable.
+
+### 4. Front-facing display (hidden formulas)
+- Upgrade cards show the stat name and rounded before → after values only (for example "Max HP 44 → 45"). **Never show ranks, k or formulas in the UI.**
+- Stat tooltip shows a breakdown (Base / Level / Gear / Effects) as numbers only.
+
+### 5. Status states
+- Tracks and tiers (labels shown, stat effects hidden):
+  - Hunger: Well Fed / Peckish / Hungry / Starving
+  - Rest: Rested / Tired / Fatigued / Exhausted
+  - Wounds: Healthy / Scratched / Wounded / Badly Hurt
+  - Sickness: Healthy / Queasy / Sick / Feverish
+  - Morale: Steady / Uneasy / Shaken
+- Each tier applies hidden stat modifiers (values configurable; Code proposes placeholder values in the report and does not invent final balance).
+- **Compounding:** each additional active negative state multiplies all negative modifiers by +15%. Each additional positive state multiplies positive modifiers by +15%. The same rate both ways; the rate is configurable.
+- **Time:** states progress on the world clock both online and offline.
+- **Offline (app closed):** the character self-manages: eats from supplies, sleeps at camp, tends wounds. Offline states can **never go past the mild tier** (for example Hungry, never Starving; Wounded, never Badly Hurt). Respect the existing 24-hour offline progress cap from CLOCK-01.
+- The away screen shows a short summary (for example "Ate twice, slept well, used 3 rations").
+
+## Likely files (Code to confirm)
+Progression / XP manager, stat definitions and stat index, level-up offer UI, status-state manager, offline progress handler, away screen, save data.
+
+## Acceptance checks
+- The XP table reproduces Addendum v4 totals within rounding (L50 ≈ 310,033; L90 ≈ 4,018,874; L100 ≈ 7,557,000).
+- No offer has duplicate stats or capped stats. Checkpoint levels give exactly two picks.
+- Rank 24 equals the cap exactly. Rank math stays integer in the save data.
+- Headless simulation (at least 2,000 runs) with the damage-first build gives a median Damage cap around level 90, with ≤ ~12% of runs never capping. Balanced and survival builds never cap before level 100.
+- Two stacked negative states produce a larger penalty than the sum of each alone; the same holds for positive states.
+- An offline period with zero supplies never produces a severe tier.
+- No UI surface shows ranks, k, pity weights or modifier formulas.
 
 ## Explicitly out
-
-Server authority for the clock · Drifts (T19) · Travel stamina (T18) · TRAV-01b familiarity and camp rest · noise and zombie reaction (PF13) · Wandering combat pacing (F4) · any change to skill decay (stays on real days).
+- Discovery journal (feature 4) — not designed yet.
+- Final balance values for status modifiers.
+- ALC-01 drunk / hangover states (parked; will plug into the status system later).
+- Task duration sync.
 
 ## Required verification
-
-Step 1 report (read-only: confirm every rescaled duration and its old/new real length) in `reports/clock-01/CLOCK-01_STEP1_REPORT.md` · completion report with each check's result in `reports/clock-01/CLOCK-01_COMPLETION_REPORT.md` · `CLOCK-01: CLOSED` or `NOT CLOSED`.
+- Report what existing XP, stat and save logic was replaced, plus the save-migration approach.
+- Attach the simulation output and the placeholder modifier table to reports/STAT-02/.
+- Raise a Design Handoff instead of inventing design for anything unclear.

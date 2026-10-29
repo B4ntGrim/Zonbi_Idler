@@ -54,9 +54,9 @@ Give food a job. HP recovery in the field costs nutrition, and a free auto-eat p
 | P3 | **Out-of-combat recovery**, set as time to full HP (starting value 60 s) | Stays correct if max HP grows later |
 | P4 | **No in-combat recovery** in this slice | Fights stay dangerous; the model shows it only lengthens runs and costs more food |
 | P5 | Three states: **Fed ≥ 40 · Hungry 1–39 · Starving 0**. Recovery ×1 · ×0.5 · ×0.1 | Starving is slow, never zero, so a Downed survivor always recovers (no dead end) |
-| P6 | **Basic auto-eat, free and on by default.** Below the threshold, the survivor eats from the Food slot (order and containers: F2, F5, F17, F18, Oct 26) | The policy decides; nothing waits on the player |
+| P6 | ~~**Basic auto-eat, free and on by default.**~~ *Superseded Oct 28, see note below.* Below the threshold, the survivor eats from the Food slot (order and containers: F2, F5, F17, F18, Oct 26) | The policy decides; nothing waits on the player |
 | P7 | Walking drains a small amount of nutrition per field hour | Food matters even on quiet runs |
-| P8 | Shop items sell **efficiency only** (eat while walking, auto-forage), never basic auto-eat or food | Business-model rule 5.1 |
+| P8 | Shop items sell **efficiency only** (eat while walking, auto-forage), never basic auto-eat or food. *Basic auto-eat part superseded Oct 28, see note below.* | Business-model rule 5.1 |
 
 ### Starting values (data table, tunable)
 
@@ -80,6 +80,8 @@ Give food a job. HP recovery in the field costs nutrition, and a free auto-eat p
 *Why fixed 30:* the test showed 25, 30 or a rolled 25–30 change the average per visit by under 2 nutrition. The legendary value is a feeling, not a supply lever, so the bigger fixed number reads best in the log and beats a ration (25).
 
 ---
+
+**Oct 28 (Sam, STAT-02):** basic Auto-Eat is a Shop purchase paid in RMAT ("Auto-Eat", 5 T1, unlocks at 500 m). Until it is bought, the survivor eats by hand (Eat button, Stats screen). This supersedes P6 (free basic auto-eat, on by default) and the P8 / business-model 5.1 rule that the Shop never sells basic auto-eat. While the app is closed, the survivor still eats on their own (up to 3 meals).
 
 ## 3b. Decisions (Sam, Oct 26)
 

@@ -11,7 +11,7 @@ const mkEnv = () => {
   const ls = { getItem:k => (k in store ? store[k] : null), setItem:(k,v)=>{store[k]=String(v);}, removeItem:k=>{delete store[k];}, key:i=>Object.keys(store)[i], get length(){return Object.keys(store).length;} };
   const fw = { localStorage: ls, sessionStorage: ls, console:{ log(){}, warn(){}, error(){} }, Date, Math, JSON, setInterval:()=>0, clearInterval:()=>{}, setTimeout:()=>0, clearTimeout:()=>{},
     document:{ hidden:false, visibilityState:'visible', addEventListener(){}, querySelectorAll:()=>[] }, addEventListener(){}, location:{ reload(){} } }; fw.window = fw;
-  new Function('fw', 'with(fw){' + src + '}')(fw); return fw.ZI;
+  /* Oct 29: consumable-only healing ships (base heals 0); this suite tests heal-charge mechanics with the legacy base charges. Shipped rule: tests/proposals-oct29.test.js */ new Function('fw', 'with(fw){' + (src).replace('baseHeal: 0, baseScout: 2, commandPerkLevel: 40, commandPerkHeal: 0', 'baseHeal: 2, baseScout: 2, commandPerkLevel: 40, commandPerkHeal: 1') + '}')(fw); return fw.ZI;
 };
 const rig = (o) => { o = o || {}; const Z = mkEnv(); const c = { t: T0 }; Z.installClock(() => c.t); Z.WanderEngine.rng = Z.seededRng(7); Z.WanderEngine._lead = () => true; Z.wanderMounted = false;
   Z._wj('zi_charges', { heal: o.charges == null ? 3 : o.charges, scout: 0 });

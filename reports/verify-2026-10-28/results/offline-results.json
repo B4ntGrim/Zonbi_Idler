@@ -1,0 +1,763 @@
+[
+ {
+  "name": "1h",
+  "deltaH": 1,
+  "before": {
+   "now": 1792497617924,
+   "window": {
+    "elapsedH": 0.00020277777777777777,
+    "creditedH": 0.00020277777777777777,
+    "discardedH": 0
+   },
+   "lastSeen": "1792497617135",
+   "probeJob": {
+    "creditedH": 0.0008347222222222223,
+    "status": "active"
+   },
+   "calendar": {
+    "year": 1,
+    "day": 1,
+    "hh": 14,
+    "mm": 10
+   },
+   "gameSec": 51031,
+   "status": {
+    "nutrition": 69.89496527777777,
+    "rest": 69.98249421296296,
+    "lastGameSec": 50763,
+    "lastAway": null
+   },
+   "active": {
+    "mode": "solo",
+    "slot": 2
+   }
+  },
+  "after": {
+   "now": 1792501224399,
+   "window": {
+    "elapsedH": 1.0001325,
+    "creditedH": 1.0001325,
+    "discardedH": 0
+   },
+   "lastSeen": "1792501223615",
+   "probeJob": {
+    "creditedH": 1.0026330555555556,
+    "status": "active"
+   },
+   "calendar": {
+    "year": 1,
+    "day": 4,
+    "hh": 2,
+    "mm": 16
+   },
+   "gameSec": 267419,
+   "status": {
+    "nutrition": 24.90769675925926,
+    "rest": 99.98461612654322,
+    "lastGameSec": 267331,
+    "lastAway": {
+     "text": "Went without food, slept well",
+     "gameHours": 60,
+     "at": 1792501217620,
+     "before": {
+      "hunger": 1,
+      "rest": 1
+     }
+    }
+   },
+   "active": {
+    "mode": "solo",
+    "slot": 2
+   }
+  },
+  "afterReload": {
+   "now": 1792501236647,
+   "window": {
+    "elapsedH": 0.00011277777777777778,
+    "creditedH": 0.00011277777777777778,
+    "discardedH": 0
+   },
+   "lastSeen": "1792501235987",
+   "probeJob": {
+    "creditedH": 1.0060352777777777,
+    "status": "active"
+   },
+   "calendar": {
+    "year": 1,
+    "day": 4,
+    "hh": 2,
+    "mm": 29
+   },
+   "gameSec": 268154,
+   "status": {
+    "nutrition": 24.695312500000004,
+    "rest": 99.94921875,
+    "lastGameSec": 268065,
+    "lastAway": {
+     "text": "Went without food, slept well",
+     "gameHours": 60,
+     "at": 1792501217620,
+     "before": {
+      "hunger": 1,
+      "rest": 1
+     }
+    }
+   },
+   "active": {
+    "mode": "solo",
+    "slot": 2
+   }
+  },
+  "errors": []
+ },
+ {
+  "name": "23h59m",
+  "deltaH": 23.983333333333334,
+  "before": {
+   "now": 1792497618808,
+   "window": {
+    "elapsedH": 0.00023333333333333333,
+    "creditedH": 0.00023333333333333333,
+    "discardedH": 0
+   },
+   "lastSeen": "1792497618733",
+   "probeJob": {
+    "creditedH": 0.0008338888888888889,
+    "status": "active"
+   },
+   "calendar": {
+    "year": 1,
+    "day": 1,
+    "hh": 14,
+    "mm": 10
+   },
+   "gameSec": 51054,
+   "status": {
+    "nutrition": 69.81192129629629,
+    "rest": 69.96865354938271,
+    "lastGameSec": 51050,
+    "lastAway": null
+   },
+   "active": {
+    "mode": "solo",
+    "slot": 2
+   }
+  },
+  "after": {
+   "now": 1792583965849,
+   "window": {
+    "elapsedH": 23.983469444444445,
+    "creditedH": 23.983469444444445,
+    "discardedH": 0
+   },
+   "lastSeen": "1792583965227",
+   "probeJob": {
+    "creditedH": 23.98612333333333,
+    "status": "active"
+   },
+   "calendar": {
+    "year": 1,
+    "day": 61,
+    "hh": 13,
+    "mm": 17
+   },
+   "gameSec": 5231877,
+   "status": {
+    "nutrition": 24.91087962962963,
+    "rest": 99.98514660493827,
+    "lastGameSec": 5231788,
+    "lastAway": {
+     "text": "Went without food, slept well",
+     "gameHours": 1439,
+     "at": 1792583959232,
+     "before": {
+      "hunger": 1,
+      "rest": 1
+     }
+    }
+   },
+   "active": {
+    "mode": "solo",
+    "slot": 2
+   }
+  },
+  "afterReload": {
+   "now": 1792583977779,
+   "window": {
+    "elapsedH": 0.00010277777777777778,
+    "creditedH": 0.00010277777777777778,
+    "discardedH": 0
+   },
+   "lastSeen": "1792583977446",
+   "probeJob": {
+    "creditedH": 23.989436944444446,
+    "status": "active"
+   },
+   "calendar": {
+    "year": 1,
+    "day": 61,
+    "hh": 13,
+    "mm": 29
+   },
+   "gameSec": 5232593,
+   "status": {
+    "nutrition": 24.701099537037035,
+    "rest": 99.95018325617283,
+    "lastGameSec": 5232513,
+    "lastAway": {
+     "text": "Went without food, slept well",
+     "gameHours": 1439,
+     "at": 1792583959232,
+     "before": {
+      "hunger": 1,
+      "rest": 1
+     }
+    }
+   },
+   "active": {
+    "mode": "solo",
+    "slot": 2
+   }
+  },
+  "errors": []
+ },
+ {
+  "name": "exactly 24h",
+  "deltaH": 24,
+  "before": {
+   "now": 1792497618648,
+   "window": {
+    "elapsedH": 0.00019944444444444445,
+    "creditedH": 0.00019944444444444445,
+    "discardedH": 0
+   },
+   "lastSeen": "1792497618624",
+   "probeJob": {
+    "creditedH": 0.0008338888888888889,
+    "status": "active"
+   },
+   "calendar": {
+    "year": 1,
+    "day": 1,
+    "hh": 14,
+    "mm": 10
+   },
+   "gameSec": 51044,
+   "status": {
+    "nutrition": 69.81394675925925,
+    "rest": 69.96899112654322,
+    "lastGameSec": 51043,
+    "lastAway": null
+   },
+   "active": {
+    "mode": "solo",
+    "slot": 2
+   }
+  },
+  "after": {
+   "now": 1792584025928,
+   "window": {
+    "elapsedH": 24.000148888888887,
+    "creditedH": 24,
+    "discardedH": 0.0001488888888888889
+   },
+   "lastSeen": "1792584025162",
+   "probeJob": {
+    "creditedH": 24.002707222222224,
+    "status": "active"
+   },
+   "calendar": {
+    "year": 1,
+    "day": 61,
+    "hh": 14,
+    "mm": 18
+   },
+   "gameSec": 5235481,
+   "status": {
+    "nutrition": 24.908275462962962,
+    "rest": 99.9847125771605,
+    "lastGameSec": 5235392,
+    "lastAway": {
+     "text": "Went without food, slept well",
+     "gameHours": 1440,
+     "at": 1792584019169,
+     "before": {
+      "hunger": 1,
+      "rest": 1
+     }
+    }
+   },
+   "active": {
+    "mode": "solo",
+    "slot": 2
+   }
+  },
+  "afterReload": {
+   "now": 1792584038450,
+   "window": {
+    "elapsedH": 0.00010861111111111111,
+    "creditedH": 0.00010861111111111111,
+    "discardedH": 0
+   },
+   "lastSeen": "1792584037786",
+   "probeJob": {
+    "creditedH": 24.006185555555554,
+    "status": "active"
+   },
+   "calendar": {
+    "year": 1,
+    "day": 61,
+    "hh": 14,
+    "mm": 30
+   },
+   "gameSec": 5236232,
+   "status": {
+    "nutrition": 24.691261574074076,
+    "rest": 99.94854359567901,
+    "lastGameSec": 5236142,
+    "lastAway": {
+     "text": "Went without food, slept well",
+     "gameHours": 1440,
+     "at": 1792584019169,
+     "before": {
+      "hunger": 1,
+      "rest": 1
+     }
+    }
+   },
+   "active": {
+    "mode": "solo",
+    "slot": 2
+   }
+  },
+  "errors": []
+ },
+ {
+  "name": "24h + 1 min",
+  "deltaH": 24.016666666666666,
+  "before": {
+   "now": 1792497618763,
+   "window": {
+    "elapsedH": 0.0002513888888888889,
+    "creditedH": 0.0002513888888888889,
+    "discardedH": 0
+   },
+   "lastSeen": "1792497618661",
+   "probeJob": {
+    "creditedH": 0.0008338888888888889,
+    "status": "active"
+   },
+   "calendar": {
+    "year": 1,
+    "day": 1,
+    "hh": 14,
+    "mm": 11
+   },
+   "gameSec": 51060,
+   "status": {
+    "nutrition": 69.81047453703704,
+    "rest": 69.9684124228395,
+    "lastGameSec": 51055,
+    "lastAway": null
+   },
+   "active": {
+    "mode": "solo",
+    "slot": 2
+   }
+  },
+  "after": {
+   "now": 1792584086545,
+   "window": {
+    "elapsedH": 24.01681111111111,
+    "creditedH": 24,
+    "discardedH": 0.01681111111111111
+   },
+   "lastSeen": "1792584086185",
+   "probeJob": {
+    "creditedH": 24.00285111111111,
+    "status": "active"
+   },
+   "calendar": {
+    "year": 1,
+    "day": 61,
+    "hh": 15,
+    "mm": 18
+   },
+   "gameSec": 5239127,
+   "status": {
+    "nutrition": 24.89814814814815,
+    "rest": 99.98302469135803,
+    "lastGameSec": 5239038,
+    "lastAway": {
+     "text": "Went without food, slept well",
+     "gameHours": 1441,
+     "at": 1792584079190,
+     "before": {
+      "hunger": 1,
+      "rest": 1
+     }
+    }
+   },
+   "active": {
+    "mode": "solo",
+    "slot": 2
+   }
+  },
+  "afterReload": {
+   "now": 1792584099112,
+   "window": {
+    "elapsedH": 0.00010027777777777777,
+    "creditedH": 0.00010027777777777777,
+    "discardedH": 0
+   },
+   "lastSeen": "1792584098513",
+   "probeJob": {
+    "creditedH": 24.006341944444443,
+    "status": "active"
+   },
+   "calendar": {
+    "year": 1,
+    "day": 61,
+    "hh": 15,
+    "mm": 31
+   },
+   "gameSec": 5239881,
+   "status": {
+    "nutrition": 24.67997685185185,
+    "rest": 99.94666280864197,
+    "lastGameSec": 5239792,
+    "lastAway": {
+     "text": "Went without food, slept well",
+     "gameHours": 1441,
+     "at": 1792584079190,
+     "before": {
+      "hunger": 1,
+      "rest": 1
+     }
+    }
+   },
+   "active": {
+    "mode": "solo",
+    "slot": 2
+   }
+  },
+  "errors": []
+ },
+ {
+  "name": "30h",
+  "deltaH": 30,
+  "before": {
+   "now": 1792497618369,
+   "window": {
+    "elapsedH": 0.00019944444444444445,
+    "creditedH": 0.00019944444444444445,
+    "discardedH": 0
+   },
+   "lastSeen": "1792497617499",
+   "probeJob": {
+    "creditedH": 0.0008344444444444444,
+    "status": "active"
+   },
+   "calendar": {
+    "year": 1,
+    "day": 1,
+    "hh": 14,
+    "mm": 10
+   },
+   "gameSec": 51035,
+   "status": {
+    "nutrition": 69.89409722222221,
+    "rest": 69.98234953703704,
+    "lastGameSec": 50766,
+    "lastAway": null
+   },
+   "active": {
+    "mode": "solo",
+    "slot": 2
+   }
+  },
+  "after": {
+   "now": 1792605624982,
+   "window": {
+    "elapsedH": 30.000131111111113,
+    "creditedH": 24,
+    "discardedH": 6.000131111111111
+   },
+   "lastSeen": "1792605624975",
+   "probeJob": {
+    "creditedH": 24.00254027777778,
+    "status": "active"
+   },
+   "calendar": {
+    "year": 1,
+    "day": 76,
+    "hh": 14,
+    "mm": 17
+   },
+   "gameSec": 6531432,
+   "status": {
+    "nutrition": 24.904224537037038,
+    "rest": 99.9840374228395,
+    "lastGameSec": 6531343,
+    "lastAway": {
+     "text": "Went without food, slept well",
+     "gameHours": 1800,
+     "at": 1792605617980,
+     "before": {
+      "hunger": 1,
+      "rest": 1
+     }
+    }
+   },
+   "active": {
+    "mode": "solo",
+    "slot": 2
+   }
+  },
+  "afterReload": {
+   "now": 1792605637013,
+   "window": {
+    "elapsedH": 0.00009194444444444445,
+    "creditedH": 0.00009194444444444445,
+    "discardedH": 0
+   },
+   "lastSeen": "1792605636652",
+   "probeJob": {
+    "creditedH": 24.005882222222223,
+    "status": "active"
+   },
+   "calendar": {
+    "year": 1,
+    "day": 76,
+    "hh": 14,
+    "mm": 29
+   },
+   "gameSec": 6532154,
+   "status": {
+    "nutrition": 24.692997685185187,
+    "rest": 99.94883294753086,
+    "lastGameSec": 6532073,
+    "lastAway": {
+     "text": "Went without food, slept well",
+     "gameHours": 1800,
+     "at": 1792605617980,
+     "before": {
+      "hunger": 1,
+      "rest": 1
+     }
+    }
+   },
+   "active": {
+    "mode": "solo",
+    "slot": 2
+   }
+  },
+  "errors": []
+ },
+ {
+  "name": "7 days",
+  "deltaH": 168,
+  "before": {
+   "now": 1792497619065,
+   "window": {
+    "elapsedH": 0.00025166666666666664,
+    "creditedH": 0.00025166666666666664,
+    "discardedH": 0
+   },
+   "lastSeen": "1792497618094",
+   "probeJob": {
+    "creditedH": 0.0008341666666666667,
+    "status": "active"
+   },
+   "calendar": {
+    "year": 1,
+    "day": 1,
+    "hh": 14,
+    "mm": 10
+   },
+   "gameSec": 51052,
+   "status": {
+    "nutrition": 69.88888888888889,
+    "rest": 69.98148148148148,
+    "lastGameSec": 50784,
+    "lastAway": null
+   },
+   "active": {
+    "mode": "solo",
+    "slot": 2
+   }
+  },
+  "after": {
+   "now": 1793102425769,
+   "window": {
+    "elapsedH": 168.00013083333334,
+    "creditedH": 24,
+    "discardedH": 144.00013083333334
+   },
+   "lastSeen": "1793102425566",
+   "probeJob": {
+    "creditedH": 24.002565555555556,
+    "status": "active"
+   },
+   "calendar": {
+    "year": 2,
+    "day": 57,
+    "hh": 14,
+    "mm": 17
+   },
+   "gameSec": 36339454,
+   "status": {
+    "nutrition": 24.901041666666668,
+    "rest": 99.98350694444444,
+    "lastGameSec": 36339365,
+    "lastAway": {
+     "text": "Went without food, slept well",
+     "gameHours": 10080,
+     "at": 1793102418572,
+     "before": {
+      "hunger": 1,
+      "rest": 1
+     }
+    }
+   },
+   "active": {
+    "mode": "solo",
+    "slot": 2
+   }
+  },
+  "afterReload": {
+   "now": 1793102438218,
+   "window": {
+    "elapsedH": 0.00010166666666666667,
+    "creditedH": 0.00010166666666666667,
+    "discardedH": 0
+   },
+   "lastSeen": "1793102437584",
+   "probeJob": {
+    "creditedH": 24.00602388888889,
+    "status": "active"
+   },
+   "calendar": {
+    "year": 2,
+    "day": 57,
+    "hh": 14,
+    "mm": 30
+   },
+   "gameSec": 36340201,
+   "status": {
+    "nutrition": 24.684895833333332,
+    "rest": 99.94748263888889,
+    "lastGameSec": 36340112,
+    "lastAway": {
+     "text": "Went without food, slept well",
+     "gameHours": 10080,
+     "at": 1793102418572,
+     "before": {
+      "hunger": 1,
+      "rest": 1
+     }
+    }
+   },
+   "active": {
+    "mode": "solo",
+    "slot": 2
+   }
+  },
+  "errors": []
+ },
+ {
+  "name": "clock moved back 2h",
+  "deltaH": -2,
+  "before": {
+   "now": 1792497618468,
+   "window": {
+    "elapsedH": 0.00021,
+    "creditedH": 0.00021,
+    "discardedH": 0
+   },
+   "lastSeen": "1792497617810",
+   "probeJob": {
+    "creditedH": 0.0008341666666666667,
+    "status": "active"
+   },
+   "calendar": {
+    "year": 1,
+    "day": 1,
+    "hh": 14,
+    "mm": 10
+   },
+   "gameSec": 51025,
+   "status": {
+    "nutrition": 69.89612268518519,
+    "rest": 69.98268711419753,
+    "lastGameSec": 50759,
+    "lastAway": null
+   },
+   "active": {
+    "mode": "solo",
+    "slot": 2
+   }
+  },
+  "after": {
+   "now": 1792490425843,
+   "window": {
+    "elapsedH": 0,
+    "creditedH": 0,
+    "discardedH": 0
+   },
+   "lastSeen": "1792490425311",
+   "probeJob": {
+    "creditedH": -1.9971172222222222,
+    "status": "active"
+   },
+   "calendar": {
+    "year": 0,
+    "day": -4,
+    "hh": -10,
+    "mm": -43
+   },
+   "gameSec": -380533,
+   "status": {
+    "nutrition": 69.79166666666667,
+    "rest": 69.96527777777779,
+    "lastGameSec": -380624,
+    "lastAway": null
+   },
+   "active": {
+    "mode": "solo",
+    "slot": 2
+   }
+  },
+  "afterReload": {
+   "now": 1792490438833,
+   "window": {
+    "elapsedH": 0.00011916666666666667,
+    "creditedH": 0.00011916666666666667,
+    "discardedH": 0
+   },
+   "lastSeen": "1792490438622",
+   "probeJob": {
+    "creditedH": -1.993508611111111,
+    "status": "active"
+   },
+   "calendar": {
+    "year": 0,
+    "day": -4,
+    "hh": -10,
+    "mm": -30
+   },
+   "gameSec": -379754,
+   "status": {
+    "nutrition": 69.56568287037037,
+    "rest": 69.9276138117284,
+    "lastGameSec": -379843,
+    "lastAway": null
+   },
+   "active": {
+    "mode": "solo",
+    "slot": 2
+   }
+  },
+  "errors": []
+ }
+]

@@ -277,3 +277,15 @@ Scope stays Solo-only. Map circuit building and survival expansion remain separa
 |---|---|
 | `reference/biome-01-chunks-slice.md` | Saved from the Claude Docs draft (Oct 25 voice session). Queued; not issued as `CURRENT_BATCH.md` while CLOCK-01 is NOT CLOSED |
 | `reports/biome-chunks-2026-10-25/pre-change/` | Copy of this index before the change |
+
+## Oct 29: Proposed ideas checked and applied
+
+| Record | Status |
+|---|---|
+| `reports/proposals-2026-10-29/REPORT.md` | Every proposed idea in Sam's Google Docs, its status and what was done; `PROFESSION_MATRIX.md` (Priority 3 audit) |
+| `reference/oct22-decisions-wpn02-pf13-route-alc-perk.md` | New. Oct 22 Blocks 1, 2 and 4 (WPN-02, PF13 traits/noise/scent/pity, ROUTE-01, ALC-01, PERK-01), never filed before |
+| `reference/parked/camp-01-fixtures-draft.md` | New, `[PARKED]`. Camp fixtures and the pity principle (Oct 22) |
+| `reference/wandering-tab-spec.md` | §3 decay and §13.3 base heal charges marked superseded (Oct 29) |
+| `reference/food-01-nutrition-slice.md` | P6/P8 superseded by the Oct 28 Auto-Eat Shop rule |
+| `archive/design-handoff-oct27-evening.md` | Archived; `DESIGN_HANDOFF.md` is the Oct 29 handoff |
+

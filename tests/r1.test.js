@@ -12,7 +12,7 @@ const mkEnv = (seed, opt) => {
   const ls = { getItem:k => (k in store ? store[k] : null), setItem:(k,v)=>{store[k]=String(v);}, removeItem:k=>{delete store[k];}, key:i=>Object.keys(store)[i], get length(){return Object.keys(store).length;} };
   const doc = { hidden:false, visibilityState:'visible', addEventListener(){}, querySelectorAll:()=>[] };
   const fw = { localStorage: ls, sessionStorage: ls, console, Date, Math, JSON, setInterval:()=>0, clearInterval:()=>{}, setTimeout:()=>0, clearTimeout:()=>{}, document: doc, addEventListener(){}, location:{ reload(){} } }; fw.window = fw;
-  new Function('fw', 'with(fw){' + src + '}')(fw); fw.ZI.wanderMounted = false;
+  /* Oct 29: consumable-only healing ships (base heals 0); this suite tests heal-charge mechanics with the legacy base charges. Shipped rule: tests/proposals-oct29.test.js */ /* Oct 29: this suite checks retreat/sim timing, not pace; it pins the pre-Oct-28 3 m/s pace its timings were written for. The real pace (1.4 m/s) is tested in fx4. */ new Function('fw', 'with(fw){' + (src).replace('baseHeal: 0, baseScout: 2, commandPerkLevel: 40, commandPerkHeal: 0', 'baseHeal: 2, baseScout: 2, commandPerkLevel: 40, commandPerkHeal: 1').replace('PACE: { walk: { base: 1.4, perCond: 0 }, jog: { base: 1.4, perCond: 0.28 }, run: { base: 1.4, perCond: 0.6066666666666667 } }', 'PACE: { walk: { base: 3, perCond: 0 }, jog: { base: 3, perCond: 0.6 }, run: { base: 3, perCond: 1.3 } }') + '}')(fw); fw.ZI.wanderMounted = false;
   if (opt.heals != null) fw.ZI._wj('zi_charges', { heal: opt.heals, scout: 0 });
   return { ZI: fw.ZI, store, doc };
 };

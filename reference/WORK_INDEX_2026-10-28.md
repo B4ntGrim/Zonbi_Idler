@@ -13,6 +13,10 @@ This index gathers today's progression and Routes/Traversal design work. The ori
 - [Circuit Expedition concepts](circuit-expedition-concepts.md) — decisions for idle circuits, timing, supplies, rewards, recovery, and scheduling.
 - [Traversal slice](trav-01-traversal-slice.md) — current Traversal rules referenced by the circuit proposals.
 
+## Wandering
+
+- [Wandering Movement Pace and Traversal Scale](wandering-real-world-pace.md) — 1.4 m/s walking baseline, retreat threshold, checkpoint rest, and the still-open Traversal square scale.
+
 ## Locations
 
 - Local originals and this index: E:\Zed_Idler\reference

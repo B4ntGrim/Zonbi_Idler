@@ -113,6 +113,9 @@ function StatLevelingScreen() {
         }}>+{xpFlash.amount} {xpFlash.prof} XP</div>
       )}
 
+      {/* STAT-02: level, upgrade picks, condition words, Eat, away summary */}
+      {window.SurvivorProgressPanel && <window.SurvivorProgressPanel/>}
+
       {/* LEFT: SURVIVAL attributes */}
       <div style={{ flex:'1 1 280px', minWidth:260, maxWidth:340, minHeight:'100%', display:'flex', flexDirection:'column', gap:8 }}>
         <div className="panel" style={{ flex:'1 0 auto', minHeight:420, display:'flex', flexDirection:'column', overflow:'hidden' }}>

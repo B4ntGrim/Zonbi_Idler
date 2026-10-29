@@ -1,0 +1,1552 @@
+dfe0770424b2a19faf507a501ebfc23be8f54e7b	.gitattributes
+96ae0de934fc291dc62349dc462299e0234f20f1	.gitignore
+5e14acf07ba829c6210f1414cbd995842ff0f23a	.thumbnail
+1bae3d3c8221ae43b9740858dba0290341e93478	CLAUDE_DESIGN_RULES.md
+5032983e499e3909ea6e043ed62b2ae816377a3d	CODE_STATE.md
+dc14c5ceaa49a175971b86736a0199ef02a4b76c	CREATIVE_DIRECTION_RULES.md
+51b9a8e05163591aa62af6ab7a54748e01671164	CURRENT_BATCH.md
+19c50115d29299e775531407dcba4a0352732151	Claude outputs/fx1-hp-floor-slice.md
+453915f659facc22a969f65ba1c28a7ad8df3a56	Claude outputs/fx2-per-return-cap-slice.md
+41a1c0001adf25bef532bae123eaf89b1003020e	DESIGN_HANDOFF.md
+69a94a2e1e65c0a6ba5b9a6516899db8c6383428	DEVELOPMENT_STATUS.md
+270d02a6368e5df95e0f8478fc1d55040f839205	PARKED.md
+c0efaf784774b6d76c9d6e7a85c228853f891d02	README.md
+6e7e7e500b1c26307f03e4f6787a2b1f1e3f4351	Zombie Idler v2 - TEST SAVE.html
+c2bdcc4ce68c01882a6b265a911e36336207e09f	Zombie Idler v2.html
+a9f3c5a7b11fb85cb09754b11f8e29a92cbfc84d	archive/batch-h2-closed-oct19.md
+9fd7b03a7ee252ace2c0334031bdd60c98c205f0	archive/claude-design-rules-retired-oct22.md
+741cbe5461cbea5672b571848a243caead93a0d1	archive/design-handoff-oct10-am.md
+ad92f10ba6fbf564ebda4339fdab085c868ccdb6	archive/design-handoff-oct13.md
+461e1eb6c6878b9beb6b1b4103566069c69e452b	archive/design-handoff-oct15.md
+ffc1668fd6f1de4a6a26c768ab5e79c4d7bc0bc5	archive/design-handoff-oct16.md
+85257b2eec677852045c58e9a15a95d049b1041a	archive/design-handoff-oct20.md
+9768e5a3c43fdde124f02b25c540e308c66f41e8	archive/design-handoff-oct21-23.md
+5d683df873eb2019b6959d078853b763a8a40585	archive/design-handoff-oct24.md
+73826480ce04326b6eea34db69be0763dbab2482	archive/design-handoff-oct25-26.md
+60bb261134f5d56a7bb753006b3ca899dda96d27	archive/design-handoff-oct26-am.md
+bbdbce9220a3caba53f7e92f64c460b86f896e5a	archive/design-handoff-oct26-evening.md
+ada4635aef157341a51322aaca53464202a0e9cb	archive/design-handoff-oct26-late.md
+68d1a73e6539c84f24ae64ca81c1544e1561d471	archive/design-handoff-oct27-am.md
+f9491b4787dd4434c5a95d57b8c15f156cc51e33	archive/design-handoff-oct27-pm.md
+cc7199fb6db4c6fc14c3ff1a10d1c373d2200eb7	archive/design-handoff-oct9.md
+fb181a4d37be701c1ec3b3c6a3bb6c9e3cd93ee4	archive/legacy/Zombie Idler v1.html
+cfef4e3362c8a7528a872d1148808b02ae55ef36	archive/legacy/Zombie Idler v2-backup.html
+f15e6e339568bdce7cd2689ae0031bec2c144d11	archive/legacy/Zombie Idler.html
+6d9e80c1469929d781aeca2e692c0b9779182738	archive/legacy/game-data.js
+123b754cc2f8099e2650c5206ce8a97b667b369e	archive/pre-bal-a-oct20/README.txt
+98be3a456baa510a7f6909a6c9c12d347488ba5f	archive/pre-bal-a-oct20/Zombie Idler v2 - TEST SAVE.html
+240f575f989e489771f2910fce518de08e24c04b	archive/pre-bal-a-oct20/Zombie Idler v2.html
+976218eb851c93bd5cc6914a2ee4689d4c8d47a7	archive/pre-bal-a-oct20/game/active.js
+d1c0685cb08bdd6ef386a2df6bd6a0790b320548	archive/pre-bal-a-oct20/game/items.js
+afdb1b935ed83147c747363f9b1b480720e2d517	archive/pre-bal-a-oct20/game/stats.js
+4654d51699f55c00b4479c3dd686b8362d1b0576	archive/pre-bal-a-oct20/game/wandering.js
+4458dea51ee6c6164e0fb3c14ab2d1ac44f69907	archive/pre-bal-a-oct20/screens-v3.jsx
+e2d6fe692580f64ee4bf97c04d78b4ff82907f57	archive/pre-bal-a-oct20/tests/batch1.test.js
+d8e444b495499bec965d537ed35bae6b04997317	archive/pre-bal-a-oct20/tests/batch2b.test.js
+3af16eb9d1ea91b80489d5128683786b8da8cf79	archive/pre-bal-a-oct20/tests/batch3a.test.js
+557037a378aef9d5860351fff07a328375317116	archive/pre-bal-a-oct20/tests/batch3b.test.js
+f51c34712d215eba8e2abcf75755a09b5190cec3	archive/pre-bal-a-oct20/tests/fx1-downed-hp.test.js
+3da29d1e387c0d0146300a08876c58e16db75372	archive/pre-bal-a-oct20/tests/fx4-shared-attributes.test.js
+8c86d6bb07e861f1535d91dea34ee5ae88e3d79d	archive/pre-bal-a-oct20/tests/fx5-medkit-heal.test.js
+64fd07dafc48653ad2c0ef835cc99ffa86d0df38	archive/pre-bal-a-oct20/tests/r1.test.js
+bd41d011c4f7ebbdfbee193b34d87409edbea43a	archive/pre-bal-a-oct20/tests/rb1-retreat-controls.test.js
+501ac9607ef33809f8de7204b29372182946dabf	archive/pre-bal-a-oct20/tests/retreat-getaway.test.js
+d405fdce0e1f73800d66170996edf6ecd760c44c	archive/pre-bal-a-oct20/tests/sim-clock-rng.test.js
+53437ef652c7ce2edc4af019fb8e24102e7990ea	archive/pre-bal-a-oct20/tests/tutorial-flags.test.js
+cdf147e8f2846652139bbe9c846e2323a44036ba	archive/pre-bal-a-oct20/tools/sim-harness/h2.js
+a1135eb450192b9706f04824d72c1ef835b8592f	archive/pre-trav01a-fix1-oct22/CODE_STATE.md
+26029d1ea14722ff57f7609f4fe72cb851031e94	archive/pre-trav01a-fix1-oct22/Zombie Idler v2 - TEST SAVE.html
+b52b5ad075755476ad43626e3f152af17755a0e4	archive/pre-trav01a-fix1-oct22/Zombie Idler v2.html
+b8d6be766244a079dfa7e474a8214d029196c0bb	archive/pre-trav01a-fix1-oct22/screens-v3.jsx
+1fe556419f2102a94784943ea0d6ae80f183450f	archive/pre-trav01a-fix1-oct22/trav-01a.test.js
+5b0e5b862dcb201f89c7a3c5c6282ec96ac5eb8a	archive/pre-trav01a-fix1-oct22/trav01a-checks.js
+cb4dd7d4872b6e049d65cd92f47e05d965786d93	archive/pre-trav01a-oct21/CODE_STATE-before-trav01a.md
+665fbd8b614708c033e2e33a575c119b6004686d	archive/pre-trav01a-oct21/CURRENT_BATCH-bal-a.md
+0e16b3ab09f5e804874298cca17061210350adf7	archive/pre-trav01a-oct21/CURRENT_BATCH-trav01a-v1.md
+85257b2eec677852045c58e9a15a95d049b1041a	archive/pre-trav01a-oct21/DESIGN_HANDOFF-oct20.md
+56811519bd6dcedd857c7509617d84a122d58079	archive/pre-trav01a-oct21/DESIGN_HANDOFF-oct21-v1.md
+cb4dd7d4872b6e049d65cd92f47e05d965786d93	archive/pre-trav01a-oct21/build/CODE_STATE.md
+673f45c1dc0f270a482bfb6f92ba9527eace4047	archive/pre-trav01a-oct21/build/HASHES.md5
+a72ea3a7a011ecf35f92b6e5a3608535583f44e1	archive/pre-trav01a-oct21/build/Zombie Idler v2 - TEST SAVE.html
+e95a0e83a89c45100ef87d580d7b251f40c5285b	archive/pre-trav01a-oct21/build/Zombie Idler v2.html
+637ac5f428330c37c8280e739a6c619e7e7d1e70	archive/pre-trav01a-oct21/build/game/active.js
+887a148c20b274a023077f18913bc9486e253e0a	archive/pre-trav01a-oct21/build/game/bootstrap.js
+bd3ce5a6705890b5f3be8b358aea68224b25ea12	archive/pre-trav01a-oct21/build/game/camp.js
+b263ca2ff6d89d70ad48d4934dce0f588cbf60f7	archive/pre-trav01a-oct21/build/game/combat.js
+f822cd743cf6b59a1690bcc3e68123bc90be0967	archive/pre-trav01a-oct21/build/game/core.js
+d7c6f48fa0201205851b98282fb7638bbf68840f	archive/pre-trav01a-oct21/build/game/crafting.js
+12dca241c942842c8377ff11efc7dfd51d44f1c9	archive/pre-trav01a-oct21/build/game/economy.js
+46adecfda82a82ee7bb506df1d8553cdf4d1ab3d	archive/pre-trav01a-oct21/build/game/factions.js
+e07c28532f28382a94b6a3fa1cca37902547323b	archive/pre-trav01a-oct21/build/game/fort.js
+2a0b76716145d9dd2036928d0544ce02b2c0c70a	archive/pre-trav01a-oct21/build/game/items.js
+bef66724915a83d18126ecc1a4dea64bc11721ee	archive/pre-trav01a-oct21/build/game/jobs.js
+602317f881684f3d687bfca920a9d5cc2354691f	archive/pre-trav01a-oct21/build/game/routes.js
+1ed8dd855aaf053ad2a63f495b74eba04bf089ed	archive/pre-trav01a-oct21/build/game/save.js
+ddf1ec83ed5b023d29d6a6a4453e44c7de17e71d	archive/pre-trav01a-oct21/build/game/stats.js
+9534330390a7ff7fa79988dcad1839e0ffa48b8d	archive/pre-trav01a-oct21/build/game/survival-data.js
+0bb62a440c2dee36492ec08a9c17b65aa818fc68	archive/pre-trav01a-oct21/build/game/wandering.js
+a69135f25773ea9ce00a2fa3cc669768f903fa4d	archive/pre-trav01a-oct21/build/game/world.js
+0fd10177280efbaae83840b47623917a158495f4	archive/pre-trav01a-oct21/build/screens-v2.jsx
+cf75b55a8f48127385706cdc50623969482ea562	archive/pre-trav01a-oct21/build/screens-v3.jsx
+cb4972732ab78edd119f68cbd2fdd7e81efa70dc	archive/pre-trav01a-oct21/build/tests/bal-a-walk-home-broken.test.js
+b5b6567194e24a068cfae3c100e5b8f780df978a	archive/pre-trav01a-oct21/build/tests/batch1.test.js
+7877d364bcfaca3731cbdf8411d2700fab31cef4	archive/pre-trav01a-oct21/build/tests/batch2a.test.js
+dedf0f838b32e58e715c87c4696f9275389d1840	archive/pre-trav01a-oct21/build/tests/batch2b.test.js
+9c13a0a25559eb2a82030650a1f36e3d2b1c3353	archive/pre-trav01a-oct21/build/tests/batch3a.test.js
+adcf5d694aa064a614cf3b3cf04113c22a6e71a1	archive/pre-trav01a-oct21/build/tests/batch3b.test.js
+cb7b5135b8ce48a8782e327955d7ba0717abe679	archive/pre-trav01a-oct21/build/tests/best1-enemy-identity.test.js
+ccc515941de28d904ed5c37a59584b35254b4d31	archive/pre-trav01a-oct21/build/tests/bug-fixes.test.js
+95787f178335173236391e18900a38cb43f1bc9b	archive/pre-trav01a-oct21/build/tests/carrying-1b.test.js
+8bdb20461118405053b5700dfd976e2c658a7a27	archive/pre-trav01a-oct21/build/tests/carrying.test.js
+31daf7df5a6d290b12e9522822bffc185a634c90	archive/pre-trav01a-oct21/build/tests/cb1-starter-weapons.test.js
+8030d55a57ba1dc0a823fe7eb0ed7d02e2249c15	archive/pre-trav01a-oct21/build/tests/fort-s12.test.js
+fdba8ac4a00196f3e4ce15a347424a8ae624c71a	archive/pre-trav01a-oct21/build/tests/fx1-downed-hp.test.js
+cb159a382f198dab6f9b69fd2e55ff45fe6c9d8f	archive/pre-trav01a-oct21/build/tests/fx2-return-cap.test.js
+71f4b00244dc32c2096b0bd0ca9f2baaf23dd827	archive/pre-trav01a-oct21/build/tests/fx3-buffs-sim-time.test.js
+0c16b149aa26f3ac2a0ab36c7339cd00979caaf8	archive/pre-trav01a-oct21/build/tests/fx4-shared-attributes.test.js
+e60f8729ee112c594add79078326ac6a2beb1ef5	archive/pre-trav01a-oct21/build/tests/fx5-medkit-heal.test.js
+799333cb1ec07b9829542f6af1f53d45ffb1bcc4	archive/pre-trav01a-oct21/build/tests/jd1a-first-displacement.test.js
+4fa633bbb7406681800f74a8700beae26c0a17e9	archive/pre-trav01a-oct21/build/tests/load-regressions.test.js
+f0dd853ff35557201a95bf81a11e8d764ae5ee58	archive/pre-trav01a-oct21/build/tests/qa-helper.js
+907ad9192e91a3ad3ac07de5551a5de3e53ac8ca	archive/pre-trav01a-oct21/build/tests/r1.test.js
+29593d5963d883b583cfabeccd6f7e85f3df423a	archive/pre-trav01a-oct21/build/tests/rb1-retreat-controls.test.js
+af02936437e1889da7bbedf285add1e4cc0d0504	archive/pre-trav01a-oct21/build/tests/rb2-retreat-layout.test.js
+5171b28f1a2cfe6eeafd3138d328d25dcbf952ce	archive/pre-trav01a-oct21/build/tests/retreat-getaway.test.js
+7f633f4e718d0ecf65cd5f96b9e7fcf05b2bf5c2	archive/pre-trav01a-oct21/build/tests/sim-clock-rng.test.js
+975d470ceb660386753d7d91d54c30a02fc81985	archive/pre-trav01a-oct21/build/tests/split-equivalence.test.js
+2a795277c565fa082615ad436755a411794c27c3	archive/pre-trav01a-oct21/build/tests/tutorial-flags.test.js
+3b92eade70d6c8f3f0a1f0ca3383803bad86dcf3	archive/pre-trav01a-oct21/reference/playtest-findings-oct15.md
+8494c192417eee27fb4d8e3ba6a52a4a434acae4	archive/pre-trav01a-oct21/reference/trav-01-traversal-slice-v1.md
+855b2a4acc67141a2bc70dcdd41f4c6ce3c29431	archive/trav-01a-batch.md
+1154d269b1c929f2880aa25f300074f80be5c4e5	art/weapons/CREDITS.md
+2b66e16749abe42b0f30cc8b3c46c3b56b030707	art/weapons/axes/AXE-001.png
+91167440e07c278a227837d879251fc950b62c8d	art/weapons/axes/AXE-002.png
+dcde187c952d607c3b837cf6b5756bfbc9a1cca8	art/weapons/axes/AXE-003.png
+3f596b5844013f813a2623c7f6e0d9f38b07ee44	art/weapons/axes/AXE-004.png
+6339b3a0c223f2cad81221eff5dbfaf3326279e9	art/weapons/axes/AXE-005.png
+187e860a4147c17fa25430e639ee3ee0d68bfad7	art/weapons/axes/AXE-006.png
+8ceb66ea617e06d8ab5a07468884aa5b007a5574	art/weapons/axes/AXE-007.png
+fc6630aa5362567482618de1e952b541f5b197cc	art/weapons/axes/AXE-008.png
+19d6b1b589df4516e0f12f71d146803b9516d250	art/weapons/axes/AXE-009.png
+5fab5f36b51968532b04badf5e6e97de3958b24b	art/weapons/axes/AXE-010.png
+e975fa5ce5f54da4e2a7df482d5041f0082aefea	art/weapons/axes/AXE-011.png
+187468c3f49d2c4033a984ab72b2adaae3695997	art/weapons/axes/AXE-012.png
+b8c43e607548b983415cebe5a41cb58373973a3e	art/weapons/axes/AXE-013.png
+35f2018a4a56c009f16963d710065bc931748c75	art/weapons/axes/AXE-014.png
+4c5dba591341de95fb219b9f51f4a029e0a28b7c	art/weapons/axes/AXE-015.png
+94540fd25cc055ee99479eb1d23e648e2851fcdb	art/weapons/axes/AXE-016.png
+327495818a541e71c04f077b929c714cac3f8bc3	art/weapons/axes/AXE-017.png
+86c72494e76e67ce16806180ff5ca4b0776817ab	art/weapons/axes/AXE-051.png
+7175bce7d0f3367431e9c11049b0702b59c2f7cc	art/weapons/axes/AXE-052.png
+b053aea353692d3c97c84c4f69526ab7d4e75a2c	art/weapons/axes/AXE-053.png
+66f4cc4b6ab5728eaf10c145a3be644c22eb64cd	art/weapons/axes/AXE-054.png
+4340e136d2a3dbf7cd49a6c5c210a9f55faca076	art/weapons/axes/AXE-055.png
+1c4d1348e5ab0f2fa104b2ce0f2fb450b16593f5	art/weapons/axes/AXE-056.png
+8e0603431f7aa34c6b68deee3e36e28d478ba912	art/weapons/axes/AXE-057.png
+d854fe9a27156a031e4cd3c8341236128850d75a	art/weapons/axes/AXE-058.png
+acbd625870502fba4d0d92b5bc43b3ad9a92fe6a	art/weapons/axes/AXE-059.png
+17e429339e53fa02db0bc4502a22f8e0b872ab78	art/weapons/axes/AXE-060.png
+0f9b9bdeac6e25c777ce42b830e4c1f3219183f2	art/weapons/axes/AXE-061.png
+46d9efa6390d9d2539cdc04bb7d27e9fdfa1d379	art/weapons/axes/AXE-062.png
+10e0022e7f17636596b6a76210dbc1d815c316c2	art/weapons/axes/AXE-063.png
+73e1bd13099536395a43f9ebc62d92ba195b02d7	art/weapons/axes/AXE-064.png
+67a42cbcf35ca3809a8691b95584960d6962f02b	art/weapons/axes/AXE-065.png
+e676b3d40e7d7c487c0cce2dd542cf8ce3d07c06	art/weapons/axes/AXE-066.png
+a02248eb71f107d6ec7f279896e3ee180f5186b7	art/weapons/axes/AXE-067.png
+9ae866621b35335949bb303ce48f425e32236fc3	art/weapons/axes/AXE-151.png
+e33dee9b1b390f7c400845021753c014707302c1	art/weapons/axes/AXE-152.png
+43a7dabdde34da7c9fced4bcfe58ef9464b7d27c	art/weapons/axes/AXE-153.png
+47dc702138e0a7493fcf372a05553c20f722e261	art/weapons/axes/AXE-201.png
+5fb7a26134c77f5485a65779c461213df87e7cb1	art/weapons/axes/AXE-251.png
+c0bec0e71cafca9f3a93630ece078aecdb71bb18	art/weapons/axes/AXE-258.png
+7ddace083561241279fd8a3b52f8b308e13ff37b	art/weapons/axes/manifest.json
+0db18d0ae9ad72911858f9a3eb8f4ab32c04ee56	art/weapons/axes/unique-danielle.png
+3ef3c4f75be42cbf7846ac08734c7672bdc565f9	art/weapons/axes/unique-raquelle.png
+2b63b2f2d2b7990892abb2fa24967624ddce85e0	art/weapons/battery-machete.png
+b43fc7270e2852fbc160396cdea345b3865544bb	art/weapons/chemical-sprayer-rig-prop.png
+474af27137038d5b4c0ca595e4b5386c336f3eb9	art/weapons/concepts/PROMPTS.md
+3b222cc58d2d9815763ca8f4caf9ffd9fcfc6b64	art/weapons/concepts/batch-01.json
+0637a088a01e8ddab3bf3fa98dbe804cbde1a0dc	art/weapons/concepts/batch-imported.json
+028103bb4dc1ed849f4fd8425ebb348ffa92c84c	art/weapons/concepts/batch-team.json
+1a72f674842457c46bfc04eea38511713cb640ce	art/weapons/concepts/concepts-data.js
+e91bb1747baa4d496d578ff2be72270d21080714	art/weapons/equipment-manifest.json
+ee7cbe2afc2c5ef370ef5b4d0a4c942adc917dd7	art/weapons/improvised-tactical-crossbow.png
+c976554a08e276e82f9ee7220b7854b84f3c8716	art/weapons/incoming/README.md
+f2bfdaedb4267ae76d7bb862f787ea676ad0ad61	art/weapons/items/arc_carbine.png
+53c4cd2f724a54b00e2b128cb91011dc32cc3de7	art/weapons/items/backpack_lg.png
+9b4a052a865eb23484fc064e4d23ec6c34b1901f	art/weapons/items/backpack_sm.png
+a09b420c36a7362983162544e9aaf9b6dae6ff1c	art/weapons/items/balaclava.png
+94f69dacc11f4f38a51011e1ea0b3234eaf4b5e7	art/weapons/items/bat.png
+79366e2f0a726560b36ba9454d40a19a378b6673	art/weapons/items/belt_pouch.png
+aca6626fe9fa67aa6e2adf8d485265fc1bf1d052	art/weapons/items/boots_t1.png
+01f9ceab76972724a0965e41dd65346a7a35c0d5	art/weapons/items/boots_t2.png
+21b01c1ba3858f48703513b0d4cb9623c7ec27ce	art/weapons/items/cargo_jacket.png
+d6033af1937d7a2d9101bc09100e9c53747981ff	art/weapons/items/cold_haze.png
+8e441ae928c04a1911d2eb28107d3bb87a2fb258	art/weapons/items/combat_axe.png
+9acae455d59288b0ed99eefffb4bf2d86688f3e6	art/weapons/items/combat_boots.png
+dcaa8f38c40371c8f7b74c164fe98063f0c7b420	art/weapons/items/combat_knife.png
+65d7e556bee2483629a18c96983090455c7e0747	art/weapons/items/composite_helmet.png
+c96cdb037deb06f2721975274507b0f89c4f8594	art/weapons/items/compound_bow.png
+edeb5e3b9048d4e80b4aee358cf335a01e461d0e	art/weapons/items/concept-machine-pistol.png
+d477858fa6ae11439deb56606ac64ff507354ea3	art/weapons/items/concept-palisade-flare.png
+655fcbe3d9a6f46417e8c38f48e61aa3697cdced	art/weapons/items/concept-precision-rifle.png
+fefadb80de39071df293c56c36152acb567e8d1b	art/weapons/items/concept-select-fire.png
+90a58d64a61b4d90b74d9649e13a676fd2bf85d4	art/weapons/items/concept-semi-pistol.png
+64e45c1fd690d62e3aec9819c305f5765a8c39d8	art/weapons/items/concept-support-rifle.png
+2dfbae3944595017f35881efbf5f4f6bac45242b	art/weapons/items/concept-watchfire.png
+ee7cbe2afc2c5ef370ef5b4d0a4c942adc917dd7	art/weapons/items/crossbow.png
+fb1c954bcbc21fdaaf80f5ba87b6eeaabbd81dd8	art/weapons/items/crowbar.png
+b43fc7270e2852fbc160396cdea345b3865544bb	art/weapons/items/flamethrower.png
+265c60950ba1acca5178c446677cde25be11d860	art/weapons/items/flashbang.png
+346ec70c9964bd88f545dad8df5d49912cb22a2e	art/weapons/items/gasmask.png
+0f08c36a60faffa418293e24c434f30cab6946bd	art/weapons/items/ghost_wrap.png
+f3f35da3d41673422357a2ac31720766fb170182	art/weapons/items/gloves_t2.png
+f098868cba0542a89cc92fc1d70026fcbf586914	art/weapons/items/grenade.png
+2b83b7b19807b332e10e3c79277519228035ca8f	art/weapons/items/handmade_pouch.png
+0e7d3d82915da73678058629cdf708be7821e527	art/weapons/items/heavy_plate.png
+624be6c4c22c0027a2737780d279f6d7c7f03a26	art/weapons/items/helmet_t1.png
+aead3a3a1aa23438391c3ca4e4143806f749dd22	art/weapons/items/helmet_t2.png
+e0cc0210b2299cc00b4b6d848e110a12a58d5e2d	art/weapons/items/iron_knuckles.png
+b1afe51d9fd93ff453360fe2f038e1536ca24206	art/weapons/items/jet_sledge.png
+2cc0d3903a65fcb6b18fe6187922e0a305b63b86	art/weapons/items/leather_gloves.png
+dcaa8f38c40371c8f7b74c164fe98063f0c7b420	art/weapons/items/legacy-w_combat_knife.png
+6f41f34de0938d8e042039f3afa58d7345c18803	art/weapons/items/legacy-w_hunting_rifle.png
+ba6d8b8a50d4c25288a9cea42390849e99bc9bcf	art/weapons/items/legacy-w_machete.png
+9d643f201c0c0c008256cf00e2196c6dac8cca5b	art/weapons/items/legacy-w_pipe_rifle.png
+ae32269576d52471cdc5b530804af7f443ee976a	art/weapons/items/legacy-w_pistol.png
+0c42d54b931b89bc537249d654c83bed2c4696f9	art/weapons/items/legacy-w_revolver.png
+8b5b66290140197b024a39eef844ac3ad151a0c6	art/weapons/items/legacy-w_shotgun.png
+b13af9a6f165246f50b4b90b99f10c677db18872	art/weapons/items/legacy-w_sledgehammer.png
+ee4c4ce2e3720cd02c55a6f8b4b820a3571aadc3	art/weapons/items/legacy-w_smg.png
+ba6d8b8a50d4c25288a9cea42390849e99bc9bcf	art/weapons/items/machete.png
+a6c11586ec366792dc55df35ea502436ad9c4bcf	art/weapons/items/machete_blade.png
+2f08c9fff10c45d685105a0c4055e74133244fc5	art/weapons/items/manifest.json
+bf5c55267870fa923cf37696fc62aef8d55c6176	art/weapons/items/molle_pack.png
+06c8b4ffae1324426a02eba5a9b710ee9921958a	art/weapons/items/old_padded_jacket.png
+d16baf5e41b4fb353c08e6346e3d7258f4112c63	art/weapons/items/perimeter_helmet.png
+8265fbb59d7d57040f9f22639b0a3b86c6c9956d	art/weapons/items/pipe_pistol.png
+6ac19e7f962f6ab6295d75aa3fcdc73b6567ccf3	art/weapons/items/pipe_shotgun.png
+ae32269576d52471cdc5b530804af7f443ee976a	art/weapons/items/pistol.png
+724632cfed1b677554040e5a6bbefe351eca87ed	art/weapons/items/plate_carrier.png
+fbd1bd8bd8f0be5432e30850e88e77f5c17abf64	art/weapons/items/pocket_knife.png
+8bfabdcdc67574cefe3fc5d66b68a74fd5e22561	art/weapons/items/proposals-manifest.json
+0c42d54b931b89bc537249d654c83bed2c4696f9	art/weapons/items/revolver.png
+03a6da6cc3b427f90db697adae280f89126e259a	art/weapons/items/rifle.png
+cefb873a781c107b21d309d3be88b5dce6fd7bad	art/weapons/items/rig_t2.png
+11220f4abb2a6891c0b4a806c056595ba8e8c684	art/weapons/items/riot_helmet.png
+439d1fdeadc7b8f0cba9a0949b4ab4cabc3f932e	art/weapons/items/rucksack.png
+1e2755e21096d4f38bfbf8db31ccf4e1db7397e6	art/weapons/items/runners_cloak.png
+08f09eb1112134d2a5734961d536e5a86fc988a4	art/weapons/items/satchel.png
+fcd7a1633bb585663737f25386da8fe2125db37c	art/weapons/items/scrap_helmet.png
+f31fd50e97e4eb47c140573ab51a7f9bc703a967	art/weapons/items/sensor_rig.png
+5937a51714058b606f7b057b6d4c8e63e609bbdc	art/weapons/items/set-checkpoint-covenant.png
+6c3b52c8fdb1e7c7b1931d58fb6d148b38de563c	art/weapons/items/set-duet-of-iron.png
+7eb1a11d10254b143133d8322700f7346e71173f	art/weapons/items/set-night-courier.png
+ad3178531098ea3f11e387b54d6e02a50776e30e	art/weapons/items/shock_baton.png
+640f43e0ffcfb3c698cc51343d0dcc1178f7e033	art/weapons/items/shock_pistol.png
+8b5b66290140197b024a39eef844ac3ad151a0c6	art/weapons/items/shotgun.png
+6b1c1be6e65ad964abb8a5d4bb2bf06707bfbb26	art/weapons/items/singularity_seed.png
+ee4cbbd8de9438a2700aaf4a02f80a1378019849	art/weapons/items/smoke_vial.png
+a691ab1487b40520a56b6b2577cb49670d101b4f	art/weapons/items/soft_armor_vest.png
+096b25e9bb2358b13a9bb2ecc4c40bda2f0b2357	art/weapons/items/spike_board.png
+c94e14594bcab990977ee6b39a4e9c00f6d7c062	art/weapons/items/steel_baton.png
+ee4c4ce2e3720cd02c55a6f8b4b820a3571aadc3	art/weapons/items/suppressed.png
+96f4bcb1969e084998093382d3b5ec71f714256c	art/weapons/items/tactical_vest.png
+2b2eb5c09e691b8bd5db24956915b710ae607440	art/weapons/items/tacticians_lens.png
+975047acc685aab985de715c4c977172505b4513	art/weapons/items/thermal_gel.png
+84d6b4844fd4b9f717728d7c9ae6e21d2f173acf	art/weapons/items/unique-duskplate.png
+ba1923041ae394ad1038f355df964442cb03481b	art/weapons/items/unique-hushline.png
+c5a6982adb6b23e13926fcc16eb5b23f9c21974e	art/weapons/items/unique-lamplighter.png
+6c95a6e25293bff71e27b3f7421621c8be35cae6	art/weapons/items/update-weapons-manifest.json
+546c361f013c1063a110f794ea6e293066f74613	art/weapons/items/vest_t1.png
+c313dbe1dab87d00de157055978affa01b64b202	art/weapons/items/vest_t3.png
+046a88ca8af6a3a0bef644c44e435a7556221c6f	art/weapons/items/void_pulse_rifle.png
+f0cf45f9c429616b7c77bdcdc863be5c09b6943a	art/weapons/items/warlords_sigil.png
+6c21aff8757feefebe5b6fb3222dcf52ce53bd67	art/weapons/sprite-map.json
+2a607a718b76acc7bd7f4ffcaf71723a8d247ccd	art/weapons/sprites/AXE-001.png
+a0fa706d58192c62888cc779f129f1e8c9fb8948	art/weapons/sprites/AXE-002.png
+4154c2639c09fb4b069dce850807393df111bef4	art/weapons/sprites/AXE-003.png
+f0281624b24a5149c4ecaff20ae55cc744fc9407	art/weapons/sprites/AXE-004.png
+e2063710c9f176f1020c2dfb1957e403b808da8b	art/weapons/sprites/AXE-005.png
+67b5a29e977714e96d74892fd9d1e0a264b6fb31	art/weapons/sprites/AXE-006.png
+d190142f01c90d44d615caa63d8af67dfd62ce62	art/weapons/sprites/AXE-007.png
+585839c670cb483689f1b4c713f2eb3d3729a63a	art/weapons/sprites/AXE-008.png
+e95b6eb641c3cbbd201578c26841c0029c3c37bc	art/weapons/sprites/AXE-009.png
+7a281829cc6d9a158c7dfdaf8f3a13e100ecd931	art/weapons/sprites/AXE-010.png
+52db2234981bd9bca5ade413907e846da3406490	art/weapons/sprites/AXE-011.png
+2bccba1a89785b1fd43b301d10023168c80746d9	art/weapons/sprites/AXE-012.png
+22a669d7b0c539abd950b03394becac1265f24e7	art/weapons/sprites/AXE-013.png
+f51b79dd7b24026a345d8849bd825b579a27888a	art/weapons/sprites/AXE-014.png
+a5cd8432375c0d71cd58ba1e4652a42d943e5e2a	art/weapons/sprites/AXE-015.png
+e14bc26e568b52a8550cfae4e6fa191d5d18d98a	art/weapons/sprites/AXE-016.png
+ad62678788e85ce188769a0f070cc3fafb707704	art/weapons/sprites/AXE-017.png
+d3f02c271557b403896aa7d1ab45474407f3bed8	art/weapons/sprites/AXE-051.png
+5da09a7585fd95225954a8714a114255564cebef	art/weapons/sprites/AXE-052.png
+1bfddd5619520d19857197732006ccaff5706ee8	art/weapons/sprites/AXE-053.png
+f8498dc5ff4fb8d6372cfdb6ffe6f67636aea683	art/weapons/sprites/AXE-054.png
+91027fdd26503314aa39873af3e9ed60333da6f2	art/weapons/sprites/AXE-055.png
+d665c841941da5c293731287447a246a82c9069b	art/weapons/sprites/AXE-056.png
+34309f94ce1847f44cbf5d3cf548f63b6682f8fb	art/weapons/sprites/AXE-057.png
+2f6f031daaeed00c4d16935898a3cbcb86bdd5da	art/weapons/sprites/AXE-058.png
+ae1fb85b2eede28f3bc431a0c69a899e4c611541	art/weapons/sprites/AXE-059.png
+4060aa54006223c3ee6f6d9edd6e5c62f73818e6	art/weapons/sprites/AXE-060.png
+0dad11fd1d43fa11b7493b33e6da714bb1f0936e	art/weapons/sprites/AXE-061.png
+9ba2194d5f0e7c286e4cb8380fa8b09af8c3e194	art/weapons/sprites/AXE-062.png
+997cc386d195e8f3c310630f7611303bf1d6606d	art/weapons/sprites/AXE-063.png
+47b549c65726d4b67a1b8a4b3a76b28ae70fbbcf	art/weapons/sprites/AXE-064.png
+632a45f9fcc3eee9e6080b81ee65db92b9a863e4	art/weapons/sprites/AXE-065.png
+c97b3f5b43a3571a173b981bab4c796ef398d374	art/weapons/sprites/AXE-066.png
+ea9c3d5691d817dd8b81e7ae8115b62f84e0e646	art/weapons/sprites/AXE-067.png
+96aa4144dff6c811f9bf95cd75aade36358f2f18	art/weapons/sprites/AXE-151.png
+93d342a14d274172e01322cebe4ba69b3a1475ab	art/weapons/sprites/AXE-152.png
+94269d2551cee0358741bbf3306a5d0242dc2d6e	art/weapons/sprites/AXE-153.png
+10f7efd32a1c222a80d6d4f838c17ecf7a67345c	art/weapons/sprites/AXE-201.png
+8a5497cd76f37c0b413c75751f36efa28d4d26c9	art/weapons/sprites/AXE-251.png
+773e728a4970fe63b7132baf360ce8d4ae148861	art/weapons/sprites/AXE-258.png
+136e8b28af9fc54e951986a65f93c7c6f039d093	art/weapons/sprites/axe-unique-danielle.png
+e822b6f12d5dcdc0e0f2ab32ddf2495e70f6b3c1	art/weapons/sprites/axe-unique-raquelle.png
+1dc29d587b633b9cc5c5adeaa62bf4d056cfaf29	art/weapons/sprites/battery-machete.png
+edb3662e7acd89237a8476cf2b8dabee404776d6	art/weapons/sprites/chemical-sprayer-rig-prop.png
+65f44c636276766eaebc09f8b288f35ed3e85ee2	art/weapons/sprites/improvised-tactical-crossbow.png
+c573289be299716acb1bbb20c750f44f69f55e41	art/weapons/sprites/item-arc_carbine.png
+69ca14fc189da0cb91f2bc0004dc24b871a95669	art/weapons/sprites/item-backpack_lg.png
+ca2395149999d024bea257eb819561981e29750f	art/weapons/sprites/item-backpack_sm.png
+60a8159681434bca937475c0e434411670c91e30	art/weapons/sprites/item-balaclava.png
+9e6960b32ee59de7f3c698bd670ecaf2841745b9	art/weapons/sprites/item-bat.png
+4d8d9f70c9d49f95fe649681e754e5f294cc383a	art/weapons/sprites/item-belt_pouch.png
+9405d82ce3e4eb1426117c2e0be4687f96e832dc	art/weapons/sprites/item-boots_t1.png
+dd8642ade547c10aafe996de9d7048a3bd67d080	art/weapons/sprites/item-boots_t2.png
+65374e1a8244f87e4409cb221cb07ecdafec7569	art/weapons/sprites/item-cargo_jacket.png
+035eba37817b9ba95ec462386449c2d056083bdd	art/weapons/sprites/item-cold_haze.png
+aea724a8636b12f2bbf81cebb93fa7ef8584b076	art/weapons/sprites/item-combat_axe.png
+c126ff0ff86869d680a5368a308cb73e98379be6	art/weapons/sprites/item-combat_boots.png
+a2a8039d9d58ac179b9c859a680b8d21430de511	art/weapons/sprites/item-combat_knife.png
+dc5cff77fadc8c0bed9c9ab83a811cf97930ac74	art/weapons/sprites/item-composite_helmet.png
+030bf933c6525c4108bc29df5969ef24f3a50118	art/weapons/sprites/item-compound_bow.png
+d0498a6a11201df72344136ed8ef1f87c64fac50	art/weapons/sprites/item-concept-machine-pistol.png
+f8837bcca4cc0fc16cc549d55a1c08baa0818d5d	art/weapons/sprites/item-concept-palisade-flare.png
+be110776efc4095a9baa89606dc98ce1ff800407	art/weapons/sprites/item-concept-precision-rifle.png
+484b751de5bc411a4363cff44c531ca83765ed24	art/weapons/sprites/item-concept-select-fire.png
+8bf02b9545d738dc58d23a9ac29d947af04d7c1f	art/weapons/sprites/item-concept-semi-pistol.png
+0632cfebe67c4a2eb710c211dc1bb31f40785efa	art/weapons/sprites/item-concept-support-rifle.png
+eb41fb33457aa5f0fa53c3a190d1de22d5eaaafd	art/weapons/sprites/item-concept-watchfire.png
+a02c35be947fccb71f6a5c543b28abea06e9a785	art/weapons/sprites/item-crowbar.png
+3e59dea88a989ad5860ca29f9784d2e687fb2066	art/weapons/sprites/item-flashbang.png
+e85c2a8fd1070bfd146393d3f07527c1b8417df4	art/weapons/sprites/item-gasmask.png
+5f1055bb48816e8dbe4156be770cbad1e578cdb4	art/weapons/sprites/item-ghost_wrap.png
+3331428c6abf5c97b7aff4a389f34051537d0b7b	art/weapons/sprites/item-gloves_t2.png
+9a8c288c412ae9c3d4f0906d49ca235c1be926d6	art/weapons/sprites/item-grenade.png
+d7edeb43c896442352b60d9ffce714446d922c1e	art/weapons/sprites/item-handmade_pouch.png
+55292351effbe83702b8c2fb522604e754c6ef9b	art/weapons/sprites/item-heavy_plate.png
+c73a044003dbcd440b4c8b7735c2e26018b8e60c	art/weapons/sprites/item-helmet_t1.png
+9a18a57a36c093c972030f351dc006e9064baf7c	art/weapons/sprites/item-helmet_t2.png
+9166a72ab7ed0ada816e2b6b5b9f1d47c465c76a	art/weapons/sprites/item-iron_knuckles.png
+5a875cb8e74a855b406b40f81f1939abb2aff548	art/weapons/sprites/item-jet_sledge.png
+73f6fa56f621e5e1c336b544f88bf64a3649b804	art/weapons/sprites/item-leather_gloves.png
+a2a8039d9d58ac179b9c859a680b8d21430de511	art/weapons/sprites/item-legacy-w_combat_knife.png
+59f3776c3002a66804c901a3acf6111256d20a0a	art/weapons/sprites/item-legacy-w_hunting_rifle.png
+7d59f46f9dfa00c0ce3a64e71baf1946d01e211e	art/weapons/sprites/item-legacy-w_machete.png
+8836cf0d0a706ecd071847f95cc1de2a57051655	art/weapons/sprites/item-legacy-w_pipe_rifle.png
+9e9332b2ec0915a8f412d5d4b38480ce0c458266	art/weapons/sprites/item-legacy-w_pistol.png
+5ea2fa11649457bb44194818818841808b8841f6	art/weapons/sprites/item-legacy-w_revolver.png
+8e0c160aba91ee4825f9515bcab51f97ff1188fb	art/weapons/sprites/item-legacy-w_shotgun.png
+961efab0eac1c0224236028cef7639ef5db6be78	art/weapons/sprites/item-legacy-w_sledgehammer.png
+a035af232e7452c6ccec6dd7a3bcee3e2129e9a0	art/weapons/sprites/item-legacy-w_smg.png
+7d59f46f9dfa00c0ce3a64e71baf1946d01e211e	art/weapons/sprites/item-machete.png
+bc2b33b9d0b3362ca50e0b5d3457e65c9c2df513	art/weapons/sprites/item-machete_blade.png
+d2be92737342576d899f528ce5c8d0daad95bc71	art/weapons/sprites/item-molle_pack.png
+5e82528315af002b2879c2855066e2ec5efe7025	art/weapons/sprites/item-old_padded_jacket.png
+f8357c544e8cbbe501cd16b191fdbbc64f06241f	art/weapons/sprites/item-perimeter_helmet.png
+166c977ea2491e27d0b8587d8cac661bf087d6a6	art/weapons/sprites/item-pipe_pistol.png
+026a6ea27cf4bdd724f67bc0adc4daf44529f5f5	art/weapons/sprites/item-pipe_shotgun.png
+9e9332b2ec0915a8f412d5d4b38480ce0c458266	art/weapons/sprites/item-pistol.png
+fa2afe0d067d2e5a2785a6e61c8cf69cf9dfc54f	art/weapons/sprites/item-plate_carrier.png
+ea1a0ccd6f326c0c8237896a972e1a27f0af92b5	art/weapons/sprites/item-pocket_knife.png
+5ea2fa11649457bb44194818818841808b8841f6	art/weapons/sprites/item-revolver.png
+c79e573b5898b5222583afc3cad1d9d453ea67e3	art/weapons/sprites/item-rifle.png
+53a4912746b5879ef035e5ab72f39f3bdd76c2ee	art/weapons/sprites/item-rig_t2.png
+47f1b3c9cec9e5cfd5b9f4a98655e5ca6fb1aa6e	art/weapons/sprites/item-riot_helmet.png
+1dbe7e49f6ff365d4134dc6114e22696c5520935	art/weapons/sprites/item-rucksack.png
+e6a480ff140efb90bb778b5ac9e2e8578255e636	art/weapons/sprites/item-runners_cloak.png
+acc2f35f67cc40a93d95c9c48fe19171164c50d1	art/weapons/sprites/item-satchel.png
+06a8fd3911db845d1f32e4e075e1916f6590d60d	art/weapons/sprites/item-scrap_helmet.png
+d1dedb178169aa6e295f67eba0fa2fe3a10c8ab5	art/weapons/sprites/item-sensor_rig.png
+f0bed2a9bb19ea4abdeb13e27b682598b53e7a5e	art/weapons/sprites/item-set-checkpoint-covenant.png
+4d8cf64f48b1d139c20181c1f73c42de1009c402	art/weapons/sprites/item-set-duet-of-iron.png
+b1146fc4dcd2393bd9b6b9a4859ef70926c28e1c	art/weapons/sprites/item-set-night-courier.png
+7f69486735fc685d81c7f9d329e29c05b407cc77	art/weapons/sprites/item-shock_baton.png
+74622309910850a8890948e44a8dac6b0791a6be	art/weapons/sprites/item-shock_pistol.png
+8e0c160aba91ee4825f9515bcab51f97ff1188fb	art/weapons/sprites/item-shotgun.png
+cdeba32758d2bd52d3927ef0f65c489f5b4958bc	art/weapons/sprites/item-singularity_seed.png
+3ee97a4b1d4cf6c92aad371184450d019ba170c3	art/weapons/sprites/item-smoke_vial.png
+6983d44ea353363d9852b6d10631a73126f03283	art/weapons/sprites/item-soft_armor_vest.png
+97f10d18f647a9862561277a8348dd09cf4de37b	art/weapons/sprites/item-spike_board.png
+c5ad4577eab18aef5638569e74a46c0a7c2e726f	art/weapons/sprites/item-steel_baton.png
+a035af232e7452c6ccec6dd7a3bcee3e2129e9a0	art/weapons/sprites/item-suppressed.png
+ee41acd8abb8c791834d48c490facf96e2a2bf4e	art/weapons/sprites/item-tactical_vest.png
+0b2930e24709882f31e37711bc8209149f5ee245	art/weapons/sprites/item-tacticians_lens.png
+523130238bea0d2f2a68236c17cdaab6b8fa7d03	art/weapons/sprites/item-thermal_gel.png
+f8dd3978f2b4cdad860ccdd41ee1596e29fe32f8	art/weapons/sprites/item-unique-duskplate.png
+7873a00dbd43cca6a5922220abfa4084872efdec	art/weapons/sprites/item-unique-hushline.png
+be0a4c7b039cec2410219e0dd4e1ed249425063e	art/weapons/sprites/item-unique-lamplighter.png
+7076737e37ec68782ea057a95232d720b87c2dd6	art/weapons/sprites/item-vest_t1.png
+ed5a3df629deb1042088dabca8c45175bbb26afd	art/weapons/sprites/item-vest_t3.png
+cde96b72efaf58cabb71b5e108e48e72a34961b6	art/weapons/sprites/item-void_pulse_rifle.png
+b2dcf514b6f8ea737dee4d1223e9621b78a9256c	art/weapons/sprites/item-warlords_sigil.png
+9086f171e192d58e6a5f4ec2ebc8d8abbf4b5214	art/weapons/sprites/weapon-art.js
+ae9c5a2cc14c8ae05350686c0dbfd7e7dad4ef8a	art/weapons/update-request-manifest.json
+9a24d64a62d8eb90c7ffbc784638523cf3c1cca4	art/zombies/049-soggy-slump.png
+9ecd3be6e0f72545ca0f12b6cdba26aeec59ffa8	art/zombies/050-ashen-wanderer.png
+af1ec6d3ea098a22b92cb60216bd677201f93a4e	art/zombies/051-lumbering-courier.png
+d70ba470c302f6680be75789d8fb679175aba1bf	art/zombies/052-tangled-drifter.png
+edcfe13cd7edbf0b8189dfd7a7d5bb0e72a8e6d7	art/zombies/053-frail-husk.png
+a643dcb9f053d2e300479a73c371233ab61e0236	art/zombies/054-siren-stumper.png
+31ee5eace0b541390464b68c8aa4829f9914197b	art/zombies/055-cinder-runner.png
+38333c1f97f86b57fc7d50a62de6f3efd5a84c09	art/zombies/056-muck-lurker.png
+9b7a4b69c951711da5705583ee4dd1f44610e71a	art/zombies/057-hollow-leaper.png
+f7d34c78a94399bfd6d59df5e3b50cb7196e1201	art/zombies/058-rusted-guard.png
+cf8a3e73b6af3f827a92db7b84be73477d678b08	art/zombies/059-spore-carrier.png
+df32c7f95c4d333f2254154502429bc03c0fca49	art/zombies/060-static-shuffler.png
+cf58ce574c4dd0c33a81e3031a4ec0b94da606ee	art/zombies/061-goo-vomiter.png
+892878e6bfcf13837b12f5357cb81bcee46b3a78	art/zombies/062-shatter-bone-bruiser.png
+e3d246115d4e4078b0c3851776ffb4a300c31dba	art/zombies/063-grave-digger.png
+d00bebf4b79c5f6a1d657e526519c24d2427065b	art/zombies/064-wire-bound-crawler.png
+866e46271ac88a664cab84657b1b389eae52d003	art/zombies/065-frost-smite.png
+04e66ba06fc9ef69bd3d31d19ec1c2f2808095f6	art/zombies/066-flash-blind-stalker.png
+e6f5549364d9f588ddc39fbdf4a260ea2b5aaba9	art/zombies/067-decay-launcher.png
+46f457e9ce66d2978de9c25bf184f3805bde9166	art/zombies/068-riot-pacifier.png
+65560db1dd287c1f6502be5663b43110a7158477	art/zombies/069-thermite-walker.png
+3979a425b4e8e2f4483e7b333362da94d06decfe	art/zombies/070-plague-matron.png
+1b092ad72a7fc4610a1c18847dc9463d2d51f664	art/zombies/071-volt-surger.png
+38c804d0f83386882a260de7623029fa3934f0df	art/zombies/072-slag-enforcer.png
+2510c684ab601067adafc96da6e11c17a29c7607	art/zombies/073-corrosive-bloat.png
+b0346987c7b7dc887915ec9bfc417d74cab4b800	art/zombies/074-leaping-strangle-imp.png
+e27fc5b7000327d106adbd062128ea7d6924cd27	art/zombies/075-phantasm-walker.png
+d1e6d0e81fd21f93c102bc54c1c83c1c0b4c4266	art/zombies/076-exoskeleton-remnant.png
+cccd7304415e9a671d5cc1c8ec1bef41f9826e38	art/zombies/077-blight-screamer.png
+e26c9f2cfdffef894952bf32e5a4c2bd267202c7	art/zombies/078-needle-limb-freak.png
+1275a0bc2382ea77295c734eecc0351c77aef77d	art/zombies/079-gloom-assassin.png
+f777ad07bfeb5d9bdd5264bb4411c56a071b1a49	art/zombies/080-chain-whip-warden.png
+3c0189c563810b5cc501f0fac1368286c6e5b7fc	art/zombies/081-caustic-mortar.png
+7c530fb194fb98073f2bf29bbdd65e7d8d46a813	art/zombies/082-cryo-executioner.png
+aad4f689e9c7ee782efaaf55a50e1082cb4a7b63	art/zombies/083-napalm-stalker.png
+af66346e77fd946375bb918472f4a7f870791036	art/zombies/084-centipede-host.png
+e55956ffc77d39534e37ee96c9fdf9a438d04be7	art/zombies/085-apex-hunter.png
+02cfc4948093fc03f89bbb02a01c21d8ffe60ba9	art/zombies/086-slag-titan.png
+0468bd5813669f38e65a5c65237a4a4cfbb00b68	art/zombies/087-toxic-behemoth.png
+ab1bdb002a7c908b01cff02ecaae28653bfe1bb0	art/zombies/088-bio-electric-monstrosity.png
+c7a20a111220b87bd734af0f8570e1da5c5b841e	art/zombies/089-subterranean-stalker.png
+8c8c489f1e6deedc3223da14b749dc62fb8e2c38	art/zombies/090-surgical-abomination.png
+24670ffc3123f57c17ad55612d5f715081942c2e	art/zombies/091-dread-dreadnought.png
+0808bbbad6d192b261649190c8a06fd813f44517	art/zombies/092-marrow-collector.png
+aff68f9a1cfbaf34f8e2c8ba07dbba3ac90a17cd	art/zombies/093-inferno-engine.png
+35ae439d3c64c779da76ea6a05255cd8f39fb7d9	art/zombies/094-void-phantom.png
+15f7b71dde99b346fc09585526b9d834ab1d9084	art/zombies/095-grave-overlord.png
+8aa2d774c020a8e66f7632161098bfde9d96f7b1	art/zombies/096-epitaph-warden.png
+24103a2140653deda261a6a37b2254be247ad18c	art/zombies/097-toxin-sovereign.png
+f0641c584f9530f5d6aa0f50ec619840ff2f000a	art/zombies/098-storm-caller.png
+c73f7a44ba1c4055d3415dbc5b41c951e8c0c726	art/zombies/099-glacial-leviathan.png
+d521e9ae7fb0826e3d55b4628cdcf8181982d796	art/zombies/100-the-iron-titan.png
+c119ab7048dbb8a198fdc77e279b3cb9712a8d0f	art/zombies/101-the-hivemind-core.png
+3817d88dc6edbb40fbc64900e7b350f735c347a1	art/zombies/102-the-ash-emperor.png
+ae9a4fa0a0bf80293403f6027bc78c74b8a829f0	art/zombies/103-the-void-harbinger.png
+5bc0c80a9bde79fcc3bc37afbc75845aa4b3bc4d	art/zombies/104-the-undying-goliath.png
+9605521d91cffabf8f065b505edb2dc8d4d7fcee	art/zombies/105-the-storm-sovereign.png
+17badec2575ab4159067e28fa06afe644f5bac5d	art/zombies/106-the-plague-archon.png
+9a42eac9cd0c3b4c56499bed56469486fbd6d1db	art/zombies/107-the-sub-zero-colossus.png
+518078805372dfcc92dbf1cdfef5a09303cb263e	art/zombies/108-the-apex-prime.png
+39891a2e8ca2bf242a3741af08dea085ab6bd079	assets/wandering-backgrounds/fortified-perimeter.png
+05206975a23f0b7598e00930c64c60cd888dfbf9	assets/wandering-backgrounds/mountain-country.png
+2c308af2f6222773f3749289a130f0e187c5cbdc	assets/wandering-backgrounds/ruined-city.png
+d075baa6bdb983f89e91ad3801a3cceeda230df2	assets/wandering-backgrounds/ruined-metropolis.png
+b67a6afd6df95d86afb2fde9bb1057c42c191e6a	assets/wandering-backgrounds/ruined-suburb.png
+4259cfae3f695a19d415399188816ffdc6c93de2	assets/wandering-characters/scavenger-survivor.png
+53a451d2ef04c1d9d19d5992541b716232df58ba	assets/wandering-characters/survivor-melee-swing-v2.png
+15e0d88a80f23364e6546fa6042e0de2c1da428a	assets/wandering-characters/survivor-melee-swing-v3.png
+f7a18a2eda828745a2de21ab760f3803a8608506	assets/wandering-characters/survivor-melee-swing-v4.png
+ca3769ce31e8d94a4ef519f5130bfdc3df625bc6	assets/wandering-characters/survivor-melee-swing.png
+b6c2443d071cdbb919ec9a9e7ae9349222bf2ba8	assets/wandering-characters/survivor-walk-punch-v2.png
+911e4ae89505f1854295fdd0d50cb44061f91f14	assets/wandering-characters/survivor-walk-punch-v3.png
+4f030f65a8637afbc79c0e146eb394a9c87e09c2	assets/wandering-characters/survivor-walk-punch-v4.png
+0786d274b2d9ceb713ae30d552fabecede40ab25	assets/wandering-characters/survivor-walk-punch.png
+42c6fabd194c526e249f11d6c05375018c7a9c61	bestiary-data.js
+2d2fe0610d734f42daa39a967c3eafe64edcce03	bestiary-expanded.js
+c6c44ac96b07098c892d1f331e97840875ee6703	crafting-frame-proposals.css
+b130273da407fee0781d1be41f92d44805849294	crafting-frame-proposals.js
+f23d33a87a468f1e35b043c2a3c4f7fa3c4e0293	crafting-frame-proposals.jsx
+16de12e96d59867e3bcb2dbb0a429a333cf30985	game/active.js
+97d5cfa7d9747f02ce653f2807b1c24f80ba5f84	game/bootstrap.js
+bfa1947222d1990a317f76a10f67bb795a99576a	game/camp.js
+b263ca2ff6d89d70ad48d4934dce0f588cbf60f7	game/combat.js
+b550a5180d8ada5a87494d41bb569c94629ae6e1	game/core.js
+d7c6f48fa0201205851b98282fb7638bbf68840f	game/crafting.js
+fdb11ce1fe8b5173b413075b989bd99128e914dc	game/economy.js
+46adecfda82a82ee7bb506df1d8553cdf4d1ab3d	game/factions.js
+e07c28532f28382a94b6a3fa1cca37902547323b	game/fort.js
+ed3a84c20fd4503f8be3c60f96366458d9795923	game/infiltration.js
+31189b79c07928b0336ab2b12aa3a6b7b61b088c	game/items.js
+62272d69de352ce840f86f94852a99ebd640152e	game/jobs.js
+324bb587b095746e82fb0428156effe5a42e8900	game/routes.js
+a0925af848aa4f2ba00a015c135b88385786bf5b	game/save.js
+e45224efe4ce68df0a0ed477292211e1dc454b40	game/stats.js
+9534330390a7ff7fa79988dcad1839e0ffa48b8d	game/survival-data.js
+d413ea820f0e8d622abbfca70b94a2c687c2eb67	game/wandering.js
+3cc7780d7cf2545b90f8265ebc7296ba5ae5abe5	game/world.js
+a8f774dd5abfec59d7c042b4b175dade503f3f31	handoff/README.md
+741a8f9e3eee900f77239b92d8a9361d7a07e3c3	handoff/from-design/.applied-H1_CLOSURE_FOR_CLAUDE_DESIGN.md
+b20a245b041640f17c7c80840320608e2d6df5dd	handoff/from-design/00-document-index.md
+7754ee57b7cb33739cda8410690b08271a9d82c7	handoff/from-design/DESIGN_HANDOFF.md
+edbf0f22e320fccee286f8b373297b83b209f783	handoff/from-design/DESIGN_SYNC_OCT10_INSTRUCTIONS.md
+819c3e3214526bcfe78e47ab594534edecf8d87e	handoff/from-design/MANIFEST.md
+458f85ee5624fbe1b9141e3aa361c0bd94ea178b	handoff/from-design/README.md
+ce2f6ea372b006c37b5c24cdd3208ce2b5280d3a	handoff/from-design/Zed Idler.zip
+cc7199fb6db4c6fc14c3ff1a10d1c373d2200eb7	handoff/from-design/archive/design-handoff-oct9.md
+63b86c7eb4bbcdd5091b9d0a003b63422a37481b	handoff/from-design/axe-index-2026-10-24/CLAUDE_CODE_HANDOFF.md
+df93502c598a991e772b3a9f98b3612839106419	handoff/from-design/axe-index-2026-10-24/README.md
+5b7ae5ec0f0247ccdea02af1fe6a9f8b0be6d988	handoff/from-design/axe-index-2026-10-24/VALIDATION_REPORT.md
+aac2283e521c7e69b7f322d26efbce277edc1ab0	handoff/from-design/axe-index-2026-10-24/axe-catalogue-300.json
+0f7eed36f3b195cd1b0a6050fc54bd16f313c28a	handoff/from-design/axe-index-2026-10-24/axe-catalogue-300.md
+069e9b901053a4e38d7288cedab115bfa6297cf1	handoff/from-design/axe-index-2026-10-24/axe-historical-sources.md
+9421b51e23f147d5cfbc15db40d1c2edd463d36e	handoff/from-design/axe-index-2026-10-24/character-stats-and-combat-draft.md
+989c22195084c854b75e46c5fdc4fbc1e6320174	handoff/from-design/axe-index-2026-10-24/throwable-axes-draft.md
+41a8156f967867661700c2de5a6a963c82edfd24	handoff/from-design/axe-index-2026-10-24/weapon-equipment-integration-index.md
+4495c732fab82c78a5ca49cf31308d8a5742083c	handoff/from-design/design-handoff-oct10-am.md
+9ad295174a5e9f19ca9fc3cf107f4dd3dabd3077	handoff/from-design/elder-jester-concept.md
+7d8a97d0c0e1fc7618113dbc9591173b71a06833	handoff/from-design/export-3/CURRENT_BATCH.md
+559c441e9a337b2580a982ea6bbe50ef2f77eaec	handoff/from-design/export-3/DESIGN_HANDOFF.md
+e8f2a027a42070eba1a82cd46e170454d0a96953	handoff/from-design/export-3/MANIFEST.md
+fd1e498e5721862da94486d023786851b5d0a297	handoff/from-design/export-3/reference/00-document-index.md
+01e609e45dd33ecbd31c4765afec02e57aa38107	handoff/from-design/export-3/reference/fx1-hp-floor-slice.md
+45791a9bf53f49027cfb0087fb9c4439ee517316	handoff/from-design/export-3/reference/fx2-per-return-cap-slice.md
+12d6167e2efe3a18c8462f9ce5f12ab5d306af1e	handoff/from-design/export-3/reference/gameplay-fix-batches-proposal.md
+4f9070d7838cf9cc05a745a9af86c665ce36916a	handoff/from-design/export-3/reference/wandering-tab-spec.md
+e8c690c77f2da3a3152691ded312aa42ee74ce05	handoff/from-design/export-oct10-sync/CURRENT_BATCH.md
+76fcffb206d6fd5dd08c3675402439729c8a10a6	handoff/from-design/export-oct10-sync/DESIGN_HANDOFF.md
+d67333c3c82ca93e0e76fa97626608a9cc29852f	handoff/from-design/export-oct10-sync/MANIFEST.md
+c3424f60ae3244dcef711d8a2b57ca20272aa5ca	handoff/from-design/export-oct10-sync/Zombie Idler v2 - TEST SAVE.html
+8014f89ec08937da354579a04464f93f8338bb47	handoff/from-design/export-oct10-sync/Zombie Idler v2.html
+edbf0f22e320fccee286f8b373297b83b209f783	handoff/from-design/export-oct10-sync/handoff/from-design/DESIGN_SYNC_OCT10_INSTRUCTIONS.md
+f26067cda623041cb64b66c2e9c01f255c8fa6bd	handoff/from-design/export-oct10-sync/reference/starter-weapons-cb1-slice.md
+d5e663e0186c13b360eeb47fe1e896a67b5fe910	handoff/from-design/export-oct10-sync/screens-v3.jsx
+855b2a4acc67141a2bc70dcdd41f4c6ce3c29431	handoff/from-design/export-oct21-trav01a-rev1/CURRENT_BATCH.md
+fc2a87a31b4285b5323810693919be4275d2b0a3	handoff/from-design/export-oct21-trav01a-rev1/DESIGN_HANDOFF.md
+c2311a29b948f34cd45c88711f41693823a14b4a	handoff/from-design/export-oct21-trav01a-rev1/MANIFEST.md
+165623005e163fa4cfa684624bddb9aa26565568	handoff/from-design/export-oct21-trav01a-rev1/reference/trav-01-traversal-slice.md
+0e16b3ab09f5e804874298cca17061210350adf7	handoff/from-design/export-oct21-trav01a/CURRENT_BATCH.md
+56811519bd6dcedd857c7509617d84a122d58079	handoff/from-design/export-oct21-trav01a/DESIGN_HANDOFF.md
+51d883679b7efc04b5a7c081484a3b54affc2836	handoff/from-design/export-oct21-trav01a/MANIFEST.md
+9af09a57350242bad9b1a110b8afd150184f0455	handoff/from-design/export-oct21-trav01a/reference/playtest-findings-oct15.md
+8494c192417eee27fb4d8e3ba6a52a4a434acae4	handoff/from-design/export-oct21-trav01a/reference/trav-01-traversal-slice.md
+a11b70e1e788d895d59191cc73ec60806b234d71	handoff/from-design/fx1-hp-floor-slice.md
+d949c45e5a13238a6b4957ff62dbaa84b8779568	handoff/from-design/fx2-per-return-cap-slice.md
+ff75ffd5e0b386fa38908e2ee1c4f8b2e00a87bc	handoff/from-design/mystic-jester-concept.md
+2b845a9e1ca50a68451b1cd4a34fa0cd0c4c6964	handoff/from-design/reference/00-document-index.md
+26ae9192badd909b210bafd859f536254857eef8	handoff/from-design/reference/archive/h1-batch.md
+bbce2a58837a2d2e69714745ae0284bfcc0b1403	handoff/from-design/reference/sim-harness-v1-brief.md
+202ce531624a94436147add95d44926145b64990	handoff/from-design/scenario-b-and-first-downed-oct10.md
+33e90b07094a6bdf00a36cabd8ccd985fc3f38ab	handoff/from-design/starter-weapons-cb1-slice.md
+ec581550bf018e24426b48d2297147374b72b1c2	handoff/to-cloud/2026-10-24/MANIFEST.md
+683dcf1574be91576146e68d45dc4893778f02ee	handoff/to-cloud/2026-10-24/Zed_Idler_Routes_LLM_Instructions.md
+c7315054e65c1c583651916800267ca758d58cdc	handoff/to-cloud/2026-10-24/Zed_Idler_Routes_Parsing_Records.json
+237f6ed71345bb65eff1bb24e02877ea3b1f6dc8	handoff/to-cloud/2026-10-24/source-snapshot.tar.gz
+a28d34fcf9b18634ec90df7ef9015be7924d0497	handoff/to-cloud/2026-10-24/tools/README.md
+2b2d56575485ee19ae562d4b5e2a32b873f28c8a	handoff/to-cloud/2026-10-24/tools/h2-worker.js
+935345d30277d3c2e76942b4063d19939d59a9fa	handoff/to-cloud/2026-10-24/tools/oct24-clock01-lock.py
+2908b366ca188bc1d07811375549c3c2456a902b	handoff/to-cloud/2026-10-24/tools/oct24-index-update.diff
+e7bb69765015216fc6c8e3cb3c92fb785383c7dc	handoff/to-cloud/2026-10-24/tools/oct24-route-prep-record.py
+e6e745adad574d6c5b1b117edfdb62c88a4b29b2	handoff/to-cloud/2026-10-24/tools/oct24-trav01-propagate.py
+37f68618bf21326ea5a0b9f51cbd7536a11fe265	handoff/to-cloud/2026-10-25/MANIFEST.md
+16dc54325d2dfe113d863d3943de9913ddac1c29	handoff/to-cloud/2026-10-25/biome-01-chunks-slice.md
+507b91d2aeae05b21cb1fbe1188e2b886e77c0d0	handoff/to-cloud/2026-10-26/MANIFEST.md
+f7ea5ed062345e34f4bbb09547fefec07d8fc665	handoff/to-cloud/2026-10-26/github-sync.tar.gz
+65d4a33c1c2fb905fccd2cd65a2c8127919629d3	handoff/to-cloud/2026-10-26b/MANIFEST.md
+9a9496500a9dc74d7a45f09329503b8082403854	handoff/to-cloud/2026-10-26b/github-sync.tar.gz
+03f49db2414bc70fff83228ca85cc906f9111049	handoff/to-cloud/2026-10-26c/MANIFEST.md
+a5beccf1104b925790e79e007ca50ad24db9d872	handoff/to-cloud/2026-10-26c/github-sync.tar.gz
+386d62b65408cc7736de7c2ec1b460e96e302a11	handoff/to-cloud/2026-10-27/MANIFEST.md
+a4447ce0c52a31fc3bcb70700f998f7b08fdd9d4	handoff/to-cloud/2026-10-27/github-sync.tar.gz
+3eebdb390e9a04d8a6f1305e3e3c10dc6823ee8e	handoff/to-cloud/2026-10-27b/MANIFEST.md
+04d28af002e516017b5121f8a125c7a7341f5377	handoff/to-cloud/2026-10-27b/github-sync.tar.gz
+c5e98940a1e78769d2e06b3162cb3df621ecd484	handoff/to-cloud/2026-10-27c/MANIFEST.md
+f0c664dbf22d5d65ce8a1d2384ac9367df2090ed	handoff/to-cloud/2026-10-27c/github-sync.tar.gz
+9ade34ab2151a2ecdb7ca348baf28f0064cb5c1d	handoff/to-cloud/2026-10-27d/MANIFEST.md
+467ca7c32c1114e9ccc954d64768f21ac9f23354	handoff/to-cloud/2026-10-27d/github-sync.tar.gz
+12c9027c2432840a733237905194e22c41421d40	handoff/to-cloud/2026-10-27e/MANIFEST.md
+068a31182eb7d960b70c638607f81011a57946d7	handoff/to-cloud/2026-10-27e/render-test.tar.gz
+4ab83ce78d49499054b5f04a63a82075b8a4de37	handoff/to-cloud/2026-10-27f/MANIFEST.md
+957b97672b5022cf29483b8896ce0267f7b0eafa	handoff/to-cloud/2026-10-27f/render-test.tar.gz
+1b995ab66012aa77dcb1e7e1b7d5ea30219c10cc	handoff/to-cloud/2026-10-27g/MANIFEST.md
+16b25f8847954bf4cc055b96e9547793e207816c	handoff/to-cloud/2026-10-27g/files.txt
+9c6c78b8cf983b95a4e0b3391a4512afae4a3eef	handoff/to-cloud/2026-10-27g/github-sync.tar.gz
+f2d075d963cfd8ffcbedf8313d6c842c2aaa4946	handoff/to-cloud/2026-10-27h/MANIFEST.md
+d2b6d31cd05b1ec7ed79d64d247e125f73bffb90	handoff/to-cloud/2026-10-27h/render-test.tar.gz
+157aa0649d6bab50e3d099ee2d97b93081420acf	handoff/to-cloud/2026-10-27i/MANIFEST.md
+cbf1c38260a2ca6baeebdc849815bb3cc55c7664	handoff/to-cloud/2026-10-27i/render-test.tar.gz
+853666c59605417a3739f6c3b00d79bcf825e5c2	handoff/to-cloud/2026-10-27j/MANIFEST.md
+53e67da2963a8bd5fa3aa582b18c65fe8601c78e	handoff/to-cloud/2026-10-27j/render-test.tar.gz
+0834559fbf227e1bff47b17df2ac4608e3b5fa03	handoff/to-cloud/2026-10-27k/MANIFEST.md
+e2e2549d54aa0755d4019c6b891366ce1d0934d0	handoff/to-cloud/2026-10-27k/render-test.tar.gz
+293beafa84a7c7fb3f58953954e5285819fbdd21	handoff/to-cloud/README.md
+dc5d52fafd73514b71583033cd8d82394f388d94	handoff/to-design/.fx1-slice-sync.md
+1d26d2d7c4235a6e4788bfecb4163847973a3f59	handoff/to-design/BAL_A_COMPLETION_REPORT.md
+b98c6ec7eb696680caee669620b458242dec8512	handoff/to-design/CB1_COMPLETION_REPORT.md
+64f15c158bda7b218928af92f8090140949cad64	handoff/to-design/CB1_STOP_REPORT.md
+909ef77ec35d16507ca3b9b8df234734ee32b345	handoff/to-design/DESIGN_SYNC_OCT10_REPORT.md
+a9f32ad9ed0d33058c9c58178b690d6b6c6ee6eb	handoff/to-design/FX1_COMPLETION_REPORT.md
+2ef72d760f83efb4890695841ad7ba01785b8db4	handoff/to-design/FX1_STEP1_REPORT.md
+ab2a5e6ccfc85f99dc4f3fe05daf1799f54da428	handoff/to-design/FX1_STOP_REPORT.md
+1bc6b03c6e3d42103113715a4e0d0688baab08ae	handoff/to-design/FX2_COMPLETION_REPORT.md
+3f03bfd9fa23d57f26e8900a4de4fa4d3d4b5d91	handoff/to-design/FX3_COMPLETION_REPORT.md
+e923422425599c9614b707e8857260c5ba7856f8	handoff/to-design/FX4_COMPLETION_REPORT.md
+9527a330287369c9539fd7bc0bb49be29a6fa1b6	handoff/to-design/FX5_COMPLETION_REPORT.md
+99dc6ee30755296d6be8eb23b7b763e60c44bf32	handoff/to-design/H2_DRY_RUN_REPORT.md
+a6c3e921e2999023c762473c7a31baef785af8b7	handoff/to-design/JD1a_COMPLETION_REPORT.md
+eb79b5d1193d5d3edca91c00fc47a9bae29372ca	handoff/to-design/MESSAGE_FOR_CLAUDE_DESIGN.md
+3a39f925932ae6b44b09bd7ca1921927c948bf9b	handoff/to-design/MESSAGE_FOR_CLAUDE_DESIGN_2.md
+e026108a0930b0c233248b9666c8ce436cda9167	handoff/to-design/R1_FX1_READINESS_REVIEW.md
+61173e8b4589146603b37730df7b8faa3b9e54e9	handoff/to-design/RB1_COMPLETION_REPORT.md
+7fe51b28635c31a4edf22bae0a89f4782bb9e3fa	handoff/to-design/RB2_COMPLETION_REPORT.md
+2ea0f8274eef1ec2c27a94e8ddac5215d1a45c56	handoff/to-design/README.md
+e4b39c92defb2b81c9f9d51e2b5cc8a69dd22cdb	handoff/to-design/TRAV-01a_COMPLETION_REPORT.md
+0f7997ef06855143a88c63645797ef5dd02aa58c	handoff/to-design/TRAV-01a_STEP1_REPORT.md
+741b9a6e346282e4c0a1c898d2ace87aaeaaf002	handoff/to-design/Zed_Idler_master_Oct10.zip
+6f9e8f04a3b2b498edc42370b4de9c03455c83ce	handoff/to-design/oct10-sync/MANIFEST.md
+7c55f688b83cab5647f0e078485f5b34d66953d4	handoff/to-design/oct10-sync/MESSAGE_FOR_CLAUDE_DESIGN.md
+a1bae9618ab73567e09e1b37f02d2c2e380fdeee	handoff/to-design/oct10-sync/zed-idler-oct10-sync.zip
+e30189ba5b84fb5b9578f15081b5ce6ccf393ce4	image-slot.js
+416d319c03a02781feef46e529d92d8478716e65	pixel-art.js
+6c02df14bde5d55ac429683ccf77968f1aec4adb	reference/00-document-index.md
+e0aab2444b6d31fa3ebab6f5e6ea782fb1a00ec1	reference/WORK_INDEX_2026-10-28.md
+0d202bd7dbbb02c5fe2a83e22e61fa7de9f4f652	reference/archive/H1_ACCEPTANCE_REPORT.md
+741a8f9e3eee900f77239b92d8a9361d7a07e3c3	reference/archive/H1_CLOSURE_FOR_CLAUDE_DESIGN.md
+830a70e0f8f6514f199011b141591b3fed1d2475	reference/archive/batch2-handoff.md
+a4f0207106ec0510dea0691266ed63ac490ab2b3	reference/archive/batch3b-brief.md
+48261218727cc24f75af844dc27c26f90069f256	reference/archive/cb1-batch.md
+22307e65b8a61d43a20a49d864756aa33fd5fce8	reference/archive/fx1-batch.md
+d2e0468c0e281c67c0b904371c5fbdf7cac49f33	reference/archive/fx2-batch.md
+25305d376bf8088bc4dee5b3014ed6e0f0d781ac	reference/archive/fx3-batch.md
+ac455bcad0bea31b31c1983bde3a69420b54f947	reference/archive/fx4-batch.md
+a47ddf330e06e2c7aef2fd0165398096b4f2801c	reference/archive/fx5-batch.md
+0d202bd7dbbb02c5fe2a83e22e61fa7de9f4f652	reference/archive/h1-acceptance-report.md
+9ec4b53fc7f8bd16bbead1cf4d5055e80a0b3441	reference/archive/h1-batch-working-copy.md
+26ae9192badd909b210bafd859f536254857eef8	reference/archive/h1-batch.md
+368bb20081b753d90622adef721218f102ef789a	reference/archive/jd1a-batch.md
+d252becf600cd3f0df52b492468e77d6531730e9	reference/archive/r1-brief.md
+cbc2f0343ccab555b3d2804cadc34b50e2ba5a7b	reference/archive/rb1-batch.md
+042f8c2c90c6f7aaf28cda66b23cb03867d8fe56	reference/archive/rb2-batch.md
+a4af7d800b56ef58ec20a7c7303de87b938fddf9	reference/archive/wandering-church-scene-pre-disposition-oct9.md
+ab660bacadf913b26fc01aa62f1fa296e090287f	reference/archive/wandering-tab-spec-pre-merge-oct9.md
+12d64bb49e48375c66c35ba4281207e66e5002cc	reference/balance-02-early-game-findings.md
+2d721ff94f61daa9e1f99e57d4f591fc598d8be4	reference/balance-03-broken-model-oct18.md
+740866facbcf321de15ae85e6b33fe42de5a54d0	reference/balance-03-confirmation-oct19.md
+74bc8f0f69645c11a2b23f3e429f9947dd212e23	reference/balance-03-gear-progression-oct18.md
+f94b3800d80a5494c0aa785ecf129deef575a1ba	reference/balance-03-idle-source-plan-oct18.md
+576aa15373617d2dad2f7cf1fa324211eed665d8	reference/balance-03-idle-source-results-oct18.md
+17fd327669635a61e8a07f0e95059ff6db9f80c3	reference/balance-03-retreat-layers-oct19.md
+921c09d87830f100c7c576e9280801c58488376c	reference/balance-03-round2-oct17.md
+6515b292d80d1aabba688661fa3b7d1a85974f1e	reference/balance-03-round3-oct18.md
+308c95d7d82b27c238f830021513f1ade2f2bc6d	reference/balance-03-round4-oct18.md
+35897f267c0b0dcbf330e4845ffb14f490c916bb	reference/balance-03-round5-oct18.md
+c753120b98bdeafaf813efe712a37aaded828b34	reference/balance-03-round6-oct18.md
+94330a7107b45abd39ea2b50bca03ed776349fed	reference/balance-03-round7-phaseA-oct18.md
+dc98250c3cc43ff189f5ab1456579048a151db4a	reference/balance-03-round7-phaseB-plan-v2-oct18.md
+d6bb7d7b1445c507f72b3ce176a462d7c4fc8cc3	reference/balance-03-round7-phaseB-proposal-oct18.md
+5eb4ba366b681c740a12e379992397e821320465	reference/balance-03-round7-phaseB-results-oct18.md
+98e4f13e149d5f3a8234af769efc20988dbdb23a	reference/balance-03-round7-phaseB2-oct18.md
+e4c6fe61323ab2b0df5f35f5a06e2d4f89e04049	reference/balance-03-round7-plan-oct18.md
+6eb42ecfe43884281c90f2894a759094f6f6cbb8	reference/balance-03-round8-regen-oct21.md
+571d21097fc710a0659f4f73cc7934c79022cb8c	reference/balance-03-screening-oct17.md
+6a0f3eb57e58282fc26b127c33ba6f90b2b26d84	reference/best1-implementation-report.md
+62161c55cd4fb49b06681c61beacba66ea7d92b7	reference/best1-pre-balance-03-plan.md
+6aa5b2ca798811dc7468810921bca0f5a572a9d5	reference/bestiary-01-enemy-identity-findings.md
+1b3dd6d9eef29d4af0966ab15643f3428a914b6d	reference/biome-01-chunks-slice.md
+2bc0a34891285a1bbfa65382a41af56181ed9466	reference/circuit-expedition-concepts.md
+453aa5a474aa2e3997705c71c592b887369c6f03	reference/clock-01-slice.md
+4ba901f3bf9656466f8515461588082303eed2d8	reference/combat-balance-investigation-oct17.md
+72df372b2638c27d3aca8e96fe608c3862d47faa	reference/concordance-introduction-concept.md
+a54d47412ee6b48ed33da04c5e7400c03c3bac86	reference/crafting-frame-proposals.md
+9014be3c83b4fa9da19fa5aafaff6521373064ef	reference/defect-camp-schedule-clock-oct18.md
+e2ecf41ed2ae0591f7345e0960e126f368e58800	reference/elder-jester-concept.md
+82e97d65d76b144823285a56437e6e8eab06c9e6	reference/elder-jester-narrative-draft.md
+f16325e748b55d37d94c4443a1e54b9c1a3d42fb	reference/first-displacement-slice.md
+4e7bfda9ee694403d44cbb7e5e172bdb916ffceb	reference/food-01-nutrition-slice.md
+229379584f5cf8bf39bee7fbb0092399f958d94d	reference/food-01-sim-oct21.md
+b73fe76ead93f00520581ae23b05decbc64b621d	reference/fx1-hp-floor-slice.md
+91717adcca2d4d1c9ce3da3dd06f66b27a320f9e	reference/fx2-per-return-cap-slice.md
+be3408d25a0b8e7e6b8979b096fb3c176da46c9d	reference/fx3-buffs-sim-time-slice.md
+b26220902d390ea8ff7d608b795907e18fe43e32	reference/fx4-shared-survivor-attributes-slice.md
+a179d5326cec24f6c7bb28e8caf051ffafb67484	reference/fx5-medkit-heal-slice.md
+1148e80ad5a8b1eedf71643020779bd9ee510a02	reference/gameplay-fix-batches-proposal.md
+2efca0572d3200b0bb9af479d733451df0560d66	reference/h1-findings-decisions-oct10.md
+6a451e47d715f9d1fb90db66a3e8e21eeed870ef	reference/h2-batch-draft.md
+99dc6ee30755296d6be8eb23b7b763e60c44bf32	reference/h2-dry-run-report.md
+b1477febadb7cf3c1044a6e6442839354c5ef9ed	reference/jd1a-batch-draft.md
+426be6d4344e37f737d8495b5791c120fea6d8e0	reference/parked/ammo-12-ammunition-loadout-draft.md
+0954fa4056f739c9c7b6d00c06c61c9e5d554de7	reference/parked/armor-damage-types-concept.md
+4d16040e7147334f71347cee5b0b349e1f49f5ce	reference/parked/design-notes.js
+9f5567feaebc400640764c02975ba0272a1b08c2	reference/parked/djinn-fishing-concept.md
+347d5aa2cfc31c31ead6191810d2d52709295564	reference/parked/faction-quests-and-poi-density.md
+02cf35c4d626e72713c1a41dc8b6ad360efb3eb0	reference/parked/fish-01-fishing-concept.md
+d25159147f9e3f33803dbf9c3a95dde26dddb1d8	reference/parked/food-02-cooking-concept.md
+287b543beb587488f72320ae86e03dc9d15dab22	reference/parked/headshots-concept.md
+3ceedb709ee129bafc95959039858d2c6bc562f1	reference/parked/prisoner-quest-concept.md
+837937c5f4ea5824e3b45a91895dbdc560956dd8	reference/parked/retreat-rules-shop.md
+e3957e4f6b17d6a2a3e7eab0859ef876b0208aba	reference/parked/shoulder-slot-concept.md
+4f5618f6be9945b3ea2a6fc537a5eea295ed0a7a	reference/parked/wandering-church-scene.md
+d39669c8f7a99ebf4b96d046ceba08a7acecfa53	reference/parked/wandering-horde-ground-scene.md
+c2db01e24f22898518895d76dc61e813bcb50a37	reference/parked/wandering-workshop-scene.md
+6e9c16d1ab3c7cdf9a507c3ba9861a96b0192d8f	reference/parked/weapons-encyclopedia-wlm-draft.md
+fff3ef0fa90cd1495e60e620dd3c90534d689414	reference/pf15-save-continue-slice.md
+04dde773e35ed579cd7603a2676515fb0c2c1c82	reference/playtest-findings-oct15.md
+fdc5e4cc3ce2b2cf0b0097959b186423be858e34	reference/poi-framework-v1-brief.md
+def215ab46378a6df22aa6eb788f728957f212a6	reference/post-stress-01-next-batch-recommendation.md
+6457be1f59157d7d93eacb226cd70e4a29a12d70	reference/progression-harness.js
+e026108a0930b0c233248b9666c8ce436cda9167	reference/r1-fx1-readiness-review.md
+907f571f48956bdf41964d87aa5ff4364a5f5fd8	reference/rb1-retreat-controls-slice.md
+c7ff229cd5107b99bf53ce3a3e4c9cab34184c9a	reference/route-01-route-builder-concept.md
+5657c5388245570fc2c077f16225e4aec0a85b36	reference/routes-preparation-implementation.md
+639f33f9ab7cea0866644e3b856cac4897c47d87	reference/scenario-b-and-first-downed-oct10.md
+e7d53c877427edbb5bd699238b6cbfc68a8f9b36	reference/season-01-seasons-concept.md
+e5663d9f4054202988cbda57b90de06b097ca1a2	reference/sim-harness-v1-brief.md
+c568f26560a1640bceaf731ce98205d006c3ba4f	reference/slice-retreat-broken-batch-a-draft.md
+000ced726d25d39846f77dddfffe5a6cb49d0a26	reference/sprite-prompts.md
+89b8446fd618ea8dcdbd1077a12a582840e16547	reference/starter-weapons-cb1-slice.md
+ff27107b60d1aa8cb13de4e136588a31913895c9	reference/stats-01-profession-xp-slice.md
+72dc532e48587672b497c1b3468baa746c1f67d7	reference/stock-01-stockpile-concept.md
+17542cc8449353c5184791e5296b017646f9c641	reference/stress-01-stress-economy-investigation.md
+22d9dd3997c7422649a57c179e20649d5d861daa	reference/trav-01-traversal-slice.md
+0e38ce090db8d95791e70de5d362044b27da5797	reference/tutorial-first-session-spec.md
+95cf3c561daaa6ab94bd70d764e2133315ad0190	reference/wandering-design-audit.md
+12cd38fff04bb6d62c67c01d66667bca91672a78	reference/wandering-fort-scene.md
+524e180af2c33dd01bdce2d06808283a1f290889	reference/wandering-tab-spec.md
+f1095a2d042bc33942cf977ac00176b33bfc70ac	reference/weapon-files-inventory.md
+c7851c382f5f82059ebb11d7050311ac5c8fa15b	reference/weapons-development-directive.md
+a755469333144bbbd2fe3b3e09017088b1196bd5	reference/zed-idler-design-lead-brief.md
+4309a83e6fbfbde164a4d36fa9b201374c6b80d3	reference/zombie-accuracy-sim-oct17.md
+5f853ad39cb3d785f2e80b464968bafba0549a5f	reports/anim-fix-2026-10-27/ANIM_FIX_REPORT.md
+6302258a8f2f3564530eb518931f4a802374ff4f	reports/anim-fix-2026-10-27/after-tiers.png
+353f366a3f68abe9508611000c91c188256a46be	reports/anim-fix-2026-10-27/before-tiers.png
+5e94bc2cd6e6a3e1a1bfa09fa10afec8a768bd9c	reports/anim-fix-2026-10-27/pre-change/CODE_STATE.md
+2a99556f1e2ae4c070461d135f617305f28ab9db	reports/anim-fix-2026-10-27/pre-change/Zombie Idler v2 - TEST SAVE.html
+ba724ac4331e86f55e7e0d6b2a0583110ec93071	reports/anim-fix-2026-10-27/pre-change/Zombie Idler v2.html
+cfa3bd9d1c9fc2ee349d63a58be697ba3a306ce1	reports/anim-fix-2026-10-27/pre-change/screens-v3.jsx
+034ad5dd451def11ba64ec705f12188b69c32718	reports/anim-fix-2026-10-27/pre-change/zombie-sprites.js
+7fa5f77742b483785f595cbac28a767f3004acf7	reports/anim-fix-2026-10-27/survivor-melee-swing-v4-grid.png
+99d71f80dcb4fb7a15817eb2d5a38cc75dfd047a	reports/anim-fix-2026-10-27/survivor-walk-punch-v4-grid.png
+c1eb76bf39c60ed1ffc97ec47279a3e35694b96c	reports/anim-fix-2026-10-27/wandering-walk-preview.gif
+917eef03c65d372446b122d8c5d6c224faf9b75b	reports/audit-idle-01/AUDIT_IDLE_01_REPORT.md
+78df9d67782a0c264b305338d7d92fa3cbb94701	reports/biome-chunks-2026-10-25/pre-change/00-document-index.md
+00cc16b156347a31db6fc48004d5bd3dcb193448	reports/clock-01/CLOCK-01_COMPLETION_REPORT.md
+c93dadcff24e3317bcbf367907b948382fa204a4	reports/clock-01/CLOCK-01_DOCS_REPORT.md
+b23385d2c2324ec5147468960914169e9f53f266	reports/clock-01/CLOCK-01_PARITY_FIX_REPORT.md
+e1172b425bedb29e6dde3bf50ced55c9bde75659	reports/clock-01/CLOCK-01_STEP1_REPORT.md
+8b7c806a236113a6c9a8f1f765d34c7539758a91	reports/clock-01/CLOCK-01_SYSTEM_AUDIT.md
+1be0fe8f8baf588fa6b6265cd6e9396c0064975c	reports/clock-01/STEP2_SURVEY_CHECK.md
+2ad37f76e86e772484040945b38501bf6887ddd8	reports/clock-01/TIMER_SURVEY.md
+0d64aa03fc40958f04fd859feeddbb689f675d83	reports/clock-01/decay-compatibility-final.log
+ec7a51759268f510995e17732e63d43a1cbe1fa4	reports/clock-01/equivalence-after.log
+7687189bcc8e15cbf21a99781d8d5572399ef067	reports/clock-01/equivalence-before.log
+7cd17defa8f6c6ad665b58ac165b7fb75d7af52d	reports/clock-01/equivalence-combined-fixed.log
+91527ab0291e4db60c43ed64dc447d6664f8300a	reports/clock-01/equivalence-combined.log
+cc8db86a06cab42a02d52f15fe941395b0999939	reports/clock-01/pre-docs/00-document-index.md
+8421c69f6413f1ca0c27c1e0490335eae60f6a4e	reports/clock-01/pre-docs/DESIGN_HANDOFF.md
+ef7eab31fe2a8a74104113ce8859a832db867eb2	reports/clock-01/pre-docs/playtest-findings-oct15.md
+4c294e42fec97e84708e1ee5c985633681129f3b	reports/clock-01/pre-docs/trav-01-traversal-slice.md
+8d1792704e0d2ca6be3fab229c66a030a25e5eef	reports/clock-01/regression-final.log
+b0764ccedef00432320fbbd6c15577373c9e4cbe	reports/clock-01/regression-followup.log
+da6be5cbd9b4053290690a35dc97e6a385f4f4a4	reports/clock-01/targeted-followup.log
+7536d1c982aa5c7d9c88d5764affe69403d997c8	reports/docs-oct22/DOCS-OCT22_COMPLETION_REPORT.md
+8127330f178e30959d8bb73f01aa5d34cc6ae962	reports/docs-oct22/pre-00-document-index.md
+9fd7b03a7ee252ace2c0334031bdd60c98c205f0	reports/docs-oct22/pre-CLAUDE_DESIGN_RULES.md
+fc2a87a31b4285b5323810693919be4275d2b0a3	reports/docs-oct22/pre-DESIGN_HANDOFF.md
+dc37bbd0ca719126e6660e1722b1a76130fc0b5f	reports/docs-oct22/pre-from-design-README.md
+14e9f37c369c8ea35f2fb5747432cdc77518c4e1	reports/docs-oct22/pre-pf13-DESIGN_HANDOFF.md
+f845b0e9092388712f2023e19187742e1a69cd38	reports/docs-oct22/pre-pf13-playtest-findings-oct15.md
+165623005e163fa4cfa684624bddb9aa26565568	reports/docs-oct22/pre-pf13-trav-01-traversal-slice.md
+29007a8734b6a9fbe7367ac893ac52dcc370a1e4	reports/docs-oct22/pre-to-design-README.md
+2e48b7172f4f477fdda973fe3c8e6ce58cfbeb63	reports/docs-oct24/pre-change/00-document-index.md
+a957fb48f71a66d4bce4e48fecc31e5b177fc93b	reports/docs-oct24/pre-change/CODE_STATE.md
+855b2a4acc67141a2bc70dcdd41f4c6ce3c29431	reports/docs-oct24/pre-change/CURRENT_BATCH.md
+9768e5a3c43fdde124f02b25c540e308c66f41e8	reports/docs-oct24/pre-change/DESIGN_HANDOFF.md
+2ed08f47aeabc32e8522324b4f315bac6b039c3b	reports/docs-oct24/pre-change/clock-01-slice.md
+e43d68425e32f1e642bc2308704efd891e0aa4b5	reports/docs-oct24/pre-change/routes-preparation-implementation.md
+38b09f5ccb9325bac49cfa881f14917dbe0260db	reports/docs-oct24/pre-change/trav-01-traversal-slice.md
+d3b31579a08a022b29ba5cf43570206fb403f6e7	reports/docs-oct25/DOCS_OCT25_REPORT.md
+ce33516263eaf922f1f981ddb86b5b13b27e9c3a	reports/docs-oct25/apply_c10_c21.py
+093ab300cfdd6ed0d0216f3d206263b1e1807182	reports/docs-oct25/apply_c1_c8.py
+dcdbbb20cea66436ee9e201c610612ed70639489	reports/docs-oct25/apply_c6c.py
+ea8f9ef63576d56aa96b4379c8a09af7ce1d232c	reports/docs-oct25/apply_c9.py
+b3e5a4400f5144a5ace276ce536b3ea950f810b5	reports/docs-oct25/apply_details.py
+a4412c5b381a9713b6094c109c3787e03b692d1b	reports/docs-oct25/apply_price.py
+bb39026b5fce5243f2f09903d3484b008c0002dc	reports/docs-oct25/pre-change/00-document-index-before-c10.md
+70c20641e05cf54510f2408162eddfda924ac980	reports/docs-oct25/pre-change/00-document-index-before-c6c.md
+223a65d8cdfb89f90a36b57b222203d14b1aceba	reports/docs-oct25/pre-change/00-document-index-before-c9.md
+ea36904bfc5a9365ac69b112295a43a2fb2c6675	reports/docs-oct25/pre-change/00-document-index-before-details.md
+1765709a3ed39630169493362df88984a3e5d5f0	reports/docs-oct25/pre-change/00-document-index-before-price.md
+eb9d03f05f0ae2eb9409f9dee36679b51231bf44	reports/docs-oct25/pre-change/00-document-index.md
+347923d5a12e56161184bc482dbc7e927a3648c7	reports/docs-oct25/pre-change/DESIGN_HANDOFF-before-c10.md
+b7d7a890fee698cb5e5d04dedc253676c62e13c3	reports/docs-oct25/pre-change/DESIGN_HANDOFF-before-c6c.md
+faf4deddc7c3852d07247690cb8c4edc4d6a10e9	reports/docs-oct25/pre-change/DESIGN_HANDOFF-before-c9.md
+5a175a9e790886fb196bfcf22ec02df4acaea757	reports/docs-oct25/pre-change/DESIGN_HANDOFF-before-details.md
+bf06e02473fc690168cb94b260bf8c539656fa1c	reports/docs-oct25/pre-change/DESIGN_HANDOFF-before-price.md
+5d683df873eb2019b6959d078853b763a8a40585	reports/docs-oct25/pre-change/DESIGN_HANDOFF.md
+16dc54325d2dfe113d863d3943de9913ddac1c29	reports/docs-oct25/pre-change/biome-01-chunks-slice.md
+0a8fdf11f49100a42621a3575201d537018a9783	reports/docs-oct25/pre-change/circuit-expedition-concepts-before-c10.md
+57d66d8c547297d23fc86853193b2221a0a1c926	reports/docs-oct25/pre-change/circuit-expedition-concepts-before-c6c.md
+67fb1124061cbc83ee1fb6fe113c31317329fa50	reports/docs-oct25/pre-change/circuit-expedition-concepts-before-c9.md
+b8959a0433cd9f35dedfeb153073be68a9ff851a	reports/docs-oct25/pre-change/circuit-expedition-concepts-before-details.md
+7516ac5e86f8324d0f819a148978d413e3dd0a02	reports/docs-oct25/pre-change/circuit-expedition-concepts-before-price.md
+b1fa9df4d78cc680ffac5fd727e85d3f237568c3	reports/docs-oct25/pre-change/circuit-expedition-concepts.md
+8d4ea539a26cc5ce2d071a3a347a1f491af4e373	reports/docs-oct25/pre-change/retreat-rules-shop-before-price.md
+4062b3e540fb276237dbedb8709033041a95b4f9	reports/docs-oct25/pre-change/retreat-rules-shop.md
+417353ffd48c0e89ea49261f47ff4c88f47a3511	reports/docs-oct25/pre-change/route-01-route-builder-concept-before-c10.md
+16d85d3e90573c81b16ec67549a36161228b5a6b	reports/docs-oct25/pre-change/route-01-route-builder-concept.md
+31cbb1b6abd02e84f57bf3b2d961de2f0c487bb6	reports/docs-oct25/pre-change/tutorial-first-session-spec.md
+58a7d8cc8176ad8e2485e41a2ecfbc5a1a641276	reports/docs-oct26/DOCS_OCT26_EVE_REPORT.md
+582410ae7a2606347797ca75f603fcf022cfb485	reports/docs-oct26/DOCS_OCT26_PM_REPORT.md
+4b87d02797ba50a042ec114076a49128508b81fc	reports/docs-oct26/DOCS_OCT26_REPORT.md
+eb0896e9633e80ffe58efae917816d44775157a7	reports/docs-oct26/apply_oct26.py
+9392587a21636c214f0aa6f95736eae868d7deae	reports/docs-oct26/apply_oct26_b.py
+9c867cca4651b70e853a61f916c457c2a594c592	reports/docs-oct26/apply_oct26_eve.py
+981d3b28a5c2efd08ebe682a24fa5bc055ad1edf	reports/docs-oct26/apply_oct26_pm.py
+4ae67ec1a2fdf7c6bae39c10d17de69a79807742	reports/docs-oct26/pre-change-eve/00-document-index.md
+bbdbce9220a3caba53f7e92f64c460b86f896e5a	reports/docs-oct26/pre-change-eve/DESIGN_HANDOFF.md
+6102d21c3fbbbc8ce88c269ddaa8f1b842183d36	reports/docs-oct26/pre-change-eve/biome-01-chunks-slice.md
+bc0ffeec84f82fe398a3d8ef3b37e57fce33f360	reports/docs-oct26/pre-change-eve/playtest-findings-oct15.md
+55009e8a01c37bf3a9dbc992ae500e05738137b3	reports/docs-oct26/pre-change-eve/trav-01-traversal-slice.md
+6220d80e5fa587851f5f2351bd06079acf89995b	reports/docs-oct26/pre-change-pm/00-document-index.md
+60bb261134f5d56a7bb753006b3ca899dda96d27	reports/docs-oct26/pre-change-pm/DESIGN_HANDOFF.md
+1f04efa016aa0588699b447168df80b1134b019a	reports/docs-oct26/pre-change-pm/LEVEL12_REPORT.md
+cd4aedaec4900098c918c793132537c2110185b3	reports/docs-oct26/pre-change-pm/balance-03-round8-regen-oct21.md
+342d5699b88523993a9e80996a649baaa2efc77f	reports/docs-oct26/pre-change-pm/concordance-introduction-concept.md
+2d71b429fe319b1fe34be2160b90969cb18be156	reports/docs-oct26/pre-change-pm/food-01-nutrition-slice.md
+15cf0a13daed1eacc6ec398e96c6fdf01d13eb81	reports/docs-oct26/pre-change-pm/food-02-cooking-concept.md
+057c1bd595feb50c53e048706908a68d95587d25	reports/docs-oct26/pre-change-pm/playtest-findings-oct15.md
+9e50cac9057a70e2650bb443b6f0b55d9ef15d65	reports/docs-oct26/pre-change-pm/route-01-route-builder-concept.md
+745ab61f5d882e6e0e8b9894e2c457f53fe63e71	reports/docs-oct26/pre-change-pm/sim-harness-v1-brief.md
+a41c3ceb9f1bd20e5a42012524a28b07c2f50d07	reports/docs-oct26/pre-change-pm/slice-retreat-broken-batch-a-draft.md
+de3425da39327c9af53d72935276e597fa6c77d7	reports/docs-oct26/pre-change-pm/trav-01-traversal-slice.md
+99386e37c5feb520e720877a7c3a7381c27647d3	reports/docs-oct26/pre-change-pm/tutorial-first-session-spec.md
+a0d17530cd400f846534b7bbcb857ec95bb28365	reports/docs-oct26/pre-change-pm/wandering-design-audit.md
+ecc3ea38748045b589171d11b1980f361f01acae	reports/docs-oct26/pre-change-pm/wandering-fort-scene.md
+f8500161fc004f38138fb9bc7368108e805c20a0	reports/docs-oct26/pre-change-pm/wandering-tab-spec.md
+680f030d5ef58dfa74ef7fae4183f29cc532c71a	reports/docs-oct26/pre-change-pm/weapons-development-directive.md
+1eec5839e391b6069515dff3713b52b6516bbe32	reports/docs-oct26/pre-change/00-document-index.md
+73826480ce04326b6eea34db69be0763dbab2482	reports/docs-oct26/pre-change/DESIGN_HANDOFF.md
+f257c9e312ee735f98c6ec26d73e8234b79b9740	reports/docs-oct26/pre-change/balance-03-round8-regen-oct21.md
+e8f6070f48b4008f7c2101ee41b99d5cf0e0b8b6	reports/docs-oct26/pre-change/food-01-nutrition-slice.md
+ffeb0e38bb48a4035aa2bd19ee68be88d41493c2	reports/docs-oct26/pre-change/food-02-cooking-concept.md
+bc98dfb024c188afaaaf32d18d60d99c5b7c84f9	reports/docs-oct26/pre-change/sim-harness-v1-brief.md
+76cdd63b9704c273f44bac5d6b85b8c26a79f4d4	reports/docs-oct26/pre-change/slice-retreat-broken-batch-a-draft.md
+72dc532e48587672b497c1b3468baa746c1f67d7	reports/docs-oct26/pre-change/stock-01-stockpile-concept.md
+0a6d5f9c94f69671fb3ad42ba05fe1755619abec	reports/docs-oct26/pre-change/tutorial-first-session-spec.md
+6de463e0378724479966795ea0c6c97c6ec8c26f	reports/docs-oct26/pre-change/wandering-design-audit.md
+1513e6e13e36a20f93c35f472a11cee274cc48b5	reports/docs-oct26/pre-change/wandering-fort-scene.md
+59adbe1c5bcaebfc55ff07dbbcea4cb8bd202018	reports/docs-oct26/pre-change/wandering-tab-spec.md
+f6ab64c42c62cd26c1a05d60305ee38add77d445	reports/docs-oct27/ADDENDUM_OCT27.md
+a154d98db701665b60903e3e360b3b9db205734d	reports/docs-oct27/DOCS_OCT27_EVE_REPORT.md
+2b917a92a5f1998cf04737f56136a65da8da1ef5	reports/docs-oct27/DOCS_OCT27_PM_REPORT.md
+dd25fbbe4ff8262e36f8ee654e056d0e97d0c330	reports/docs-oct27/DOCS_OCT27_REPORT.md
+31fec376ffd23521403bad116c3bd9a201118287	reports/docs-oct27/apply_oct27.py
+273cbeb56669e6dafae871922b002bf1d55d3eed	reports/docs-oct27/apply_oct27_eve.py
+683b5c2d9aed5d0d06c372277483cf6fe0cf323e	reports/docs-oct27/apply_oct27_eve2.py
+0799db25d59e8286f316de020000c626a3cc9f60	reports/docs-oct27/apply_oct27_pm.py
+f9491b4787dd4434c5a95d57b8c15f156cc51e33	reports/docs-oct27/pre-change-eve/DESIGN_HANDOFF.md
+66d4f29e5f61e0abcc9930b4bcd537bda7ea020d	reports/docs-oct27/pre-change-eve/reference__00-document-index.md
+3e2068db23d4724f5888908414d72515e45d1498	reports/docs-oct27/pre-change-eve/reference__parked__fish-01-fishing-concept.md
+85e9452ef7fa1b4b655c145b6e2a83f6163a8efe	reports/docs-oct27/pre-change-eve/reference__parked__food-02-cooking-concept.md
+cfc82cb4360c5220666d80381d1a11384ce9a11e	reports/docs-oct27/pre-change-eve/reference__tutorial-first-session-spec.md
+4fc04a0423d18318f3904b1d5b877e5b2a6bbc60	reports/docs-oct27/pre-change-eve/reference__wandering-tab-spec.md
+a0e97a17c96cd2cc3c9396bda79665658ab3a88b	reports/docs-oct27/pre-change-eve2/DESIGN_HANDOFF.md
+ca5bd7112cc7d118f370896f790dcd09da48198d	reports/docs-oct27/pre-change-eve2/reference__00-document-index.md
+08f5c84c90fa1de0c23247d37718c446e322b280	reports/docs-oct27/pre-change-eve2/reference__parked__fish-01-fishing-concept.md
+bc061493d0cd412a777f703341c954f33b2c284d	reports/docs-oct27/pre-change-eve2/reference__tutorial-first-session-spec.md
+4cd1fd45201dc1f5ff7b2014db8517bceae77f70	reports/docs-oct27/pre-change-eve2/reference__wandering-tab-spec.md
+42a08983ff4c096f148ba498d09ec528c61bd851	reports/docs-oct27/pre-change-eve2/reports__docs-oct27__DOCS_OCT27_EVE_REPORT.md
+84c438af9d60dc215f76614b364065b564b6a91f	reports/docs-oct27/pre-change-eve3/DESIGN_HANDOFF.md
+cea3e04cc4a79572fc12a5a0e3997a80bf120255	reports/docs-oct27/pre-change-eve3/reference__slice-retreat-broken-batch-a-draft.md
+1fcb228ffd36cf90329b7333a431e81bb8221533	reports/docs-oct27/pre-change-pm/reference__00-document-index.md
+322457bf069b4e683de31ba360ddd2f767c9e6d9	reports/docs-oct27/pre-change-pm/reference__biome-01-chunks-slice.md
+8cb67efc341b09ec71d72a3a116a7a2d71ab7dda	reports/docs-oct27/pre-change-pm/reference__concordance-introduction-concept.md
+ccc9f51f7d47c8ae83c61d7e447fc3a17632f13e	reports/docs-oct27/pre-change-pm/reference__parked__faction-quests-and-poi-density.md
+171394d0e1a0f01823b63cfed1fedb99379c8743	reports/docs-oct27/pre-change-pm/reference__pf15-save-continue-slice.md
+5114322a1f767fef0a6b9caed357f0a0dac7b88b	reports/docs-oct27/pre-change-pm/reference__trav-01-traversal-slice.md
+24e133ebc84ec4a36b44579b16264299e551b080	reports/docs-oct27/pre-change-pm/reference__wandering-tab-spec.md
+ada4635aef157341a51322aaca53464202a0e9cb	reports/docs-oct27/pre-change/DESIGN_HANDOFF.md
+ff6001da1e78b7871fe8f607a15e0907c576eb38	reports/docs-oct27/pre-change/PARKED.md
+109ff3cbd2a67bf7fd51d5dd8f7e83f85c98579d	reports/docs-oct27/pre-change/reference__00-document-index.md
+90e9c33bbbe115a6099b0bc70fa298dab4ac4ef2	reports/docs-oct27/pre-change/reference__food-01-nutrition-slice.md
+1824e29b236ec290fd948f8a52d737bf099796d0	reports/docs-oct27/pre-change/reference__parked__djinn-fishing-concept.md
+abc165eeef583a991c7b33d9f80fbf4335ab2437	reports/docs-oct27/pre-change/reference__parked__food-02-cooking-concept.md
+568faaa754ebc49361c417a915ffb26e42c02fd7	reports/docs-oct27/pre-change/reference__playtest-findings-oct15.md
+fe8d8a981f48b9ebb9098c8852492a51164f636f	reports/docs-oct27/pre-change/reference__poi-framework-v1-brief.md
+ce8140afbd491671cb23ef8faf017e344c0e7e6e	reports/docs-oct27/pre-change/reference__wandering-tab-spec.md
+e69de29bb2d1d6434b8b29ae775ad8c2e48c5391	reports/h2-full-2026-10-24/failed-background-attempt.log
+237f6ed71345bb65eff1bb24e02877ea3b1f6dc8	reports/h2-full-2026-10-24/source-snapshot.tar.gz
+02f64143bb119e31e3c35f6ab11f945e9bf5c1f3	reports/level-12/LEVEL12_REPORT.md
+b1fb8e0db190a8316052bd26cad59f5b952b2537	reports/mobile-nav-2026-10-24/pre-change/Zombie Idler v2 - TEST SAVE.html
+274747a6b5c498a5e025b4b635e0c900ab618f5b	reports/mobile-nav-2026-10-24/pre-change/Zombie Idler v2.html
+a1087cfde019b6bddb4db6a4e896c8334035c4f8	reports/oct22-readonly/DESIGN_HANDOFF.before-rig.md
+6ef866b23fdeaa457960ae5edae07c97413d59d1	reports/oct22-readonly/READONLY_REPORT.md
+853380d38098ec6e3cd98899a010098bb6a465b7	reports/pf17-hp-durability-2026-10-27/pre-change/CODE_STATE.md
+e755d6615beb3db5c14ea59f0bb6ef5811e4457c	reports/pf17-hp-durability-2026-10-27/pre-change/Zombie Idler v2 - TEST SAVE.html
+3ff9e2b87bd74cfdabf693bba7dd31047c1d409d	reports/pf17-hp-durability-2026-10-27/pre-change/Zombie Idler v2.html
+e9a3ff2c6ad125d07b8617d99e60ffd25fa06b7b	reports/pf17-hp-durability-2026-10-27/pre-change/playtest-findings-oct15.md
+896faab518baab0105306f0f3024094c5d0bebcd	reports/pf17-hp-durability-2026-10-27/pre-change/screens-v3.after-first-pf17.jsx
+17853909396b02e0ff29e5c55ac4cde5a51b5879	reports/pf17-hp-durability-2026-10-27/pre-change/screens-v3.before-pf17c.jsx
+74c5b4e8a3d5973a1ce97f8de670a35b8d8f1aae	reports/pf17-hp-durability-2026-10-27/pre-change/screens-v3.jsx
+b7da575e9185405bed76ff9062924bb3a57f5b10	reports/routes-brainstorm-2026-10-23/APPLY_PREPARATION.cjs
+808708631cb01456ad075143faba22244267a4de	reports/routes-brainstorm-2026-10-23/PARSING_RECORDS.json
+34ce55086f12c125c822c3c91c0575a6f537d6ed	reports/routes-brainstorm-2026-10-23/ROUTES_REVIEW.md
+b61f0b201312be228a2fb75e23fc54f4b6a48a7a	reports/routes-idle-fixes-2026-10-23/FIX_REPORT.md
+0394fb19dbab6b31f23d10e2b8373d63e970e9fd	reports/routes-idle-fixes-2026-10-23/INITIAL_REGRESSION_TEST.js
+8add0a6037d0c319b0fe6bc396a894f2535e39ed	reports/routes-idle-fixes-2026-10-23/PRE_CHANGE_HASHES.json
+6c66d771e70b9b80eb92e4f444cded35c8051a46	reports/routes-idle-fixes-2026-10-23/SMOKE_RESULTS.json
+81348fcc671f31e19533ba7e39f20b445d6eb468	reports/routes-idle-fixes-2026-10-23/TEST_RESULTS.json
+625dddd57631012364e7ec51ca963196afb18797	reports/routes-idle-fixes-2026-10-23/pre-change/CODE_STATE.md
+bc0d974f4b8f9339c4c6cdb43f049d101f9f3245	reports/routes-idle-fixes-2026-10-23/pre-change/Zombie Idler v2 - TEST SAVE.html
+4010839b7c6454b8dcd7ea0a57d91b4a23812a9b	reports/routes-idle-fixes-2026-10-23/pre-change/Zombie Idler v2.html
+602317f881684f3d687bfca920a9d5cc2354691f	reports/routes-idle-fixes-2026-10-23/pre-change/game/routes.js
+6993176fcc0d6be0ce267a3d3b6b40209236fc35	reports/routes-idle-fixes-2026-10-23/pre-change/tests/split-equivalence.test.js
+62640e27027b636e8b5b4951d3d233e265068e59	reports/routes-preparation-2026-10-23/AUDIT_RESULTS.json
+f3da0f158bac0432bb2c94e52536c9d18b636bbc	reports/routes-preparation-2026-10-23/FOCUSED_RESULTS.json
+e0fb34f8c697c5c3f42d34c6a9c9932194b67184	reports/routes-preparation-2026-10-23/IMPLEMENTATION_REPORT.md
+5f249b32d8884d9a82e67d6a548e33a3642dcb8b	reports/routes-preparation-2026-10-23/PRE_CHANGE_HASHES.json
+6c66d771e70b9b80eb92e4f444cded35c8051a46	reports/routes-preparation-2026-10-23/SMOKE_RESULTS.json
+519738744671bf87c349e3a35754c756ad70bcbd	reports/routes-preparation-2026-10-23/TEST_RESULTS.json
+ed9379bf87a421ca4e01ffef55eee749ba2912b2	reports/routes-preparation-2026-10-23/pre-change/CODE_STATE.md
+99a34a5e6f0a2cc70d7a8e2d1691c314af4965fc	reports/routes-preparation-2026-10-23/pre-change/DESIGN_HANDOFF.md
+81c6026390c45e9980b57412ced182d611ba20cb	reports/routes-preparation-2026-10-23/pre-change/Zombie Idler v2 - TEST SAVE.html
+d9207446d7e57c68119b516753e9bc757632663c	reports/routes-preparation-2026-10-23/pre-change/Zombie Idler v2.html
+ed9ad274db9001567d291bbf12f8c234ba392b72	reports/routes-preparation-2026-10-23/pre-change/game/routes.js
+3e21590e678290d4a7091701f312b27bddb10d62	reports/routes-preparation-2026-10-23/pre-change/reference/00-document-index.md
+1e6863ae4d327445deb3167c51684ccf2842f240	reports/routes-preparation-2026-10-23/pre-change/tests/routes-idle-rewards.test.js
+e8e8aba9b0c895413d2af38176ba78fb5a9542e1	reports/routes-preparation-2026-10-23/pre-change/tests/split-equivalence.test.js
+951e417d5daa3d52c33d58dc7d1decbc925eb813	reports/routes-preparation-2026-10-23/pre-change/tests/trav-01a.test.js
+8b1259182908667d56268cb93e38d74bfa2db8ce	reports/shop-cards-2026-10-27/REPORT.md
+581a141a800e2caa0ca5bac209b82a2ce0978309	reports/shop-cards-2026-10-27/pre-change/CODE_STATE.md
+2ea2348df09486685e7d0061c81b62c80e21ec54	reports/shop-cards-2026-10-27/pre-change/Zombie Idler v2 - TEST SAVE.html
+578c968cb8099dabec9cf4c067a5f811a47f2401	reports/shop-cards-2026-10-27/pre-change/Zombie Idler v2.html
+57e1098313bb3fbf74b4b95812a2708f0fff8d04	reports/shop-cards-2026-10-27/pre-change/crafting-frame-proposals.css
+f5022805a06ed5757dbf75736b55600dc69ac70f	reports/shop-cards-2026-10-27/pre-change/crafting-frame-proposals.js
+0757e8e6c9c20201a2e2905faa383cf5383ba93c	reports/shop-cards-2026-10-27/pre-change/crafting-frame-proposals.jsx
+9cae6296c57f1d34282a8d60c088ce06afa90d40	reports/shop-cards-2026-10-27/pre-change/crafting-frame-proposals.md
+8ca130c82aaf3f7ad92c37a117863bdbc55cf679	reports/shop-cards-2026-10-27/pre-change/economy.js
+f86fa924e8727bfb2d69f9098fd8fb9537fbe640	reports/shop-cards-2026-10-27/pre-change/screens-v2b.jsx
+0fdace4312ca813f3572bdd1123d96b6fef23faa	reports/shop-cards-2026-10-27/pre-change/split-equivalence.test.js
+313118f180eead55604b9577bb90786054dbef71	reports/sim-harness-v1/best1/A_criminal_101.json
+63b5ef7161200e1a781a03f60e213575996afa47	reports/sim-harness-v1/best1/A_criminal_202.json
+d8aa8c3449df55dc722524225eaedb1179cf3234	reports/sim-harness-v1/best1/A_criminal_303.json
+00543925c93dd207dd2a62eafdcb1d56690d3d81	reports/sim-harness-v1/best1/A_criminal_404.json
+c51484976fbe2fc7d5c73b8166b557b7ead93095	reports/sim-harness-v1/best1/A_criminal_505.json
+3c010136cc44fded3af8caf7f868c3a901c6ad94	reports/sim-harness-v1/best1/A_ethical_101.json
+d9bd810028387083176bbfedcb4be87f26e12f83	reports/sim-harness-v1/best1/A_ethical_202.json
+94d891b13f7fa6071bb16e45176aed3190e78325	reports/sim-harness-v1/best1/A_ethical_303.json
+b195edd0832d4df115822f926973d1e81de79400	reports/sim-harness-v1/best1/A_ethical_404.json
+8568bc767db3d4f908de9f118948b45e42768e9e	reports/sim-harness-v1/best1/A_ethical_505.json
+a7d452a63ee8b1c9ef4766c7cc5276b1f2299df6	reports/sim-harness-v1/best1/A_heinous_101.json
+75d928a1c580ca88e930491625f8ac444781cbe7	reports/sim-harness-v1/best1/A_heinous_202.json
+b5eaefcb2923977f6c43da15376bab4d602c0f61	reports/sim-harness-v1/best1/A_heinous_303.json
+702988c2adf9f4b6430a642470bb726bc02c490f	reports/sim-harness-v1/best1/A_heinous_404.json
+f4ee7ebb43374a375d4ab1901232c489287fd3ed	reports/sim-harness-v1/best1/A_heinous_505.json
+4aac82ef135c22db1a7f98d395f385a4891c428b	reports/sim-harness-v1/best1/A_immoral_101.json
+982f7154d9dc31769e21efa783804e5d53eafda9	reports/sim-harness-v1/best1/A_immoral_202.json
+a0f7680ed288bc0f2c0763375b336c189b780d61	reports/sim-harness-v1/best1/A_immoral_303.json
+abf37e2b7abdcbb7906b6d572dc47a91d6a1d98c	reports/sim-harness-v1/best1/A_immoral_404.json
+e4a48ff90791f2bfa1b5b8eee157c8a9d71aa5fe	reports/sim-harness-v1/best1/A_immoral_505.json
+380ad8e52779d98f00ba90b10ce76203a08d3682	reports/sim-harness-v1/best1/B-bat_criminal_101.json
+60aba44bb0c8551ca282e239620cdd1b9b5a3c10	reports/sim-harness-v1/best1/B-bat_criminal_202.json
+510ec186d57489fd3a391f0adc1a0be92013716b	reports/sim-harness-v1/best1/B-bat_criminal_303.json
+8b400df1422e1fc9c8f40b3c21951e36b18c025e	reports/sim-harness-v1/best1/B-bat_criminal_404.json
+7362589cc020929456799ebdb13962c5d0fd315b	reports/sim-harness-v1/best1/B-bat_criminal_505.json
+dc46e77e7bcb0fd0102cb7321bb506ebee519e6a	reports/sim-harness-v1/best1/B-bat_ethical_101.json
+ee07761da3485913694345c85bfe1e3bf0124176	reports/sim-harness-v1/best1/B-bat_ethical_202.json
+55b7c077dc43e04c1374224a977402b91ceff76c	reports/sim-harness-v1/best1/B-bat_ethical_303.json
+c6f7e75fbc1786e2d99c01ebcc06e00d34a04f47	reports/sim-harness-v1/best1/B-bat_ethical_404.json
+6e31e04380ac8306b1a00fbd1fd11dc5dc21f83b	reports/sim-harness-v1/best1/B-bat_ethical_505.json
+827b02cb1a891ac5b725f4b5b82e4e1fee80061a	reports/sim-harness-v1/best1/B-bat_heinous_101.json
+32533341d2454fc2f13fbda72baefb36c3d82386	reports/sim-harness-v1/best1/B-bat_heinous_202.json
+87a08f4db9fbf2811a72394828f1aad9a615e4ac	reports/sim-harness-v1/best1/B-bat_heinous_303.json
+d74724143e57e293d999fc7ec9db000ae86b232a	reports/sim-harness-v1/best1/B-bat_heinous_404.json
+0f1bddc7a0ff5ecbb1e1bcd55d439287c99672f2	reports/sim-harness-v1/best1/B-bat_heinous_505.json
+97e81ef6efc6891805b4ed5265ba0230598d9e02	reports/sim-harness-v1/best1/B-bat_immoral_101.json
+5390729ec7b6ca044aa2579485215226b637236f	reports/sim-harness-v1/best1/B-bat_immoral_202.json
+05fd12c72ec5ff933e44afb8457220e01d3ac727	reports/sim-harness-v1/best1/B-bat_immoral_303.json
+ce2a830f432d50590f2ad5c4cb106be9c72bc79f	reports/sim-harness-v1/best1/B-bat_immoral_404.json
+245786a480cdc03b035817f7db503aa67f06cfd5	reports/sim-harness-v1/best1/B-bat_immoral_505.json
+61ef45b58a1bd4a618c1165ac3014f02cdb72aad	reports/sim-harness-v1/best1/B-iron_knuckles_criminal_101.json
+81647ae2f50662357546a436ee65463a3d544865	reports/sim-harness-v1/best1/B-iron_knuckles_criminal_202.json
+0406b4e7120861850f171a4818013d0d57c9d30a	reports/sim-harness-v1/best1/B-iron_knuckles_criminal_303.json
+d729f2a7e876bd13e266db9a674bd46ea2e04546	reports/sim-harness-v1/best1/B-iron_knuckles_criminal_404.json
+4b8eeabc313aef02971bc801df06b7f62cc2f1e4	reports/sim-harness-v1/best1/B-iron_knuckles_criminal_505.json
+853780181b254fd4096e2ac3bc884ab5e6c7e1fb	reports/sim-harness-v1/best1/B-iron_knuckles_ethical_101.json
+35da065c7ddc9c79049463a674ed30dbb8611f39	reports/sim-harness-v1/best1/B-iron_knuckles_ethical_202.json
+80e86a0eb3286afb0101a4f10f8ad9071b9d496a	reports/sim-harness-v1/best1/B-iron_knuckles_ethical_303.json
+ecac9f96ecf8f9b17fcec7fd166fa0ae2403d2f7	reports/sim-harness-v1/best1/B-iron_knuckles_ethical_404.json
+5291fb29a363d266ec4c3dd3453a728e967153e3	reports/sim-harness-v1/best1/B-iron_knuckles_ethical_505.json
+6a8576c2f2882da5d8ffebb334ce724f9b36c44d	reports/sim-harness-v1/best1/B-iron_knuckles_heinous_101.json
+4ae7afb6267f872e6cec0ee738e8bc52c772ce50	reports/sim-harness-v1/best1/B-iron_knuckles_heinous_202.json
+44364601045cc312a987021b8b9cb1c0c77a7592	reports/sim-harness-v1/best1/B-iron_knuckles_heinous_303.json
+c8b26e9a2500c9cac68a32a6822db393e4f2758a	reports/sim-harness-v1/best1/B-iron_knuckles_heinous_404.json
+53c2fc01d1e7d17fd902c6f782b889c5b061d71f	reports/sim-harness-v1/best1/B-iron_knuckles_heinous_505.json
+5443012d9b636cb89ecb33a2883d2b9a5520e0de	reports/sim-harness-v1/best1/B-iron_knuckles_immoral_101.json
+fa83a82729977bcfe0c9ef286a386346acc2733f	reports/sim-harness-v1/best1/B-iron_knuckles_immoral_202.json
+b657fae8a9a4fcc79411ea52366191ff7942da0d	reports/sim-harness-v1/best1/B-iron_knuckles_immoral_303.json
+f459ffa88800bcf591ec822b1e60b4202890f4f6	reports/sim-harness-v1/best1/B-iron_knuckles_immoral_404.json
+37d9af3d26f09c22a380380ed5ed4fe5a3b876bf	reports/sim-harness-v1/best1/B-iron_knuckles_immoral_505.json
+b7cea8444d82c9d868998e2fe5e303d55e03e6ff	reports/sim-harness-v1/best1/B-pocket_knife_criminal_101.json
+8e5c733010195a89116d9692a19e829d8f4bdb55	reports/sim-harness-v1/best1/B-pocket_knife_criminal_202.json
+f12fb593a28187f94ff5b4319d69e5f7c5eea794	reports/sim-harness-v1/best1/B-pocket_knife_criminal_303.json
+937d4420e48335b57007180357b68a57afe02aab	reports/sim-harness-v1/best1/B-pocket_knife_criminal_404.json
+70ca6d2b68ba15a1638391dde58c51d1857e86af	reports/sim-harness-v1/best1/B-pocket_knife_criminal_505.json
+0b0fd0927a9a51c8d97d5cd9afe1ce4843b0518b	reports/sim-harness-v1/best1/B-pocket_knife_ethical_101.json
+424f2e562df6000c4a2aa7966cd370e288a23c23	reports/sim-harness-v1/best1/B-pocket_knife_ethical_202.json
+e385528ac92ff9fa9bcd7ba6b0f045806af17b31	reports/sim-harness-v1/best1/B-pocket_knife_ethical_303.json
+c86388d62f0c734176df4d9f53c2e74dcb146e27	reports/sim-harness-v1/best1/B-pocket_knife_ethical_404.json
+27959e47b50f7470b9b03e913d26a0d1b71dda63	reports/sim-harness-v1/best1/B-pocket_knife_ethical_505.json
+b16b1f53e791c9ae898d08388d9bae74d0884500	reports/sim-harness-v1/best1/B-pocket_knife_heinous_101.json
+a8cccf326a62ab274d25aa01c333f86913f59bfa	reports/sim-harness-v1/best1/B-pocket_knife_heinous_202.json
+59c121ef159dff8ecd906ed96189aa4deb4ada03	reports/sim-harness-v1/best1/B-pocket_knife_heinous_303.json
+d44644f8b30d35e3ccdb40ccf49ec111016b987f	reports/sim-harness-v1/best1/B-pocket_knife_heinous_404.json
+51e0c64741249d4a6c583fda1049db43264351cd	reports/sim-harness-v1/best1/B-pocket_knife_heinous_505.json
+67ed47ad0912a7c3ed073ea7f0df06a136c4f4fb	reports/sim-harness-v1/best1/B-pocket_knife_immoral_101.json
+4d21b401e2199f1db7c9dbf0268016adc9f1eb6d	reports/sim-harness-v1/best1/B-pocket_knife_immoral_202.json
+2f3eaf532e47648429b1211493092d4cdf04d054	reports/sim-harness-v1/best1/B-pocket_knife_immoral_303.json
+384b282c8f7ca517dc59fa57dcac9088d40d9c86	reports/sim-harness-v1/best1/B-pocket_knife_immoral_404.json
+3a8985df8f88c713cee163cee73e46c0958e3853	reports/sim-harness-v1/best1/B-pocket_knife_immoral_505.json
+498cc965a8bc6b150c615f34975e67957bee3400	reports/sim-harness-v1/best1/SUMMARY.md
+30eb580dcd9716ddf2e68aef7802fa3183f49e61	reports/sim-harness-v1/best1/records.tgz
+f24c9f32084390edaf2bc1efed409fa333d01f67	reports/sim-harness-v1/dry/A_ethical_101.json
+aadbd18f3f9ee6139e7e4f817a072ab16bece61d	reports/sim-harness-v1/dry/B-bat_ethical_101.json
+02bf68e9f0546836473324c5ac9d1e3b60bfd46c	reports/sim-harness-v1/dry/B-iron_knuckles_ethical_101.json
+98203c96d402eedc913a4b2c096434afe9a94c90	reports/sim-harness-v1/dry/B-pocket_knife_ethical_101.json
+6142676769311127647bc816028eb1d0ace8f144	reports/sim-harness-v1/dry/SUMMARY.md
+c8fec5b19ea7d3f6c2a7baf2da919d5518191eff	reports/sim-harness-v1/legacy-oct17/A_criminal_101.json
+30023fa7301868036d1d1d9337f42342c336f098	reports/sim-harness-v1/legacy-oct17/A_criminal_202.json
+2881096560a9f57f737bf705f1df90ae5aa39434	reports/sim-harness-v1/legacy-oct17/A_criminal_303.json
+bb426131bf6d00426c8d2be5f3964573494277eb	reports/sim-harness-v1/legacy-oct17/A_criminal_404.json
+264fe98b8ea3f4bb6664a186fc7a3fc1a2d82afb	reports/sim-harness-v1/legacy-oct17/A_criminal_505.json
+be9cda8074a8f8fddc00c5b48230d175aa2060a2	reports/sim-harness-v1/legacy-oct17/A_ethical_101.json
+7e3fdbee930a8bb726729d31819baf52cc59ef45	reports/sim-harness-v1/legacy-oct17/A_ethical_202.json
+0c20b4b3509a93cc7c14a0b4a6065b7bad5f4d34	reports/sim-harness-v1/legacy-oct17/A_ethical_303.json
+5cad0d19ee9554c2e117fe11e716224bb4effb17	reports/sim-harness-v1/legacy-oct17/A_ethical_404.json
+3d7f6035ccc9a7e1b676f5aad0997e2324dfe0ed	reports/sim-harness-v1/legacy-oct17/A_ethical_505.json
+3651c175615925906f3b59d83bf7fa170935f5c4	reports/sim-harness-v1/legacy-oct17/A_heinous_101.json
+0103d1ae5e1bad7b4e9e871c43669ce645fff4fa	reports/sim-harness-v1/legacy-oct17/A_heinous_202.json
+ec4cfdebd15a0ce9dafcdd7dfe656b3c17291433	reports/sim-harness-v1/legacy-oct17/A_heinous_303.json
+ee1e60a44968566051ef6f3df20580e95e069a8b	reports/sim-harness-v1/legacy-oct17/A_heinous_404.json
+4a2997774e217f0c0d2746c80777402d0eb5f612	reports/sim-harness-v1/legacy-oct17/A_heinous_505.json
+23726733b4129c8c3855c254d1635b9ee90abecc	reports/sim-harness-v1/legacy-oct17/A_immoral_101.json
+0c8ef6a31292fc3f00bda39fef217c9eef2de733	reports/sim-harness-v1/legacy-oct17/A_immoral_202.json
+b66164d262b189fd9cb70e4853b92bcc208a2402	reports/sim-harness-v1/legacy-oct17/A_immoral_303.json
+f4a274f007d85b71b3b746ba7b513397aa0be295	reports/sim-harness-v1/legacy-oct17/A_immoral_404.json
+e9268233e1ddaa7c146cff1b40525127a5770bef	reports/sim-harness-v1/legacy-oct17/A_immoral_505.json
+0e41de6e3bc210fa6a7cfa531df9a4551f8773e1	reports/sim-harness-v1/legacy-oct17/B-bat_criminal_101.json
+d7806ae48affb49d22e61575901f397b270de8a1	reports/sim-harness-v1/legacy-oct17/B-bat_criminal_202.json
+657cce74efad4d26cb45b7a7a628a34fe407cc9c	reports/sim-harness-v1/legacy-oct17/B-bat_criminal_303.json
+8bbb6ef024b9965b9ac43cd6eb58bdb9e14802ad	reports/sim-harness-v1/legacy-oct17/B-bat_criminal_404.json
+3b188f3417ca4832da5c9ee06db88f1e11712693	reports/sim-harness-v1/legacy-oct17/B-bat_criminal_505.json
+06d186fc591b9125b5370276b38244049f1eb9d8	reports/sim-harness-v1/legacy-oct17/B-bat_ethical_101.json
+2f0c7b3de26eef67df0e92662c98cd5f73fde4de	reports/sim-harness-v1/legacy-oct17/B-bat_ethical_202.json
+13a3c7be2c1a14ce90f78dbc90bee69bab00b29c	reports/sim-harness-v1/legacy-oct17/B-bat_ethical_303.json
+41ca313a0e468318d889ccef769e94ea9996af2f	reports/sim-harness-v1/legacy-oct17/B-bat_ethical_404.json
+97624f53e0a38ba7bd1882f6fafb84e254e174ad	reports/sim-harness-v1/legacy-oct17/B-bat_ethical_505.json
+894c9bc2ee2c3e5b2df8b8e374eeafd7041f6c33	reports/sim-harness-v1/legacy-oct17/B-bat_heinous_101.json
+43f469dfc8ac205aa17f61181ffdc09e396d6d51	reports/sim-harness-v1/legacy-oct17/B-bat_heinous_202.json
+8ffa1b5b989d8c4cdddcdebda14464d291e6f883	reports/sim-harness-v1/legacy-oct17/B-bat_heinous_303.json
+104d1839c0d86a52cb19a4b823f585385ef38b0a	reports/sim-harness-v1/legacy-oct17/B-bat_heinous_404.json
+10b9798550baa510daf2968f664dd4debd811cde	reports/sim-harness-v1/legacy-oct17/B-bat_heinous_505.json
+0091642ec3e96f6bc90ce954458e8257af763668	reports/sim-harness-v1/legacy-oct17/B-bat_immoral_101.json
+2f010cb7fb5aaa30330cdcc1037856b56960c686	reports/sim-harness-v1/legacy-oct17/B-bat_immoral_202.json
+45bb6e5eb8edd9375791523c69838124e5230d53	reports/sim-harness-v1/legacy-oct17/B-bat_immoral_303.json
+25b4099590777cfe8401b27db6097f38ebbfec3e	reports/sim-harness-v1/legacy-oct17/B-bat_immoral_404.json
+c7961414079ccb77fb1bd6ccf0ca6bc855f1882d	reports/sim-harness-v1/legacy-oct17/B-bat_immoral_505.json
+dc5b67256017917a7418cf639d5ab15b15a7e31b	reports/sim-harness-v1/legacy-oct17/B-iron_knuckles_criminal_101.json
+69b074ca4e12ef765b537ce8e143c4f7b1603f1f	reports/sim-harness-v1/legacy-oct17/B-iron_knuckles_criminal_202.json
+a939162cb136b5291c2a4774bb9376c7f19f3862	reports/sim-harness-v1/legacy-oct17/B-iron_knuckles_criminal_303.json
+47a5e3dcd2fc7af248950a29bb590fd6b5a93482	reports/sim-harness-v1/legacy-oct17/B-iron_knuckles_criminal_404.json
+9ed9e7b4a56b7fb0731dbdb75bba2ae32a559c43	reports/sim-harness-v1/legacy-oct17/B-iron_knuckles_criminal_505.json
+c46d2f6a0452e66fa5b09650622def3f6bb5516e	reports/sim-harness-v1/legacy-oct17/B-iron_knuckles_ethical_101.json
+f079b11c49f6a8a4fbc59af1e5e62ca5d10152d1	reports/sim-harness-v1/legacy-oct17/B-iron_knuckles_ethical_202.json
+2ca7a9befeeba3735c1b380c819963e7e9a2efae	reports/sim-harness-v1/legacy-oct17/B-iron_knuckles_ethical_303.json
+addd739791abb3a0ab4bb8036b362fc2b1328436	reports/sim-harness-v1/legacy-oct17/B-iron_knuckles_ethical_404.json
+a15b2c454dbc130000414755a847652fd01a1e88	reports/sim-harness-v1/legacy-oct17/B-iron_knuckles_ethical_505.json
+a0eff1c72f8923c9d198ddebd272a4bc4a8c880b	reports/sim-harness-v1/legacy-oct17/B-iron_knuckles_heinous_101.json
+008f58c419c35de4f40ad63be143d6130abf4f65	reports/sim-harness-v1/legacy-oct17/B-iron_knuckles_heinous_202.json
+9f482bc41688a2d061cdef062164143880905f27	reports/sim-harness-v1/legacy-oct17/B-iron_knuckles_heinous_303.json
+dae7699358335c60cce68c81a0fb2b80e87a738e	reports/sim-harness-v1/legacy-oct17/B-iron_knuckles_heinous_404.json
+3034f352135f1ed87818f74169758c274fe8b05a	reports/sim-harness-v1/legacy-oct17/B-iron_knuckles_heinous_505.json
+41c82c7a0a14f03ce6f9b03f0523bba947d44b04	reports/sim-harness-v1/legacy-oct17/B-iron_knuckles_immoral_101.json
+4c943f08164f2eef0c13611a6a19dd22d9f9e781	reports/sim-harness-v1/legacy-oct17/B-iron_knuckles_immoral_202.json
+c157e96bf1f03436bd67c6f2948d64b756d5c205	reports/sim-harness-v1/legacy-oct17/B-iron_knuckles_immoral_303.json
+608ed7a2f260a7bd40d69482076d7d9ccaadfd1e	reports/sim-harness-v1/legacy-oct17/B-iron_knuckles_immoral_404.json
+bd833b73653969adcc560b445fdac0b5b1edd06d	reports/sim-harness-v1/legacy-oct17/B-iron_knuckles_immoral_505.json
+f1d27b2c0b5c589b12f906a0dd16c8e87e485be1	reports/sim-harness-v1/legacy-oct17/B-pocket_knife_criminal_101.json
+12cdf540d9f7fee7704f83cc641c4cf2f1172d21	reports/sim-harness-v1/legacy-oct17/B-pocket_knife_criminal_202.json
+6ec9c2156a291684d484800638ca422770a06c60	reports/sim-harness-v1/legacy-oct17/B-pocket_knife_criminal_303.json
+825b68e7991e0a427d80a7e7c2311e1078a4505f	reports/sim-harness-v1/legacy-oct17/B-pocket_knife_criminal_404.json
+439be8f15b2a3832ed37c1a6f3ef2dcaf3b2ac5e	reports/sim-harness-v1/legacy-oct17/B-pocket_knife_criminal_505.json
+46de4270778a213563cab5330f060431cfe1c2da	reports/sim-harness-v1/legacy-oct17/B-pocket_knife_ethical_101.json
+59c62994a1b63f610c7f742c02176a7f97890cd1	reports/sim-harness-v1/legacy-oct17/B-pocket_knife_ethical_202.json
+0af0df162aa16a06b8e86ef11dc78698c77caa04	reports/sim-harness-v1/legacy-oct17/B-pocket_knife_ethical_303.json
+850bf82a514c194c9bb3e6ea3a06c4878befce5a	reports/sim-harness-v1/legacy-oct17/B-pocket_knife_ethical_404.json
+07aa239e1f18397277561fca691ca041a126faff	reports/sim-harness-v1/legacy-oct17/B-pocket_knife_ethical_505.json
+e1e7359c38efe328c84c66530ce9a36e904bf443	reports/sim-harness-v1/legacy-oct17/B-pocket_knife_heinous_101.json
+f66b0e8396cf24371c6dff3efd6bdba5c48e67d9	reports/sim-harness-v1/legacy-oct17/B-pocket_knife_heinous_202.json
+0985b53ed39bc4fd85ff8c8bd4fb39cede9cb5a5	reports/sim-harness-v1/legacy-oct17/B-pocket_knife_heinous_303.json
+02140ca835af1d476e1be8e56d4a68785861a69b	reports/sim-harness-v1/legacy-oct17/B-pocket_knife_heinous_404.json
+b0287c9d98cdc66d6df2f5c7407b4c283cd78a82	reports/sim-harness-v1/legacy-oct17/B-pocket_knife_heinous_505.json
+c1198cc625669169c37749ab6f9d6fb5640d1e0d	reports/sim-harness-v1/legacy-oct17/B-pocket_knife_immoral_101.json
+5780590796527117bf6566ebdd3ac65765d859d5	reports/sim-harness-v1/legacy-oct17/B-pocket_knife_immoral_202.json
+b77744dbe5e5f1bca8c0245535e39cb2e37badf8	reports/sim-harness-v1/legacy-oct17/B-pocket_knife_immoral_303.json
+47ba9a518c7d463b9a07a9bb9bc34100be1ff012	reports/sim-harness-v1/legacy-oct17/B-pocket_knife_immoral_404.json
+dff2a744b7a98768d842f7069e13b7e929ba34ee	reports/sim-harness-v1/legacy-oct17/B-pocket_knife_immoral_505.json
+35b5cc43b78547d06bc2f8b27aeda36e2dfcb425	reports/sim-harness-v1/legacy-oct17/SUMMARY.md
+e5c055fa27828709b83332be12a407086c7b3ed7	reports/sim-harness-v1/legacy-oct17/records.tgz
+7b0e3fa7e39ca0bb990d8dcd381e8bfcdc4ac83f	reports/sim-harness-v1/t3.json
+3739f2efc282bacffa24c3fed07881e00ec25b3d	reports/stockpile-loadout-2026-10-23/APPLY_NAVIGATION.cjs
+26fef94f31e964e48ac260c8336e2d28b7de1bb6	reports/stockpile-loadout-2026-10-23/COMPACT_PREPARATION.cjs
+c97c238e07f5f1d25d361a282b5ff1c06ee3c590	reports/stockpile-loadout-2026-10-23/PRE_CHANGE_HASHES.json
+bf77c50a81408cdb81ac14819e846757fd45c67b	reports/stockpile-loadout-2026-10-23/STOCKPILE_LINK_REPORT.md
+f1dc6ede75aa7ba81016460632170a8bbd73b00d	reports/stockpile-loadout-2026-10-23/TEST_RESULTS.json
+32b4785fba5ba3fd4e7f75cedb8a6c3083fad36f	reports/stockpile-loadout-2026-10-23/VERIFY.cjs
+8830ea360e6bc7ec272015f86b113cda88f2765d	reports/stockpile-loadout-2026-10-23/babel.min.cjs
+683dcf1574be91576146e68d45dc4893778f02ee	reports/stockpile-loadout-2026-10-23/pre-change/C2C/Zed_Idler_Routes_LLM_Instructions.md
+c7315054e65c1c583651916800267ca758d58cdc	reports/stockpile-loadout-2026-10-23/pre-change/C2C/Zed_Idler_Routes_Parsing_Records.json
+a957fb48f71a66d4bce4e48fecc31e5b177fc93b	reports/stockpile-loadout-2026-10-23/pre-change/project/CODE_STATE.md
+9768e5a3c43fdde124f02b25c540e308c66f41e8	reports/stockpile-loadout-2026-10-23/pre-change/project/DESIGN_HANDOFF.md
+eddc6403145cb768f442fdff9be9c02656bdeba7	reports/stockpile-loadout-2026-10-23/pre-change/project/Zombie Idler v2 - TEST SAVE.html
+9df9d90e42633729b9e6eebed2caf78acd6bede3	reports/stockpile-loadout-2026-10-23/pre-change/project/Zombie Idler v2.html
+2e48b7172f4f477fdda973fe3c8e6ce58cfbeb63	reports/stockpile-loadout-2026-10-23/pre-change/project/reference/00-document-index.md
+e43d68425e32f1e642bc2308704efd891e0aa4b5	reports/stockpile-loadout-2026-10-23/pre-change/project/reference/routes-preparation-implementation.md
+31cbb1b6abd02e84f57bf3b2d961de2f0c487bb6	reports/stockpile-loadout-2026-10-23/pre-change/project/reference/tutorial-first-session-spec.md
+c848596a2927b705265d6badf095aa38875efe5c	reports/stockpile-loadout-2026-10-23/pre-change/project/screens-v3.jsx
+4550441518ac3cd24001b2cdaca68cf46452e347	reports/topbar-resources-2026-10-27/pre-change/Zombie Idler v2 - TEST SAVE.html
+e143a6e77bdff28f1bf74ce73b5da7eee2597752	reports/topbar-resources-2026-10-27/pre-change/Zombie Idler v2.html
+e7add12824fd0dd9c48e96de06adc077eee39286	reports/topbar-resources-2026-10-27/pre-change/core.js
+b7a2197ce27b808bba1f9e158b17ff5e60047c96	reports/topbar-resources-2026-10-27/pre-change/economy.js
+f1e9d67bcd6db997b36a04c5a6899cb69234aa58	reports/topbar-resources-2026-10-27/pre-change/screens-v3.jsx
+e0a18fd7f9494920341de3f319d53815c5b23d0d	reports/topbar-resources-2026-10-27/pre-change/split-equivalence.test.js
+0cb9f2cf53bac89e38bea19ebd3670944c71fdea	reports/topbar-resources-2026-10-27/site.tgz
+c56629f5e8bcd6af5e4f05988ad0c048e545e935	reports/trav-01a/DESIGN_AUDIT_OCT22.md
+90c8a0fbad90d28ecda34120177f072a8b3fa845	reports/trav-01a/DESIGN_HANDOFF.before-audit-decisions.md
+b9e912c60eab509737d5744440b98577f7a850c0	reports/trav-01a/TRAV-01a_FIX1_REPORT.md
+e53ecf625a228e681b01a61b8296339a077dae71	reports/trav-01a/browser-check-results.txt
+4993aa89a2f3284f82e84daf7860dd8baaa30904	reports/trav-01a/fix1/run1-results.txt
+2790dc52a13af9cc7636cc2c24cc18e38384668c	reports/trav-01a/fix1/run2-results.txt
+7ca87c6cf45eed608ed8c56cc9ff0de4d5a23c0d	reports/trav-01a/fix1/trav01a-fix1-desktop.png
+badae4b0fb42189e30b8be37c1bc3459f2e2feee	reports/trav-01a/fix1/trav01a-fix1-phone.png
+f7d6103e3db6379420df52bf944246916dd5d3a6	reports/trav-01a/fix2/TRAV-01a_FIX2_REPORT.md
+d1d1cdaf3a746fd7e1393fbac81a2fded693f4b6	reports/trav-01a/fix2/phone-map-after.png
+03893f7d59e1acc5b897af333c49022769cc606f	reports/trav-01a/fix2/phone-map-before.png
+d28e7c51603ac45807d33e3bd6dd54e387c9b77e	reports/trav-01a/fix2/phone-sheet-after.png
+deafb742e88484c7c3bb68f3533f4513b05682fa	reports/trav-01a/fix2/screens-v3.before-fix2.jsx
+a146ed73ef5c84c41218c1e8ad05641cdcec325e	reports/trav-01a/trav-01-traversal-slice.before-audit-decisions.md
+23480ea2dcd9b4231a5069f7e108f66c6ff2405e	reports/trav-01a/trav01a-afflictions.png
+4f32d0ddaf7cdd1cdc9f6c04d348aab541ff1ccf	reports/trav-01a/trav01a-camp.png
+05548719042e01bf5c1f922a5757f89fcdde6e03	reports/trav-01a/trav01a-desktop.png
+704295d78779f40e552412c8ae6d0d657567d672	reports/trav-01a/trav01a-phone.png
+5fe836607b58aa2e660ef0895317008049e42196	reports/weapon-details-2026-10-27/README.md
+fdd33ad4329acb2d4c3186cc5f08800e6c6a33ed	reports/weapon-details-2026-10-27/danielle-raquelle-set.png
+2f6e93471123efea96194ce377f9ce743c3b6dfa	reports/weapon-details-2026-10-27/flamethrower.png
+4681b1fda4e0d7d65880fdb632a2815130f0fc6e	reports/weapon-details-2026-10-27/matilda.png
+f81806da605de0db3beeeb2e13ab2ac4528db3f5	reports/weapon-details-2026-10-27/overview.png
+ed18181c3aa5b7beb265974fd708f803a82ce95d	reports/weapon-details-2026-10-27/validation.json
+c3a0c3e920736f332e75906242a40cc35c2d549e	reports/zombie-art-all-2026-10-24/pre-change/Zombie Idler v2 - TEST SAVE.html
+29ca642837769ec9dd5a99ca81b37423fe883579	reports/zombie-art-all-2026-10-24/pre-change/Zombie Idler v2.html
+d5684cafc284d98402eb24c4f2418b83f75f9c2b	reports/zombie-art-all-2026-10-24/pre-change/screens-v3.jsx
+4e10da7369b0e0b7233a2b69eb10f41283325044	reports/zombie-art-all-2026-10-24/pre-change/zombie-sprites.js
+6af7e7616a3517e3bb62072c51984127125f851e	reports/zombie-sprites-2026-10-24/post-audit/Zombie Idler v2 - TEST SAVE.html
+04e65c0b8ce3e6ecc17ef8c131a7541d7b5040f6	reports/zombie-sprites-2026-10-24/post-audit/Zombie Idler v2.html
+712d0c17c8882048452188500ebcfdf394e9c776	reports/zombie-sprites-2026-10-24/post-audit/screens-v3.jsx
+c173102440e7744e9da212cd51377497ac9b889c	reports/zombie-sprites-2026-10-24/pre-change/CODE_STATE.md
+cdcf3839b4251d594b3a28fba458de89d20124e9	reports/zombie-sprites-2026-10-24/pre-change/Zombie Idler v2 - TEST SAVE.html
+8e191236d075d89191fb06b6cba8047a28b6db43	reports/zombie-sprites-2026-10-24/pre-change/Zombie Idler v2.html
+937bf8c8d254424c29654c25ee37cbe1c1a4a234	reports/zombie-sprites-2026-10-24/pre-change/screens-v3.jsx
+6af7e7616a3517e3bb62072c51984127125f851e	reports/zombie-sprites-2026-10-24/pre-codex/Zombie Idler v2 - TEST SAVE.html
+04e65c0b8ce3e6ecc17ef8c131a7541d7b5040f6	reports/zombie-sprites-2026-10-24/pre-codex/Zombie Idler v2.html
+712d0c17c8882048452188500ebcfdf394e9c776	reports/zombie-sprites-2026-10-24/pre-codex/screens-v3.jsx
+fdd5f8a40bf6e29b32a73373a27c9db5b81d49e6	satellite-tiles.js
+3ce0dda4c43d66dff82b21010afdcac297ea1411	screens-v2.jsx
+041a792b9215dec54d07be2302cba15c1486053d	screens-v2b.jsx
+52309a8e89b167093b40539680730634546d637c	screens-v3.jsx
+169b284898bb7a51f13e80e21e4e338629cc2507	server/ZedIdler.Server/Contracts/ApiContracts.cs
+2907ba7cc0b4f0e1279d8d0249a52f1e735d255f	server/ZedIdler.Server/Contracts/DailyContracts.cs
+be00f912590b102da9db104ee822ef491a9f8a33	server/ZedIdler.Server/Contracts/TelemetryContracts.cs
+ef4f422bca9a1b4a58b3a43af4761f83eb4ba713	server/ZedIdler.Server/Functions/ApiFunctions.cs
+5c332bf077874023f41dca60c9268055e3557882	server/ZedIdler.Server/Functions/TelemetryFunction.cs
+3d6eaeda0a3aed9c18f8e0a3a8477cd570c4f33b	server/ZedIdler.Server/Services/PlayerService.cs
+57ebdd618b34c20337747dc02a3675a52a9153f2	server/ZedIdler.Server/Storage/IDocumentStore.cs
+13606464fb555576a8db2ec8c0c6e67ce70a6df9	server/ZedIdler.Server/Storage/ITelemetryStore.cs
+473545ede1863d8b7724a1a68a38c602f63a0011	server/ZedIdler.Server/Storage/InMemoryDocumentStore.cs
+70fd135e7a05d2d70580ab1491096a13e32d2996	server/serve-local.ps1
+cb4972732ab78edd119f68cbd2fdd7e81efa70dc	tests/bal-a-walk-home-broken.test.js
+b5b6567194e24a068cfae3c100e5b8f780df978a	tests/batch1.test.js
+7877d364bcfaca3731cbdf8411d2700fab31cef4	tests/batch2a.test.js
+dedf0f838b32e58e715c87c4696f9275389d1840	tests/batch2b.test.js
+9c13a0a25559eb2a82030650a1f36e3d2b1c3353	tests/batch3a.test.js
+adcf5d694aa064a614cf3b3cf04113c22a6e71a1	tests/batch3b.test.js
+cb7b5135b8ce48a8782e327955d7ba0717abe679	tests/best1-enemy-identity.test.js
+ccc515941de28d904ed5c37a59584b35254b4d31	tests/bug-fixes.test.js
+95787f178335173236391e18900a38cb43f1bc9b	tests/carrying-1b.test.js
+8bdb20461118405053b5700dfd976e2c658a7a27	tests/carrying.test.js
+31daf7df5a6d290b12e9522822bffc185a634c90	tests/cb1-starter-weapons.test.js
+1ca4d9ad6a6024b542af611d7db247c48edc9fa7	tests/clock-01-calendar.test.js
+35a4773aa1a05d0485563f7d9ee29f19315d98e7	tests/clock-01-durations.test.js
+993e9df7d2d14ddf55715489f93c471891fc8fac	tests/clock-01-equivalence.test.js
+d1605c5970e9a8267b7cb6cdd91d8e33fc22aa1f	tests/clock-01-limits.test.js
+3c14ce8e33a116b28c152ff078cda6c003ae4f9e	tests/clock-01-offline.test.js
+8030d55a57ba1dc0a823fe7eb0ed7d02e2249c15	tests/fort-s12.test.js
+fdba8ac4a00196f3e4ce15a347424a8ae624c71a	tests/fx1-downed-hp.test.js
+cb159a382f198dab6f9b69fd2e55ff45fe6c9d8f	tests/fx2-return-cap.test.js
+71f4b00244dc32c2096b0bd0ca9f2baaf23dd827	tests/fx3-buffs-sim-time.test.js
+0c16b149aa26f3ac2a0ab36c7339cd00979caaf8	tests/fx4-shared-attributes.test.js
+e60f8729ee112c594add79078326ac6a2beb1ef5	tests/fx5-medkit-heal.test.js
+776f74ef491075f9bb36bcf35732b7ded996c3c9	tests/jd1a-first-displacement.test.js
+ddc664af02fb7522399545ed030b1f63309e3af7	tests/load-regressions.test.js
+f0dd853ff35557201a95bf81a11e8d764ae5ee58	tests/qa-helper.js
+892a787ce7e564f4ac54eab052b0d59424f09972	tests/qa-shots/01-a.jpg
+d6b1447029406b1b0951ebd61e19c255551774d7	tests/qa-shots/01-b.jpg
+69b21818cbe48b8dcaae27a43e414edfeae754ac	tests/qa-shots/01-c.jpg
+24f96461c81d95ae1f992b781ff0e6abb1498f70	tests/qa-shots/01-d.jpg
+a88179abc580a6c921e3e41c8785496e2ca6f059	tests/qa-shots/01-r1-02-wander.jpg
+f4d9be0246b607e77d9555dfd7e2c72bc72579fc	tests/qa-shots/01-r1-05-flow.jpg
+37048e048f90b143afd297b446b6aad764e15c93	tests/qa-shots/01-tut-08-newsave.jpg
+f1c46fc89f17dd539c76b259657f5b8ac2ba177c	tests/qa-shots/02-a.jpg
+fc96a78f34cfc1a858b123b407be456d14f8a6cf	tests/qa-shots/02-b.jpg
+c0dc276d1146f08ba6f66516fb46ba9e4bf04631	tests/qa-shots/02-c.jpg
+16c461f1c3bbc70f459f029b68cbfb64cc88567e	tests/qa-shots/02-d.jpg
+d8727691e8a100fbb32efd97727c0e93a1265b69	tests/qa-shots/02-r1-02-wander.jpg
+2c7cd5985e4d35a23e3941cd110afaf4b1a247ac	tests/qa-shots/02-r1-05-flow.jpg
+ac6b563a2e5d9353eab5a4e638f960fabb09bf1c	tests/qa-shots/02-tut-08-newsave.jpg
+889bd68f2b23c85af82f02319edf4d4f8ec8541c	tests/qa-shots/03-a.jpg
+8a6f5a818a51341ee9ae610c891b246608f2554e	tests/qa-shots/03-b.jpg
+c9eaf14e66685d06e4efe1a2ad00b2f7c725b1de	tests/qa-shots/03-c.jpg
+2280bcf2d1d12c48a4e33ca54988f629f956dca3	tests/qa-shots/03-d.jpg
+2e4b409e7e265e9642e32008b26a898938dc43da	tests/qa-shots/03-r1-05-flow.jpg
+018dcea35371a3d06b0fad90515db44d54de30a8	tests/qa-shots/04-a.jpg
+cef0632c72fb9f4f0169f6c8e8edadf8f5461a84	tests/qa-shots/04-b.jpg
+592ecf49d6601ae970e45b515f14ecaa5d1098af	tests/qa-shots/04-c.jpg
+dd18cba58aebf072fe0d00a29dd604721211ee56	tests/qa-shots/04-d.jpg
+a7d0d3e6b7b5f3cfc84b5ed5dfbad2e16c9e0a1e	tests/qa-shots/05-a.jpg
+26e0abe43051e5dca66678556c335a46612f03e3	tests/qa-shots/05-b.jpg
+a19449c22e35f7dcd2628d18db6565f7495c2e57	tests/qa-shots/05-c.jpg
+2aa7afc03a38a7be3e5ea7924e148213b4e9981a	tests/qa-shots/05-d.jpg
+59da30002cc4832031d2ffc93fd2d22a35bda0d1	tests/qa-shots/06-a.jpg
+51010cc008e9a4b73e3cd74c446d80e61e7bfdec	tests/qa-shots/06-b.jpg
+2f263632b94382a7acd27b8fa528609371586b8e	tests/qa-shots/06-c.jpg
+b768b047ccda2e07383aaca9f02b9ec4b73a2c70	tests/qa-shots/06-d.jpg
+55ad80c7c2f15cac6f601adaf4d5499fc36a8216	tests/qa-shots/07-b.jpg
+354a3788fb15d42928e60031ad03cd97feb04b85	tests/qa-shots/07-c.jpg
+075eefa0eaa5644c861a79cca8b888666844d6be	tests/qa-shots/07-d.jpg
+3a3005eff9d303f848baea675796d391cd764f17	tests/qa-shots/dbg1.jpg
+d1ac25365389ec86ff33e44e0160c1fdb5577864	tests/qa-shots/dbg2.jpg
+614c79f98c6763222eeadd091e977ca025b2ba84	tests/qa-shots/log1.png
+e1ed9bb611f5270f7877040d12fa4126fdf7fc5a	tests/qa-shots/log2.png
+d7a76b9b2630ffc9f6f55dee24c248db75009268	tests/qa-shots/r1-01-identify.jpg
+0ff38311c14129ae1ef0048b85097a9588695f7d	tests/qa-shots/r1-03-hold.jpg
+b7366633c471de759f3a8db46ece9818c3c63daf	tests/qa-shots/r1-04-flow.jpg
+f42dc4db3bfead00b9a28d4a9416a27b751c4cd7	tests/qa-shots/r1-06-close.jpg
+b06749b2d600a7d2d081eb0796fe9a69959c6e6b	tests/qa-shots/tut-01-identify.jpg
+57253cc641fea1a4e544a6668529f6a7219e32a7	tests/qa-shots/tut-02-trav.jpg
+9918292c45b6ec5630a688bb485afdb01fd0306d	tests/qa-shots/tut-03-trav-step.jpg
+04662075550e2b6e38acb238d1beb7b0d10962dd	tests/qa-shots/tut-04-wander.jpg
+9a6a7fa2eb98b7284d2dd4eac777060f14ee8097	tests/qa-shots/tut-05-wander-step.jpg
+ff576bb4765b9b67f0510d5a96a2d720ae2ce70a	tests/qa-shots/tut-06-craft.jpg
+a16796f255758ee5faf5fdc2b7af6c8f725ea91d	tests/qa-shots/tut-07-craft-q.jpg
+1f742ac529144912f59dd130436e7b84e2d42a1e	tests/qa-shots/tut-09-newsave-wander-craft.jpg
+0403aa431ae6cad7d004934d96bfbb20bc896d6c	tests/qa-shots/tut-10-close.jpg
+907ad9192e91a3ad3ac07de5551a5de3e53ac8ca	tests/r1.test.js
+29593d5963d883b583cfabeccd6f7e85f3df423a	tests/rb1-retreat-controls.test.js
+af02936437e1889da7bbedf285add1e4cc0d0504	tests/rb2-retreat-layout.test.js
+5171b28f1a2cfe6eeafd3138d328d25dcbf952ce	tests/retreat-getaway.test.js
+6ccb4da8d2504769ed7cfc52bfe42f9c7b80968c	tests/routes-idle-rewards.test.js
+4c0401c2ad9b38d5bcdcd3ad75a0aece82350844	tests/routes-preparation.test.js
+2d117ff0f602a0b4d9d8cdc9a63d0af96dedb24f	tests/sim-clock-rng.test.js
+89bf4890f717c40743611c9079ac5bd2f0a8fdc0	tests/split-equivalence.test.js
+c73e47d906798ba5f341060b51d77aa0b9a4093d	tests/trav-01a.test.js
+2a795277c565fa082615ad436755a411794c27c3	tests/tutorial-flags.test.js
+c4cc15d68875ba025d4ddac84a401989cf167030	tools/browser-check/README.md
+2abc9e56f025138486e251c5db5709563f2f5ebb	tools/browser-check/best1-checks.js
+90a3613b5fe09e9db298ae71d9eb404a32d947ab	tools/browser-check/codex-layout-checks.js
+bb9789ad915fae135645b8ab21905017c6f05930	tools/browser-check/fx4-rb1-checks.js
+21b2e0a4d4c576004ebc65691b8f256b4d7d5ade	tools/browser-check/fx5-checks.js
+f98653b4cf0f22d543ba133129dca548d04502e2	tools/browser-check/harness.js
+7ec0a532f3c798c057823afa3c1bb917382d0c75	tools/browser-check/jd1a-checks.js
+32829505d1704c030471802de1a8816120387fa8	tools/browser-check/mobile-nav-checks.js
+b1563485597fb6fd7afafc62d14c0676de5e9745	tools/browser-check/rb2-checks.js
+54b24edae59bc3d2e673c43d4d392e4526f06fab	tools/browser-check/repro-scout.js
+49d182e1428d99458bd362e53930423e6c635bc2	tools/browser-check/repro-sheet.js
+d672165ac3b9b3eabc56317169cb7c0b25cbaf62	tools/browser-check/trav01a-checks.js
+449cfa24478434d784b416a5f13217734ab331a5	tools/browser-check/trav01a-fix1-checks.js
+473b4ad4813aa84398ba1c3d7c0d7898aa76e999	tools/browser-check/zombie-sprites-checks.js
+5caac967aa569eb8dfd1c267a36a710091252edd	tools/build-weapon-catalog.cjs
+347fa047c40804aad11acc4d6ef2df8309bc01b2	tools/jd1a-staging/jester-module.js
+9a6740a7550d6b0c303ce5a6eaa100734ed40e3b	tools/run-tests.cjs
+2aa4e9ab1e109c9e3f8035f8e803eb1dabf7f576	tools/sim-harness/README.md
+69cf2e1d35d8ffc43041b07736d4f16a898e6626	tools/sim-harness/h2-tests.js
+fed5fcc957627cf87a01689af84a10da4b4a7362	tools/sim-harness/h2.js
+78a78091a579c40e7419b3a9257b357f390be105	tools/sprite-rig/README.md
+d08e184fbe931ee45aa75d0236d20fa044ae1b26	tools/sprite-rig/assemble.py
+df9924a6dd78a90477eaf386c1e66bfd9f9aa341	tools/sprite-rig/batmask.py
+4a9b1d804969396cacfc0e8c191e43ab98bb034d	tools/sprite-rig/frames.py
+141ce90ccbe200127606aff15449918459c575df	tools/sprite-rig/rig.py
+799daa9fd407285c28031db23914e408d4b1af8c	tools/weapon-forge/README.md
+a27a6d4f11bd9dd9275140a9ff95a650aab048ce	tools/weapon-forge/forge.py
+9c4dda35bf25abb9599f187f016c3c0a588a1613	tools/weapon-sprites/build_weapon_sprites.py
+5f8f95a1ece0d4a17fd85a011a92d0610abc700a	tweaks-panel.jsx
+779540ffbfa4db7b9e35597fe80c4dce53f73b49	unity/Assets/Editor/ArtPaletteSeeder.cs
+a88b1e0109882f8e41b4ce3f06aee5c351dae3e2	unity/Assets/Editor/AudioSeeder.cs
+2762231fd887313d289a31827e5d5def717d458c	unity/Assets/Editor/BalanceHarness.cs
+561fef06d1fb231bf0815677623a6eba599cfbf2	unity/Assets/Editor/CatalogSeeder.cs
+c672fb1eca84313c7e3f885839b049c050c0da99	unity/Assets/Editor/ContractSeeder.cs
+97ef8e26e01ce8d2ffbf0eebb3295a3cb80d0f67	unity/Assets/Editor/CurveVisualizer.cs
+b82bfba2ca882f7d5a5278c040a413aef6244282	unity/Assets/Editor/ExpansionSeeder.cs
+a1fe9b7101c929433f8dc49a83917822a350ebd4	unity/Assets/Editor/FactionSeeder.cs
+04612f38f28d124f43fcf65e95f2d0c6bb2a2271	unity/Assets/Editor/ItemSeeder.cs
+3f554b66e22451123b8d738848f9467e95b7c36f	unity/Assets/Editor/MarketplaceSeeder.cs
+9ee897457ac1333589fe2d1da3a8e4791765960f	unity/Assets/Editor/MetaSeeder.cs
+1a087a56d3a05ca5d58ab99fae1ee4a70d9f5910	unity/Assets/Editor/PerformanceHarness.cs
+aad09ca4a238ac935c870fbf4601c469bf220781	unity/Assets/Editor/RecyclerSeeder.cs
+c5fc04f058227a90d0b32ffaaa1bdd1eb85eb8f4	unity/Assets/Editor/WeaponSeeder.cs
+216099df734a7f74efaf69483744347d07d7b598	unity/Assets/Editor/ZombieSeeder.cs
+0468e4674158243c6939e8f543ff403e1d04faf4	unity/Assets/Resources/Localization/strings.csv
+54a29984e34c96895455c6eb7d29b49ffeaeed4a	unity/Assets/Scripts/Core/GameManager.cs
+e14aa36b99c2a9f0acc9e6dc0e9d757024363b9f	unity/Assets/Scripts/Data/ArtPalette.cs
+b0ca28c14e63eede327c27714f60ce526feb8ad1	unity/Assets/Scripts/Data/BalanceConfig.cs
+d62296a31943687be95a00bd2ffb6fa6414be0e7	unity/Assets/Scripts/Data/CharacterType.cs
+d7ab8e9ebdec260912b110f2fc9f2bde9f2bcb64	unity/Assets/Scripts/Data/Contract.cs
+6d16030a9e63bfdd148bdca039fd106471c6fdce	unity/Assets/Scripts/Data/DailyReward.cs
+a31dbe143229b1ce8faac63b3cf5639621e52b66	unity/Assets/Scripts/Data/Faction.cs
+9fec7a6429334e56a5516a2b1c09b00221b1d4a9	unity/Assets/Scripts/Data/GameConfig.cs
+4b28a0156ed16170e8416a1e63994ef378587708	unity/Assets/Scripts/Data/ItemDefinition.cs
+cf8b350cd3c5774b2b0d64d7e611d8c99f821995	unity/Assets/Scripts/Data/LootTable.cs
+080ea0560e30a2c58fd7690cddddf39fe497c570	unity/Assets/Scripts/Data/MarketEvent.cs
+a184c469d29908247822fa008ca9346d298cc0b3	unity/Assets/Scripts/Data/MissionType.cs
+506bec98d47816d36000b52e65ab5b03be9635b2	unity/Assets/Scripts/Data/Perk.cs
+5606aad235a17cb6d6ff936c43c14c7d892e49cc	unity/Assets/Scripts/Data/PrestigeTier.cs
+e7a2a656520291a91eb0c7b7793fe0e30cb31c62	unity/Assets/Scripts/Data/PrestigeUpgrade.cs
+a1cea7da734babbdb1986255c70a8ccf006891c9	unity/Assets/Scripts/Data/RecyclerRecipe.cs
+138fde263fddd20de6d3e46ecab2db9e2dd5a7f7	unity/Assets/Scripts/Data/SoundBank.cs
+7c2c974ec3250d9fade3c4b03a234a4e20fb1a07	unity/Assets/Scripts/Data/SoundDefinition.cs
+556ba8af0953e6e05eb8887c12279d880fe164ec	unity/Assets/Scripts/Data/TutorialStep.cs
+51c57d1e53fd69b2d06f8268162c4ce656bdf165	unity/Assets/Scripts/Data/WeaponDefinition.cs
+3dba8043dc18d1f00f98910a88158fea3df14dfb	unity/Assets/Scripts/Data/WeaponMod.cs
+db4e646edffeefad29cddbba7f703c9a489fa007	unity/Assets/Scripts/Data/ZombieAbility.cs
+b587b6a960132a2e7b661c4ad32e23e5007e3354	unity/Assets/Scripts/Data/ZombieCatalog.cs
+ca4f77f87d7cdcccaac17d21395ebe79ec54cff9	unity/Assets/Scripts/Data/ZombieDefinition.cs
+4d16b98b0d470367b9e9b9caf96b8594d1734a48	unity/Assets/Scripts/Entities/Survivor.cs
+0d58345f8401413d9f67fe8cda46287f29ce91f9	unity/Assets/Scripts/Entities/SurvivorStats.cs
+7dc30b7d7a345c5dc88e0199a1d2b36556d3e5de	unity/Assets/Scripts/Services/Analytics/AnalyticsService.cs
+0f00ee8f8e11f1606c224bb7d3e8190ba248b0d8	unity/Assets/Scripts/Services/Analytics/AnalyticsSinks.cs
+06da8fc8b419db0f5246f234c1e3464e3bffa04f	unity/Assets/Scripts/Services/ArtGenerationJobs.cs
+3db5ad78bb38e50e04e7d07be85842a56139a754	unity/Assets/Scripts/Services/ArtGenerationService.cs
+1f535e258a66b551a2101e176f7dda53352550ca	unity/Assets/Scripts/Services/AudioService.cs
+000454ff34f2cd4b76642415d3beb0ee34f9e1a6	unity/Assets/Scripts/Services/BackpackService.cs
+0582fbca9542a413ee0ed54925dede93dd037a6f	unity/Assets/Scripts/Services/BalanceRuntime.cs
+b886a3f177d63335bb40838d4e18360fc77827de	unity/Assets/Scripts/Services/CatalogService.cs
+573d54e1223b93859bc9a8f053287e81f4d6056c	unity/Assets/Scripts/Services/Cloud/CloudCoordinator.cs
+2de981c1d4a8d09ef078e7b425b72ab62db50aa4	unity/Assets/Scripts/Services/Cloud/HttpCloudServices.cs
+41cf177519f9d7afbc96df71e8886680d930ea7f	unity/Assets/Scripts/Services/Cloud/ICloudServices.cs
+aae4dfac8ad1570b2d3152e6e732a09f561689d2	unity/Assets/Scripts/Services/Cloud/MockCloudServices.cs
+7c63d81bca695757baa46f34a52afeef0f1c282a	unity/Assets/Scripts/Services/ContractCatalogExtension.cs
+8aad41cf2fd394cb9fea1405efbf2d914734569c	unity/Assets/Scripts/Services/ContractsService.cs
+997e260e8c16daed1cbac6a78595913f9164b045	unity/Assets/Scripts/Services/DailyRewardService.cs
+89771850c2d834481b82664e72b8c61647f7222e	unity/Assets/Scripts/Services/EquipmentService.cs
+ebc40965471c7aa896c0b36f5c810137fb06b678	unity/Assets/Scripts/Services/FactionCatalogExtension.cs
+8223add3aa412ee30e4c068b70a3b43a1776e1d6	unity/Assets/Scripts/Services/FactionService.cs
+64b8468298323da76853bf50355c9f236306a2ec	unity/Assets/Scripts/Services/InventoryService.cs
+3b3a3e256ba5a1bcde245d695fe002d8e93b7642	unity/Assets/Scripts/Services/LocalizationService.cs
+a217c49d05c83d8504ef87af9167a0cdafec87b6	unity/Assets/Scripts/Services/LruTextureCache.cs
+8c1508791d43cc04eff51d05d7de4fd496e2e604	unity/Assets/Scripts/Services/MarketplaceService.cs
+97521d4fbfb115ccab8ecd3c83f4c58a5330e8ae	unity/Assets/Scripts/Services/PerformanceUtils.cs
+d3982a1bd76069c2980049ec3a0653f339c315db	unity/Assets/Scripts/Services/PlayerProfile.cs
+89a9e6c2044173a1b68641b3f52c47d31aa7d77b	unity/Assets/Scripts/Services/PrestigeCoordinator.cs
+584cf0469e6a6b09c55c8e89df915e0ce673d182	unity/Assets/Scripts/Services/PrestigeService.cs
+be512e863b6b6c06137344328e8391158e6b9490	unity/Assets/Scripts/Services/RecyclerService.cs
+f97ba565a9efd41f250a1d6c0557ac3ca723b480	unity/Assets/Scripts/Services/SaveCompression.cs
+cfc392f27006c9823152349459923142e03069f9	unity/Assets/Scripts/Services/SaveCoordinator.cs
+dee6611b23ca92647749a712df3752fccb50ab89	unity/Assets/Scripts/Services/ServiceLocator.cs
+27e846a0c67ac7f2cbc0a21c86c4ddecd9a488af	unity/Assets/Scripts/Services/SystemContracts.cs
+872b5617721e49ae63b134ee0fa671de9e8e9044	unity/Assets/Scripts/Services/TimeService.cs
+2fe2f852cb1e0069798adc8ee9c5636ce37e5fe9	unity/Assets/Scripts/Services/TraversalContext.cs
+5375a8d52f06ffd85db23154201cee3921a45a67	unity/Assets/Scripts/Services/TutorialService.cs
+aa598e8d0854a89a96cfb6034af3da95ee38bed8	unity/Assets/Scripts/Services/UIAnimationService.cs
+d3041c598a3606854e0a69ce1c996ef863d83bf6	unity/Assets/Scripts/Services/UIObjectPoolService.cs
+d927a3c63ad936480f06358cfc3a8bb41eecd893	unity/Assets/Scripts/Services/UnlockService.cs
+1a45765ea54da3280779ff6a5c5da179b48aeb5d	unity/Assets/Scripts/Services/WeaponCatalogExtension.cs
+53dedf0137ea2746939faeb7679f49b1dbf9c30e	unity/Assets/Scripts/Systems/Combat/WeaponTraitResolver.cs
+558207a6c81d45cd511a76c4e7c72c58d29ef3c1	unity/Assets/Scripts/Systems/Combat/ZombieAbilityResolver.cs
+b1d1d0ae9378cd3356028f6b9ca4fa458d5a0602	unity/Assets/Scripts/Systems/CombatLog.cs
+5564d19d87d9610adca8c3a33c20c060a4ca3f17	unity/Assets/Scripts/Systems/CombatSystem.cs
+e3d9cb0e5e40f526d1fb1186fa43201b3e7b18cb	unity/Assets/Scripts/Systems/LevelSystem.cs
+57708c1ebaf5fa5f75c1ccfa2055f44f959e7ea1	unity/Assets/Scripts/Systems/PerkSystem.cs
+841e6201278cd8012060d01d811d328d8d371856	unity/Assets/Scripts/Systems/RuntimeZombieSpawner.cs
+32bb973342289c21fcef197b2eb87db221d11512	unity/Assets/Scripts/Systems/ScheduleSystem.cs
+d519515cb5b49c6844c8cdcf69f13c4fa4a5fc8f	unity/Assets/Scripts/Systems/SquadCombatSystem.cs
+785566e80b058c27b19c012938efa22f382694dd	unity/Assets/Scripts/Systems/TraversalSceneController.cs
+583b3395707de598d1fd47ef526b4c8f51f1a4d5	unity/Assets/Scripts/Systems/WanderingSceneController.cs
+87d0066de15356ef3bcb58ee6abfceb2eeab4a26	unity/Assets/Scripts/UI/AudioSettingsView.cs
+cfc856a96d4f08e55f65addfae472022dae7ac1a	unity/Assets/Scripts/UI/ContractsSceneView.cs
+c001faf1d18e278ea1809547df75a85df47d2cd8	unity/Assets/Scripts/UI/DailyRewardPopup.cs
+63e54d797bb9a5942dda1d7bfc4181e5e7d93f42	unity/Assets/Scripts/UI/EquipmentSceneView.cs
+69f5e3075c8c76dc06741098fa884ac6a61f1562	unity/Assets/Scripts/UI/FactionsSceneView.cs
+d89081359c9f97325d6f3c59cc671da1ae11d450	unity/Assets/Scripts/UI/LocalizedText.cs
+08549d74771a835b92f157715825a7f720cecdd0	unity/Assets/Scripts/UI/MarketEventBannerView.cs
+ce9f7ae77c6b4526839f30fa0e0c2d38102f3e82	unity/Assets/Scripts/UI/MarketListingCellView.cs
+e65cffbbd8a91248018224a381c0d9de2c2ed940	unity/Assets/Scripts/UI/MarketplaceSceneView.cs
+541e8b64a645484e86d65767bbf208940a1cfe49	unity/Assets/Scripts/UI/NumberTicker.cs
+26d6ecee75983098dd1210c671a47e46ff41e53a	unity/Assets/Scripts/UI/PrestigeSceneView.cs
+cce83ce025809864e1115633f15ad286ac218b63	unity/Assets/Scripts/UI/RecyclerSceneView.cs
+83d10ac79bbdc105971928acf39037604add0817	unity/Assets/Scripts/UI/SplashRotator.cs
+92628fa666ef6ee22d11b4971fd5424b47a1c7c7	unity/Assets/Scripts/UI/SquadHpBarStripView.cs
+8fab728c00087553d557b3f6559a4d5d36eda988	unity/Assets/Scripts/UI/TraversalSceneView.cs
+1d07b7f676b8d903612bbc26d1bf2ce99086d3b1	unity/Assets/Scripts/UI/TutorialOverlayView.cs
+bd00890468aa29778b854ce72e9a93abd2726b47	unity/Assets/Scripts/UI/UIAnimator.cs
+c30951f6ac3f527be6cc92430bc074c8db2bdb26	unity/Assets/Scripts/UI/WanderingSceneView.cs
+d759e3cc7d6903292b858b4377e02d3059d83688	unity/Assets/Scripts/UI/ZoneCellView.cs
+e47d451a382208397249032189a22d3a142fa846	unity/BALANCE_PASS_1.md
+2dc30267806d46459da71d275c8d0b807054943d	unity/BOOTSTRAP.md
+1fe582f2e2a19b033c1d0348ae0f4d5ad69d12df	unity/Data/survivor_starting_stats.csv
+3d02532f19ca5df26d451d5ba25440ae6d18a21a	uploads/Bot Prompting.docx
+cd61d8fbe4972e366270c85db1b0392a12582b4c	uploads/Economy.docx
+25605164a3f4909a291e3c767cc9a8ebb61084e9	uploads/Enemy Mechanics .txt.docx
+1bcacd948be35f90b740cafeebc2faf70fb9b466	uploads/Enemy_Mechanics.xlsx
+4eb6abc82cb2c60196c656128919a1e63c2b858a	uploads/GDD_v4.3_Expanded.docx
+44d63cbf4b9980e30483770904c62506bc024ccf	uploads/GDD_v5.1_FULL_INTEGRATION.docx
+fe1968029b7be3d6120acf4d6121e5b49710edd2	uploads/GDD_v5.2_REFERENCE_MAP.docx
+8c73dd51ecbf0482a4286aa5e2cac4417357d5e5	uploads/GDD_v5.2_Reference.Map
+a9c138856deef4608fe9165b2d06e6df3d7afb57	uploads/GDD_v5.3
+f7bd148e7f1be197e72a23f46acedb5439877694	uploads/Game Setting & Theme.docx
+567ac49574e1344c27ade3e068d7a42c38c31bd9	uploads/Idler Notes.docx
+e3c9bb8dbc27b868b4919945fcdded1ae691a89e	uploads/Loot_Schema.xlsx
+69ae219678cd7e5ad166c53f6378cd76c6c3d615	uploads/Player Economy.xlsx
+13e81da07e1c9e56b8a5c457bdc08006ea41f5de	uploads/Progression as a Resource.xlsx
+1b0a51ee746f8e4cf05f1e3ef59e132850b4a495	uploads/Road Map.docx
+9be98b6c5dd6796785eca3825f3b5de3de222392	uploads/Routes_Tab_Open_Hooks_Spec.md
+fb83e594dbfbfa6fdc99a6e97c4521b6deff81a0	uploads/Survior_Classes.xlsx
+619531247963d9f5f00eb5a1478aabecebce74d3	uploads/Z_Idler GDD w_ Steam Outdated.docx
+5bf0e7d16bae5a693ce5d66c7be47390cbdff5cb	uploads/Zombie Art/Bestiary 49-108/049-soggy-slump.png
+966b3afd94109a451a9b17308ceb4efb77506a27	uploads/Zombie Art/Bestiary 49-108/050-ashen-wanderer.png
+bacb95eded6c9c2f55ea568b3aaa737126187ef5	uploads/Zombie Art/Bestiary 49-108/051-lumbering-courier.png
+12838a7a8daf24fd3fe6496dab7aa1aefcd00509	uploads/Zombie Art/Bestiary 49-108/052-tangled-drifter.png
+57a76bf075cc165848a54c6c7abb13ca5961c27f	uploads/Zombie Art/Bestiary 49-108/053-frail-husk.png
+36c1693eafba07e4dcb5bc29b3a5bdc0527d3fb2	uploads/Zombie Art/Bestiary 49-108/054-siren-stumper.png
+8ae5491894cd9c160046f542c0e829b23fbcf6e7	uploads/Zombie Art/Bestiary 49-108/055-cinder-runner.png
+532f8b7d00ec9bf2840599e158936d4ab482758e	uploads/Zombie Art/Bestiary 49-108/056-muck-lurker.png
+6af2d5db7a3d2f4173fc83e067bdb84f4ab946bf	uploads/Zombie Art/Bestiary 49-108/057-hollow-leaper.png
+1a64dcdcd6ac801c939fe4f08dbb504054db6730	uploads/Zombie Art/Bestiary 49-108/058-rusted-guard.png
+6f64194e96f167b3b59af48a28eaaef2f6ba1437	uploads/Zombie Art/Bestiary 49-108/059-spore-carrier.png
+1fbbfa80f62205b1368356a602128de606acf5bf	uploads/Zombie Art/Bestiary 49-108/060-static-shuffler.png
+088fa6a3375e9cef542298586416c2c65df9898f	uploads/Zombie Art/Bestiary 49-108/061-goo-vomiter.png
+1a92836603348b7ed2556844d7ed836862747b1d	uploads/Zombie Art/Bestiary 49-108/062-shatter-bone-bruiser.png
+fe9574b5d6549e4d19ef18516ffb7223d541b214	uploads/Zombie Art/Bestiary 49-108/063-grave-digger.png
+7007ae58c53bfd2b53259841265c3505c6d09f3c	uploads/Zombie Art/Bestiary 49-108/064-wire-bound-crawler.png
+9f6ea8d4080c264cfa5000765b33b19a5d49c1c9	uploads/Zombie Art/Bestiary 49-108/065-frost-smite.png
+71b8a31564b27f36a3bdd3abdc5cbdb0c90f825d	uploads/Zombie Art/Bestiary 49-108/066-flash-blind-stalker.png
+b652827cf73a1f11ee537f14c70d195a42ae3e95	uploads/Zombie Art/Bestiary 49-108/067-decay-launcher.png
+7cf245b393f8e06a7bb4a1a1a52884d2f829e975	uploads/Zombie Art/Bestiary 49-108/068-riot-pacifier.png
+4731ce0eced9151bee9d4e429aeb1b2019b4ff59	uploads/Zombie Art/Bestiary 49-108/069-thermite-walker.png
+acbbd0532372cd0eee914bc66eca9b202d369fe4	uploads/Zombie Art/Bestiary 49-108/070-plague-matron.png
+9a73d6715dc01408660e6a645fc0b5eead052b1a	uploads/Zombie Art/Bestiary 49-108/071-volt-surger.png
+5401deb032c56b1f36538b3687bc2f6ef2a8bc38	uploads/Zombie Art/Bestiary 49-108/072-slag-enforcer.png
+e3e85d4158d3e15b24d0def3e46e500dcd48b7fa	uploads/Zombie Art/Bestiary 49-108/073-corrosive-bloat.png
+099e1ccf64ec9658c0804e8a0cf66a2c1ad8a6b7	uploads/Zombie Art/Bestiary 49-108/074-leaping-strangle-imp.png
+06e55d3820dc988277a2108bdc826189116d068d	uploads/Zombie Art/Bestiary 49-108/075-phantasm-walker.png
+7b05157cd91e11291eaaeb42d55b788a5fec9028	uploads/Zombie Art/Bestiary 49-108/076-exoskeleton-remnant.png
+da6cd9794d174a8705e4c31ebc933cbcbb7e55a5	uploads/Zombie Art/Bestiary 49-108/077-blight-screamer.png
+81b9e11cb93ab2b50933d90cdf9fe4fe8f4c3c3f	uploads/Zombie Art/Bestiary 49-108/078-needle-limb-freak.png
+2eecfa1fbde28c7bcc7a66c7cd867ee39c8063a9	uploads/Zombie Art/Bestiary 49-108/079-gloom-assassin.png
+31a7efd63db1911ab6aadf4127c3d4ea8b389a9b	uploads/Zombie Art/Bestiary 49-108/080-chain-whip-warden.png
+3773c398e13fbdf282f83dbd486d54ac88bf7add	uploads/Zombie Art/Bestiary 49-108/081-caustic-mortar.png
+e16a363216b8554d91aee9692188558af97c5ad0	uploads/Zombie Art/Bestiary 49-108/082-cryo-executioner.png
+d6bfc6354a20833e9245e62bdbb00b244bd17c60	uploads/Zombie Art/Bestiary 49-108/083-napalm-stalker.png
+3bc8cc2fef34b113b390e446de1ac69a4f51d564	uploads/Zombie Art/Bestiary 49-108/084-centipede-host.png
+71e1c790d2a058b595995eeef1dd15ce23ff3b81	uploads/Zombie Art/Bestiary 49-108/085-apex-hunter.png
+d030bab1c6e0a37604ea12adb183f216306bb69b	uploads/Zombie Art/Bestiary 49-108/086-slag-titan.png
+acd3683151bcfa68ea51e89129cb5ae7b34b07ca	uploads/Zombie Art/Bestiary 49-108/087-toxic-behemoth.png
+186f9b4b2d4b8ce4374bee39629cf0edd6439dd1	uploads/Zombie Art/Bestiary 49-108/088-bio-electric-monstrosity.png
+9276fd4d8beee68b307280f2f624ed99e1a81730	uploads/Zombie Art/Bestiary 49-108/089-subterranean-stalker.png
+f54e53ffd2e1926fe01b1988cadca45a68b1bde6	uploads/Zombie Art/Bestiary 49-108/090-surgical-abomination.png
+33791df7c079fc3e25698dce022a048c72daeec8	uploads/Zombie Art/Bestiary 49-108/091-dread-dreadnought.png
+6a11c170d0e527ad7033bf0e80cdb07c2ac73a21	uploads/Zombie Art/Bestiary 49-108/092-marrow-collector.png
+3e67e72b09583b4674c38e9dce55475541785bf5	uploads/Zombie Art/Bestiary 49-108/093-inferno-engine.png
+8b7147c9dce684efd0648a5f4fb0070d2bbdee29	uploads/Zombie Art/Bestiary 49-108/094-void-phantom.png
+b181f0823d042b08179fef6b74bae85f22189a19	uploads/Zombie Art/Bestiary 49-108/095-grave-overlord.png
+5af2294ddd847eaa227c7c136e4c1edec5115ebe	uploads/Zombie Art/Bestiary 49-108/096-epitaph-warden.png
+0965369d3c71508f5c67ee6e06e7bcc22f17e097	uploads/Zombie Art/Bestiary 49-108/097-toxin-sovereign.png
+719cb2c1bdae52c0cbb377f0a1d64a5edf92e2f6	uploads/Zombie Art/Bestiary 49-108/098-storm-caller.png
+ce2d6a860cd7a260bbf89f8be95b9dd054c2f4fd	uploads/Zombie Art/Bestiary 49-108/099-glacial-leviathan.png
+9f71f5cee2102d79152088e58cf8b1ffb1513638	uploads/Zombie Art/Bestiary 49-108/100-the-iron-titan.png
+9aeaf1447ceff7fc5303e4622e1deb41cf3ad869	uploads/Zombie Art/Bestiary 49-108/101-the-hivemind-core.png
+b6391ac35ef2e00ed68ef4207ccc7cc69b38633c	uploads/Zombie Art/Bestiary 49-108/102-the-ash-emperor.png
+e036cfb98bf64d70253772fbf970d5575f73dbfd	uploads/Zombie Art/Bestiary 49-108/103-the-void-harbinger.png
+b91a64659ff0df139c6af0145c1ee211d3798371	uploads/Zombie Art/Bestiary 49-108/104-the-undying-goliath.png
+b5e6073de25892c5afc5b56c917cb2156c431ba5	uploads/Zombie Art/Bestiary 49-108/105-the-storm-sovereign.png
+b93cfd1de689d25d1bdb3c889b7894d2e7a4b165	uploads/Zombie Art/Bestiary 49-108/106-the-plague-archon.png
+8f5d831c4c07009a8cb7fe62afb1855ef698ce92	uploads/Zombie Art/Bestiary 49-108/107-the-sub-zero-colossus.png
+e1cbc9add4486cce0d7201dce250d4b7d12adaf2	uploads/Zombie Art/Bestiary 49-108/108-the-apex-prime.png
+b5f73516f4a0434bd870ef37d5f7d61830222775	uploads/Zombie Art/Bestiary 49-108/README.md
+3fc9228d2b8f3f88b17b331b90eac2585104ac69	uploads/Zombie Art/Bestiary 49-108/animations/075-phantasm-grayscales-sheet.png
+427ad17325c2649ef01b182bd6cfdd26b26cf828	uploads/Zombie Art/Bestiary 49-108/animations/075-phantasm-grayscales.gif
+f24b14073494aa09edab862335a31707b90ba42b	uploads/Zombie Art/Bestiary 49-108/animations/075-phantasm-grayscales/frame-01.png
+993f9ae1e520409cf94a4054c068f1ceac05a2c7	uploads/Zombie Art/Bestiary 49-108/animations/075-phantasm-grayscales/frame-02.png
+977dfae980267b7645225a20496a0e88197cd936	uploads/Zombie Art/Bestiary 49-108/animations/075-phantasm-grayscales/frame-03.png
+043984bd3631cce14bcbb8c195b24cfa3e3aa8a2	uploads/Zombie Art/Bestiary 49-108/animations/075-phantasm-grayscales/frame-04.png
+cadef8b813e31a250c2f154c39182de2178902b4	uploads/Zombie Art/Bestiary 49-108/animations/090-surgical-grayscales-sheet.png
+e86817dd450892cbc8f50b07a155c0c8ccb6b831	uploads/Zombie Art/Bestiary 49-108/animations/090-surgical-grayscales.gif
+2cecc7a7a0c95179dc8d99001410e2a3e2862fe2	uploads/Zombie Art/Bestiary 49-108/animations/090-surgical-grayscales/frame-01.png
+5e86da2db0d8ced4c87ca76cfc4a6851eb46a050	uploads/Zombie Art/Bestiary 49-108/animations/090-surgical-grayscales/frame-02.png
+787d75719c1afd3f3aff9d8e4ce57eb256575a4c	uploads/Zombie Art/Bestiary 49-108/animations/090-surgical-grayscales/frame-03.png
+6e13a2f49a33192aabf90142b986cc610b3f29a1	uploads/Zombie Art/Bestiary 49-108/animations/090-surgical-grayscales/frame-04.png
+2e093b40d821d0936193cb3ba99c918188cf9c9c	uploads/Zombie Art/Bestiary 49-108/grayscales-animation-index.json
+af2dfe21e613f136a5b6d42dfac0b3b0011b54d8	uploads/Zombie Art/Bestiary 49-108/humans/01-scavenger-survivor.png
+543516d15cc23da31a97111324d8992ab9cc1902	uploads/Zombie Art/Bestiary 49-108/humans/02-tactical-operator.png
+83ff42089651cb452d206e56e5ae0f30906129ec	uploads/Zombie Art/Bestiary 49-108/humans/03-endgame-veteran.png
+d4b947a73112d52df9687bcccd181c190f1d5323	uploads/Zombie Art/Bestiary 49-108/humans/04-militia-guard.png
+7828c3e144f7fdeb4f43765e23357e0276b1658f	uploads/Zombie Art/Bestiary 49-108/humans/05-scout-outrider.png
+885daaeabb41bd053cfb3457ab123db7564b2035	uploads/Zombie Art/Bestiary 49-108/humans/06-faction-enforcer.png
+cbdc73786b564182c0a6c039196bfb2e64db4ccd	uploads/Zombie Art/Bestiary 49-108/humans/07-drifter-trader.png
+b5b718440bdea2fcd5bda44c0854801d69e12aac	uploads/Zombie Art/Bestiary 49-108/humans/08-ranged-aiming.png
+af1b04e6a71d5d059aaa288ed06fb34c16cfe39d	uploads/Zombie Art/Bestiary 49-108/humans/09-melee-swing.png
+821ea1cbc502c26ae4e656b91dd5cd463b7d55d8	uploads/Zombie Art/Bestiary 49-108/humans/10-wounded-crawling.png
+ac146f55bba68e15b3d2237e7cdf8e8fcb310e33	uploads/Zombie Art/Bestiary 49-108/index.csv
+be2d110743334ff9222d92eb1fb6def4ad49d2cb	uploads/Zombie Art/Bestiary 49-108/prompts.md
+252681739f2f991bb793ae6573617e61bc65fb6f	uploads/Zombie Art/Bestiary 49-108/survivors-and-cues-asset-index.json
+2839f5afae2d0accee4bc38333e10fa9c1aba0fe	uploads/Zombie Art/Bestiary 49-108/survivors-and-cues-prompts.md
+61b948c17490b1d1110e8fa2f6ff67e490a4cf39	uploads/Zombie Art/Bestiary 49-108/survivors-and-cues-readme.md
+fd5c9c2a09da1f249638afded228228e2b2cd643	uploads/Zombie Art/Bestiary 49-108/survivors-and-grayscales-cues.zip
+f86cc5fc5fd3d5ab732ec7ef3519834088d35a98	uploads/Zombie Art/Sportbikes and Lightcycles/01-green-ninja-style-sportbike.png
+776bd75a9da68bb2cee2daab8e1e39dcf84dfeb7	uploads/Zombie Art/Sportbikes and Lightcycles/02-red-white-cbr-style-racer.png
+b3050b6910cf553ac39ea9ca3fe17d87a4e5a13f	uploads/Zombie Art/Sportbikes and Lightcycles/03-enduro-dual-sport-scrambler.png
+244b56b98da34ccb1af196fb00e777fa3f9b7c6c	uploads/Zombie Art/Sportbikes and Lightcycles/04-cyan-cyberpunk-lightcycle.png
+6cd8dc7e1e9fb8b0a1a300d777fba5b4dfcf337d	uploads/Zombie Art/Sportbikes and Lightcycles/05-crimson-neo-tokyo-sportbike.png
+ed85e8c90690ab90f7507bd2156b8de63f4b5d34	uploads/Zombie Art/Sportbikes and Lightcycles/manifest.json
+41b8125d8a1d4a95a6e4e79de076ba2b93626f63	uploads/Zombie Art/Sportbikes and Lightcycles/prompts.md
+88740e94846dedfd513a662d0108c1a05cd2e7d9	uploads/Zombie Art/Wildlife and Vehicles/01-pegasus.png
+9c33a71f945ffabd5f5732ae758be5e261ab27f4	uploads/Zombie Art/Wildlife and Vehicles/02-unicorn.png
+356243c6832230b398231a667cf0410bb9a410f8	uploads/Zombie Art/Wildlife and Vehicles/03-hawk.png
+48386b57658873be6fe3a7ff44de86ca461e8e5a	uploads/Zombie Art/Wildlife and Vehicles/04-pigeon.png
+78db4571b29bce2a44f8847bde938c6559b7121d	uploads/Zombie Art/Wildlife and Vehicles/05-bicycle.png
+7b71264e336eefda0523dc30906045d3fc1a30e2	uploads/Zombie Art/Wildlife and Vehicles/06-e-bike.png
+c3b05efe2688633b7d3360d75a968dcd1e035981	uploads/Zombie Art/Wildlife and Vehicles/07-horse.png
+aff6be349ded946fa773f365d3fe4827dab2a33d	uploads/Zombie Art/Wildlife and Vehicles/08-coupe.png
+17b05c8027534ef9ea9adec6ca2abae96ef3f136	uploads/Zombie Art/Wildlife and Vehicles/09-van.png
+383b1b86104d833de5a0722c1f270e55a1b9d728	uploads/Zombie Art/Wildlife and Vehicles/10-motorcycle.png
+2812109cd2ad0ff7f38e4cb9ebd2537432c6ba55	uploads/Zombie Art/Wildlife and Vehicles/11-four-by-four-truck.png
+fb2123f32afda37cefed934d1f52bccd98b80b15	uploads/Zombie Art/Wildlife and Vehicles/manifest.json
+58087b67a27df9d4c6af636290b5ac698e9dd4a2	uploads/Zombie Art/Wildlife and Vehicles/prompts.md
+88023eeeffb6057ab0e575f67a833d6d5aa5b84b	uploads/Zombie Art/encounter-affliction-map.json
+8a29a4eda75506c7fbd57664d0a2ef07408a5f35	uploads/Zombie Art/encounter-affliction-map.md
+a8b0c483fec9f9153acfb3abe1438deaa65dc01d	uploads/Zombie Art/zed-idler-bestiary-49-108.zip
+5e8d7502beed5e84fd81a34c8c167a76477d15bc	uploads/Zombie_Idler_Economy_With_Examples.xlsx
+b0f584addbf43072d356ca36af5342b6e596f5c1	uploads/Zombie_Loot_Master_40k.xlsx
+fb3a032a649750e8b98d79611baf74b95cca9cc4	uploads/all_survivor_classes.xlsx
+509d9fe8440f85b5b99ff05cd6196fd1c76a2890	uploads/church-scene-brief.md
+e65dbe0f1e4f2c4bf951a02814e36ca062967a8a	uploads/combat_system_spec1.md
+f2e8ebbed5758d3bb6345e6440943bfaab19e61a	uploads/game-data.js
+2a0105cc7d70708b225a4f3bd2d10f8b06b91673	uploads/starting_stats_and_perks1.md
+cde860ec89262ba33e02958db4ab49f5215057c1	uploads/survivor_system_full_spec1
+050271ab4b7511280b58181742ef8aaa78e1c6c7	uploads/zombie_types.xlsx
+30d89e0e090baa56e7cc44dad9269bc65fc97e44	weapon-design-data.js
+77c94d0094d388c098af25deb12b3ea790ac4157	zombie-sprites.js

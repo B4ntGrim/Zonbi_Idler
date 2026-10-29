@@ -12,7 +12,7 @@ const mkEnv = (opt) => {
   const ls = { getItem:k => (k in store ? store[k] : null), setItem:(k,v)=>{store[k]=String(v);}, removeItem:k=>{delete store[k];}, key:i=>Object.keys(store)[i], get length(){return Object.keys(store).length;} };
   const doc = { hidden:false, visibilityState:'visible', addEventListener(){}, querySelectorAll:()=>[] };
   const fw = { localStorage: ls, sessionStorage: ls, console:{ log(){}, warn(){}, error(){} }, Date, Math, JSON, setInterval:()=>0, clearInterval:()=>{}, setTimeout:()=>0, clearTimeout:()=>{}, document: doc, addEventListener(){}, location:{ reload(){} } }; fw.window = fw;
-  new Function('fw', 'with(fw){' + src + '}')(fw); const ZI = fw.ZI; ZI.wanderMounted = false;
+  /* Oct 29: this suite checks retreat/sim timing, not pace; it pins the pre-Oct-28 3 m/s pace its timings were written for. The real pace (1.4 m/s) is tested in fx4. */ new Function('fw', 'with(fw){' + (src).replace('PACE: { walk: { base: 1.4, perCond: 0 }, jog: { base: 1.4, perCond: 0.28 }, run: { base: 1.4, perCond: 0.6066666666666667 } }', 'PACE: { walk: { base: 3, perCond: 0 }, jog: { base: 3, perCond: 0.6 }, run: { base: 3, perCond: 1.3 } }') + '}')(fw); const ZI = fw.ZI; ZI.wanderMounted = false;
   ZI._wj('zi_charges', { heal: opt.heals == null ? 0 : opt.heals, scout: 0 });
   return { ZI, store, doc };
 };
@@ -81,7 +81,7 @@ const quiet = (ZI) => { ZI.WALK_HOME_TABLE.groups.meetPct = 0; ZI.WALK_HOME_TABL
   let fr = 0; const f = ZI.forcedRetreat; ZI.forcedRetreat = function() { fr++; return f.apply(this, arguments); };
   const ev = []; ZI.WanderSim.advance(st, 0.001, ZI.WanderSim.emptySummary(), ZI.seededRng(1), ev);
   check('4: max stress → Broken, stress 80, no Forced Retreat, the run continues', kinds(ev, 'broken').length === 1 && ev[0].entered && ZI.getStress() <= 80.0001 && ZI.getStress() >= 79.99 && fr === 0 && !st.resting, JSON.stringify(ev[0]));
-  check('4: Broken penalties — max HP 82, speed ×0.7', ZI.maxHp() === 82 && Math.abs(ZI.SurvivorRules.moveSpeed({ moveMode:'walk' }) - 3 * 0.7) < 1e-9 && st.hp <= 82);
+  check('4: Broken penalties — max HP 82, speed ×0.7', ZI.maxHp() === 82 && Math.abs(ZI.SurvivorRules.moveSpeed({ moveMode:'walk' }) - ZI.SurvivorRules.PACE.walk.base * 0.7) < 1e-9 && st.hp <= 82);
   const F = ZI.STAT_FORMULAS; const atk = { accuracy:0, damageMin:10, damageMax:10, crit:0, attackLossPct:18 }, def = { evasion:0, armor:0, hp:100 };
   check('4: a Broken attack falters on an 18% roll (and lands otherwise)', F.resolveAttack(Object.assign({}, atk), Object.assign({}, def), seq([0.1])).result === 'skip' && F.resolveAttack(Object.assign({}, atk), Object.assign({}, def), seq([0.5, 0, 0, 0.99])).result === 'hit');
   const d1 = Object.assign({}, def, { dmgTakenPct:5 }); F.resolveAttack({ accuracy:0, damageMin:20, damageMax:20, crit:0 }, d1, seq([0, 0, 0.99]));

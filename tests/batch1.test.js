@@ -53,7 +53,8 @@ const baseRun = (ZI) => Object.assign(ZI.defaultWanderRun(), { active:true, hp:1
   const mk = (floorXp) => mkEnv({ zi_stat_xp: JSON.stringify({ combat: 20000 }), zi_skill_decay: JSON.stringify({ combat: { lastActiveUtc: now - 30 * DAY, floorXp, floorProgress:{}, lastSettle: now - 10 * DAY } }) });
   const E = mk(0), xp = JSON.parse(E.store.zi_stat_xp).combat, L = E.ZI.statLevel('combat');
   const rate = E.ZI.DECAY.minRate + (E.ZI.DECAY.maxRate - E.ZI.DECAY.minRate) * (L - 1) / 49;
-  check('4: a 10-day absence applies only one day of decay', xp === Math.round(20000 * (1 - rate)), 'xp=' + xp);
+  // Oct 29 (Sam, Profession Rust Replacement): inactivity never removes XP. Was: one day of decay on return.
+  check('4: a 10-day absence removes no XP (rust decay retired Oct 29)', xp === 20000, 'xp=' + xp + ' (old rule would give ' + Math.round(20000 * (1 - rate)) + ')');
   const F = mk(19990);
   check('4: decay never drops XP below the earned floor', JSON.parse(F.store.zi_stat_xp).combat >= 19990);
 }

@@ -1,0 +1,78 @@
+{
+  "humanSprites": [
+    {
+      "name": "Scavenger Survivor",
+      "file": "humans/01-scavenger-survivor.png",
+      "type": "static sprite",
+      "generation": "built-in image generation/editing"
+    },
+    {
+      "name": "Tactical Operator",
+      "file": "humans/02-tactical-operator.png",
+      "type": "static sprite",
+      "generation": "built-in image generation/editing"
+    },
+    {
+      "name": "Endgame Veteran",
+      "file": "humans/03-endgame-veteran.png",
+      "type": "static sprite",
+      "generation": "built-in image generation/editing"
+    },
+    {
+      "name": "Militia Guard / Sentry",
+      "file": "humans/04-militia-guard.png",
+      "type": "static sprite",
+      "generation": "built-in image generation/editing"
+    },
+    {
+      "name": "Scout / Outrider",
+      "file": "humans/05-scout-outrider.png",
+      "type": "static sprite",
+      "generation": "built-in image generation/editing"
+    },
+    {
+      "name": "Faction Enforcer / Heavy",
+      "file": "humans/06-faction-enforcer.png",
+      "type": "static sprite",
+      "generation": "built-in image generation/editing"
+    },
+    {
+      "name": "Drifter / Trader NPC",
+      "file": "humans/07-drifter-trader.png",
+      "type": "static sprite",
+      "generation": "built-in image generation/editing"
+    },
+    {
+      "name": "Ranged Aiming / Firing Stance",
+      "file": "humans/08-ranged-aiming.png",
+      "type": "static sprite",
+      "generation": "built-in image generation/editing"
+    },
+    {
+      "name": "Melee Swing Frame",
+      "file": "humans/09-melee-swing.png",
+      "type": "static sprite",
+      "generation": "built-in image generation/editing"
+    },
+    {
+      "name": "Wounded / Crawling State",
+      "file": "humans/10-wounded-crawling.png",
+      "type": "static sprite",
+      "generation": "built-in image generation/editing"
+    }
+  ],
+  "animations": [
+    {
+      "name": "Phantasm Walker",
+      "gif": "animations/075-phantasm-grayscales.gif",
+      "sheet": "animations/075-phantasm-grayscales-sheet.png",
+      "frames": "animations/075-phantasm-grayscales/"
+    },
+    {
+      "name": "Surgical Abomination",
+      "gif": "animations/090-surgical-grayscales.gif",
+      "sheet": "animations/090-surgical-grayscales-sheet.png",
+      "frames": "animations/090-surgical-grayscales/"
+    }
+  ]
+}

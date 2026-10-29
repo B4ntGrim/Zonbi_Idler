@@ -54,7 +54,7 @@ ZI.WANDER_RUN_KEY = 'zi_wander_run';
 ZI.defaultWanderRun = function() {
   return { scroll: 0, lastCheckpoint: 0, checkpoints: [], carried: [],
            active: false, hp: 100, kills: 0, xp: 0, mats: 0, healsUsed: 0,
-           moveSpeed: 3, maxHeals: 3, healPct: 25, lastTickAt: 0,
+           moveSpeed: 1.4, maxHeals: 3, healPct: 25, lastTickAt: 0,
            paused: false, awaySummary: null, retreatSnoozes: {}, retreatHold: null, withdrawCauses: null, retreatEvade: 0, retreatEvadeRolled: false };
 };
 ZI.getWanderRun = function() {
@@ -326,12 +326,12 @@ ZI.WanderSim = {
     const out = { kind:'zombie', enemy: z.name, bestiaryId: z.bestiaryId, tier: z.tier, outcome:null, xp:0, mats:0, loot:null, hpBefore: state.hp, dmgTaken:0, dmgDealt:0, worn:[] };
     if (ZI.discoverZombie && z.bestiaryId && T.codexFromWandering) ZI.discoverZombie(z.bestiaryId); // BEST1 Option A (Sam, Oct 17): Codex unlocks from Wandering stay off until separately approved
     if (ZI.policyEvades(z, state.hp) && ZI.STAT_FORMULAS) {
-      const chance = ZI.STAT_FORMULAS.escapeChance(ZI.effectiveLevel('stealth'), state.athletics || ZI.effectiveLevel('athletics'), state.moveSpeed ? Math.round(state.moveSpeed / 0.03) : 100, z);
+      const chance = ZI.STAT_FORMULAS.escapeChance(ZI.effectiveLevel('stealth'), state.athletics || ZI.effectiveLevel('athletics'), ZI.SurvivorRules.speedRating(state.moveSpeed), z);
       if (chance > 0 && rng() * 100 < chance) { ZI.emitAction && ZI.emitAction('wander.escape', 1, { enemy: z.name }); out.outcome = 'escaped'; return out; }
     }
     const g = ZI.resolveLoadoutStats ? ZI.resolveLoadoutStats() : {};
     const bf = ZI.combatBuffsAt ? ZI.combatBuffsAt(state._simNow || ZI.clockNow()) : { dmgPct:0, armorAdd:0 }; // B13: timed buffs, by simulated time
-    const sb = ZI.STAT_FORMULAS.survivorStatBlock({ displayHP: state.hp, armorRating: (g.armorRating || 0) + bf.armorAdd, weaponDamage: Math.round((g.weaponDamage || state.weaponDamage || 10) * (1 + bf.dmgPct / 100)), speed: state.moveSpeed ? Math.round(state.moveSpeed / 0.03) : 100, heavySwingPct: g.heavySwingPct || 0, staggerPct: g.staggerPct || 0 }); // CB1
+    const sb = ZI.STAT_FORMULAS.survivorStatBlock({ displayHP: state.hp, armorRating: (g.armorRating || 0) + bf.armorAdd, weaponDamage: Math.round((g.weaponDamage || state.weaponDamage || 10) * (1 + bf.dmgPct / 100)), speed: ZI.SurvivorRules.speedRating(state.moveSpeed), heavySwingPct: g.heavySwingPct || 0, staggerPct: g.staggerPct || 0 }); // CB1
     out.buffed = bf.dmgPct > 0 || bf.armorAdd > 0;
     if (state.retreatEvade > 0) { if (z.seesThrough) out.evadeCountered = true; else { sb.evasion += state.retreatEvade; out.evadeBuff = state.retreatEvade; } } // getaway buff
     sb.hp = state.hp; sb.hpMax = ZI.maxHp();
@@ -376,7 +376,7 @@ ZI.WanderSim = {
   _move(state, ms, away, events, rng) {
     // Position is kept as exact integer micrometres so it is identical for any chunking of elapsed time.
     if (state.scrollUm == null || Math.abs(state.scrollUm / 1e6 - (state.scroll || 0)) > 1e-6) state.scrollUm = Math.round((state.scroll || 0) * 1e6);
-    const advUm = Math.round((state.moveSpeed || 3) * 1000) * ms, adv = advUm / 1e6;
+    const advUm = Math.round((state.moveSpeed || 1.4) * 1000) * ms, adv = advUm / 1e6;
     state.scrollUm += advUm; state.scroll = state.scrollUm / 1e6; away.dist = (away.dist || 0) + adv;
     const cp = Math.floor(state.scroll / ZI.CHECKPOINT_EVERY), lastCp = Math.floor((state.lastCheckpoint || 0) / ZI.CHECKPOINT_EVERY);
     if (cp > lastCp) {

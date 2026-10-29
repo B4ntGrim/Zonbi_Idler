@@ -110,9 +110,13 @@ ZI._xpListeners = [];
 ZI.onXp = function(fn) { ZI._xpListeners.push(fn); return () => { ZI._xpListeners = ZI._xpListeners.filter(f => f !== fn); }; };
 // Award raw XP to one track (routes through addStatXp + notifies listeners).
 ZI.awardXp = function(profId, amount, meta) {
-  if (!profId || amount <= 0) return;
-  ZI.addStatXp(profId, Math.round(amount));
-  ZI._xpListeners.forEach(fn => { try { fn(profId, Math.round(amount), meta || {}); } catch (e) {} });
+  if (!profId || !(amount > 0)) return;
+  // Catch-up XP (Oct 29, replaces rust decay): extra XP on top of earned XP, only while enabled (off until the
+  // inactivity ramp is approved). Earned XP is never reduced.
+  const bonus = ZI.catchUpBonus ? ZI.catchUpBonus(profId, Math.round(amount)) : 0;
+  const total = Math.round(amount) + bonus;
+  ZI.addStatXp(profId, total);
+  ZI._xpListeners.forEach(fn => { try { fn(profId, total, Object.assign({}, meta || {}, bonus ? { catchUpBonus: bonus } : {})); } catch (e) {} });
 };
 // Emit a named action; splits its base XP (× scale) across mapped professions.
 // Flat XP-bonus items (§5) add +N per track when that track is already granted.
@@ -284,6 +288,7 @@ ZI.STAT_FORMULAS = {
     const crit = rng() * 100 <= atk.crit;
     if (crit) dmg += atk.critBonus || 0;
     let dealt = Math.max(this.MIN_CHIP, dmg - (def.armor || 0));
+    if (def.armorPct > 0) dealt = Math.max(this.MIN_CHIP, Math.round(dealt * (1 - def.armorPct / 100))); // STAT-02: percent Armor (only when the stat layer sets it)
     if (def.dmgTakenPct > 0) dealt = Math.ceil(dealt * (1 + def.dmgTakenPct / 100)); // BAL-A A4: a Broken survivor takes more damage
     def.hp -= dealt;
     if (atk.lifesteal) atk.hp = Math.min(atk.hpMax, atk.hp + Math.floor(dealt * atk.lifesteal / 100));
@@ -303,12 +308,9 @@ ZI.skillDecayState = function(skill) {
 };
 ZI._saveDecay = function(skill, st) { const all = ZI.getDecay(); all[skill] = st; ZI._wj('zi_skill_decay', all); };
 ZI.skillIdleDays = function(skill) { return (ZI.clockNow() - ZI.skillDecayState(skill).lastActiveUtc) / 86400000; };
-ZI.skillRust = function(skill) {
-  const L = ZI.statLevel(skill), idle = ZI.skillIdleDays(skill), g = ZI.graceDays(L);
-  if (idle <= g) return { state:'fresh', eff:1 };
-  if (idle <= g + ZI.DECAY.rustyOffsetDays) return { state:'rusty', eff:ZI.DECAY.rustyEff };
-  return { state:'rusted', eff:ZI.DECAY.rustedEff };
-};
+// Oct 29 (Profession Rust Replacement, approved rules 1–2): inactivity never lowers XP, level or effectiveness.
+// skillRust stays for callers and always reports full efficiency; idle days are kept for display.
+ZI.skillRust = function(skill) { return { state:'fresh', eff:1, idleDays: ZI.skillIdleDays(skill) }; };
 // Effective level used by gameplay formulas (rust applied).
 ZI.effectiveLevel = function(skill) { return Math.max(1, Math.floor(ZI.statLevel(skill) * ZI.skillRust(skill).eff)); };
 // Decay settle (spec 3, 10). One clock per save (zi_decay_clock): lastSettledUtc = end of the last settle,
@@ -351,20 +353,8 @@ ZI.settleSkillDecay = function(now) {
   if (days < ZI.DECAY_CLOCK.minSettleDays) return;
   ZI._settlingDecay = true;
   try {
-    const x = ZI.getStatXp(); let changed = false;
-    (ZI.PROFESSIONS || []).forEach(p => {
-      const st = ZI.skillDecayState(p.id);
-      if (ZI.skillRust(p.id).state === 'rusted' && (x[p.id] || 0) > (st.floorXp || 0)) {
-        const L = ZI.statLevel(p.id);
-        let rate = ZI.DECAY.minRate + (ZI.DECAY.maxRate - ZI.DECAY.minRate) * (L - 1) / 49;
-        if (ZI.BASELINE_SKILLS.includes(p.id)) rate *= ZI.DECAY.baselineMult;
-        // Base rest spot: a built Bunks slows decay of base-work skills by 25%.
-        if (ZI.BASE_WORK_SKILLS.includes(p.id) && ZI.getCampSave && ((ZI.getCampSave().built || {}).bunks || 0) > 0) rate *= 0.75;
-        const above = (x[p.id] || 0) - (st.floorXp || 0);
-        x[p.id] = Math.round((st.floorXp || 0) + above * (1 - rate * days)); changed = true;
-      }
-    });
-    if (changed) { try { localStorage.setItem(ZI.STAT_XP_KEY, JSON.stringify(x)); } catch (e) {} }
+    // Oct 29: XP is never subtracted any more (rust decay retired). The settle only advances its clock, so callers and
+    // the zi_decay_clock / zi_skill_decay records keep working and stay available for rollback.
     ZI._saveDecayClock({ lastSettledUtc: now, lastSeenUtc: now });
   } finally { ZI._settlingDecay = false; }
 };
@@ -374,9 +364,9 @@ ZI._maybeSettleOnRead = function() {
   const now = ZI.clockNow(), c = ZI._decayClockMem || ZI.getDecayClock(now);
   if (now - c.lastSettledUtc >= ZI.DECAY_CLOCK.settleEveryOpenSec * 1000) ZI.settleSkillDecay(now);
 };
-// Rust + injury combined never exceed −20% (spec 13.8).
+// Injury (rust retired Oct 29) never exceeds −20% (spec 13.8).
 ZI.effectiveLevel = function(skill) {
-  let eff = ZI.skillRust(skill).eff;
+  let eff = 1;
   const j = ZI.getInjury(); if (j && j.skills.includes(skill)) eff -= j.pct;
   return Math.max(1, Math.floor(ZI.statLevel(skill) * Math.max(0.8, eff)));
 };
@@ -453,4 +443,49 @@ ZI.travEmitOnce = function(kind, cellKey, actionId, scale) {
   rec.done[k] = 1; ZI._wj(ZI.TRAV_XP_DAY_KEY, rec);
   ZI.emitAction && ZI.emitAction(actionId, scale);
   return true;
+};
+
+// ─── CATCH-UP XP (Oct 29: Profession Rust Replacement, Priority 1) ───────────
+// Approved: never subtract XP; +15% max rate on future earned XP; one allowance per inactivity, capped at 25% of the
+// XP needed for the next level (snapshotted when the allowance starts); per-track; no allowance at level 50.
+// PENDING Sam's balance approval: grace before accumulation, ramp to +15%, whether the allowance refills after a new
+// inactivity. Until both numbers are set AND enabled is true, catchUpBonus always returns 0 (no gameplay change).
+ZI.CATCHUP = { key: 'zi_prof_catchup_v1', enabled: false, maxRatePct: 15, allowancePctOfNext: 25, maxLevel: 50,
+  graceDays: null,   // PENDING approval: idle days before any catch-up starts
+  rampDays: null,    // PENDING approval: idle days (after grace) to reach maxRatePct
+  pending: ['graceDays', 'rampDays', 'refill after a new inactivity period'] };
+ZI.getCatchUp = function() {
+  const v = ZI._rj(ZI.CATCHUP.key, null);
+  return v && typeof v === 'object' && !Array.isArray(v) && v.tracks && typeof v.tracks === 'object' && !Array.isArray(v.tracks) ? v : { v: 1, tracks: {} };
+};
+ZI._profXpToNext = function(prof) {
+  const L = ZI.statLevel(prof); if (L >= ZI.CATCHUP.maxLevel) return 0;
+  if (prof === 'scavenging') return ZI._scavCumThreshold(L + 1) - ZI._scavCumThreshold(L);
+  const thr = n => n <= 1 ? 0 : 50 * n + 12 * n * n;
+  return thr(L + 1) - thr(L);
+};
+ZI.catchUpReady = function() { const C = ZI.CATCHUP; return !!C.enabled && Number.isFinite(C.graceDays) && C.graceDays >= 0 && Number.isFinite(C.rampDays) && C.rampDays > 0; };
+// Returns the extra XP for one award and spends it from the track's allowance. Never negative, never above the cap.
+// Idle time comes from the existing per-skill activity stamp (zi_skill_decay lastActiveUtc), which every award
+// already updates; a missing stamp counts as active now, so old saves never get backdated idle time.
+ZI.catchUpBonus = function(prof, amount) {
+  if (!ZI.catchUpReady() || ZI._inCatchUp || !prof || !(amount > 0)) return 0; // disabled: no reads/writes at all
+  ZI._inCatchUp = true;
+  try {
+    const C = ZI.CATCHUP, now = ZI.clockNow(), all = ZI.getCatchUp();
+    const raw = all.tracks[prof], t = raw && typeof raw === 'object' ? raw : {};
+    if (!(t.allowance >= 0)) t.allowance = 0; if (!(t.ratePct >= 0)) t.ratePct = 0;
+    const last = (ZI.getDecay()[prof] || {}).lastActiveUtc, idleDays = Number.isFinite(last) ? Math.max(0, (now - last) / 86400000) : 0;
+    if (!(t.allowance > 0) && idleDays > C.graceDays) {
+      const next = ZI._profXpToNext(prof);
+      if (next > 0) { t.ratePct = Math.min(C.maxRatePct, C.maxRatePct * (idleDays - C.graceDays) / C.rampDays); t.allowance = Math.floor(next * C.allowancePctOfNext / 100); }
+    }
+    let bonus = 0;
+    if (t.allowance > 0 && t.ratePct > 0) {
+      bonus = Math.max(0, Math.min(t.allowance, Math.floor(amount * Math.min(C.maxRatePct, t.ratePct) / 100)));
+      t.allowance -= bonus; if (t.allowance <= 0) { t.allowance = 0; t.ratePct = 0; }
+    }
+    all.tracks[prof] = t; ZI._wj(ZI.CATCHUP.key, all);
+    return bonus;
+  } catch (e) { return 0; } finally { ZI._inCatchUp = false; }
 };

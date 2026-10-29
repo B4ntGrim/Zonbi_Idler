@@ -81,6 +81,8 @@ Learned from the design sessions:
 | Soundtrack or art book (optional) | Small | Low effort, fan-friendly |
 | Ads, loot boxes, stat sales | Not used | Conflicts with the model |
 
+**RMAT source `[DECIDED Oct 22, Sam]`** (filed Oct 29): RMAT is earned in-game only and is never sold for real money. *Why:* the game is premium only (§5.1); selling RMAT would make every RMAT purchase pay-to-win. Source: `oct22-decisions-wpn02-pf13-route-alc-perk.md` Block 1 #10.
+
 ### 5.3 Linking Steam and mobile without free-to-play
 
 | Option | How it works | Trade-off |

@@ -414,8 +414,11 @@ ZI.addBuff = function(buff) { // { evade?, xpBonus:{track,amount}?, durationSec 
 // FX4 (Q5): survivor attributes computed by shared rules. Watched, offline and headless play all use these;
 // the Wandering screen reads them and never writes the results into the run.
 ZI.SurvivorRules = {
-  // Pace is the player's saved setting (D-FX4a): Walk 3 m/s; Jog and Run scale with Athletics conditioning.
-  PACE: { walk: { base: 3, perCond: 0 }, jog: { base: 3, perCond: 0.6 }, run: { base: 3, perCond: 1.3 } },
+  // Pace is the player's saved setting (D-FX4a). The Oct 28 physical pace scale
+  // sets Walk to 1.4 m/s and scales the other pace rates proportionally.
+  PACE: { walk: { base: 1.4, perCond: 0 }, jog: { base: 1.4, perCond: 0.28 }, run: { base: 1.4, perCond: 0.6066666666666667 } },
+  // Combat speed ratings stay normalized so the new physical pace does not halve existing combat stats.
+  speedRating(speedMps) { return Math.round((speedMps || this.PACE.walk.base) / this.PACE.walk.base * 100); },
   // Athletics conditioning 3–10 from the effective (rusted) Athletics level.
   conditioning() { return Math.max(3, Math.min(10, Math.round(3 + (ZI.effectiveLevel ? ZI.effectiveLevel('athletics') : 1) / 7))); },
   // Speed (m/s) = pace × gear speed × speed buffs (read at the buff moment, FX3). Overload is applied on top by the walker.

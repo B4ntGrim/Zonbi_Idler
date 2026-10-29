@@ -7,7 +7,7 @@ const mkEnv = (seed) => {
   const store = Object.assign({ zi_materials: JSON.stringify({ metal:200 }), zi_world_seed:'12345', zi_trav_start: JSON.stringify({ gx:0, gy:0 }), zi_trav_pos: JSON.stringify({ gx:0, gy:0, name:'Home', biome:'suburbia', difficulty:1 }) }, seed || {});
   const ls = { getItem:k => (k in store ? store[k] : null), setItem:(k,v)=>{store[k]=String(v);}, removeItem:k=>{delete store[k];}, key:i=>Object.keys(store)[i], get length(){return Object.keys(store).length;} };
   const fw = { localStorage: ls, sessionStorage: ls, console, Date, Math, JSON, setInterval:()=>0, clearInterval:()=>{}, setTimeout:()=>0, clearTimeout:()=>{}, document:{ hidden:false, addEventListener(){}, querySelectorAll:()=>[] }, addEventListener(){}, location:{ reload(){} } }; fw.window = fw;
-  new Function('fw', 'with(fw){' + src + '}')(fw); fw.ZI.wanderMounted = false; return { ZI: fw.ZI, store };
+  /* Oct 29: consumable-only healing ships (base heals 0); this suite tests heal-charge mechanics with the legacy base charges. Shipped rule: tests/proposals-oct29.test.js */ new Function('fw', 'with(fw){' + (src).replace('baseHeal: 0, baseScout: 2, commandPerkLevel: 40, commandPerkHeal: 0', 'baseHeal: 2, baseScout: 2, commandPerkLevel: 40, commandPerkHeal: 1') + '}')(fw); fw.ZI.wanderMounted = false; return { ZI: fw.ZI, store };
 };
 const run0 = (ZI) => Object.assign(ZI.defaultWanderRun(), { active:true, hp:100, moveSpeed:3 });
 const until = (ZI, st, sec, rng, away, step) => { const ev = []; let t = 0; while (t < sec - 1e-9) { const d = Math.min(step || sec, sec - t); ZI.WanderSim.advance(st, d, away, rng, ev); t += d; } let g = 0; while (st._carryMs > 0 && g++ < 500) ZI.WanderSim.advance(st, 0, away, rng, ev); return ev; };

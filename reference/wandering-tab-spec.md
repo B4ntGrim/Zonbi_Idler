@@ -121,6 +121,8 @@ Cooldown of 4 real hours between policy changes (Heinous → anything is exempt,
 
 ## 3. Skill decay and floors
 
+> **Superseded Oct 29 (Sam, "Profession Rust Replacement" Google Doc, approved rules 1–2):** inactivity never removes profession XP, never lowers a level and never lowers effectiveness (no Rusty/Rusted penalty). In its place, a per-skill **catch-up XP** bonus (max +15% on future earned XP; one allowance per inactivity, at most 25% of the XP needed for the next level; none at level 50) is built but **off** until Sam approves the inactivity grace and ramp. Code: `game/stats.js` (`ZI.CATCHUP`). The §3 text below is kept for history; the per-skill activity clocks it describes still run. Injury and stress penalties are unchanged.
+
 ### 3.1 Model `[DECIDED structure, PROPOSED numbers]`
 
 1. **Level-scaled decay.** Higher levels lose more per day.
@@ -338,7 +340,7 @@ Camp Leader is **not a paid expansion**. It is a deliberate shift in the concept
 - **Cap offline effects.** 24 h. **Per return `[DECIDED Oct 10, Q2]`:** one player return processes at most 24 h of gameplay time in total, including carried or unprocessed simulation time (`_carryMs`). Repeated processing within one return cannot exceed it. Time beyond the cap is discarded `[DECIDED Oct 10, U2]`.
 - **Simulation time for buffs `[DECIDED Oct 10, Q4]`.** Buff effects and expiry are evaluated at the simulation timestamp of the step being processed. A buff applies at every simulated moment before its expiry and stops when simulated time reaches it. Real-time cleanup never removes a buff that unprocessed steps still need. Durations, effects and stacking are unchanged.
 - **Shared survivor attributes `[DECIDED Oct 10, Q5]`.** `moveSpeed` and `healPct` are computed by shared rule functions. The Wandering screen reads them; it never writes them. Watched, offline and headless runs use the same calculation, with no balance change.
-- **Pace `[DECIDED Oct 12, D-FX4a]`.** Pace (Walk / Jog / Run) is a saved player setting; speed is computed from it by the shared rule (`ZI.SurvivorRules`). Speed consumables live in the shared buff store and follow the buff timing rules (D-FX4b).
+- **Pace `[DECIDED Oct 12, D-FX4a; physical pace scale revised Oct 28]`.** Pace (Walk / Jog / Run) is a saved player setting; speed is computed from it by the shared rule (`ZI.SurvivorRules`). Walk uses a real-world baseline of **1.4 m/s**. Jog and Run retain their Athletics scaling and their previous ratios to walking, with all three physical pace rates scaled together. Speed consumables live in the shared buff store and follow the buff timing rules (D-FX4b).
 - **Retreat controls `[DECIDED Oct 13, RB1/RB2]`.** Retreat is a policy: the R1 rules withdraw the survivor on their own, in the background. While resting, the scene shows the limits ("Retreats at HP 30% · stress 85 · load 115%"). There is no retreat button in the main bar and no rules editor (editing the limits is parked for the shop). **Run Back** is the player's manual command and uses the same withdrawal (walk to the last checkpoint, one getaway roll, rest; pace kept). Nothing on the screen moves the survivor directly; the distance bar is display only.
 - **Port-friendly rules.** Rules as plain functions with no React coupling, so they move to Unity C# as-is.
 - **Additive changes.** New policy = new pool. New faction = new row in the hexagon table. New skill = new check tag.
@@ -480,6 +482,8 @@ Rarer, higher-stakes discoveries get more time to notice.
 - The first Fort is not a discovery prompt. It is a fixed, scripted scene (2.5).
 
 ### 13.3 Tools: scout and heal
+
+> **Superseded in part Oct 29 (Sam, "Consumable-Only Healing", approved rule):** there are no free base Heal charges and no Command-granted Heal charge. Healing comes only from ordinary Medkits (2 charges each; a Medkit is used up with its second charge; rest and the calendar never refill it). First Aid sets how much a heal restores, not how many charges exist. Base **scout** charges are unchanged. The Fort-bound Med Kit is a quest item, never a heal. Code: `game/active.js` `ACTIVE_TABLE.charges`.
 
 - **Scout** (free action, `[DECIDED]`): before deciding on a discovery, it can **reveal the exact odds and reward tier** and/or **lower the risk**. How much depends on the survivor's **Discovery level** `[DECIDED]`: low levels reveal the risk label more precisely; mid levels reveal exact odds; high levels also lower the risk one step.
 - **Heal** (free action): restores HP.
