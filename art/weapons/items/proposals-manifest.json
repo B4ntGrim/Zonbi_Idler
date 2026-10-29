@@ -1,0 +1,12 @@
+[
+ {"id":"concept-watchfire","name":"Watchfire Marksman Rifle","category":"proposed weapon","description":"Deliberate precision-fire primary rifle between bows and heavy weapons."},
+ {"id":"concept-palisade-flare","name":"Palisade Flare Pistol","category":"proposed sidearm","description":"Utility signal flare pistol for revealing threats; combat behavior not defined."},
+ {"id":"concept-select-fire","name":"Select-fire Carbine","category":"proposed weapon","description":"Carbine concept switching between semi-automatic and automatic fire."},
+ {"id":"concept-precision-rifle","name":"Semi-automatic Precision Rifle","category":"proposed weapon","description":"Deliberate single-shot precision primary rifle."},
+ {"id":"concept-support-rifle","name":"Drum-fed Support Rifle","category":"proposed weapon","description":"Sustained-fire automatic support rifle with a mobility tradeoff."},
+ {"id":"concept-machine-pistol","name":"Machine Pistol","category":"proposed sidearm","description":"Compact close-range burst-fire sidearm."},
+ {"id":"concept-semi-pistol","name":"Semi-automatic Pistol","category":"proposed sidearm","description":"Distinct semi-automatic sidearm concept; role details remain open."},
+ {"id":"unique-hushline","name":"Hushline","category":"proposed Unique weapon","description":"Short suppressed scavenger SMG with worn bronze receiver, cloth-wrapped stock and cyan sight pin."},
+ {"id":"unique-lamplighter","name":"Lamplighter","category":"proposed Unique sidearm","description":"Battered flare sidearm with iron cage around an amber signal chamber and leather keeper loop."},
+ {"id":"unique-duskplate","name":"Duskplate","category":"proposed Unique gear","description":"Compact scavenged shield with weathered iron rim and copper-stapled dark leather face."}
+]

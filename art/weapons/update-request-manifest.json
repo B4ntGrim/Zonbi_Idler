@@ -1,0 +1,307 @@
+{
+  "axes": [
+    {
+      "requestedName": "Dahlia",
+      "canonicalName": "Dalia",
+      "id": "AXE-064",
+      "style": "deep socket with triangular bit; squared heel; extended back-weight",
+      "role": "Bulwark",
+      "tradeoff": "lower attack output"
+    },
+    {
+      "requestedName": "Lila",
+      "canonicalName": "Leila",
+      "id": "AXE-065",
+      "style": "deep socket with triangular bit; slim wedge blade; three-band grip",
+      "role": "Bloodletter",
+      "tradeoff": "requires an explicitly defined status effect"
+    },
+    {
+      "requestedName": "Nadia",
+      "canonicalName": "Nadia",
+      "id": "AXE-066",
+      "style": "deep socket with triangular bit; deep crescent edge; long handle",
+      "role": "Reaper",
+      "tradeoff": "lower direct burst damage"
+    },
+    {
+      "requestedName": "Rima",
+      "canonicalName": "Rima",
+      "id": "AXE-067",
+      "style": "deep socket with triangular bit; flared shoulders; close-control grip",
+      "role": "Elite hunter",
+      "tradeoff": "conditional bonuses need eligible targets"
+    },
+    {
+      "requestedName": "Bess",
+      "canonicalName": "Bess",
+      "id": "AXE-101",
+      "style": "long-neck socket and diamond cheeks; deep socket body; narrow working edge",
+      "role": "Execution",
+      "tradeoff": "slower attack cadence"
+    },
+    {
+      "requestedName": "Blanche",
+      "canonicalName": "Blanche",
+      "id": "AXE-102",
+      "style": "long-neck socket and diamond cheeks; oval socket profile; flared edge",
+      "role": "Tempo",
+      "tradeoff": "lower damage per hit"
+    },
+    {
+      "requestedName": "Constance",
+      "canonicalName": "Constance",
+      "id": "AXE-103",
+      "style": "long-neck socket and diamond cheeks; reinforced mouth; compact wedge blade",
+      "role": "Sweeper",
+      "tradeoff": "higher weight / slower movement"
+    },
+    {
+      "requestedName": "Dorothy",
+      "canonicalName": "Dorothy",
+      "id": "AXE-104",
+      "style": "long-neck socket and diamond cheeks; long neck; wide fan edge",
+      "role": "Bulwark",
+      "tradeoff": "lower attack output"
+    },
+    {
+      "requestedName": "Eleanor",
+      "canonicalName": "Eleanor",
+      "id": "AXE-105",
+      "style": "long-neck socket and diamond cheeks; shallow socket shoulder; extended toe",
+      "role": "Bloodletter",
+      "tradeoff": "requires an explicitly defined status effect"
+    },
+    {
+      "requestedName": "Florence",
+      "canonicalName": "Florence",
+      "id": "AXE-106",
+      "style": "long-neck socket and diamond cheeks; broad socket collar; steep heel",
+      "role": "Reaper",
+      "tradeoff": "lower direct burst damage"
+    },
+    {
+      "requestedName": "Grace",
+      "canonicalName": "Grace",
+      "id": "AXE-107",
+      "style": "long-neck socket and diamond cheeks; slim cheeks; elongated cutting face",
+      "role": "Elite hunter",
+      "tradeoff": "conditional bonuses need eligible targets"
+    },
+    {
+      "requestedName": "Harriet",
+      "canonicalName": "Harriet",
+      "id": "AXE-108",
+      "style": "long-neck socket and diamond cheeks; offset edge; long hewing grip",
+      "role": "Fortune",
+      "tradeoff": "lower combat-stat budget"
+    },
+    {
+      "requestedName": "Isabel",
+      "canonicalName": "Isabel",
+      "id": "AXE-109",
+      "style": "long-neck socket and diamond cheeks; thick poll; short chopping handle",
+      "role": "Ward",
+      "tradeoff": "requires absorption-shield support"
+    },
+    {
+      "requestedName": "Joanne",
+      "canonicalName": "Jeanne",
+      "id": "AXE-269",
+      "style": "bell head and rounded lower heel; wide crescent; long throwing grip",
+      "role": "Salvager",
+      "tradeoff": "lower direct damage"
+    },
+    {
+      "requestedName": "Alice",
+      "canonicalName": "Alice",
+      "id": "AXE-111",
+      "style": "ribbed socket and low flaring mouth; deep socket body; narrow working edge",
+      "role": "Execution",
+      "tradeoff": "slower attack cadence"
+    },
+    {
+      "requestedName": "Beatrice",
+      "canonicalName": "Beatrice",
+      "id": "AXE-112",
+      "style": "ribbed socket and low flaring mouth; oval socket profile; flared edge",
+      "role": "Tempo",
+      "tradeoff": "lower damage per hit"
+    },
+    {
+      "requestedName": "Cicely",
+      "canonicalName": "Cecily",
+      "id": "AXE-113",
+      "style": "ribbed socket and low flaring mouth; reinforced mouth; compact wedge blade",
+      "role": "Sweeper",
+      "tradeoff": "higher weight / slower movement"
+    },
+    {
+      "requestedName": "Dorothea",
+      "canonicalName": "Dorothea",
+      "id": "AXE-114",
+      "style": "ribbed socket and low flaring mouth; long neck; wide fan edge",
+      "role": "Bulwark",
+      "tradeoff": "lower attack output"
+    },
+    {
+      "requestedName": "Emmeline",
+      "canonicalName": "Emmeline",
+      "id": "AXE-115",
+      "style": "ribbed socket and low flaring mouth; shallow socket shoulder; extended toe",
+      "role": "Bloodletter",
+      "tradeoff": "requires an explicitly defined status effect"
+    },
+    {
+      "requestedName": "Georgina",
+      "canonicalName": "Georgina",
+      "id": "AXE-117",
+      "style": "ribbed socket and low flaring mouth; slim cheeks; elongated cutting face",
+      "role": "Elite hunter",
+      "tradeoff": "conditional bonuses need eligible targets"
+    },
+    {
+      "requestedName": "Magda",
+      "canonicalName": "Magda",
+      "id": "AXE-154",
+      "style": "short-beard head with recessed inlay channels; broad crescent; long two-hand grip",
+      "role": "Bulwark",
+      "tradeoff": "lower attack output"
+    },
+    {
+      "requestedName": "Helena",
+      "canonicalName": "Helena",
+      "id": "AXE-208",
+      "style": "twin compact triangular wings; asymmetric broad edge; long hewing grip",
+      "role": "Fortune",
+      "tradeoff": "lower combat-stat budget"
+    },
+    {
+      "requestedName": "Ianthe",
+      "canonicalName": "Ianthe",
+      "id": "AXE-209",
+      "style": "twin compact triangular wings; rounded twin faces; two-hand palm stops",
+      "role": "Ward",
+      "tradeoff": "requires absorption-shield support"
+    },
+    {
+      "requestedName": "Melena",
+      "canonicalName": "Melina",
+      "id": "AXE-210",
+      "style": "twin compact triangular wings; high single crown; extended power haft",
+      "role": "Resonance",
+      "tradeoff": "requires an explicit nonphysical attack or effect"
+    },
+    {
+      "requestedName": "Princess",
+      "canonicalName": "Princess",
+      "id": "concept-princess",
+      "style": "broad crescent hand axe with a salvaged brass inset, dark green leather grip and small rose-gold rivets",
+      "role": "standalone visual concept",
+      "tradeoff": "no stats or gameplay defined"
+    }
+  ],
+  "weapons": [
+    {
+      "id": "combat_knife",
+      "name": "Combat Knife",
+      "category": "weapon",
+      "description": "Silent kills — no noise on headshots.",
+      "variantNote": ""
+    },
+    {
+      "id": "jet_sledge",
+      "name": "Jet-Assisted Sledge",
+      "category": "weapon",
+      "description": "Shockwave knockback; smashes barricades.",
+      "variantNote": "Heavy improvised sledge with a visibly scavenged jet-assist mechanism."
+    },
+    {
+      "id": "machete",
+      "name": "Military Machete",
+      "category": "weapon",
+      "description": "Silent. Efficient. Close range only.",
+      "variantNote": ""
+    },
+    {
+      "id": "revolver",
+      "name": ".357 Revolver",
+      "category": "weapon",
+      "description": "Heavy hitting. Slow to reload.",
+      "variantNote": ""
+    },
+    {
+      "id": "pistol",
+      "name": "9mm Pistol",
+      "category": "weapon",
+      "description": "Standard sidearm. Backup when it counts.",
+      "variantNote": ""
+    },
+    {
+      "id": "suppressed",
+      "name": "Suppressed SMG",
+      "category": "weapon",
+      "description": "Quiet and fast. Urban specialist weapon.",
+      "variantNote": ""
+    },
+    {
+      "id": "shotgun",
+      "name": "Sawn-Off Shotgun",
+      "category": "weapon",
+      "description": "Close range devastation. Useless past 20m.",
+      "variantNote": ""
+    }
+  ],
+  "consumables": [
+    {
+      "id": "grenade",
+      "name": "Frag Grenade",
+      "category": "consumable",
+      "description": "120 blast / 5m radius."
+    },
+    {
+      "id": "flashbang",
+      "name": "Flashbang",
+      "category": "consumable",
+      "description": "Stun 6s / 8m radius."
+    },
+    {
+      "id": "thermal_gel",
+      "name": "Thermal Gel",
+      "category": "consumable",
+      "description": "Fire resist — +12 armor, +10 HP 90s."
+    },
+    {
+      "id": "singularity_seed",
+      "name": "Singularity Seed",
+      "category": "consumable",
+      "description": "Loot singularity: clears target, +200% loot 60s."
+    },
+    {
+      "id": "cold_haze",
+      "name": "Cold Haze",
+      "category": "consumable concept",
+      "description": "Compact cold-weather smoke canister with a pale cyan haze; visual concept only."
+    }
+  ],
+  "sets": [
+    {
+      "id": "set-night-courier",
+      "name": "Night Courier",
+      "category": "paired weapon set",
+      "description": "Show the suppressed Hushline SMG beside the caged Lamplighter flare pistol; a coordinated sidearm-and-primary pair."
+    },
+    {
+      "id": "set-checkpoint-covenant",
+      "name": "Checkpoint Covenant",
+      "category": "paired weapon set",
+      "description": "Show Matilda execution axe beside the Duskplate iron-rimmed leather shield as a defensive pair."
+    },
+    {
+      "id": "set-duet-of-iron",
+      "name": "Duet of Iron",
+      "category": "paired weapon set",
+      "description": "Show Danielle light hooked bearded axe beside Raquelle broad bronze crescent axe as a matched two-axe pair."
+    }
+  ]
+}
