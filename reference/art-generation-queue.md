@@ -24,7 +24,26 @@ Retro pixel-art sprites requested for Zed Idler. The queue tracks assets separat
 
 ## Queued
 
-No base sprites remain. Rotten-condition variants are tracked separately below.
+No base food sprites remain. Crafting recipe sprites are tracked below; higher-tier recipes remain queued. Rotten-condition variants are tracked separately below.
+
+## Crafting recipe art
+
+| Recipe | Status | File |
+|---|---|---|
+| Scrap Pouch (T0) | Generated and shown on recipe card and detail panel | `art/crafting/recipes/scrap-pouch-v1.png` |
+| Nail Board (T0) | Generated from the supplied visual reference and shown in crafting UI | `art/crafting/recipes/nail-board-v1.png` |
+| Scrap Wire (T0) | Generated and shown on recipe card and detail panel | `art/crafting/recipes/scrap-wire-v1.png` |
+| Tinder Bundle (T0) | Generated and shown on recipe card and detail panel | `art/crafting/recipes/tinder-bundle-v1.png` |
+| Crude Splint (T0) | Revised in the survivor/bestiary textured pixel style; single support stick with forked yoke, crossbar, and cloth wrap; shown in crafting UI | `art/crafting/recipes/crude-splint-v3.png` |
+| Reinforced Pack (T1) | Generated in the survivor/bestiary textured pixel style | `art/crafting/recipes/reinforced-pack-v1.png` |
+| Barricade Panel (T1) | Generated in the survivor/bestiary textured pixel style | `art/crafting/recipes/barricade-panel-v1.png` |
+| Cloth Wrap Kit (T1) | Generated with bandage rolls, antiseptic, and pin for clear recognition | `art/crafting/recipes/cloth-wrap-kit-v1.png` |
+| Fuel Drum (T1) | Generated as a marked salvaged fuel container | `art/crafting/recipes/fuel-drum-v1.png` |
+| Signal Booster (T1) | Generated as an improvised radio unit with antennas, dial, coil, and cable | `art/crafting/recipes/signal-booster-v1.png` |
+| Trauma Kit (T1) | Generated as an open field medical case with recognizable supplies | `art/crafting/recipes/trauma-kit-v1.png` |
+| Wire Mesh Trap (T1) | Generated as a funnel-shaped metal mesh trap | `art/crafting/recipes/wire-mesh-trap-v1.png` |
+
+The five T0 and seven T1 recipe sprites are integrated into both the main game page and test-save page. Higher-tier recipe sprites remain to be generated.
 
 ## Rotten variants generated
 

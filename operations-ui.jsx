@@ -1,12 +1,13 @@
 // operations-ui.jsx — Operations page shown on the Schedule tab (Sam, Oct 29: build reference/operations-schedule-proposal.md).
-// Three sections: Now and next · Plan (activity catalog with availability) · Base schedule. Read-only: buttons only
-// open the screen that owns an activity. Proposed activities are labeled "Design proposal" and cannot be selected.
+// Three sections: Now and next · Plan (activity catalog with availability) · Base schedule. Buttons open the screen
+// that owns an activity; the one change made here is Camp Leader duty assignment (ZI.opsAssign / ZI.opsUnassign). Proposed activities are labeled "Design proposal" and cannot be selected.
 // The previous mock timeline (ScheduleScreenV2 in screens-v2b.jsx) is kept in the code, unused, for rollback.
 function OperationsScreen({ mode, setScreen }) {
   const ZI = window.ZI;
   const [, tick] = React.useState(0);
   React.useEffect(() => { const t = setInterval(() => tick(n => n + 1), 5000); return () => clearInterval(t); }, []);
   const [showProposals, setShowProposals] = React.useState(true);
+  const [dutyMsg, setDutyMsg] = React.useState(null);
   const now = ZI.opsNow(mode), catalog = ZI.opsCatalog(mode);
   const isCamp = mode === 'camp', accent = isCamp ? 'var(--green)' : 'var(--amber)';
   const go = (screen) => screen && setScreen && setScreen(screen);
@@ -62,6 +63,7 @@ function OperationsScreen({ mode, setScreen }) {
                     <div key={a.id} className="panel" style={{ padding:10, display:'flex', flexDirection:'column', gap:5, opacity: a.proposal ? 0.65 : 1 }}>
                       <div style={{ display:'flex', gap:6, alignItems:'center' }}><span style={{ fontFamily:'var(--font-body)', fontSize:14, color:'var(--text)', flex:1 }}>{a.name}</span>{badge(st)}</div>
                       <div style={{ fontFamily:'var(--font-mono)', fontSize:10, color:'var(--text2)' }}>{a.result}</div>
+                      {a.designOrder && <div style={{ fontFamily:'var(--font-mono)', fontSize:9, color:'var(--amber)' }}>Design order: {a.designOrder} of 3 (cooking → weapon upkeep → laundry)</div>}
                       {!a.proposal && <div style={{ fontFamily:'var(--font-mono)', fontSize:9, color:'var(--text3)' }}>Who: {a.who} · Needs: {a.needs} · While away: {a.away}</div>}
                       {a.screen && !a.proposal && (!isCamp || a.screen !== 'solo-main') && <button className="btn" style={{ alignSelf:'flex-start' }} onClick={() => go(a.screen)}>Open</button>}
                     </div>
@@ -72,19 +74,40 @@ function OperationsScreen({ mode, setScreen }) {
           );
         })}
 
-        <H sub={isCamp ? 'Camp duties staffed by survivors. No screen assigns duties yet (the engine supports it); assignment waits on Sam approving the duty XP rates.' : 'Your upkeep at your base or forward camp.'}>Base schedule</H>
-        {isCamp ? (
+        <H sub={isCamp ? 'Camp duties staffed by your survivors. Assign one survivor per duty.' : 'Your upkeep at your base or forward camp.'}>Base schedule</H>
+        {isCamp ? (() => {
+          const duties = ZI.opsCampDuties(), busy = ZI.opsRouteBusy(), roster = ZI.SQUAD_ROSTER || [];
+          const staffed = duties.reduce((n, d) => n + d.whoIds.length, 0), cap = ZI.opsDutySlots();
+          const assignedTo = {}; duties.forEach(d => d.whoIds.forEach(id => { assignedTo[id] = d.label; }));
+          const assign = (svId, jobId) => { const r = svId ? ZI.opsAssign(svId, jobId, mode) : { ok: true }; setDutyMsg(r.ok ? null : r.reason); tick(n => n + 1); };
+          return (
           <div style={{ display:'flex', flexDirection:'column', gap:6 }}>
-            {ZI.opsCampDuties().map(d => (
+            <div style={{ fontFamily:'var(--font-mono)', fontSize:11, color:'var(--text2)' }}>Duty slots in use: {staffed} / {cap} (more with leader level). A survivor holds one duty at a time; survivors away on a route run cannot take one.</div>
+            {dutyMsg && <div role="status" style={{ fontFamily:'var(--font-mono)', fontSize:11, color:'var(--red2)' }}>⚠ {dutyMsg}</div>}
+            {duties.map(d => (
               <div key={d.id} className="panel" style={{ padding:'8px 10px', display:'flex', gap:10, alignItems:'center', flexWrap:'wrap' }}>
                 <span style={{ fontFamily:'var(--font-body)', fontSize:14, color:'var(--text)', minWidth:170 }}>{d.label}</span>
-                <span style={{ fontFamily:'var(--font-mono)', fontSize:10, color:'var(--text2)', flex:'1 1 200px' }}>{d.profession} · {d.xpPerHour} XP/h{d.who.length ? ' · ' + d.who.join(', ') : ''}</span>
-                <span style={{ fontFamily:'var(--font-mono)', fontSize:10, color: d.status === 'Covered' ? 'var(--green)' : 'var(--amber)' }}>{d.status}</span>
+                <span style={{ fontFamily:'var(--font-mono)', fontSize:10, color:'var(--text2)', flex:'1 1 160px' }}>{d.profession} · {d.xpPerHour} XP per game hour</span>
+                {d.built ? (
+                  d.whoIds.length ? (
+                    <>
+                      <span style={{ fontFamily:'var(--font-mono)', fontSize:11, color:'var(--green)' }}>{d.who.join(', ')}{d.whoIds.some(id => busy[id]) ? ' (also on a route!)' : ''}</span>
+                      <button className="btn" onClick={() => { d.whoIds.forEach(id => ZI.opsUnassign(id, mode)); setDutyMsg(null); tick(n => n + 1); }}>Unassign</button>
+                    </>
+                  ) : (
+                    <select aria-label={'Assign a survivor to ' + d.label} value="" onChange={e => assign(e.target.value, d.id)} style={{ fontFamily:'var(--font-mono)', fontSize:11, background:'var(--bg)', color:'var(--text)', border:'1px solid var(--border)', padding:'4px 6px' }}>
+                      <option value="">Assign…</option>
+                      {roster.map(s => <option key={s.id} value={s.id} disabled={!!busy[s.id]}>{s.name}{busy[s.id] ? ' (on a route)' : assignedTo[s.id] ? ' (moves from ' + assignedTo[s.id] + ')' : ''}</option>)}
+                    </select>
+                  )
+                ) : <span style={{ fontFamily:'var(--font-mono)', fontSize:10, color:'var(--amber)' }}>{d.status}</span>}
               </div>
             ))}
-            <div style={{ fontFamily:'var(--font-mono)', fontSize:10, color:'var(--text3)' }}>Proposed camp chores (cooking, weapon upkeep, laundry, radio watch, return processing) are listed under Plan as design proposals.</div>
+            <div style={{ fontFamily:'var(--font-mono)', fontSize:10, color:'var(--text3)' }}>Duties earn their profession XP while you are away (24-hour offline cap). Proposed camp chores (cooking, then weapon upkeep, then laundry) are listed under Plan as design proposals.</div>
           </div>
-        ) : (
+          );
+        })()
+        : (
           <div style={{ display:'flex', flexDirection:'column', gap:6 }}>
             {catalog.filter(a => a.group === 'base' && !a.proposal).map(a => row({ id: 'b:' + a.id, label: a.name, detail: ZI.opsActivityStatus(a, mode).label + ' · ' + a.result, screen: a.screen }))}
           </div>

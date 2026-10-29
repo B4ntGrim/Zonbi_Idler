@@ -63,7 +63,7 @@
 <script src="game/bootstrap.js?v=20261025-clock-parity"></script>
 <script src="game/progression-live.js?v=20261029-proposals1"></script>
 <script src="game/character.js?v=20261029-charops1"></script>
-<script src="game/operations.js?v=20261029-charops1"></script>
+<script src="game/operations.js?v=20261029-duties1"></script>
 <script src="bestiary-data.js?v=20261029-charops1"></script>
 <script src="pixel-art.js?v=1791700100000"></script>
 <script src="zombie-sprites.js?v=20261027-animfix"></script>
@@ -77,7 +77,7 @@
 <script type="text/babel" src="tweaks-panel.jsx?v=1791700100000"></script>
 <script type="text/babel" src="progression-ui.jsx?v=20261028-stat02c"></script>
 <script type="text/babel" src="character-creation.jsx?v=20261029-charops2"></script>
-<script type="text/babel" src="operations-ui.jsx?v=20261029-charops1"></script>
+<script type="text/babel" src="operations-ui.jsx?v=20261029-duties1"></script>
 <script type="text/babel" src="screens-v2.jsx?v=20261028-stat02"></script>
 <script type="text/babel" src="screens-v2b.jsx?v=20261027-shop1"></script>
 <script type="text/babel" src="screens-v3.jsx?v=20261029-charops1"></script>
@@ -3501,6 +3501,23 @@ function RmatCraftingRecipeBrowser() {
   const [t5Event, setT5Event] = useState(null);
 
   const recipes = ZI.CRAFT_RECIPES || [];
+  const recipeSpriteById = {
+    scrap_pouch: 'art/crafting/recipes/scrap-pouch-v1.png',
+    nail_board: 'art/crafting/recipes/nail-board-v1.png',
+    scrap_wire: 'art/crafting/recipes/scrap-wire-v1.png',
+    tinder_bundle: 'art/crafting/recipes/tinder-bundle-v1.png',
+    crude_splint: 'art/crafting/recipes/crude-splint-v3.png',
+    reinforced_pack: 'art/crafting/recipes/reinforced-pack-v1.png',
+    barricade_panel: 'art/crafting/recipes/barricade-panel-v1.png',
+    cloth_wrap_kit: 'art/crafting/recipes/cloth-wrap-kit-v1.png',
+    fuel_drum: 'art/crafting/recipes/fuel-drum-v1.png',
+    signal_booster: 'art/crafting/recipes/signal-booster-v1.png',
+    trauma_kit: 'art/crafting/recipes/trauma-kit-v1.png',
+    wire_mesh_trap: 'art/crafting/recipes/wire-mesh-trap-v1.png',
+  };
+  const recipeIcon = (recipe, size) => recipeSpriteById[recipe.id]
+    ? <img src={recipeSpriteById[recipe.id]} alt={recipe.name} style={{width:size,height:size,objectFit:'contain',imageRendering:'pixelated',flexShrink:0}} />
+    : <span style={{fontSize:size}}>{recipe.icon}</span>;
   const sel = recipes.find(r => r.id === selId) || null;
   const canCraft = (r) => Object.entries(r.cost).every(([k, q]) => (stock[k] || 0) >= q);
 
@@ -3664,7 +3681,7 @@ function RmatCraftingRecipeBrowser() {
                 }}>
                   <div style={{display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:6}}>
                     <div style={{display:'flex', alignItems:'center', gap:8}}>
-                      <span style={{fontSize:16}}>{r.icon}</span>
+                      {recipeIcon(r, 32)}
                       <span style={{fontFamily:'var(--font-body)', fontSize:14, color:'var(--text)', fontWeight:500}}>{r.name}</span>
                       <span className="tag" style={{color:tc, borderColor:tc, background:tc+'22'}}>T{r.tier}</span>
                       {(r.kind==='gear' || r.kind==='consumable') &&
@@ -3718,7 +3735,7 @@ function RmatCraftingRecipeBrowser() {
               <div className="panel-title">Recipe Details</div>
               <div style={{flex:1, overflow:'auto', padding:10}}>
                 <div style={{display:'flex', alignItems:'center', gap:10, marginBottom:8}}>
-                  <span style={{fontSize:30}}>{sel.icon}</span>
+                  {recipeIcon(sel, 56)}
                   <div>
                     <div style={{fontFamily:'var(--font-title)', fontSize:16, color:tc}}>{sel.name}</div>
                     <div style={{display:'flex', gap:5, marginTop:3}}>

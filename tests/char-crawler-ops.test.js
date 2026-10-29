@@ -73,6 +73,28 @@ check('CC: the Wandering survivor uses the chosen name and gender', /getSurvivor
   const duties = Z.opsCampDuties();
   check('Ops (Camp): every existing duty is listed with its facility status', duties.length === Z.SCHEDULE_JOBS.length && duties.every(d => d.status && d.profession)); }
 check('Ops: the Schedule tab shows the Operations page in both modes', /case 'camp-schedule': return window\.OperationsScreen \? <OperationsScreen mode="camp"/.test(html) && /case 'solo-schedule': return window\.OperationsScreen \? <OperationsScreen mode="solo"/.test(html) && /operations-ui\.jsx\?v=/.test(html) && /game\/operations\.js\?v=/.test(html));
-check('Ops screen never runs or queues work itself', !/assignJob|enqueueJob|startRouteRun|spend[A-Z]|wanderAct|saveSchedule|_wj\(|setItem/.test(ops));
+check('Ops screen never runs or queues work; its only write is Camp Leader duty assignment through ZI.opsAssign / opsUnassign', !/assignJob|enqueueJob|startRouteRun|spend[A-Z]|wanderAct|saveSchedule|_wj\(|setItem/.test(ops) && /ZI\.opsAssign\(/.test(ops));
+{ let errs = [];
+  try { const g = {}, m = { exports: {} }; new Function('self', 'window', 'global', 'module', 'exports', 'define', await readFile('tools/vendor/babel-standalone-7.29.0.min.js'))(g, g, g, m, m.exports, undefined);
+    const B = m.exports.transform ? m.exports : g.Babel; ['character-creation.jsx', 'operations-ui.jsx'].forEach(f => { try { B.transform(f === 'operations-ui.jsx' ? ops : cc, { presets: ['react'], filename: f }); } catch (e) { errs.push(f + ': ' + String(e.message).slice(0, 120)); } }); }
+  catch (e) { errs.push('babel load: ' + String(e.message).slice(0, 120)); }
+  check('New screens compile (JSX parses)', errs.length === 0, errs.join(' | ')); }
+check('Ops: the chore design order is cooking → weapon upkeep → laundry', (() => { const s = mkEnv({}).ZI.OPS_CATALOG.filter(a => a.designOrder).sort((a, b) => a.designOrder - b.designOrder).map(a => a.id).join(); return s === 'cook,upkeep,laundry'; })());
+// ── Camp duty assignment ──
+{ const store = { zi_world_seed:'1' }; mkEnv(store).ZI.startNewInSlot('camp', 1, { gender:'male', profession:'envoy' }); const E = mkEnv(store, T0 + 1000), Z = E.ZI;
+  check('Duties: Solo cannot assign camp duties', !Z.opsAssign('sv_mason', 'scavenge', 'solo').ok && Z.getSchedule().assignments.length === 0);
+  const r1 = Z.opsAssign('sv_mason', 'scavenge', 'camp');
+  check('Duties: a duty with no facility requirement can be staffed (existing schedule)', r1.ok && Z.getSchedule().assignments.some(a => a.survivorId === 'sv_mason' && a.jobId === 'scavenge'));
+  check('Duties: a duty whose facility is not built is refused', !Z.opsAssign('sv_riza', 'guard', 'camp').ok && /watchtower/.test(Z.opsAssign('sv_riza', 'guard', 'camp').reason));
+  check('Duties: one survivor per duty slot', !Z.opsAssign('sv_riza', 'scavenge', 'camp').ok);
+  const cs = Z.getCampSave(); ['watchtower','forge','garage','infirmary','garden'].forEach(b => { cs.built[b] = 1; }); Z.saveCampSave(cs);
+  const cap = Z.opsDutySlots(); ['guard','workshop','garage','infirmary'].forEach((j, i) => Z.opsAssign(['sv_riza','sv_doc','sv_kade','sv_wanderer'][i], j, 'camp'));
+  check('Duties: never more staffed duties than the Command slots allow', Z.getSchedule().assignments.length === cap, Z.getSchedule().assignments.length + ' / ' + cap);
+  Z.opsAssign('sv_mason', 'farm', 'camp');
+  check('Duties: re-assigning a survivor moves them (one duty each)', Z.getSchedule().assignments.filter(a => a.survivorId === 'sv_mason').length === 1 && Z.getSchedule().assignments.some(a => a.survivorId === 'sv_mason' && a.jobId === 'farm'));
+  Z.opsUnassign('sv_mason', 'camp');
+  check('Duties: Unassign frees the survivor', !Z.getSchedule().assignments.some(a => a.survivorId === 'sv_mason'));
+  Z._saveRouteRuns({ r1: { startedAt: T0, durationMs: 3600000, squadIds: ['sv_mason'], mode:'active', threatLevel:0, autoRepeat:false } });
+  check('Duties: a survivor away on a route run cannot take a duty', !Z.opsAssign('sv_mason', 'farm', 'camp').ok); }
 return results;
 })();

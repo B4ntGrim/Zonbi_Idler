@@ -19,17 +19,18 @@
 
 ## 3. Operations page (Schedule tab)
 - The Schedule tab now shows **Operations** in both modes: **Now and next** (patrol state, active route runs with return time, Traversal cell with scouts / hide / Make camp, crafting and recycling jobs, camp duties count, attention items: injury, Broken, hunger, tiredness, waiting stat picks, no food, unclaimed route hauls) · **Plan** (activity catalog grouped Field / Base and return; each card: who, needs, while away, result, and an availability label: Available now / Needs facility / Needs supplies / Busy until… / Design proposal) · **Base schedule** (Camp Leader: every existing duty with its facility and who is on it; Solo: your own upkeep, no camp roster).
-- **Read-only.** Open buttons only navigate to the screen that owns the activity; the page never runs or queues work (tested: reading it changes nothing in the save; the screen code has no write calls). Proposed activities (pending deploy, circuits, radio listen, intel, cooking, weapon upkeep, laundry, supply sorting, water) are shown as **Design proposal**, greyed, never selectable, and can be hidden with a checkbox.
+- **Update (Oct 29, after Sam's answers):** the tab stays **Schedule**. In Camp Leader, *Base schedule* now lets you assign a survivor to each duty (or Unassign), at the existing rate (40 XP per game hour, Scavenge 35). Guards: the facility must be built, the survivor must not be on a route run, one survivor per duty and one duty per survivor (choosing a busy survivor moves them), and no more than the Command slots (3 + 1 per 15 leader levels). Solo cannot assign. The proposed chores show their design order: cooking → weapon upkeep → laundry.
+- **Otherwise read-only.** Open buttons only navigate to the screen that owns the activity; the page never runs or queues work (tested: reading it changes nothing in the save; the screen code has no write calls). Proposed activities (pending deploy, circuits, radio listen, intel, cooking, weapon upkeep, laundry, supply sorting, water) are shown as **Design proposal**, greyed, never selectable, and can be hidden with a checkbox.
 - **Not built** (proposal only, mechanics open): the chores themselves, psychological low-stress tiers, Grocery / Pharmacy / Laundromat POIs, route-return processing rules, radio and human-NPC contact. **Camp duty assignment:** the engine supports it but no screen exposes it; it was left read-only because assigning duties grants schedule XP (40 XP per game hour per duty) and that rate has not been reviewed for play.
 - The old mock timeline (`ScheduleScreenV2`) stays in `screens-v2b.jsx`, unused, for rollback.
 - Code: `game/operations.js`, `operations-ui.jsx`, `renderScreen` in both HTML pages.
 
 ## 4. Checks
-- New `tests/char-crawler-ops.test.js`: 31 checks. Full suite **40 suites, 972 passed, 0 failed**.
+- New `tests/char-crawler-ops.test.js`: 40 checks (9 added for duty assignment and chore order). Full suite **40 suites, 981 passed, 0 failed**.
 - Browser (Chromium, compiled build, both modes): 24/24 — New Game opens step 1 with no file created; Continue disabled until a survivor is chosen; choices survive going back; Start Surviving creates the file with the profile, starting XP and roster 2; the Schedule tab shows Operations (camp duties only in Camp Leader); Open navigates; the Codex shows 46 threats; no console errors. Screenshots: `screenshots/`.
 - `tools/build-web.cjs` now overwrites `compiled/` in place and only warns when a stale file cannot be deleted (it failed when file deletion was not allowed).
 
 ## 5. Needs Sam
-1. Crawler tier (provisional F), sprite/atlas, gore level, whether Halved can be applied mid-fight (draft gates).
+1. ~~Crawler tier~~ F for now (Sam). Sprite later (Sam). Still open: gore level, whether Halved can be applied mid-fight (draft gates).
 2. Appearance options and whether any appearance gives a bonus; survivor name entry; profession names (the four archetypes are used today).
-3. Operations: tab name (still "Schedule"); camp duty assignment and its XP rate; which proposed chores to design first (your order: cooking → weapon upkeep → laundry).
+3. ~~Operations~~ decided: keep "Schedule"; duty assignment on; chore order cooking → weapon upkeep → laundry. Open: chore mechanics.
