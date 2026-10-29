@@ -10,13 +10,14 @@
 
 - **Oct 29 (later):** Character Creation on New Game, the Crawler with the reusable Halved trait (new games only), and the read-only Operations page on the Schedule tab (`reports/char-crawler-ops-2026-10-29/REPORT.md`). Full suite 972/972.
 - **Oct 29 (later still):** Camp Leader duty assignment on the Schedule tab; chore order recorded; Crawler tier F confirmed. Full suite 981/981.
+- **Oct 29 (evening):** Character Creation appearance expanded to seven groups (looks only). Full suite 985/985. Report: `reports/appearance-2026-10-29/`.
 
 ## 2. Waiting on Sam (no defaults chosen)
 1. Catch-up XP: grace days, ramp to +15%, refill after a new inactivity; then enable (`ZI.CATCHUP`).
 2. STAT-02: 24 → 30 ranks OK; food source (AUDIT §6: A route/POI food, B bring FOOD-02 forward, C slow hunger); RMAT income vs Auto-Eat price.
 3. New players start with 0 heals until they carry the starter Medkit: auto-carry, tutorial hint, or leave.
 4. Orphaned profession formulas and the removed Command heal perk (`reports/proposals-2026-10-29/PROFESSION_MATRIX.md`).
-5. Character Creation: appearance options and any appearance bonus, name entry, profession names (options in the Oct 29 reply). Crawler: gore, mid-fight Halved; sprite later (Sam). Decided Oct 29: tier F for now. ZI-SEC-01: set aside by Sam.
+5. Character Creation: name entry and profession names still open. Decided Oct 29 (voice): appearance gets many hairstyles (12), hair colours (10), outfits (12), clothing colours (10), piercings (10) and more accessories (11), looks only, no bonus — built; only clothing colour shows on the portrait until layered art exists. Crawler: gore, mid-fight Halved; sprite later (Sam). Decided Oct 29: tier F for now. ZI-SEC-01: set aside by Sam.
 6. Oct 22 open items: Ring role, perk thresholds, guaranteed horse source; PERK-01 vs STAT-02 banked picks.
 7. Operations — decided Oct 29: tab stays "Schedule"; Camp Leader assigns camp duties there (existing rate, 40 XP per game hour per duty, 35 for Scavenge); chore design order cooking → weapon upkeep → laundry. Still open: the chore mechanics themselves.
 8. Refresh after 20 s opens the mode picker: keep, or resume straight into the game?

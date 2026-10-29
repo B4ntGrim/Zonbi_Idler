@@ -18,7 +18,7 @@ function CharacterCreationScreen({ mode, slot, onCancel, onConfirm }) {
   ];
   const canNext = step === 0 ? !!gender : step === 2 ? !!profession : true;
   const g = C.genders.find(x => x.id === gender);
-  const clothing = C.appearance.clothing.options.find(o => o.id === appearance.clothing);
+  const clothing = C.appearance.clothingColor.options.find(o => o.id === appearance.clothingColor);
   const prof = professions.find(p => p.id === profession);
   const optLabel = (k) => { const o = C.appearance[k].options.find(x => x.id === appearance[k]); return o ? o.label : '—'; };
 
@@ -57,19 +57,19 @@ function CharacterCreationScreen({ mode, slot, onCancel, onConfirm }) {
 
         {step === 1 && (
           <div style={{ display:'flex', gap:18, flexWrap:'wrap' }}>
-            <div style={{ flex:'0 0 auto' }}><Portrait gid={gender} size={200}/></div>
+            <div style={{ flex:'0 0 auto', position:'sticky', top:12, alignSelf:'flex-start' }}><Portrait gid={gender} size={200}/></div>
             <div style={{ flex:'1 1 320px', display:'flex', flexDirection:'column', gap:14, minWidth:0 }}>
               {Object.entries(C.appearance).map(([k, cat]) => (
                 <div key={k}>
-                  <div style={{ fontFamily:'var(--font-mono)', fontSize:11, color:'var(--text2)', letterSpacing:'0.12em', marginBottom:6 }}>{cat.label.toUpperCase()}</div>
+                  <div style={{ fontFamily:'var(--font-mono)', fontSize:11, color:'var(--text2)', letterSpacing:'0.12em', marginBottom:6 }}>{cat.label.toUpperCase()}{!cat.preview && <span style={{ letterSpacing:'normal', color:'var(--text3)', fontSize:10 }}> · saved, art coming</span>}</div>
                   <div style={{ display:'flex', gap:6, flexWrap:'wrap' }}>
                     {cat.options.map(o => (
-                      <button key={o.id} className={appearance[k] === o.id ? 'btn btn-amber' : 'btn'} aria-pressed={appearance[k] === o.id} onClick={() => setAppearance(a => Object.assign({}, a, { [k]: o.id }))}>{o.label}</button>
+                      <button key={o.id} className={appearance[k] === o.id ? 'btn btn-amber' : 'btn'} aria-pressed={appearance[k] === o.id} onClick={() => setAppearance(a => Object.assign({}, a, { [k]: o.id }))} style={{ textTransform:'none', letterSpacing:'normal', display:'inline-flex', alignItems:'center', gap:6 }}>{o.swatch && <span aria-hidden="true" style={{ width:12, height:12, background:o.swatch, border:'1px solid var(--border)', display:'inline-block' }}/>}{o.label}</button>
                     ))}
                   </div>
                 </div>
               ))}
-              <div style={{ fontFamily:'var(--font-mono)', fontSize:10, color:'var(--text3)' }}>Looks only: no appearance choice changes your stats. More options are on the way.</div>
+              <div style={{ fontFamily:'var(--font-mono)', fontSize:10, color:'var(--text3)' }}>Looks only: no appearance choice changes your stats. The portrait shows the clothing colour; the other choices are saved with your survivor and appear once their art is drawn.</div>
             </div>
           </div>
         )}

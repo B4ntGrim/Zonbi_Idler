@@ -42,8 +42,31 @@ No base food sprites remain. Crafting recipe sprites are tracked below; higher-t
 | Signal Booster (T1) | Generated as an improvised radio unit with antennas, dial, coil, and cable | `art/crafting/recipes/signal-booster-v1.png` |
 | Trauma Kit (T1) | Generated as an open field medical case with recognizable supplies | `art/crafting/recipes/trauma-kit-v1.png` |
 | Wire Mesh Trap (T1) | Generated as a funnel-shaped metal mesh trap | `art/crafting/recipes/wire-mesh-trap-v1.png` |
+| Arc Igniter (T2) | Generated as a salvaged electrical starter module | `art/crafting/recipes/arc-igniter-v1.png` |
+| Fuel Converter (T2) | Generated as an oil-filtering fuel transfer canister | `art/crafting/recipes/fuel-converter-v1.png` |
+| Hollow Point Press (T2) | Generated as a generic workshop hand press; no ammunition shown | `art/crafting/recipes/hollow-point-press-v1.png` |
+| Sterilization Unit (T2) | Generated as a clamped steam sterilizer with gauge and vent | `art/crafting/recipes/sterilization-unit-v1.png` |
+| Composite Plating (T2) | Generated as overlapping salvaged armor plates bound with straps | `art/crafting/recipes/composite-plating-v1.png` |
+| Circuit Splice (T2) | Generated as a repaired electronics board with bridged traces | `art/crafting/recipes/circuit-splice-v1.png` |
+| Toxin Filter (T2) | Generated as a charcoal respirator filter cartridge | `art/crafting/recipes/toxin-filter-v1.png` |
+| Neural Tap (T3) | Generated as a non-graphic signal monitor with sensor clips | `art/crafting/recipes/neural-tap-v1.png` |
+| Siege Frame (T3) | Generated as a salvaged defensive armor brace | `art/crafting/recipes/siege-frame-v1.png` |
+| Resonance Cell (T3) | Generated as a linked battery stack with gauge | `art/crafting/recipes/resonance-cell-v1.png` |
+| Bone Weave Vest (T3) | Generated as an empty protective vest with laced plates | `art/crafting/recipes/bone-weave-vest-v1.png` |
+| EMP Coil (T3) | Generated as an inactive copper coil component | `art/crafting/recipes/emp-coil-v1.png` |
+| Hazard Patch Kit (T3) | Generated as an open field decontamination kit | `art/crafting/recipes/hazard-patch-kit-v1.png` |
+| Crystalline Core (T4) | Generated as a faceted mineral seated in a protective cradle | `art/crafting/recipes/crystalline-core-v1.png` |
+| Plasma Conduit (T4) | Generated as a crystal-windowed copper conduit | `art/crafting/recipes/plasma-conduit-v1.png` |
+| Necrotic Membrane (T4) | Generated as a sealed, non-graphic specimen canister | `art/crafting/recipes/necrotic-membrane-v1.png` |
+| Siege Engine Frame (T4) | Generated as a heavy unarmed industrial frame | `art/crafting/recipes/siege-engine-frame-v1.png` |
+| Quantum Splice Board (T4) | Generated as an anomalous motherboard with a marked central chip | `art/crafting/recipes/quantum-splice-board-v1.png` |
+| Echo Condenser (T5) | Generated as an amber orb in a salvaged condenser frame | `art/crafting/recipes/echo-condenser-v1.png` |
+| Void Lattice (T5) | Generated as a geometric steel cage with smoky crystal joints | `art/crafting/recipes/void-lattice-v1.png` |
+| Fracture Engine (T5) | Generated as a contained machine core with separated armor plates | `art/crafting/recipes/fracture-engine-v1.png` |
+| Revenant Core (T5) | Generated as a sealed non-biological energy capsule | `art/crafting/recipes/revenant-core-v1.png` |
+| Signal Zero (T5) | Generated as a silent field radio with a flat display line | `art/crafting/recipes/signal-zero-v1.png` |
 
-The five T0 and seven T1 recipe sprites are integrated into both the main game page and test-save page. Higher-tier recipe sprites remain to be generated.
+All 35 RMAT recipe sprites across T0–T5 are integrated into both the main game page and test-save page. The images are generated in the survivor/bestiary-inspired hand-painted pixel style with restrained survival palettes and clear silhouettes. Weapon-adjacent crafting recipes are represented as static tools or components rather than depicting ammunition or use.
 
 ## Rotten variants generated
 

@@ -31,7 +31,7 @@
 <script src="game/survival-data.js?v=1791700100000"></script>
 <script src="game/bootstrap.js?v=20261025-clock-parity"></script>
 <script src="game/progression-live.js?v=20261029-proposals1"></script>
-<script src="game/character.js?v=20261029-charops1"></script>
+<script src="game/character.js?v=20261029-look1"></script>
 <script src="game/operations.js?v=20261029-duties1"></script>
 <script src="bestiary-data.js?v=20261029-charops1"></script>
 <script src="pixel-art.js?v=1791700100000"></script>
@@ -45,7 +45,7 @@
 <script type="text/babel" src="crafting-frame-proposals.jsx?v=20261027-craft-proposals7"></script>
 <script type="text/babel" src="tweaks-panel.jsx?v=1791700100000"></script>
 <script type="text/babel" src="progression-ui.jsx?v=20261028-stat02c"></script>
-<script type="text/babel" src="character-creation.jsx?v=20261029-charops2"></script>
+<script type="text/babel" src="character-creation.jsx?v=20261029-look1"></script>
 <script type="text/babel" src="operations-ui.jsx?v=20261029-duties1"></script>
 <script type="text/babel" src="screens-v2.jsx?v=20261028-stat02"></script>
 <script type="text/babel" src="screens-v2b.jsx?v=20261027-shop1"></script>
@@ -3483,6 +3483,29 @@ function RmatCraftingRecipeBrowser() {
     signal_booster: 'art/crafting/recipes/signal-booster-v1.png',
     trauma_kit: 'art/crafting/recipes/trauma-kit-v1.png',
     wire_mesh_trap: 'art/crafting/recipes/wire-mesh-trap-v1.png',
+    arc_igniter: 'art/crafting/recipes/arc-igniter-v1.png',
+    fuel_converter: 'art/crafting/recipes/fuel-converter-v1.png',
+    hollow_point_press: 'art/crafting/recipes/hollow-point-press-v1.png',
+    sterilization_unit: 'art/crafting/recipes/sterilization-unit-v1.png',
+    composite_plating: 'art/crafting/recipes/composite-plating-v1.png',
+    circuit_splice: 'art/crafting/recipes/circuit-splice-v1.png',
+    toxin_filter: 'art/crafting/recipes/toxin-filter-v1.png',
+    neural_tap: 'art/crafting/recipes/neural-tap-v1.png',
+    siege_frame: 'art/crafting/recipes/siege-frame-v1.png',
+    resonance_cell: 'art/crafting/recipes/resonance-cell-v1.png',
+    bone_weave_vest: 'art/crafting/recipes/bone-weave-vest-v1.png',
+    emp_coil: 'art/crafting/recipes/emp-coil-v1.png',
+    hazard_patch_kit: 'art/crafting/recipes/hazard-patch-kit-v1.png',
+    crystalline_core: 'art/crafting/recipes/crystalline-core-v1.png',
+    plasma_conduit: 'art/crafting/recipes/plasma-conduit-v1.png',
+    necrotic_membrane: 'art/crafting/recipes/necrotic-membrane-v1.png',
+    siege_engine_frame: 'art/crafting/recipes/siege-engine-frame-v1.png',
+    quantum_splice_board: 'art/crafting/recipes/quantum-splice-board-v1.png',
+    echo_condenser: 'art/crafting/recipes/echo-condenser-v1.png',
+    void_lattice: 'art/crafting/recipes/void-lattice-v1.png',
+    fracture_engine: 'art/crafting/recipes/fracture-engine-v1.png',
+    revenant_core: 'art/crafting/recipes/revenant-core-v1.png',
+    signal_zero: 'art/crafting/recipes/signal-zero-v1.png',
   };
   const recipeIcon = (recipe, size) => recipeSpriteById[recipe.id]
     ? <img src={recipeSpriteById[recipe.id]} alt={recipe.name} style={{width:size,height:size,objectFit:'contain',imageRendering:'pixelated',flexShrink:0}} />

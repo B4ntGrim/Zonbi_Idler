@@ -5,7 +5,8 @@
 - **Character Creation:** New Game opens `CharacterCreationScreen` (`character-creation.jsx`; data/rules `game/character.js`): 4 steps, profile saved as `zi_survivor_profile` via `ZI.startNewInSlot(mode, slot, profile)`; professions = `ZI.LEADER_ARCHETYPES` (existing starting XP via `chooseLeader`); appearance placeholders, cosmetic only; gender = art only. Wandering `activeSurvivor` reads name/gender.
 - **Crawler / Halved:** `ZI.ZOMBIE_TRAITS`, `ZI.applyZombieTrait`, `ZI.BESTIARY_ROSTER` (Crawler id 46, tier F (Sam: for now; sprite later), HP 20, dmg 2, `attackEvery 2`, `minRoster 2`), `ZI.fieldBestiary()` (field pool, watched scene, Codex). `resolveAttack` skips turns for `attackEvery > 1`. New saves set `zi_roster_v = 2` (`ZI.ROSTER_VERSION`); old saves keep the 45.
 - **Operations page:** Schedule tab → `OperationsScreen` (`operations-ui.jsx`; data `game/operations.js`: `OPS_CATALOG` (chores carry `designOrder` 1–3: cook, upkeep, laundry), `opsNow`, `opsActivityStatus`, `opsCampDuties`). Only write: Camp Leader duty assignment via `ZI.opsAssign` / `opsUnassign` → `assignJob` / `unassignJob` (guards: camp mode, facility built, not on a route run, `commandScheduleSlots()` cap). `ScheduleScreenV2` kept, unused.
-- Tests: `tests/char-crawler-ops.test.js` (40). Full suite 981/981. Report: `reports/char-crawler-ops-2026-10-29/REPORT.md`.
+- Tests: `tests/char-crawler-ops.test.js` (44). Full suite 985/985.
+- **Appearance (Oct 29 evening):** `ZI.CHAR_CREATION.appearance` = hair, hairColor, clothing, clothingColor (`preview: true`, CSS filter on the portrait), scars, piercings, accessories; options may carry `swatch`. Profile `version: 2`; `validSurvivorProfile` moves a v1 `clothing` colour (olive/ash/rust) to `clothingColor`. Cosmetic only (Sam: no bonus). Report: `reports/char-crawler-ops-2026-10-29/REPORT.md`.
 
 ## Proposals applied (October 29)
 

@@ -24,11 +24,16 @@ const mkEnv = (store, now) => {
   const p = Z.validSurvivorProfile({ gender:'female', appearance:{ hair:'zzz' }, profession:'nope' });
   check('CC: bad appearance falls back to the first option; unknown profession is dropped', p.appearance.hair === Z.CHAR_CREATION.appearance.hair.options[0].id && p.profession === null);
   check('CC: professions are the 4 existing starting archetypes with their existing starting XP (no new values)', Z.charProfessions().length === Z.LEADER_ARCHETYPES.length && Z.charProfessions().every(c => { const a = Z.LEADER_ARCHETYPES.find(x => x.id === c.id); return c.effects.length === Object.keys(a.start).length && c.effects.every(e => a.start[e.prof] === e.xp); }));
-  check('CC: appearance options carry no stat fields (cosmetic only)', Object.values(Z.CHAR_CREATION.appearance).every(c => c.options.every(o => Object.keys(o).every(k => ['id','label','filter'].includes(k))))); }
-{ const mk = (gender) => { const store = { zi_world_seed:'1' }; const E = mkEnv(store); E.ZI.startNewInSlot('solo', 1, { gender, appearance:{ clothing:'rust' }, profession:'forager' }); return mkEnv(store, T0 + 1000); };
+  check('CC: appearance options carry no stat fields (cosmetic only)', Object.values(Z.CHAR_CREATION.appearance).every(c => c.options.every(o => Object.keys(o).every(k => ['id','label','filter','swatch'].includes(k))))); 
+  const A = Z.CHAR_CREATION.appearance, n = k => A[k].options.length;
+  check('CC: appearance has hairstyle, hair colour, clothing, clothing colour, piercings and accessories (Sam, Oct 29)', ['hair','hairColor','clothing','clothingColor','piercings','accessories'].every(k => A[k]) && n('hair') >= 12 && n('hairColor') >= 10 && n('clothing') >= 12 && n('clothingColor') >= 10 && n('piercings') >= 10 && n('accessories') >= 10, Object.keys(A).map(k => k + ':' + n(k)).join(' '));
+  check('CC: option ids are unique within each group', Object.values(A).every(c => new Set(c.options.map(o => o.id)).size === c.options.length));
+  const old = Z.validSurvivorProfile({ gender:'male', appearance:{ hair:'short', clothing:'rust', scars:'brow', accessories:'bandana' }, profession:'envoy' });
+  check('CC: a version-1 profile keeps its look (old clothing colour moves to clothingColor)', old.appearance.clothingColor === 'rust' && old.appearance.clothing === A.clothing.options[0].id && old.appearance.hair === 'short' && old.appearance.accessories === 'bandana' && old.appearance.piercings === 'none'); }
+{ const mk = (gender) => { const store = { zi_world_seed:'1' }; const E = mkEnv(store); E.ZI.startNewInSlot('solo', 1, { gender, appearance:{ clothingColor:'rust' }, profession:'forager' }); return mkEnv(store, T0 + 1000); };
   const F = mk('female'), M = mk('male');
   const fp = F.ZI.getSurvivorProfile(), snap = JSON.parse(F.store.zisave_data_solo_1);
-  check('CC: Start Surviving creates the save with the chosen survivor, saved inside the file', fp.gender === 'female' && fp.profession === 'forager' && fp.appearance.clothing === 'rust' && !!snap.zi_survivor_profile);
+  check('CC: Start Surviving creates the save with the chosen survivor, saved inside the file', fp.gender === 'female' && fp.profession === 'forager' && fp.appearance.clothingColor === 'rust' && !!snap.zi_survivor_profile);
   check('CC: the profession seeds exactly its existing starting XP', F.ZI.getStatXp().scavenging === 150 && F.ZI.getStatXp().foraging === 80, JSON.stringify(F.ZI.getStatXp()));
   check('CC: male and female survivors get identical stats (gender changes art only)', JSON.stringify(F.ZI.getStatXp()) === JSON.stringify(M.ZI.getStatXp()) && F.ZI.maxHp() === M.ZI.maxHp());
   const L = mkEnv({ zi_world_seed:'1' }); L.ZI.startNewInSlot('solo', 1);
