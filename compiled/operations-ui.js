@@ -7,8 +7,8 @@ function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length)
 function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (null != t) { var e, n, i, u, a = [], f = !0, o = !1; try { if (i = (t = t.call(r)).next, 0 === l) { if (Object(t) !== t) return; f = !1; } else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0); } catch (r) { o = !0, n = r; } finally { try { if (!f && null != t["return"] && (u = t["return"](), Object(u) !== u)) return; } finally { if (o) throw n; } } return a; } }
 function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
 // operations-ui.jsx — Operations page shown on the Schedule tab (Sam, Oct 29: build reference/operations-schedule-proposal.md).
-// Three sections: Now and next · Plan (activity catalog with availability) · Base schedule. Read-only: buttons only
-// open the screen that owns an activity. Proposed activities are labeled "Design proposal" and cannot be selected.
+// Three sections: Now and next · Plan (activity catalog with availability) · Base schedule. Buttons open the screen
+// that owns an activity; the one change made here is Camp Leader duty assignment (ZI.opsAssign / ZI.opsUnassign). Proposed activities are labeled "Design proposal" and cannot be selected.
 // The previous mock timeline (ScheduleScreenV2 in screens-v2b.jsx) is kept in the code, unused, for rollback.
 function OperationsScreen(_ref) {
   var mode = _ref.mode,
@@ -31,6 +31,10 @@ function OperationsScreen(_ref) {
     _React$useState4 = _slicedToArray(_React$useState3, 2),
     showProposals = _React$useState4[0],
     setShowProposals = _React$useState4[1];
+  var _React$useState5 = React.useState(null),
+    _React$useState6 = _slicedToArray(_React$useState5, 2),
+    dutyMsg = _React$useState6[0],
+    setDutyMsg = _React$useState6[1];
   var now = ZI.opsNow(mode),
     catalog = ZI.opsCatalog(mode);
   var isCamp = mode === 'camp',
@@ -246,7 +250,13 @@ function OperationsScreen(_ref) {
           fontSize: 10,
           color: 'var(--text2)'
         }
-      }, a.result), !a.proposal && /*#__PURE__*/React.createElement("div", {
+      }, a.result), a.designOrder && /*#__PURE__*/React.createElement("div", {
+        style: {
+          fontFamily: 'var(--font-mono)',
+          fontSize: 9,
+          color: 'var(--amber)'
+        }
+      }, "Design order: ", a.designOrder, " of 3 (cooking \u2192 weapon upkeep \u2192 laundry)"), !a.proposal && /*#__PURE__*/React.createElement("div", {
         style: {
           fontFamily: 'var(--font-mono)',
           fontSize: 9,
@@ -263,52 +273,130 @@ function OperationsScreen(_ref) {
       }, "Open"));
     })));
   }), /*#__PURE__*/React.createElement(H, {
-    sub: isCamp ? 'Camp duties staffed by survivors. No screen assigns duties yet (the engine supports it); assignment waits on Sam approving the duty XP rates.' : 'Your upkeep at your base or forward camp.'
-  }, "Base schedule"), isCamp ? /*#__PURE__*/React.createElement("div", {
-    style: {
-      display: 'flex',
-      flexDirection: 'column',
-      gap: 6
-    }
-  }, ZI.opsCampDuties().map(function (d) {
+    sub: isCamp ? 'Camp duties staffed by your survivors. Assign one survivor per duty.' : 'Your upkeep at your base or forward camp.'
+  }, "Base schedule"), isCamp ? function () {
+    var duties = ZI.opsCampDuties(),
+      busy = ZI.opsRouteBusy(),
+      roster = ZI.SQUAD_ROSTER || [];
+    var staffed = duties.reduce(function (n, d) {
+        return n + d.whoIds.length;
+      }, 0),
+      cap = ZI.opsDutySlots();
+    var assignedTo = {};
+    duties.forEach(function (d) {
+      return d.whoIds.forEach(function (id) {
+        assignedTo[id] = d.label;
+      });
+    });
+    var assign = function assign(svId, jobId) {
+      var r = svId ? ZI.opsAssign(svId, jobId, mode) : {
+        ok: true
+      };
+      setDutyMsg(r.ok ? null : r.reason);
+      tick(function (n) {
+        return n + 1;
+      });
+    };
     return /*#__PURE__*/React.createElement("div", {
-      key: d.id,
-      className: "panel",
       style: {
-        padding: '8px 10px',
         display: 'flex',
-        gap: 10,
-        alignItems: 'center',
-        flexWrap: 'wrap'
+        flexDirection: 'column',
+        gap: 6
       }
-    }, /*#__PURE__*/React.createElement("span", {
+    }, /*#__PURE__*/React.createElement("div", {
       style: {
-        fontFamily: 'var(--font-body)',
-        fontSize: 14,
-        color: 'var(--text)',
-        minWidth: 170
+        fontFamily: 'var(--font-mono)',
+        fontSize: 11,
+        color: 'var(--text2)'
       }
-    }, d.label), /*#__PURE__*/React.createElement("span", {
+    }, "Duty slots in use: ", staffed, " / ", cap, " (more with leader level). A survivor holds one duty at a time; survivors away on a route run cannot take one."), dutyMsg && /*#__PURE__*/React.createElement("div", {
+      role: "status",
+      style: {
+        fontFamily: 'var(--font-mono)',
+        fontSize: 11,
+        color: 'var(--red2)'
+      }
+    }, "\u26A0 ", dutyMsg), duties.map(function (d) {
+      return /*#__PURE__*/React.createElement("div", {
+        key: d.id,
+        className: "panel",
+        style: {
+          padding: '8px 10px',
+          display: 'flex',
+          gap: 10,
+          alignItems: 'center',
+          flexWrap: 'wrap'
+        }
+      }, /*#__PURE__*/React.createElement("span", {
+        style: {
+          fontFamily: 'var(--font-body)',
+          fontSize: 14,
+          color: 'var(--text)',
+          minWidth: 170
+        }
+      }, d.label), /*#__PURE__*/React.createElement("span", {
+        style: {
+          fontFamily: 'var(--font-mono)',
+          fontSize: 10,
+          color: 'var(--text2)',
+          flex: '1 1 160px'
+        }
+      }, d.profession, " \xB7 ", d.xpPerHour, " XP per game hour"), d.built ? d.whoIds.length ? /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("span", {
+        style: {
+          fontFamily: 'var(--font-mono)',
+          fontSize: 11,
+          color: 'var(--green)'
+        }
+      }, d.who.join(', '), d.whoIds.some(function (id) {
+        return busy[id];
+      }) ? ' (also on a route!)' : ''), /*#__PURE__*/React.createElement("button", {
+        className: "btn",
+        onClick: function onClick() {
+          d.whoIds.forEach(function (id) {
+            return ZI.opsUnassign(id, mode);
+          });
+          setDutyMsg(null);
+          tick(function (n) {
+            return n + 1;
+          });
+        }
+      }, "Unassign")) : /*#__PURE__*/React.createElement("select", {
+        "aria-label": 'Assign a survivor to ' + d.label,
+        value: "",
+        onChange: function onChange(e) {
+          return assign(e.target.value, d.id);
+        },
+        style: {
+          fontFamily: 'var(--font-mono)',
+          fontSize: 11,
+          background: 'var(--bg)',
+          color: 'var(--text)',
+          border: '1px solid var(--border)',
+          padding: '4px 6px'
+        }
+      }, /*#__PURE__*/React.createElement("option", {
+        value: ""
+      }, "Assign\u2026"), roster.map(function (s) {
+        return /*#__PURE__*/React.createElement("option", {
+          key: s.id,
+          value: s.id,
+          disabled: !!busy[s.id]
+        }, s.name, busy[s.id] ? ' (on a route)' : assignedTo[s.id] ? ' (moves from ' + assignedTo[s.id] + ')' : '');
+      })) : /*#__PURE__*/React.createElement("span", {
+        style: {
+          fontFamily: 'var(--font-mono)',
+          fontSize: 10,
+          color: 'var(--amber)'
+        }
+      }, d.status));
+    }), /*#__PURE__*/React.createElement("div", {
       style: {
         fontFamily: 'var(--font-mono)',
         fontSize: 10,
-        color: 'var(--text2)',
-        flex: '1 1 200px'
+        color: 'var(--text3)'
       }
-    }, d.profession, " \xB7 ", d.xpPerHour, " XP/h", d.who.length ? ' · ' + d.who.join(', ') : ''), /*#__PURE__*/React.createElement("span", {
-      style: {
-        fontFamily: 'var(--font-mono)',
-        fontSize: 10,
-        color: d.status === 'Covered' ? 'var(--green)' : 'var(--amber)'
-      }
-    }, d.status));
-  }), /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontFamily: 'var(--font-mono)',
-      fontSize: 10,
-      color: 'var(--text3)'
-    }
-  }, "Proposed camp chores (cooking, weapon upkeep, laundry, radio watch, return processing) are listed under Plan as design proposals.")) : /*#__PURE__*/React.createElement("div", {
+    }, "Duties earn their profession XP while you are away (24-hour offline cap). Proposed camp chores (cooking, then weapon upkeep, then laundry) are listed under Plan as design proposals."));
+  }() : /*#__PURE__*/React.createElement("div", {
     style: {
       display: 'flex',
       flexDirection: 'column',

@@ -1067,7 +1067,7 @@ function ResourceChip(_ref22) {
   // Nutrition is a 0–100 meter: colour it by its FOOD level (Starving … Peak Fueled).
   var color = label === 'Nutrition' ? value.pending ? 'var(--text3)' : getNutritionLevel(value.current).color : value.pending ? 'var(--text3)' : colors[label] || 'var(--text2)';
   var shown = value.pending ? '—' : label === 'Nutrition' ? "".concat(Math.round(value.current), "%") : fmt(value.current);
-  if (label === 'RMAT' && !block) {
+  if (label === 'RMAT') {
     var holdings = ZI.getRmatHoldings ? ZI.getRmatHoldings() : {};
     var tiers = ZI.RMAT_TIERS || [];
     return /*#__PURE__*/React.createElement("div", {
@@ -1082,6 +1082,7 @@ function ResourceChip(_ref22) {
         display: 'flex',
         alignItems: 'center',
         height: '100%',
+        width: block ? '100%' : 'auto',
         flexShrink: 0
       }
     }, /*#__PURE__*/React.createElement("button", {
@@ -1100,11 +1101,12 @@ function ResourceChip(_ref22) {
         gap: 5,
         padding: '0 10px',
         height: '100%',
+        width: block ? '100%' : 'auto',
         whiteSpace: 'nowrap',
         cursor: 'help',
         background: 'transparent',
         border: 0,
-        borderRight: '1px solid var(--border)',
+        borderRight: block ? 'none' : '1px solid var(--border)',
         color: 'inherit',
         fontFamily: 'inherit'
       }
@@ -1127,8 +1129,8 @@ function ResourceChip(_ref22) {
       "aria-label": "RMAT holdings by tier",
       style: {
         position: 'absolute',
-        top: '100%',
-        left: 0,
+        top: block ? 0 : '100%',
+        left: block ? '100%' : 0,
         zIndex: 250,
         minWidth: 210,
         padding: 8,
@@ -8198,6 +8200,37 @@ function RmatCraftingRecipeBrowser() {
     t5Event = _useState110[0],
     setT5Event = _useState110[1];
   var recipes = ZI.CRAFT_RECIPES || [];
+  var recipeSpriteById = {
+    scrap_pouch: 'art/crafting/recipes/scrap-pouch-v1.png',
+    nail_board: 'art/crafting/recipes/nail-board-v1.png',
+    scrap_wire: 'art/crafting/recipes/scrap-wire-v1.png',
+    tinder_bundle: 'art/crafting/recipes/tinder-bundle-v1.png',
+    crude_splint: 'art/crafting/recipes/crude-splint-v3.png',
+    reinforced_pack: 'art/crafting/recipes/reinforced-pack-v1.png',
+    barricade_panel: 'art/crafting/recipes/barricade-panel-v1.png',
+    cloth_wrap_kit: 'art/crafting/recipes/cloth-wrap-kit-v1.png',
+    fuel_drum: 'art/crafting/recipes/fuel-drum-v1.png',
+    signal_booster: 'art/crafting/recipes/signal-booster-v1.png',
+    trauma_kit: 'art/crafting/recipes/trauma-kit-v1.png',
+    wire_mesh_trap: 'art/crafting/recipes/wire-mesh-trap-v1.png'
+  };
+  var recipeIcon = function recipeIcon(recipe, size) {
+    return recipeSpriteById[recipe.id] ? /*#__PURE__*/React.createElement("img", {
+      src: recipeSpriteById[recipe.id],
+      alt: recipe.name,
+      style: {
+        width: size,
+        height: size,
+        objectFit: 'contain',
+        imageRendering: 'pixelated',
+        flexShrink: 0
+      }
+    }) : /*#__PURE__*/React.createElement("span", {
+      style: {
+        fontSize: size
+      }
+    }, recipe.icon);
+  };
   var sel = recipes.find(function (r) {
     return r.id === selId;
   }) || null;
@@ -8670,11 +8703,7 @@ function RmatCraftingRecipeBrowser() {
         alignItems: 'center',
         gap: 8
       }
-    }, /*#__PURE__*/React.createElement("span", {
-      style: {
-        fontSize: 16
-      }
-    }, r.icon), /*#__PURE__*/React.createElement("span", {
+    }, recipeIcon(r, 32), /*#__PURE__*/React.createElement("span", {
       style: {
         fontFamily: 'var(--font-body)',
         fontSize: 14,
@@ -8817,11 +8846,7 @@ function RmatCraftingRecipeBrowser() {
         gap: 10,
         marginBottom: 8
       }
-    }, /*#__PURE__*/React.createElement("span", {
-      style: {
-        fontSize: 30
-      }
-    }, sel.icon), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
+    }, recipeIcon(sel, 56), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
       style: {
         fontFamily: 'var(--font-title)',
         fontSize: 16,

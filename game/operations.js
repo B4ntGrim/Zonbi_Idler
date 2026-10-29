@@ -1,7 +1,8 @@
 // game/operations.js — read-only data for the Operations (Schedule) page (Sam, Oct 29: build the proposal).
 // Source: reference/operations-schedule-proposal.md. Rules kept from the proposal:
 // • The page READS the systems that own each activity (Traversal, Wandering, Routes, the job queue, the camp
-//   schedule, STAT-02 status). It never runs or queues work itself, and never implies a sequence the engine does not use.
+//   schedule, STAT-02 status). Its only write is Camp Leader duty assignment (ZI.opsAssign / ZI.opsUnassign below,
+//   through the existing camp schedule). It never implies a sequence the engine does not use.
 // • Every activity says who does it, what it needs, whether it runs while away, and what to expect.
 // • Proposed chores (cooking, weapon upkeep, laundry, radio, intel, circuits, pending deploy, supply sorting, water)
 //   carry the status "Design proposal" and are never selectable until their mechanic exists.
@@ -24,13 +25,14 @@ ZI.OPS_CATALOG = [
   { id:'eat',       group:'base', modes:['solo','camp'], name:'Eat', who:'Your survivor', needs:'Food in the stash', away:'Yes: eats on their own while away (up to 3 meals)', result:'Nutrition back up (Auto-Eat is a Shop item)', screen:'stat-leveling', check:'food' },
   { id:'nap',       group:'base', modes:['solo','camp'], name:'Nap at base', who:'Your survivor', needs:'Be at your base or camp cell', away:'No', result:'One tier of tiredness back; costs 2 game hours', screen:'stat-leveling', check:'nap' },
   { id:'treat',     group:'base', modes:['solo','camp'], name:'Treat injury / recover', who:'Your survivor', needs:'An injury; play time or rest', away:'Rest: yes', result:'Injury heals with play time; rest restores HP', screen:'hack-slash', check:'injury' },
-  { id:'cook',      group:'base', modes:['solo','camp'], name:'Cook / prepare meals', who:'—', needs:'Food, fuel (open)', away:'Open', result:'Meals from raw food (FOOD-02)', proposal:true },
-  { id:'upkeep',    group:'base', modes:['solo','camp'], name:'Weapon upkeep', who:'—', needs:'Open', away:'Open', result:'Durability maintenance for chosen weapons', proposal:true },
-  { id:'laundry',   group:'base', modes:['solo','camp'], name:'Laundry', who:'—', needs:'Water, fuel (open)', away:'Open', result:'Clean clothes; may lower scent and stress (open)', proposal:true },
+  { id:'cook',      group:'base', modes:['solo','camp'], name:'Cook / prepare meals', who:'—', needs:'Food, fuel (open)', away:'Open', result:'Meals from raw food (FOOD-02)', proposal:true, designOrder:1 },
+  { id:'upkeep',    group:'base', modes:['solo','camp'], name:'Weapon upkeep', who:'—', needs:'Open', away:'Open', result:'Durability maintenance for chosen weapons', proposal:true, designOrder:2 },
+  { id:'laundry',   group:'base', modes:['solo','camp'], name:'Laundry', who:'—', needs:'Water, fuel (open)', away:'Open', result:'Clean clothes; may lower scent and stress (open)', proposal:true, designOrder:3 },
   { id:'sort',      group:'base', modes:['solo','camp'], name:'Sort and preserve supplies', who:'—', needs:'Open', away:'Open', result:'Review food, medicine and parts; preservation is open', proposal:true },
   { id:'water',     group:'base', modes:['solo','camp'], name:'Water collection / purification', who:'—', needs:'Open', away:'Open', result:'Water for cooking and laundry', proposal:true },
   { id:'maintain',  group:'base', modes:['camp'], name:'Base maintenance / buildings', who:'Camp', needs:'Materials for the build', away:'Yes (build queue)', result:'Camp structures and upgrades', screen:'camp-main' },
 ];
+// Chore design order (Sam, Oct 29): cooking → weapon upkeep → laundry.
 ZI.opsCatalog = function(mode) { return ZI.OPS_CATALOG.filter(a => a.modes.indexOf(mode) >= 0); };
 // Live status for one activity. Reads only.
 ZI.opsActivityStatus = function(a, mode) {
@@ -97,7 +99,35 @@ ZI.opsCampDuties = function() {
     const who = sch.assignments.filter(a => a.jobId === job.id).map(a => names[a.survivorId] || a.survivorId);
     const built = !job.requires || (ZI.structureLevel ? ZI.structureLevel(job.requires) > 0 : false);
     const prof = (ZI.PROFESSIONS || []).find(p => p.id === job.profession);
-    return { id: job.id, label: job.label, profession: prof ? prof.name : job.profession, xpPerHour: job.xpPerHour, requires: job.requires, built, who,
+    const whoIds = sch.assignments.filter(a => a.jobId === job.id).map(a => a.survivorId);
+    return { id: job.id, label: job.label, profession: prof ? prof.name : job.profession, xpPerHour: job.xpPerHour, requires: job.requires, built, who, whoIds, slots: job.slots || 1,
       status: !built ? ZI.OPS_STATUS.facility + ' (' + job.requires + ')' : who.length ? 'Covered' : 'Uncovered' };
   });
+};
+
+// ─── Camp Leader duty assignment (Sam, Oct 29: "keep … assigning camp duties for camp leader") ─────────────────
+// Uses the existing camp schedule (ZI.assignJob / ZI.unassignJob, game/camp.js) and its existing XP rates. Guards:
+// the duty's facility must be built, one survivor per duty slot, at most ZI.commandScheduleSlots() duties staffed,
+// and a survivor away on a route run cannot take a duty. Camp Leader only.
+ZI.opsRouteBusy = function() {
+  const busy = {};
+  Object.entries(ZI._readRouteRuns ? ZI._readRouteRuns() : {}).forEach(([id, r]) => { (r && r.squadIds || []).forEach(s => { busy[s] = id; }); });
+  return busy;
+};
+ZI.opsDutySlots = function() { return ZI.commandScheduleSlots ? ZI.commandScheduleSlots() : 3; };
+ZI.opsAssign = function(survivorId, jobId, mode) {
+  if (mode !== 'camp') return { ok: false, reason: 'Camp duties are a Camp Leader feature.' };
+  const job = ZI.getJob && ZI.getJob(jobId); if (!job) return { ok: false, reason: 'Unknown duty.' };
+  const sv = (ZI.SQUAD_ROSTER || []).find(s => s.id === survivorId); if (!sv) return { ok: false, reason: 'Unknown survivor.' };
+  if (job.requires && !(ZI.structureLevel && ZI.structureLevel(job.requires) > 0)) return { ok: false, reason: 'Build the ' + job.requires + ' first.' };
+  const route = ZI.opsRouteBusy()[survivorId]; if (route) return { ok: false, reason: sv.name + ' is away on a route run.' };
+  const sch = ZI.getSchedule(), others = sch.assignments.filter(a => a.survivorId !== survivorId);
+  if (others.filter(a => a.jobId === jobId).length >= (job.slots || 1)) return { ok: false, reason: job.label + ' is already staffed.' };
+  if (others.length >= ZI.opsDutySlots()) return { ok: false, reason: 'All ' + ZI.opsDutySlots() + ' duty slots are in use (more come with leader level).' };
+  ZI.assignJob(survivorId, jobId);
+  return { ok: true };
+};
+ZI.opsUnassign = function(survivorId, mode) {
+  if (mode !== 'camp') return { ok: false, reason: 'Camp duties are a Camp Leader feature.' };
+  ZI.unassignJob(survivorId); return { ok: true };
 };

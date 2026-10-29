@@ -129,14 +129,13 @@ ZI.applyZombieTrait = function(base, traitId) {
   return out;
 };
 ZI.BESTIARY_ROSTER = [
-  // Crawler: a Simple Shambler (id 1) torn in half. Tier F is PROVISIONAL (the draft leaves the tier to a bestiary
-  // review; a halved F-tier body is the weakest choice that keeps it in the opening pool). Sprite: none exported yet,
-  // so the field and Codex fall back to the drawn (SVG) zombie, as the draft requires until a validated atlas exists.
+  // Crawler: a Simple Shambler (id 1) torn in half. Tier F (Sam, Oct 29: F for now). Sprite: to be decided
+  // later by Sam; none exported yet, so the field and Codex fall back to the drawn (SVG) zombie, as the draft requires until a validated atlas exists.
   ZI.applyZombieTrait(Object.assign({}, ZI.BESTIARY.find(z => z.id === 1), {
     id: 46, name: 'Crawler', tier: 'F', base: 'Crawler', traits: ['Halved', 'Soiled', 'Low to the ground'],
     weakness: ['Blunt weapons', 'Stomps'], ability: 'Drags itself after the living; half a body, half the threat',
     loot: 'Torn cloth', biome: 'Streets, Suburbs', minRoster: 2, // XP stays the base 10: the draft does not halve rewards
-    notes: 'Reusable Halved trait (50% HP, 50% damage, attacks every second turn). Tier provisional. New saves only.',
+    notes: 'Reusable Halved trait (50% HP, 50% damage, attacks every second turn). Tier F for now (Sam, Oct 29). New saves only.',
   }), 'halved'),
 ];
 ZI.saveRosterVersion = function() {
