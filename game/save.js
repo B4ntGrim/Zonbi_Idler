@@ -139,7 +139,10 @@ ZI._boot = function(mode, slot) {
   try { localStorage.setItem('zisave_resume', JSON.stringify({ mode, at: Date.now() })); } catch (e) {}
   location.reload();
 };
-ZI.startNewInSlot = function(mode, slot) {
+// ZI.ROSTER_VERSION (Oct 29): zombies marked minRoster in ZI.BESTIARY (the Crawler) appear only in saves started at or
+// after that roster, so existing saves keep exactly the encounters they had.
+ZI.ROSTER_VERSION = 2;
+ZI.startNewInSlot = function(mode, slot, profile) {
   ZI._autosaveBeforeSwitch(mode, slot);  // keep the file being left
   ZI._restore({});                       // clean progress
   // Brand-new file: empty stockpile, and the Crafting tutorial runs on first visit.
@@ -147,6 +150,8 @@ ZI.startNewInSlot = function(mode, slot) {
   localStorage.setItem('zi_fresh_start', '1'); // first boot of this file opens on Traversal
   localStorage.setItem('zi_tut_progress', '[]'); // tutorial spec 9.2: a new save has completed no steps
   if (ZI.Jester) ZI.Jester.onNewSave(); else ZI.ensureStarterKit && ZI.ensureStarterKit(); // JD1a (B4): records eligibility; the kit comes with the save only while the switch is off
+  localStorage.setItem('zi_roster_v', String(ZI.ROSTER_VERSION)); // new saves meet the current field roster
+  if (profile && ZI.applySurvivorProfile) ZI.applySurvivorProfile(profile); // Character Creation (Oct 29): saved with the file
   ZI._writeSlot(mode, slot, null);       // create the file immediately
   ZI._boot(mode, slot);
 };

@@ -1052,6 +1052,10 @@ function ResourceChip(_ref22) {
   var label = _ref22.label,
     value = _ref22.value,
     block = _ref22.block;
+  var _useState19 = useState(false),
+    _useState20 = _slicedToArray(_useState19, 2),
+    rmatOpen = _useState20[0],
+    setRmatOpen = _useState20[1];
   var colors = {
     Food: 'var(--green2)',
     Scrap: 'var(--text2)',
@@ -1063,6 +1067,118 @@ function ResourceChip(_ref22) {
   // Nutrition is a 0–100 meter: colour it by its FOOD level (Starving … Peak Fueled).
   var color = label === 'Nutrition' ? value.pending ? 'var(--text3)' : getNutritionLevel(value.current).color : value.pending ? 'var(--text3)' : colors[label] || 'var(--text2)';
   var shown = value.pending ? '—' : label === 'Nutrition' ? "".concat(Math.round(value.current), "%") : fmt(value.current);
+  if (label === 'RMAT' && !block) {
+    var holdings = ZI.getRmatHoldings ? ZI.getRmatHoldings() : {};
+    var tiers = ZI.RMAT_TIERS || [];
+    return /*#__PURE__*/React.createElement("div", {
+      onMouseEnter: function onMouseEnter() {
+        return setRmatOpen(true);
+      },
+      onMouseLeave: function onMouseLeave() {
+        return setRmatOpen(false);
+      },
+      style: {
+        position: 'relative',
+        display: 'flex',
+        alignItems: 'center',
+        height: '100%',
+        flexShrink: 0
+      }
+    }, /*#__PURE__*/React.createElement("button", {
+      type: "button",
+      "aria-label": "RMAT total ".concat(shown, "; show holdings by tier"),
+      "aria-expanded": rmatOpen,
+      onFocus: function onFocus() {
+        return setRmatOpen(true);
+      },
+      onBlur: function onBlur() {
+        return setRmatOpen(false);
+      },
+      style: {
+        display: 'flex',
+        alignItems: 'center',
+        gap: 5,
+        padding: '0 10px',
+        height: '100%',
+        whiteSpace: 'nowrap',
+        cursor: 'help',
+        background: 'transparent',
+        border: 0,
+        borderRight: '1px solid var(--border)',
+        color: 'inherit',
+        fontFamily: 'inherit'
+      }
+    }, /*#__PURE__*/React.createElement("span", {
+      style: {
+        fontFamily: 'var(--font-mono)',
+        fontSize: 10,
+        color: 'var(--text3)',
+        letterSpacing: '0.08em'
+      }
+    }, "RMAT"), /*#__PURE__*/React.createElement("span", {
+      style: {
+        fontFamily: 'var(--font-mono)',
+        fontSize: 12,
+        color: color,
+        fontWeight: 'bold'
+      }
+    }, shown)), rmatOpen && /*#__PURE__*/React.createElement("div", {
+      role: "region",
+      "aria-label": "RMAT holdings by tier",
+      style: {
+        position: 'absolute',
+        top: '100%',
+        left: 0,
+        zIndex: 250,
+        minWidth: 210,
+        padding: 8,
+        background: 'var(--bg2)',
+        border: '1px solid var(--purple)',
+        boxShadow: '0 8px 24px rgba(0,0,0,0.65)'
+      }
+    }, /*#__PURE__*/React.createElement("div", {
+      style: {
+        fontFamily: 'var(--font-mono)',
+        fontSize: 9,
+        color: 'var(--text3)',
+        letterSpacing: '0.08em',
+        marginBottom: 5
+      }
+    }, "RMAT HOLDINGS \xB7 TOTAL ", shown), tiers.map(function (tier) {
+      var key = 'T' + tier.tier;
+      return /*#__PURE__*/React.createElement("div", {
+        key: key,
+        style: {
+          display: 'flex',
+          alignItems: 'center',
+          gap: 7,
+          padding: '3px 2px',
+          borderTop: '1px solid var(--border)'
+        }
+      }, /*#__PURE__*/React.createElement("span", {
+        style: {
+          fontFamily: 'var(--font-mono)',
+          fontSize: 10,
+          color: tier.color,
+          width: 22
+        }
+      }, key), /*#__PURE__*/React.createElement("span", {
+        style: {
+          fontFamily: 'var(--font-body)',
+          fontSize: 11,
+          color: 'var(--text)',
+          flex: 1
+        }
+      }, tier.name), /*#__PURE__*/React.createElement("span", {
+        style: {
+          fontFamily: 'var(--font-mono)',
+          fontSize: 11,
+          color: tier.color,
+          fontWeight: 'bold'
+        }
+      }, fmt(holdings[key] || 0)));
+    })));
+  }
   return /*#__PURE__*/React.createElement("div", {
     title: value.pending ? "".concat(label, ": not built yet") : undefined,
     style: {
@@ -1103,16 +1219,16 @@ function ResourceChip(_ref22) {
 
 // ─── SETTINGS (gear button in the top bar) ────────────────────────────────────
 function SettingsButton() {
-  var _useState19 = useState(false),
-    _useState20 = _slicedToArray(_useState19, 2),
-    open = _useState20[0],
-    setOpen = _useState20[1];
-  var _useState21 = useState(function () {
+  var _useState21 = useState(false),
+    _useState22 = _slicedToArray(_useState21, 2),
+    open = _useState22[0],
+    setOpen = _useState22[1];
+  var _useState23 = useState(function () {
       return ZI.getSettings();
     }),
-    _useState22 = _slicedToArray(_useState21, 2),
-    st = _useState22[0],
-    setSt = _useState22[1];
+    _useState24 = _slicedToArray(_useState23, 2),
+    st = _useState24[0],
+    setSt = _useState24[1];
   var set = function set(k, v) {
     ZI.setSetting(k, v);
     setSt(ZI.getSettings());
@@ -1219,22 +1335,22 @@ function SplashBackdrop() {
     SET = ZI.SPLASH_SET;
   var boxRef = useRef(null);
   var wrapRefs = useRef({});
-  var _useState23 = useState([]),
-    _useState24 = _slicedToArray(_useState23, 2),
-    filled = _useState24[0],
-    setFilled = _useState24[1]; // filled image-slot ids
-  var _useState25 = useState(ZI.getReducedGore()),
+  var _useState25 = useState([]),
     _useState26 = _slicedToArray(_useState25, 2),
-    mild = _useState26[0],
-    setMild = _useState26[1];
-  var _useState27 = useState(-1),
+    filled = _useState26[0],
+    setFilled = _useState26[1]; // filled image-slot ids
+  var _useState27 = useState(ZI.getReducedGore()),
     _useState28 = _slicedToArray(_useState27, 2),
-    cur = _useState28[0],
-    setCur = _useState28[1]; // index into SET currently shown
-  var _useState29 = useState(null),
+    mild = _useState28[0],
+    setMild = _useState28[1];
+  var _useState29 = useState(-1),
     _useState30 = _slicedToArray(_useState29, 2),
-    edit = _useState30[0],
-    setEdit = _useState30[1]; // { idx, variant:'std'|'mild' } when arranging art
+    cur = _useState30[0],
+    setCur = _useState30[1]; // index into SET currently shown
+  var _useState31 = useState(null),
+    _useState32 = _slicedToArray(_useState31, 2),
+    edit = _useState32[0],
+    setEdit = _useState32[1]; // { idx, variant:'std'|'mild' } when arranging art
   var bag = useRef([]);
   var last = useRef(-1);
   var slotId = function slotId(e, v) {
@@ -1505,17 +1621,21 @@ function SplashBackdrop() {
 function SaveFilesScreen(_ref25) {
   var mode = _ref25.mode,
     onBack = _ref25.onBack;
-  var _useState31 = useState(0),
-    _useState32 = _slicedToArray(_useState31, 2),
-    force = _useState32[1];
-  var _useState33 = useState(null),
+  var _useState33 = useState(0),
     _useState34 = _slicedToArray(_useState33, 2),
-    confirm = _useState34[0],
-    setConfirm = _useState34[1]; // { slot, action }
+    force = _useState34[1];
   var _useState35 = useState(null),
     _useState36 = _slicedToArray(_useState35, 2),
-    notice = _useState36[0],
-    setNotice = _useState36[1]; // { ok, text } — export/import result
+    confirm = _useState36[0],
+    setConfirm = _useState36[1]; // { slot, action }
+  var _useState37 = useState(null),
+    _useState38 = _slicedToArray(_useState37, 2),
+    notice = _useState38[0],
+    setNotice = _useState38[1]; // { ok, text } — export/import result
+  var _useState39 = useState(null),
+    _useState40 = _slicedToArray(_useState39, 2),
+    creating = _useState40[0],
+    setCreating = _useState40[1]; // Oct 29: slot number while the Character Creation steps are open
   var fileInput = React.useRef(null);
   var importTarget = React.useRef(null);
   var isCamp = mode === 'camp';
@@ -1530,7 +1650,11 @@ function SaveFilesScreen(_ref25) {
     }) : '';
   };
   var act = function act(slot, action) {
-    if (action === 'new' || action === 'overwrite') ZI.startNewInSlot(mode, slot);else if (action === 'load') {
+    // Oct 29: New Game opens Character Creation; the save is created only after "Start Surviving".
+    if (action === 'new' || action === 'overwrite') {
+      setConfirm(null);
+      if (window.CharacterCreationScreen && ZI.CHAR_CREATION) setCreating(slot);else ZI.startNewInSlot(mode, slot);
+    } else if (action === 'load') {
       if (!ZI.loadSlot(mode, slot)) setNotice({
         ok: false,
         text: "File ".concat(slot, " is damaged and has no good backup copy, so it cannot be loaded. Your other files are safe. You can Import an exported copy into it, or Delete it.")
@@ -1609,6 +1733,23 @@ function SaveFilesScreen(_ref25) {
     };
     rd.readAsText(f);
   };
+  if (creating) return /*#__PURE__*/React.createElement("div", {
+    style: {
+      position: 'relative',
+      height: '100%',
+      overflow: 'hidden',
+      background: 'var(--bg)'
+    }
+  }, /*#__PURE__*/React.createElement(CharacterCreationScreen, {
+    mode: mode,
+    slot: creating,
+    onCancel: function onCancel() {
+      return setCreating(null);
+    },
+    onConfirm: function onConfirm(profile) {
+      return ZI.startNewInSlot(mode, creating, profile);
+    }
+  }));
   return /*#__PURE__*/React.createElement("div", {
     style: {
       position: 'relative',
@@ -1841,10 +1982,10 @@ function SaveFilesScreen(_ref25) {
 // ─── MODE SELECT SCREEN ───────────────────────────────────────────────────────
 function ModeSelectScreen(_ref26) {
   var onSelect = _ref26.onSelect;
-  var _useState37 = useState(null),
-    _useState38 = _slicedToArray(_useState37, 2),
-    hovered = _useState38[0],
-    setHovered = _useState38[1];
+  var _useState41 = useState(null),
+    _useState42 = _slicedToArray(_useState41, 2),
+    hovered = _useState42[0],
+    setHovered = _useState42[1];
   return /*#__PURE__*/React.createElement("div", {
     className: "screen-enter",
     style: {
@@ -2144,7 +2285,7 @@ function CampMainScreen(_ref27) {
   var resources = _ref27.resources,
     setResources = _ref27.setResources,
     threatLevel = _ref27.threatLevel;
-  var _useState39 = useState([{
+  var _useState43 = useState([{
       id: 1,
       name: 'Mira Chen',
       role: 'Engineer',
@@ -2211,10 +2352,10 @@ function CampMainScreen(_ref27) {
       assigned: 'forge',
       status: 'working'
     }]),
-    _useState40 = _slicedToArray(_useState39, 2),
-    survivors = _useState40[0],
-    setSurvivors = _useState40[1];
-  var _useState41 = useState([{
+    _useState44 = _slicedToArray(_useState43, 2),
+    survivors = _useState44[0],
+    setSurvivors = _useState44[1];
+  var _useState45 = useState([{
       id: 'farm',
       name: 'Farm',
       tier: 2,
@@ -2279,12 +2420,12 @@ function CampMainScreen(_ref27) {
       status: 'active',
       workers: 0
     }]),
-    _useState42 = _slicedToArray(_useState41, 1),
-    buildings = _useState42[0];
-  var _useState43 = useState(340),
-    _useState44 = _slicedToArray(_useState43, 2),
-    hordeTimer = _useState44[0],
-    setHordeTimer = _useState44[1]; // seconds until next horde
+    _useState46 = _slicedToArray(_useState45, 1),
+    buildings = _useState46[0];
+  var _useState47 = useState(340),
+    _useState48 = _slicedToArray(_useState47, 2),
+    hordeTimer = _useState48[0],
+    setHordeTimer = _useState48[1]; // seconds until next horde
   useEffect(function () {
     var t = setInterval(function () {
       return setHordeTimer(function (prev) {
@@ -2295,10 +2436,10 @@ function CampMainScreen(_ref27) {
       return clearInterval(t);
     };
   }, []);
-  var _useState45 = useState(null),
-    _useState46 = _slicedToArray(_useState45, 2),
-    selectedSurvivor = _useState46[0],
-    setSelectedSurvivor = _useState46[1];
+  var _useState49 = useState(null),
+    _useState50 = _slicedToArray(_useState49, 2),
+    selectedSurvivor = _useState50[0],
+    setSelectedSurvivor = _useState50[1];
   var hordePct = 1 - hordeTimer / 720;
   var hordeColor = hordePct > 0.8 ? 'var(--red2)' : hordePct > 0.5 ? 'var(--amber)' : 'var(--green)';
   return /*#__PURE__*/React.createElement("div", {
@@ -4376,9 +4517,9 @@ function CampEventsPanel(_ref51) {
 
 function useSoloRoutePreparation(route, threatLevel) {
   var enabled = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : true;
-  var _useState47 = useState(0),
-    _useState48 = _slicedToArray(_useState47, 2),
-    refresh = _useState48[1];
+  var _useState51 = useState(0),
+    _useState52 = _slicedToArray(_useState51, 2),
+    refresh = _useState52[1];
   useEffect(function () {
     if (!enabled) return;
     var queued = null;
@@ -4606,36 +4747,36 @@ function SoloMainScreen(_ref56) {
     initialPlan = _ref56$initialPlan === void 0 ? null : _ref56$initialPlan,
     onManageGear = _ref56.onManageGear;
   var isCamp = mode === 'camp'; // Squad Assignment is a Camp Leader-mode feature only
-  var _useState49 = useState(function () {
+  var _useState53 = useState(function () {
       return initialPlan ? initialPlan.biome : 'suburbia';
     }),
-    _useState50 = _slicedToArray(_useState49, 2),
-    selectedBiome = _useState50[0],
-    setSelectedBiome = _useState50[1];
-  var _useState51 = useState(function () {
+    _useState54 = _slicedToArray(_useState53, 2),
+    selectedBiome = _useState54[0],
+    setSelectedBiome = _useState54[1];
+  var _useState55 = useState(function () {
       return initialPlan ? ZI.ROUTES.find(function (r) {
         return r.id === initialPlan.routeId;
       }) || null : null;
     }),
-    _useState52 = _slicedToArray(_useState51, 2),
-    selectedRoute = _useState52[0],
-    setSelectedRoute = _useState52[1];
-  var _useState53 = useState(function () {
+    _useState56 = _slicedToArray(_useState55, 2),
+    selectedRoute = _useState56[0],
+    setSelectedRoute = _useState56[1];
+  var _useState57 = useState(function () {
       return initialPlan ? initialPlan.runMode : 'active';
     }),
-    _useState54 = _slicedToArray(_useState53, 2),
-    runMode = _useState54[0],
-    setRunMode = _useState54[1];
-  var _useState55 = useState(function () {
+    _useState58 = _slicedToArray(_useState57, 2),
+    runMode = _useState58[0],
+    setRunMode = _useState58[1];
+  var _useState59 = useState(function () {
       return initialPlan ? _objectSpread({}, initialPlan.autoRepeat) : {};
     }),
-    _useState56 = _slicedToArray(_useState55, 2),
-    autoRepeat = _useState56[0],
-    setAutoRepeat = _useState56[1]; // routeId → bool
-  var _useState57 = useState([]),
-    _useState58 = _slicedToArray(_useState57, 2),
-    squad = _useState58[0],
-    setSquad = _useState58[1]; // assigned survivor ids
+    _useState60 = _slicedToArray(_useState59, 2),
+    autoRepeat = _useState60[0],
+    setAutoRepeat = _useState60[1]; // routeId → bool
+  var _useState61 = useState([]),
+    _useState62 = _slicedToArray(_useState61, 2),
+    squad = _useState62[0],
+    setSquad = _useState62[1]; // assigned survivor ids
   var toggleRepeat = function toggleRepeat(id) {
     return setAutoRepeat(function (m) {
       var on = !m[id];
@@ -4650,10 +4791,10 @@ function SoloMainScreen(_ref56) {
     return b.id === selectedBiome;
   });
   var preparation = useSoloRoutePreparation(selectedRoute || filteredRoutes[0], threatLevel, !isCamp);
-  var _useState59 = useState(null),
-    _useState60 = _slicedToArray(_useState59, 2),
-    launchError = _useState60[0],
-    setLaunchError = _useState60[1];
+  var _useState63 = useState(null),
+    _useState64 = _slicedToArray(_useState63, 2),
+    launchError = _useState64[0],
+    setLaunchError = _useState64[1];
   var character = {
     name: 'The Wanderer',
     "class": 'ranger',
@@ -5386,16 +5527,16 @@ function SquadAssignPanel(_ref63) {
 // Change 6 — promoted Last Run summary with quick actions.
 function LastRunPanel(_ref64) {
   var onSendAgain = _ref64.onSendAgain;
-  var _useState61 = useState(function () {
+  var _useState65 = useState(function () {
       return ZI.getLastRun && ZI.getLastRun() || null;
     }),
-    _useState62 = _slicedToArray(_useState61, 2),
-    last = _useState62[0],
-    setLast = _useState62[1];
-  var _useState63 = useState(null),
-    _useState64 = _slicedToArray(_useState63, 2),
-    msg = _useState64[0],
-    setMsg = _useState64[1];
+    _useState66 = _slicedToArray(_useState65, 2),
+    last = _useState66[0],
+    setLast = _useState66[1];
+  var _useState67 = useState(null),
+    _useState68 = _slicedToArray(_useState67, 2),
+    msg = _useState68[0],
+    setMsg = _useState68[1];
   var pending = ZI.getUnclaimedRouteRewards(last);
   // Keep Claim totals current while idle repeats complete on this screen.
   useEffect(function () {
@@ -5643,13 +5784,13 @@ function NodeTip(_ref66) {
     color = _ref66.color,
     children = _ref66.children;
   var ref = React.useRef(null);
-  var _useState65 = useState({
+  var _useState69 = useState({
       left: -9999,
       top: -9999
     }),
-    _useState66 = _slicedToArray(_useState65, 2),
-    pos = _useState66[0],
-    setPos = _useState66[1];
+    _useState70 = _slicedToArray(_useState69, 2),
+    pos = _useState70[0],
+    setPos = _useState70[1];
   React.useLayoutEffect(function () {
     var el = ref.current;
     if (!el) return;
@@ -5687,14 +5828,14 @@ function RouteNodeChain(_ref67) {
     compact = _ref67.compact,
     progress = _ref67.progress,
     route = _ref67.route;
-  var _useState67 = useState(null),
-    _useState68 = _slicedToArray(_useState67, 2),
-    hover = _useState68[0],
-    setHover = _useState68[1];
-  var _useState69 = useState(null),
-    _useState70 = _slicedToArray(_useState69, 2),
-    anchor = _useState70[0],
-    setAnchor = _useState70[1];
+  var _useState71 = useState(null),
+    _useState72 = _slicedToArray(_useState71, 2),
+    hover = _useState72[0],
+    setHover = _useState72[1];
+  var _useState73 = useState(null),
+    _useState74 = _slicedToArray(_useState73, 2),
+    anchor = _useState74[0],
+    setAnchor = _useState74[1];
   var sz = compact ? 18 : 22;
   var n = nodes.length;
   var live = typeof progress === 'number';
@@ -5821,9 +5962,9 @@ function RouteNodeChain(_ref67) {
 
 // Re-renders every second while a route run is live.
 function useRouteRun(routeId) {
-  var _useState71 = useState(0),
-    _useState72 = _slicedToArray(_useState71, 2),
-    tick = _useState72[1];
+  var _useState75 = useState(0),
+    _useState76 = _slicedToArray(_useState75, 2),
+    tick = _useState76[1];
   var prog = ZI.routeRunProgress(routeId);
   useEffect(function () {
     var t = setInterval(function () {
@@ -6375,10 +6516,10 @@ function RouteDetailPanel(_ref76) {
   });
   var rmat = ZI.RMAT_TIERS[route.rmatTier];
   var staminaCost = route.duration * 8;
-  var _useState73 = useState('overview'),
-    _useState74 = _slicedToArray(_useState73, 2),
-    tab = _useState74[0],
-    setTab = _useState74[1];
+  var _useState77 = useState('overview'),
+    _useState78 = _slicedToArray(_useState77, 2),
+    tab = _useState78[0],
+    setTab = _useState78[1];
   var liveRunD = useRouteRun(route.id);
   var preparation = !isCamp ? liveRunD && liveRunD.preparation || ZI.getRoutePreparation(route, threatLevel) : null;
   var canRun = isCamp ? effectiveStamina >= staminaCost : preparation.canDeploy;
@@ -6788,15 +6929,15 @@ function LootLoadingScreen(_ref81) {
   var _ZI$BIOMES$find;
   var route = _ref81.route,
     onComplete = _ref81.onComplete;
-  var _useState75 = useState('arriving'),
-    _useState76 = _slicedToArray(_useState75, 2),
-    phase = _useState76[0],
-    setPhase = _useState76[1];
-  var _useState77 = useState({}),
-    _useState78 = _slicedToArray(_useState77, 2),
-    loadProgress = _useState78[0],
-    setLoadProgress = _useState78[1];
-  var _useState79 = useState([{
+  var _useState79 = useState('arriving'),
+    _useState80 = _slicedToArray(_useState79, 2),
+    phase = _useState80[0],
+    setPhase = _useState80[1];
+  var _useState81 = useState({}),
+    _useState82 = _slicedToArray(_useState81, 2),
+    loadProgress = _useState82[0],
+    setLoadProgress = _useState82[1];
+  var _useState83 = useState([{
       id: 'l1',
       cat: 'heavy',
       name: 'Reinforced Steel Panels ×4',
@@ -6839,20 +6980,20 @@ function LootLoadingScreen(_ref81) {
       container: 'LabStorage',
       timeMs: 800
     }]),
-    _useState80 = _slicedToArray(_useState79, 1),
-    lootItems = _useState80[0];
-  var _useState81 = useState(new Set()),
-    _useState82 = _slicedToArray(_useState81, 2),
-    completedItems = _useState82[0],
-    setCompletedItems = _useState82[1];
-  var _useState83 = useState(null),
-    _useState84 = _slicedToArray(_useState83, 2),
-    activeItem = _useState84[0],
-    setActiveItem = _useState84[1];
-  var _useState85 = useState(0),
+    _useState84 = _slicedToArray(_useState83, 1),
+    lootItems = _useState84[0];
+  var _useState85 = useState(new Set()),
     _useState86 = _slicedToArray(_useState85, 2),
-    vehicleOffload = _useState86[0],
-    setVehicleOffload = _useState86[1];
+    completedItems = _useState86[0],
+    setCompletedItems = _useState86[1];
+  var _useState87 = useState(null),
+    _useState88 = _slicedToArray(_useState87, 2),
+    activeItem = _useState88[0],
+    setActiveItem = _useState88[1];
+  var _useState89 = useState(0),
+    _useState90 = _slicedToArray(_useState89, 2),
+    vehicleOffload = _useState90[0],
+    setVehicleOffload = _useState90[1];
 
   // PZ vehicle condition degradation during route
   var vehicleCondition = {
@@ -7372,7 +7513,7 @@ function LootLoadingScreen(_ref81) {
 // ─── SCHEDULE SCREEN ─────────────────────────────────────────────────────────
 function ScheduleScreen(_ref82) {
   var mode = _ref82.mode;
-  var _useState87 = useState([{
+  var _useState91 = useState([{
       id: 1,
       type: 'rest',
       label: 'Rest & Recover',
@@ -7421,13 +7562,13 @@ function ScheduleScreen(_ref82) {
       status: 'queued',
       startIn: 16
     }]),
-    _useState88 = _slicedToArray(_useState87, 2),
-    tasks = _useState88[0],
-    setTasks = _useState88[1];
-  var _useState89 = useState(null),
-    _useState90 = _slicedToArray(_useState89, 2),
-    dragIdx = _useState90[0],
-    setDragIdx = _useState90[1];
+    _useState92 = _slicedToArray(_useState91, 2),
+    tasks = _useState92[0],
+    setTasks = _useState92[1];
+  var _useState93 = useState(null),
+    _useState94 = _slicedToArray(_useState93, 2),
+    dragIdx = _useState94[0],
+    setDragIdx = _useState94[1];
   var totalHours = tasks.reduce(function (s, t) {
     return s + t.duration;
   }, 0);
@@ -8018,44 +8159,44 @@ function RmatCraftingScreen() {
 }
 function RmatCraftingRecipeBrowser() {
   var M = window.ZI_MATERIALS;
-  var _useState91 = useState(function () {
+  var _useState95 = useState(function () {
       var s = {};
       Object.keys(M).forEach(function (k) {
         return s[k] = M[k].current;
       });
       return s;
     }),
-    _useState92 = _slicedToArray(_useState91, 2),
-    stock = _useState92[0],
-    setStock = _useState92[1];
-  var _useState93 = useState(null),
-    _useState94 = _slicedToArray(_useState93, 2),
-    tierFilter = _useState94[0],
-    setTierFilter = _useState94[1];
-  var _useState95 = useState('all'),
     _useState96 = _slicedToArray(_useState95, 2),
-    kindFilter = _useState96[0],
-    setKindFilter = _useState96[1]; // all | rmat | gear | consumable
-  var _useState97 = useState('all'),
+    stock = _useState96[0],
+    setStock = _useState96[1];
+  var _useState97 = useState(null),
     _useState98 = _slicedToArray(_useState97, 2),
-    purposeFilter = _useState98[0],
-    setPurposeFilter = _useState98[1]; // all | equip | enhance | consume | trade | faction
-  var _useState99 = useState(null),
+    tierFilter = _useState98[0],
+    setTierFilter = _useState98[1];
+  var _useState99 = useState('all'),
     _useState100 = _slicedToArray(_useState99, 2),
-    selId = _useState100[0],
-    setSelId = _useState100[1];
-  var _useState101 = useState(null),
+    kindFilter = _useState100[0],
+    setKindFilter = _useState100[1]; // all | rmat | gear | consumable
+  var _useState101 = useState('all'),
     _useState102 = _slicedToArray(_useState101, 2),
-    toast = _useState102[0],
-    setToast = _useState102[1];
+    purposeFilter = _useState102[0],
+    setPurposeFilter = _useState102[1]; // all | equip | enhance | consume | trade | faction
   var _useState103 = useState(null),
     _useState104 = _slicedToArray(_useState103, 2),
-    t5Confirm = _useState104[0],
-    setT5Confirm = _useState104[1];
+    selId = _useState104[0],
+    setSelId = _useState104[1];
   var _useState105 = useState(null),
     _useState106 = _slicedToArray(_useState105, 2),
-    t5Event = _useState106[0],
-    setT5Event = _useState106[1];
+    toast = _useState106[0],
+    setToast = _useState106[1];
+  var _useState107 = useState(null),
+    _useState108 = _slicedToArray(_useState107, 2),
+    t5Confirm = _useState108[0],
+    setT5Confirm = _useState108[1];
+  var _useState109 = useState(null),
+    _useState110 = _slicedToArray(_useState109, 2),
+    t5Event = _useState110[0],
+    setT5Event = _useState110[1];
   var recipes = ZI.CRAFT_RECIPES || [];
   var sel = recipes.find(function (r) {
     return r.id === selId;
@@ -8122,16 +8263,16 @@ function RmatCraftingRecipeBrowser() {
   });
 
   // First-visit Crafting tutorial (brand-new saves start with an empty stockpile).
-  var _useState107 = useState(function () {
+  var _useState111 = useState(function () {
       return !window.ZI.tutDone('zi_craft_tut_done');
     }),
-    _useState108 = _slicedToArray(_useState107, 2),
-    craftTut = _useState108[0],
-    setCraftTut = _useState108[1];
-  var _useState109 = useState(0),
-    _useState110 = _slicedToArray(_useState109, 2),
-    craftTutStep = _useState110[0],
-    setCraftTutStep = _useState110[1];
+    _useState112 = _slicedToArray(_useState111, 2),
+    craftTut = _useState112[0],
+    setCraftTut = _useState112[1];
+  var _useState113 = useState(0),
+    _useState114 = _slicedToArray(_useState113, 2),
+    craftTutStep = _useState114[0],
+    setCraftTutStep = _useState114[1];
   var endCraftTut = function endCraftTut() {
     window.ZI.setTutDone('zi_craft_tut_done');
     setCraftTut(false);
@@ -9124,10 +9265,10 @@ function FactionsScreen() {
   }
   // Live standings from the single reputation store (negative tiers included).
   var LIVE = ZI.liveFactions();
-  var _useState111 = useState('ironmarch'),
-    _useState112 = _slicedToArray(_useState111, 2),
-    selectedFaction = _useState112[0],
-    setSelectedFaction = _useState112[1];
+  var _useState115 = useState('ironmarch'),
+    _useState116 = _slicedToArray(_useState115, 2),
+    selectedFaction = _useState116[0],
+    setSelectedFaction = _useState116[1];
   var faction = LIVE.find(function (f) {
     return f.id === selectedFaction;
   });
@@ -9137,9 +9278,9 @@ function FactionsScreen() {
   var contracts = ZI.CONTRACTS.filter(function (c) {
     return c.faction === selectedFaction;
   });
-  var _useState113 = useState(0),
-    _useState114 = _slicedToArray(_useState113, 2),
-    forceRerender = _useState114[1];
+  var _useState117 = useState(0),
+    _useState118 = _slicedToArray(_useState117, 2),
+    forceRerender = _useState118[1];
   var availableContracts = contracts.filter(function (c) {
     return ZI.contractState(c.id) === 'OFFERED';
   });
@@ -9697,15 +9838,15 @@ function ContractCard(_ref99) {
 
 // ─── MARKETPLACE SCREEN ───────────────────────────────────────────────────────
 function MarketplaceScreen() {
-  var _useState115 = useState('buy'),
-    _useState116 = _slicedToArray(_useState115, 2),
-    tab = _useState116[0],
-    setTab = _useState116[1];
-  var _useState117 = useState('All'),
-    _useState118 = _slicedToArray(_useState117, 2),
-    filter = _useState118[0],
-    setFilter = _useState118[1];
-  var _useState119 = useState([{
+  var _useState119 = useState('buy'),
+    _useState120 = _slicedToArray(_useState119, 2),
+    tab = _useState120[0],
+    setTab = _useState120[1];
+  var _useState121 = useState('All'),
+    _useState122 = _slicedToArray(_useState121, 2),
+    filter = _useState122[0],
+    setFilter = _useState122[1];
+  var _useState123 = useState([{
       id: 'a1',
       name: 'Sunder Pulse Axe',
       type: 'Legendary',
@@ -9746,8 +9887,8 @@ function MarketplaceScreen() {
       seller: 'Dustwalker_Pro',
       color: 'var(--purple)'
     }]),
-    _useState120 = _slicedToArray(_useState119, 1),
-    auctionItems = _useState120[0];
+    _useState124 = _slicedToArray(_useState123, 1),
+    auctionItems = _useState124[0];
   var types = ['All', 'RMAT', 'Weapon', 'Armor', 'Blueprint', 'Legendary', 'Consumable'];
   var filtered = filter === 'All' ? ZI.MARKET_ITEMS : ZI.MARKET_ITEMS.filter(function (i) {
     return i.type === filter;
@@ -10213,30 +10354,30 @@ function App() {
   var bootMode = ZI.consumeBootMode();
   // A brand-new game opens on the Traversal satellite map (where the tutorial starts).
   var freshStart = bootMode && localStorage.getItem('zi_fresh_start') === '1';
-  var _useState121 = useState(bootMode ? freshStart ? 'traversal' : bootMode === 'camp' ? 'camp-main' : 'traversal' : 'mode-select'),
-    _useState122 = _slicedToArray(_useState121, 2),
-    screen = _useState122[0],
-    setScreen = _useState122[1]; // TRAV-01a S6: a Solo reload opens on Traversal (was Routes)
+  var _useState125 = useState(bootMode ? freshStart ? 'traversal' : bootMode === 'camp' ? 'camp-main' : 'traversal' : 'mode-select'),
+    _useState126 = _slicedToArray(_useState125, 2),
+    screen = _useState126[0],
+    setScreen = _useState126[1]; // TRAV-01a S6: a Solo reload opens on Traversal (was Routes)
   useEffect(function () {
     if (freshStart && screen !== 'traversal') localStorage.removeItem('zi_fresh_start');
   }, [screen]);
-  var _useState123 = useState(bootMode || null),
-    _useState124 = _slicedToArray(_useState123, 2),
-    mode = _useState124[0],
-    setMode = _useState124[1];
-  var _useState125 = useState(null),
-    _useState126 = _slicedToArray(_useState125, 2),
-    activeRoute = _useState126[0],
-    setActiveRoute = _useState126[1];
-  // Planning context is temporary UI state. Inventory and route-run saves stay canonical.
-  var _useState127 = useState(null),
+  var _useState127 = useState(bootMode || null),
     _useState128 = _slicedToArray(_useState127, 2),
-    routePlan = _useState128[0],
-    setRoutePlan = _useState128[1];
-  var _useState129 = useState(false),
+    mode = _useState128[0],
+    setMode = _useState128[1];
+  var _useState129 = useState(null),
     _useState130 = _slicedToArray(_useState129, 2),
-    preparingRoute = _useState130[0],
-    setPreparingRoute = _useState130[1];
+    activeRoute = _useState130[0],
+    setActiveRoute = _useState130[1];
+  // Planning context is temporary UI state. Inventory and route-run saves stay canonical.
+  var _useState131 = useState(null),
+    _useState132 = _slicedToArray(_useState131, 2),
+    routePlan = _useState132[0],
+    setRoutePlan = _useState132[1];
+  var _useState133 = useState(false),
+    _useState134 = _slicedToArray(_useState133, 2),
+    preparingRoute = _useState134[0],
+    setPreparingRoute = _useState134[1];
   var navigate = function navigate(next) {
     setPreparingRoute(false);
     if (window.ZI_CRAFTING_FRAMES.readRoute().active) window.location.hash = next === 'rmat-crafting' ? '#crafting' : '';
@@ -10260,7 +10401,7 @@ function App() {
     setPreparingRoute(true);
     setScreen('stockpile');
   };
-  var _useState131 = useState({
+  var _useState135 = useState({
       Food: {
         current: 320,
         max: 500,
@@ -10292,9 +10433,9 @@ function App() {
         rate: 0
       }
     }),
-    _useState132 = _slicedToArray(_useState131, 2),
-    resources = _useState132[0],
-    setResources = _useState132[1];
+    _useState136 = _slicedToArray(_useState135, 2),
+    resources = _useState136[0],
+    setResources = _useState136[1];
 
   // Idle tick
   useEffect(function () {
@@ -10362,12 +10503,20 @@ function App() {
           setScreen: setScreen,
           setActiveRoute: setActiveRoute
         });
+      // Oct 29: the Schedule tab shows the Operations page (reference/operations-schedule-proposal.md); the old mock
+      // timeline (ScheduleScreenV2) stays in screens-v2b.jsx for rollback.
       case 'camp-schedule':
-        return /*#__PURE__*/React.createElement(ScheduleScreenV2, {
+        return window.OperationsScreen ? /*#__PURE__*/React.createElement(OperationsScreen, {
+          mode: "camp",
+          setScreen: navigate
+        }) : /*#__PURE__*/React.createElement(ScheduleScreenV2, {
           mode: "camp"
         });
       case 'solo-schedule':
-        return /*#__PURE__*/React.createElement(ScheduleScreenV2, {
+        return window.OperationsScreen ? /*#__PURE__*/React.createElement(OperationsScreen, {
+          mode: "solo",
+          setScreen: navigate
+        }) : /*#__PURE__*/React.createElement(ScheduleScreenV2, {
           mode: "solo"
         });
       case 'rmat-crafting':

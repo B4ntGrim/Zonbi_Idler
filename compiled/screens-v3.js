@@ -504,6 +504,10 @@ window.ZI_ART.zombieLook = function (type) {
     if (has('armored', 'weapon')) base.feats.push('plates');
   }
   if (has('maggot', 'wretched', 'hermit', 'grayscale', 'randomfan')) base.feats = base.feats.concat(['maggots', 'holes']);
+  if (has('crawler')) Object.assign(base, {
+    scale: 0.6,
+    feats: base.feats.concat(['holes'])
+  }); // Oct 29: Crawler (Halved) reads low to the ground; no sprite exported yet
   return base;
 };
 window.ZI_ART.zombieSvg = function (type) {
@@ -4757,13 +4761,18 @@ window.WanderingScreen = function WanderingScreen(_ref35) {
       return window.removeEventListener('resize', f);
     };
   }, []);
-  var _React$useState115 = React.useState({
-      name: 'Yael Strom',
-      "class": 'ranger',
-      hp: 100,
-      atk: 18,
-      def: 8,
-      init: 14
+  // Oct 29: name and gender come from Character Creation (zi_survivor_profile); older saves keep the defaults.
+  var _React$useState115 = React.useState(function () {
+      var p = window.ZI.getSurvivorProfile ? window.ZI.getSurvivorProfile() : null;
+      return {
+        name: p && p.name || 'Yael Strom',
+        gender: p ? p.gender : undefined,
+        "class": 'ranger',
+        hp: 100,
+        atk: 18,
+        def: 8,
+        init: 14
+      };
     }),
     _React$useState116 = _slicedToArray(_React$useState115, 1),
     activeSurvivor = _React$useState116[0];
@@ -4977,7 +4986,7 @@ window.WanderingScreen = function WanderingScreen(_ref35) {
       drops: z.loot
     };
   };
-  var bestiaryPool = (window.ZI.BESTIARY || []).map(mapBestiary);
+  var bestiaryPool = (window.ZI.fieldBestiary ? window.ZI.fieldBestiary() : window.ZI.BESTIARY || []).map(mapBestiary); // Oct 29: includes the Crawler in new saves
   var undeadTypes = bestiaryPool.length ? bestiaryPool : [{
     type: 'shambler',
     name: 'Shambler',
@@ -8150,7 +8159,7 @@ window.ZombieCodexScreen = function ZombieCodexScreen() {
       }
     }));
   };
-  var roster = ZI.BESTIARY || [];
+  var roster = ZI.fieldBestiary ? ZI.fieldBestiary() : ZI.BESTIARY || []; // Oct 29: the roster this save can meet
   var tiers = ZI.BESTIARY_TIERS || {};
   var discovered = ZI.getDiscovered && ZI.getDiscovered() || new Set();
   var isKnown = function isKnown(z) {

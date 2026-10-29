@@ -272,12 +272,15 @@ ZI.STAT_FORMULAS = {
       armor: z.armor || st.damageReduction || 0, crit: st.critChance || 5, critBonus: Math.round((st.critMult||1.5) * this.CRIT_BONUS),
       lifesteal: st.lifesteal || 0, initiative: Math.round((z.spd || z.init || 6) * 1.5),
       xp: z.xp || 10, bestiaryId: z.bestiaryId || z.id,
+      attackEvery: Math.max(1, Math.round(z.attackEvery || 1)), // Halved trait (Oct 29): attacks every Nth turn
     };
   },
   // Atomic single-attack exchange (whole-number in/out).
   resolveAttack(atk, def, rng) {
     rng = rng || Math.random; // injectable random source (spec 10)
     if (atk._skipNext) { atk._skipNext = false; return { result:'skip' }; } // CB1: a heavy swing or a stagger costs this attack
+    // Halved trait (Oct 29): an attacker with attackEvery N acts on every Nth turn only (twice the interval for N = 2).
+    if (atk.attackEvery > 1) { atk._turn = (atk._turn || 0) + 1; if (atk._turn % atk.attackEvery !== 0) return { result:'skip', reason:'slow' }; }
     if (atk.attackLossPct > 0 && rng() * 100 < atk.attackLossPct) return { result:'skip', broken:true }; // BAL-A A4: a Broken survivor's attack falters (roll only when Broken)
     const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
     const hitChance = clamp(this.BASE_HIT + atk.accuracy - def.evasion, this.HIT_MIN, this.HIT_MAX);
