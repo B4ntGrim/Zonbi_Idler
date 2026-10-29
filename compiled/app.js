@@ -8212,7 +8212,30 @@ function RmatCraftingRecipeBrowser() {
     fuel_drum: 'art/crafting/recipes/fuel-drum-v1.png',
     signal_booster: 'art/crafting/recipes/signal-booster-v1.png',
     trauma_kit: 'art/crafting/recipes/trauma-kit-v1.png',
-    wire_mesh_trap: 'art/crafting/recipes/wire-mesh-trap-v1.png'
+    wire_mesh_trap: 'art/crafting/recipes/wire-mesh-trap-v1.png',
+    arc_igniter: 'art/crafting/recipes/arc-igniter-v1.png',
+    fuel_converter: 'art/crafting/recipes/fuel-converter-v1.png',
+    hollow_point_press: 'art/crafting/recipes/hollow-point-press-v1.png',
+    sterilization_unit: 'art/crafting/recipes/sterilization-unit-v1.png',
+    composite_plating: 'art/crafting/recipes/composite-plating-v1.png',
+    circuit_splice: 'art/crafting/recipes/circuit-splice-v1.png',
+    toxin_filter: 'art/crafting/recipes/toxin-filter-v1.png',
+    neural_tap: 'art/crafting/recipes/neural-tap-v1.png',
+    siege_frame: 'art/crafting/recipes/siege-frame-v1.png',
+    resonance_cell: 'art/crafting/recipes/resonance-cell-v1.png',
+    bone_weave_vest: 'art/crafting/recipes/bone-weave-vest-v1.png',
+    emp_coil: 'art/crafting/recipes/emp-coil-v1.png',
+    hazard_patch_kit: 'art/crafting/recipes/hazard-patch-kit-v1.png',
+    crystalline_core: 'art/crafting/recipes/crystalline-core-v1.png',
+    plasma_conduit: 'art/crafting/recipes/plasma-conduit-v1.png',
+    necrotic_membrane: 'art/crafting/recipes/necrotic-membrane-v1.png',
+    siege_engine_frame: 'art/crafting/recipes/siege-engine-frame-v1.png',
+    quantum_splice_board: 'art/crafting/recipes/quantum-splice-board-v1.png',
+    echo_condenser: 'art/crafting/recipes/echo-condenser-v1.png',
+    void_lattice: 'art/crafting/recipes/void-lattice-v1.png',
+    fracture_engine: 'art/crafting/recipes/fracture-engine-v1.png',
+    revenant_core: 'art/crafting/recipes/revenant-core-v1.png',
+    signal_zero: 'art/crafting/recipes/signal-zero-v1.png'
   };
   var recipeIcon = function recipeIcon(recipe, size) {
     return recipeSpriteById[recipe.id] ? /*#__PURE__*/React.createElement("img", {

@@ -61,8 +61,8 @@ function CharacterCreationScreen(_ref) {
   var g = C.genders.find(function (x) {
     return x.id === gender;
   });
-  var clothing = C.appearance.clothing.options.find(function (o) {
-    return o.id === appearance.clothing;
+  var clothing = C.appearance.clothingColor.options.find(function (o) {
+    return o.id === appearance.clothingColor;
   });
   var prof = professions.find(function (p) {
     return p.id === profession;
@@ -235,7 +235,10 @@ function CharacterCreationScreen(_ref) {
     }
   }, /*#__PURE__*/React.createElement("div", {
     style: {
-      flex: '0 0 auto'
+      flex: '0 0 auto',
+      position: 'sticky',
+      top: 12,
+      alignSelf: 'flex-start'
     }
   }, /*#__PURE__*/React.createElement(Portrait, {
     gid: gender,
@@ -262,7 +265,13 @@ function CharacterCreationScreen(_ref) {
         letterSpacing: '0.12em',
         marginBottom: 6
       }
-    }, cat.label.toUpperCase()), /*#__PURE__*/React.createElement("div", {
+    }, cat.label.toUpperCase(), !cat.preview && /*#__PURE__*/React.createElement("span", {
+      style: {
+        letterSpacing: 'normal',
+        color: 'var(--text3)',
+        fontSize: 10
+      }
+    }, " \xB7 saved, art coming")), /*#__PURE__*/React.createElement("div", {
       style: {
         display: 'flex',
         gap: 6,
@@ -277,8 +286,24 @@ function CharacterCreationScreen(_ref) {
           return setAppearance(function (a) {
             return Object.assign({}, a, _defineProperty({}, k, o.id));
           });
+        },
+        style: {
+          textTransform: 'none',
+          letterSpacing: 'normal',
+          display: 'inline-flex',
+          alignItems: 'center',
+          gap: 6
         }
-      }, o.label);
+      }, o.swatch && /*#__PURE__*/React.createElement("span", {
+        "aria-hidden": "true",
+        style: {
+          width: 12,
+          height: 12,
+          background: o.swatch,
+          border: '1px solid var(--border)',
+          display: 'inline-block'
+        }
+      }), o.label);
     })));
   }), /*#__PURE__*/React.createElement("div", {
     style: {
@@ -286,7 +311,7 @@ function CharacterCreationScreen(_ref) {
       fontSize: 10,
       color: 'var(--text3)'
     }
-  }, "Looks only: no appearance choice changes your stats. More options are on the way."))), step === 2 && /*#__PURE__*/React.createElement("div", {
+  }, "Looks only: no appearance choice changes your stats. The portrait shows the clothing colour; the other choices are saved with your survivor and appear once their art is drawn."))), step === 2 && /*#__PURE__*/React.createElement("div", {
     style: {
       display: 'grid',
       gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))',
