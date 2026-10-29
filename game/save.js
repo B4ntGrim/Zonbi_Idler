@@ -203,3 +203,67 @@ ZI.migrateSave = function() {
   if (done.length) try { localStorage.setItem(ZI.SAVE_FORMAT.key, String(v)); } catch (e) {}
   return done;
 };
+
+// ─── EXPORT / IMPORT A SAVE FILE (Oct 28) ────────────────────────────────────
+// Moves one save file between browsers or sites (for example from 127.0.0.1:8080 to the GitHub Pages copy). The file
+// is plain JSON: the slot's snapshot plus its card details and a checksum, so a damaged or edited file is refused
+// before anything is written. Importing never touches another slot. The snapshot keeps its own last-seen time, so the
+// first load after an import credits at most 24 hours of offline progress (CLOCK-01).
+ZI.SAVE_EXPORT = { format: 'zed-idler-save', version: 1, maxBytes: 5 * 1024 * 1024 };
+ZI._saveChecksum = function(str) {
+  let h = 0x811c9dc5; // FNV-1a, 32-bit
+  for (let i = 0; i < str.length; i++) { h ^= str.charCodeAt(i); h = Math.imul(h, 0x01000193) >>> 0; }
+  return ('0000000' + h.toString(16)).slice(-8);
+};
+ZI.exportSlot = function(mode, slot) {
+  const a = ZI.getActiveSlot();
+  if (a && a.mode === mode && a.slot === slot && ZI._gameKeys().length) ZI._writeSlot(mode, slot, null); // include live progress
+  const snap = ZI._readJSON('zisave_data_' + mode + '_' + slot, null);
+  const meta = (ZI._readJSON(ZI.SAVE_INDEX_KEY, {})[mode] || {})[slot];
+  if (!snap || typeof snap !== 'object' || Array.isArray(snap) || !meta) return { ok: false, reason: 'This file is empty or damaged, so it cannot be exported.' };
+  const data = { format: ZI.SAVE_EXPORT.format, version: ZI.SAVE_EXPORT.version, mode, slot, exportedAt: Date.now(),
+    saveVersion: parseInt(snap[ZI.SAVE_FORMAT.key], 10) || 0,
+    meta: { label: meta.label, savedAt: meta.savedAt, summary: meta.summary || null },
+    snapshot: snap, check: ZI._saveChecksum(JSON.stringify(snap)) };
+  const d = new Date(data.exportedAt), pad = n => String(n).padStart(2, '0');
+  const fileName = 'zed-idler-' + mode + '-file' + slot + '-' + d.getFullYear() + pad(d.getMonth() + 1) + pad(d.getDate()) + '-' + pad(d.getHours()) + pad(d.getMinutes()) + '.json';
+  return { ok: true, text: JSON.stringify(data), fileName };
+};
+ZI.parseSaveExport = function(text) {
+  const bad = reason => ({ ok: false, reason });
+  if (typeof text !== 'string' || !text.trim()) return bad('The file is empty.');
+  if (text.length > ZI.SAVE_EXPORT.maxBytes) return bad('The file is too large to be a Zed Idler save.');
+  let data; try { data = JSON.parse(text); } catch (e) { return bad('The file is damaged (it is not valid save data).'); }
+  if (!data || typeof data !== 'object' || data.format !== ZI.SAVE_EXPORT.format) return bad('This is not a Zed Idler save file.');
+  if (!(data.version >= 1) || data.version > ZI.SAVE_EXPORT.version) return bad('This save file was made by a newer version of the game.');
+  if (data.mode !== 'camp' && data.mode !== 'solo') return bad('The file does not say which game mode it belongs to.');
+  const snap = data.snapshot;
+  if (!snap || typeof snap !== 'object' || Array.isArray(snap)) return bad('The file is damaged (no saved progress inside).');
+  if (data.check !== ZI._saveChecksum(JSON.stringify(snap))) return bad('The file is damaged or was edited (checksum does not match).');
+  const clean = {};
+  for (const [k, v] of Object.entries(snap)) { if (k.indexOf('zi_') === 0 && typeof v === 'string') clean[k] = v; }
+  if (!Object.keys(clean).length) return bad('The file is damaged (no saved progress inside).');
+  if ((parseInt(clean[ZI.SAVE_FORMAT.key], 10) || 0) > ZI.SAVE_FORMAT.current) return bad('This save file was made by a newer version of the game.');
+  const meta = data.meta && typeof data.meta === 'object' ? data.meta : {};
+  return { ok: true, mode: data.mode, snapshot: clean, exportedAt: Number(data.exportedAt) || null,
+    meta: { label: typeof meta.label === 'string' ? meta.label.slice(0, 80) : null, savedAt: Number(meta.savedAt) || Date.now(), summary: meta.summary && typeof meta.summary === 'object' ? meta.summary : null } };
+};
+ZI.importSlot = function(text, mode, slot) {
+  const p = ZI.parseSaveExport(text);
+  if (!p.ok) return p;
+  if (p.mode !== mode) return { ok: false, reason: 'This is a ' + (p.mode === 'camp' ? 'Camp Leader' : 'Solo Survivor') + ' save. Import it from the ' + (p.mode === 'camp' ? 'Camp Leader' : 'Solo Survivor') + ' save files.' };
+  const n = Number(slot);
+  if (!(n >= 1 && n <= ZI.SAVE_SLOT_COUNT)) return { ok: false, reason: 'There is no file ' + slot + '.' };
+  const a = ZI.getActiveSlot(), intoActive = !!a && a.mode === mode && a.slot === n;
+  if (!intoActive) ZI._autosaveBeforeSwitch(mode, n); // nothing live is lost, even though live storage is not replaced
+  if (p.snapshot[ZI.OFFLINE_LAST_SEEN_KEY] == null) p.snapshot[ZI.OFFLINE_LAST_SEEN_KEY] = String(p.exportedAt || p.meta.savedAt);
+  try {
+    localStorage.setItem('zisave_data_' + mode + '_' + n, JSON.stringify(p.snapshot));
+    const idx = ZI._readJSON(ZI.SAVE_INDEX_KEY, {}); idx[mode] = idx[mode] || {};
+    idx[mode][n] = { savedAt: p.meta.savedAt, label: (p.meta.label || ((mode === 'camp' ? 'Camp Leader' : 'Solo Survivor') + ' — File ' + n)).replace(/— File \d+$/, '— File ' + n), summary: p.meta.summary, importedAt: Date.now() };
+    localStorage.setItem(ZI.SAVE_INDEX_KEY, JSON.stringify(idx));
+  } catch (e) { return { ok: false, reason: 'The browser could not store the file (storage full or blocked).' }; }
+  // Importing over the file that is live replaces live progress too; otherwise autosave would write the old progress back.
+  if (intoActive) ZI._restore(p.snapshot);
+  return { ok: true, slot: n, intoActive };
+};
