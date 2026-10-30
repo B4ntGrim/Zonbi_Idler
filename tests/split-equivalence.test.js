@@ -46,6 +46,13 @@ ADDED.add('getUnclaimedRouteRewards'); ADDED.add('ROUTE_XP_MULTIPLIERS');
 ['_grantJob','cancelJob','grantRecycleOutput','queueRecycle','equipGear','wanderPolicyStep','resolveRunNodes',
  'resolvePreparedRouteNodes'].forEach(k => CHANGED_FN.add(k));
 DATA_CHANGED.add('CRAFT_RECIPES');
+// SLOT-01 and the CLOCK-01 addendum (Sam, Oct 30): save cards show the survivor's profession and
+// level instead of the Camp Leader level, and Make Camp / Hide reset one GAME day apart.
+// _summary changed because it reported ZI.leaderLevel() for every slot. The legacy monolith
+// predates all of it. ZI.OFFLINE_CAP_MS (the 24-real-hour offline cap) is unchanged.
+['professionName','_levelFromXp','_summaryFromSnapshot','slotSummary','TRAV_RESET_MS',
+ 'TRAV_HIDE_MAX_PER_GAME_DAY'].forEach(k => ADDED.add(k));
+['_summary','listSlots','_hideUsesAt','getHideUses','spendHideUse','getCampCooldown','spendCampUse'].forEach(k => CHANGED_FN.add(k));
 // Intentional post-split additions/changes: seeded sector POI placement and daily modifiers; current recipe
 // generation and loot/wander rules; and expanded world/background catalogues. Keep the legacy comparison scoped
 // to portions that are still intended to be equivalent.

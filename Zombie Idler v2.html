@@ -14,8 +14,8 @@
 <script src="game/core.js?v=20261029-proposals1"></script>
 <script src="game/world.js?v=20261029-trav-controls2"></script>
 <script src="game/poi-dialogues.js?v=20261030-tools1"></script>
-<script src="game/save.js?v=20261029-charops1"></script>
-<script src="game/stats.js?v=20261029-charops1"></script>
+<script src="game/save.js?v=20261030-slot1"></script>
+<script src="game/stats.js?v=20261030-slot1"></script>
 <script src="game/progression.js?v=20261028-stat02c"></script>
 <script src="game/items.js?v=20261030-tools1"></script>
 <script src="game/crafting.js?v=20261030-tools1"></script>
@@ -929,7 +929,7 @@ function SaveFilesScreen({ mode, onBack }) {
                     <div style={{ fontFamily:'var(--font-body)', fontSize:16, color:'var(--text)' }}>{sl.label}</div>
                     <div style={{ fontFamily:'var(--font-mono)', fontSize:11, color:'var(--text2)', marginTop:3, display:'flex', gap:14, flexWrap:'wrap' }}>
                       <span>Saved {fmt(sl.savedAt)}</span>
-                      {sl.summary && <span>Leader Lv {sl.summary.level}</span>}
+                      {sl.summary && <span>{sl.summary.professionName} · Level {sl.summary.level}</span>}
                       {sl.summary && <span>{sl.summary.distance.toLocaleString()} m travelled</span>}
                     </div>
                   </>

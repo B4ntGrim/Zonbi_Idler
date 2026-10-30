@@ -61,13 +61,54 @@ ZI._migrateTutProgress = function() {
   Object.keys(ZI.TUT_SCREEN_DONE_KEY).forEach(s => { if (ZI.tutDone(ZI.TUT_SCREEN_DONE_KEY[s])) ids.push.apply(ids, ZI.TUT_STEP_IDS[s]); });
   ZI.markTutSteps(ids);
 };
+// SLOT-01 (Sam, Oct 30): a save card shows the SURVIVOR's profession and level.
+// It used to report ZI.leaderLevel() for every slot, so a solo file read "Leader Lv 12" —
+// the Camp Leader level, which has nothing to do with the survivor in that file.
+ZI.professionName = function(id) {
+  const a = (ZI.LEADER_ARCHETYPES || []).find(x => x.id === id);
+  return a ? a.name : null;
+};
+// Level from a raw XP value. Prefers STAT-02's curve when progression is loaded.
+ZI._levelFromXp = function(xp) {
+  xp = Number(xp) || 0;
+  if (ZI.PROG && ZI.PROG.levelFromXp) return ZI.PROG.levelFromXp(xp);
+  let lvl = 1, need = 0;
+  while (lvl < 100) { need = (lvl * 100) + (lvl * lvl * 10); if (xp < need) break; xp -= need; lvl++; }
+  return lvl;
+};
 ZI._summary = function() {
   let distance = 0; try { distance = parseInt(localStorage.getItem('zi_wander_total')) || 0; } catch (e) {}
   const run = ZI._readJSON('zi_wander_run', {});
   distance = Math.max(distance, Math.round(run.scroll || 0));
-  // Use the game's real Camp Leader level (defined later in this file; _summary only runs at runtime).
-  const level = ZI.leaderLevel ? ZI.leaderLevel() : 1;
-  return { level, distance };
+  const profile = ZI.getSurvivorProfile ? ZI.getSurvivorProfile() : null;
+  const profession = (profile && profile.profession) || null;
+  return {
+    level: ZI.getCharacterLevel ? ZI.getCharacterLevel() : 1,
+    distance,
+    profession,
+    professionName: ZI.professionName(profession) || 'Survivor',
+    leaderLevel: ZI.leaderLevel ? ZI.leaderLevel() : 1,
+  };
+};
+// A file saved before SLOT-01 stored only { level: <leader level>, distance }. Rather than
+// migrate the index, read that slot's own snapshot so old files display correctly too.
+ZI._summaryFromSnapshot = function(mode, slot) {
+  const snap = ZI._readJSON('zisave_data_' + mode + '_' + slot, null);
+  if (!ZI._validSnapshot(snap)) return null;
+  let profession = null;
+  try { const p = JSON.parse(snap['zi_survivor_profile'] || 'null'); profession = (p && p.profession) || null; } catch (e) {}
+  return { level: ZI._levelFromXp(snap['zi_character_xp']), profession, professionName: ZI.professionName(profession) };
+};
+// What a slot card should show. Never returns the Camp Leader level.
+ZI.slotSummary = function(mode, slot, summary) {
+  const base = summary && typeof summary === 'object' ? Object.assign({}, summary) : null;
+  if (base && base.professionName) return base;
+  const derived = ZI._summaryFromSnapshot(mode, slot);
+  if (!base && !derived) return null;
+  const out = Object.assign({ distance: 0 }, base || {}, derived || {});
+  if (!out.professionName) out.professionName = 'Survivor';
+  if (!Number.isFinite(out.level)) out.level = 1;
+  return out;
 };
 // Oct 29: a damaged active pointer reads as "no file selected" (was shown as "Slot undefined").
 ZI.getActiveSlot = function() {
@@ -120,7 +161,12 @@ ZI.listSlots = function(mode) {
   const act = ZI.getActiveSlot();
   if (act && act.mode === mode && m[act.slot]) m[act.slot] = Object.assign({}, m[act.slot], { summary: ZI._summary() });
   const out = [];
-  for (let n = 1; n <= ZI.SAVE_SLOT_COUNT; n++) out.push(m[n] ? Object.assign({ slot: n, empty: false }, m[n]) : { slot: n, empty: true });
+  for (let n = 1; n <= ZI.SAVE_SLOT_COUNT; n++) {
+    if (!m[n]) { out.push({ slot: n, empty: true }); continue; }
+    const row = Object.assign({ slot: n, empty: false }, m[n]);
+    row.summary = ZI.slotSummary(mode, n, row.summary); // SLOT-01: survivor profession + level
+    out.push(row);
+  }
   return out;
 };
 ZI._writeSlot = function(mode, slot, label) {

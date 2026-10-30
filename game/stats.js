@@ -390,37 +390,39 @@ ZI.TRAVERSAL_TABLE = {
 };
 ZI.TRAVERSAL_SCOUT_CHARGES_PER_DAY = ZI.TRAVERSAL_TABLE.scoutChargesPerDay;
 ZI.TRAV_HIDE_GAME_HOURS = ZI.TRAVERSAL_TABLE.hideGameHours;
-ZI.TRAV_HIDE_MAX_PER_24H = 2;
+ZI.TRAV_RESET_MS = ZI.GAME_DAY_MS;
+ZI.TRAV_HIDE_MAX_PER_GAME_DAY = 1;
+ZI.TRAV_HIDE_MAX_PER_24H = ZI.TRAV_HIDE_MAX_PER_GAME_DAY;
 ZI.TRAV_HIDE_USES_KEY = 'zi_trav_hide_uses';
 ZI.TRAV_CAMP_LAST_USED_KEY = 'zi_trav_camp_last_used';
 ZI._hideUsesAt = function(now) {
   now = Number.isFinite(now) ? now : ZI.clockNow();
   let uses = []; try { uses = JSON.parse(localStorage.getItem(ZI.TRAV_HIDE_USES_KEY) || '[]'); } catch (e) {}
   if (!Array.isArray(uses)) uses = [];
-  return uses.map(Number).filter(t => Number.isFinite(t) && t > now - ZI.OFFLINE_CAP_MS && t <= now).sort((a,b) => a-b);
+  return uses.map(Number).filter(t => Number.isFinite(t) && t > now - ZI.TRAV_RESET_MS && t <= now).sort((a,b) => a-b);
 };
 ZI.getHideUses = function(now) {
   const uses = ZI._hideUsesAt(now);
-  return { used:uses.length, max:ZI.TRAV_HIDE_MAX_PER_24H, left:Math.max(0, ZI.TRAV_HIDE_MAX_PER_24H-uses.length), nextAt:uses.length >= ZI.TRAV_HIDE_MAX_PER_24H ? uses[0] + ZI.OFFLINE_CAP_MS : null };
+  return { used:uses.length, max:ZI.TRAV_HIDE_MAX_PER_GAME_DAY, left:Math.max(0, ZI.TRAV_HIDE_MAX_PER_GAME_DAY-uses.length), nextAt:uses.length >= ZI.TRAV_HIDE_MAX_PER_GAME_DAY ? uses[0] + ZI.TRAV_RESET_MS : null };
 };
 ZI.spendHideUse = function(now) {
   now = Number.isFinite(now) ? now : ZI.clockNow();
-  const uses = ZI._hideUsesAt(now), left = ZI.TRAV_HIDE_MAX_PER_24H - uses.length;
-  if (left <= 0) return { ok:false, left:0, max:ZI.TRAV_HIDE_MAX_PER_24H, nextAt:uses[0] + ZI.OFFLINE_CAP_MS };
+  const uses = ZI._hideUsesAt(now), left = ZI.TRAV_HIDE_MAX_PER_GAME_DAY - uses.length;
+  if (left <= 0) return { ok:false, left:0, max:ZI.TRAV_HIDE_MAX_PER_GAME_DAY, nextAt:uses[0] + ZI.TRAV_RESET_MS };
   uses.push(now); try { localStorage.setItem(ZI.TRAV_HIDE_USES_KEY, JSON.stringify(uses)); } catch (e) {}
-  return { ok:true, left:left-1, max:ZI.TRAV_HIDE_MAX_PER_24H, nextAt:uses.length >= ZI.TRAV_HIDE_MAX_PER_24H ? uses[0] + ZI.OFFLINE_CAP_MS : null };
+  return { ok:true, left:left-1, max:ZI.TRAV_HIDE_MAX_PER_GAME_DAY, nextAt:uses.length >= ZI.TRAV_HIDE_MAX_PER_GAME_DAY ? uses[0] + ZI.TRAV_RESET_MS : null };
 };
 ZI.getCampCooldown = function(now) {
   now = Number.isFinite(now) ? now : ZI.clockNow();
   let usedAt = NaN; try { const raw = localStorage.getItem(ZI.TRAV_CAMP_LAST_USED_KEY); if (raw != null) usedAt = Number(raw); } catch (e) {}
-  const availableAt = Number.isFinite(usedAt) ? usedAt + ZI.OFFLINE_CAP_MS : 0;
+  const availableAt = Number.isFinite(usedAt) ? usedAt + ZI.TRAV_RESET_MS : 0;
   return { available:now >= availableAt, availableAt, remainingMs:Math.max(0, availableAt-now) };
 };
 ZI.spendCampUse = function(now) {
   now = Number.isFinite(now) ? now : ZI.clockNow();
   const status = ZI.getCampCooldown(now); if (!status.available) return { ok:false, ...status };
   try { localStorage.setItem(ZI.TRAV_CAMP_LAST_USED_KEY, String(now)); } catch (e) {}
-  return { ok:true, available:false, availableAt:now + ZI.OFFLINE_CAP_MS, remainingMs:ZI.OFFLINE_CAP_MS };
+  return { ok:true, available:false, availableAt:now + ZI.TRAV_RESET_MS, remainingMs:ZI.TRAV_RESET_MS };
 };
 ZI.TRAV_SCOUT_KEY = 'zi_trav_scout';     // { day, left }
 ZI.TRAV_XP_DAY_KEY = 'zi_trav_xp_day';   // { day, done: { '<kind>:<gx>,<gy>': 1 } }
