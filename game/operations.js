@@ -8,7 +8,7 @@
 //   carry the status "Design proposal" and are never selectable until their mechanic exists.
 // • Camp Leader shows assignments to camp survivors and facilities; Solo Survivor shows the lone survivor's own plan
 //   and never a camp roster.
-ZI.OPS_STATUS = { available: 'Available now', facility: 'Needs facility', supplies: 'Needs supplies', busy: 'Busy until…', proposal: 'Design proposal' };
+ZI.OPS_STATUS = { available: 'Available now', injured: 'Injured', facility: 'Needs facility', supplies: 'Needs supplies', busy: 'Busy until…', proposal: 'Design proposal' };
 // screen = the existing screen that owns the activity (navigation only). proposal = not built.
 ZI.OPS_CATALOG = [
   // Field operations — both modes
@@ -41,40 +41,63 @@ ZI.opsActivityStatus = function(a, mode) {
   try {
     if (a.check === 'food') { const L = ZI.PROG && ZI.PROG.LIVE; return L && L.foodList().length ? ok : { key: 'supplies', label: ZI.OPS_STATUS.supplies + ' (no food in the stash)' }; }
     if (a.check === 'nap') { const L = ZI.PROG && ZI.PROG.LIVE; return !L || L.canNap() ? ok : { key: 'facility', label: 'Needs base: go to your base or camp cell' }; }
-    if (a.check === 'injury') { const j = ZI.getInjury && ZI.getInjury(); return j ? { key: 'available', label: 'Injured: ' + Math.ceil(j.remainingMs / 60000) + ' play-min to heal' } : { key: 'available', label: 'No injury' }; }
+    if (a.check === 'injury') { const j = ZI.getInjury && ZI.getInjury(); return j ? { key: 'injured', label: 'Injured: ' + Math.ceil(j.remainingMs / 60000) + ' play-min to heal' } : { key: 'available', label: 'No injury' }; }
     if (a.check === 'recycler') { const busy = (ZI._readJobsRaw ? ZI._readJobsRaw().jobs : []).find(j => j.type === 'recycle' && j.status === 'active'); return busy ? { key: 'busy', label: 'Busy until ' + ZI.opsClock(busy.startedAt + busy.duration * 1000) } : ok; }
   } catch (e) {}
   return ok;
 };
 ZI.opsClock = function(t) { try { return new Date(t).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }); } catch (e) { return '—'; } };
 // "Now and next": what is running and what needs attention. Reads only (no settle calls).
+// SCH-01 L2 (Sam, Oct 30): every row carries sort ('urgent' | 'running' | 'idle') and endsAt
+// (epoch ms, or null). Order is urgent -> running (soonest first) -> idle. The UI shows endsAt in
+// its own right-aligned column, so detail no longer repeats the time.
+ZI.OPS_SORT_RANK = { urgent: 0, running: 1, idle: 2 };
+ZI.opsSortRows = function(rows) {
+  const rank = ZI.OPS_SORT_RANK;
+  return rows.map((r, i) => [r, i]).sort((a, b) => {
+    const ra = rank[a[0].sort] != null ? rank[a[0].sort] : 1, rb = rank[b[0].sort] != null ? rank[b[0].sort] : 1;
+    if (ra !== rb) return ra - rb;
+    const ea = Number.isFinite(a[0].endsAt) ? a[0].endsAt : Infinity, eb = Number.isFinite(b[0].endsAt) ? b[0].endsAt : Infinity;
+    if (ea !== eb) return ea - eb;
+    return a[1] - b[1];
+  }).map(x => x[0]);
+};
 ZI.opsNow = function(mode) {
   const now = ZI.clockNow ? ZI.clockNow() : Date.now(), out = { field: [], camp: [], attention: [] };
   const run = ZI.getWanderRun ? ZI.getWanderRun() : null;
   if (run && run.active) {
     const state = run.resting ? 'resting' + (run.restAt ? ' at ' + run.restAt : '') : run.withdrawing ? 'walking back to the checkpoint' : run.paused ? 'paused' : 'on patrol';
-    out.field.push({ id: 'wander', label: 'Wandering patrol', detail: state + ' · ' + Math.round(run.scroll || 0).toLocaleString() + ' m · HP ' + Math.round(run.hp || 0), screen: 'hack-slash' });
-  } else out.field.push({ id: 'wander', label: 'Wandering patrol', detail: 'not deployed', screen: 'hack-slash' });
+    out.field.push({ id: 'wander', label: 'Wandering patrol', sort: 'running', endsAt: null, detail: state + ' · ' + Math.round(run.scroll || 0).toLocaleString() + ' m · HP ' + Math.round(run.hp || 0), screen: 'hack-slash' });
+  } else out.field.push({ id: 'wander', label: 'Wandering patrol', sort: 'idle', endsAt: null, detail: 'not deployed', screen: 'hack-slash' });
   const runs = ZI._readRouteRuns ? ZI._readRouteRuns() : {};
   Object.entries(runs || {}).forEach(([id, r]) => {
     if (!r || !Number.isFinite(r.startedAt) || !(r.durationMs > 0)) return;
-    const route = (ZI.ROUTES || []).find(x => x.id === id), end = r.startedAt + r.durationMs;
-    out.field.push({ id: 'route:' + id, label: 'Route: ' + (route ? route.name : id), detail: now >= end ? 'back, settling' : 'back at ' + ZI.opsClock(end) + (r.autoRepeat ? ' · repeats' : ''), screen: mode === 'solo' ? 'solo-main' : null });
+    const route = (ZI.ROUTES || []).find(x => x.id === id), end = r.startedAt + r.durationMs, done = now >= end;
+    out.field.push({ id: 'route:' + id, label: 'Route: ' + (route ? route.name : id), sort: done ? 'urgent' : 'running', endsAt: end,
+      detail: (done ? 'back, settling' : 'out') + (r.autoRepeat ? ' · repeats' : ''), screen: mode === 'solo' ? 'solo-main' : null });
   });
   const pos = ZI._rj ? ZI._rj('zi_trav_pos', null) : null;
-  if (!pos || typeof pos !== 'object') out.field.push({ id: 'trav', label: 'Traversal', detail: 'open the map to pick your start', screen: 'traversal' });
+  if (!pos || typeof pos !== 'object') out.field.push({ id: 'trav', label: 'Traversal', sort: 'idle', endsAt: null, detail: 'open the map to pick your start', screen: 'traversal' });
   else {
     const sc = ZI.getTravScouts ? ZI.getTravScouts() : null, hide = ZI.getHideUses ? ZI.getHideUses(now) : null, camp = ZI.getCampCooldown ? ZI.getCampCooldown(now) : null;
-    out.field.push({ id: 'trav', label: 'Traversal', detail: (pos.name || 'Unknown cell') + (sc ? ' · scouts ' + sc.left + '/' + sc.max : '') + (hide ? ' · hide ' + hide.left + '/' + hide.max : '') + (camp ? (camp.available ? ' · Make camp ready' : ' · Make camp at ' + ZI.opsClock(camp.availableAt)) : ''), screen: 'traversal' });
+    const campReady = !!(camp && camp.available), campWaiting = !!(camp && !camp.available && Number.isFinite(camp.availableAt));
+    out.field.push({ id: 'trav', label: 'Traversal',
+      sort: campReady ? 'urgent' : campWaiting ? 'running' : 'idle',
+      endsAt: campWaiting ? camp.availableAt : null,
+      detail: (pos.name || 'Unknown cell') + (sc ? ' · scouts ' + sc.left + '/' + sc.max : '') + (hide ? ' · hide ' + hide.left + '/' + hide.max : '') + (campReady ? ' · Make camp ready' : campWaiting ? ' · Make camp' : ''), screen: 'traversal' });
   }
   (ZI._readJobsRaw ? ZI._readJobsRaw().jobs : []).forEach(j => {
-    const end = j.startedAt != null ? j.startedAt + j.duration * 1000 : null;
-    out.camp.push({ id: 'job:' + j.id, label: (j.type === 'recycle' ? 'Recycling' : j.type === 'build' ? 'Building' : j.type === 'repair' ? 'Repairing' : 'Crafting') + (j.refId ? ': ' + String(j.refId).replace(/_/g, ' ') : ''), detail: j.status === 'queued' ? 'queued' : end != null ? 'done at ' + ZI.opsClock(end) : j.status });
+    const end = j.startedAt != null ? j.startedAt + j.duration * 1000 : null, done = end != null && now >= end;
+    out.camp.push({ id: 'job:' + j.id, label: (j.type === 'recycle' ? 'Recycling' : j.type === 'build' ? 'Building' : j.type === 'repair' ? 'Repairing' : 'Crafting') + (j.refId ? ': ' + String(j.refId).replace(/_/g, ' ') : ''),
+      sort: j.status === 'queued' ? 'running' : done ? 'urgent' : 'running', endsAt: end,
+      detail: j.status === 'queued' ? 'queued' : end != null ? (done ? 'done' : 'running') : j.status });
   });
   if (mode === 'camp') {
     const sch = ZI.getSchedule ? ZI.getSchedule() : { assignments: [] };
-    out.camp.push({ id: 'duties', label: 'Camp duties', detail: sch.assignments.length + ' assigned of ' + (ZI.SCHEDULE_JOBS || []).length + ' duties', screen: null });
+    out.camp.push({ id: 'duties', label: 'Camp duties', sort: 'idle', endsAt: null, detail: sch.assignments.length + ' assigned of ' + (ZI.SCHEDULE_JOBS || []).length + ' duties', screen: null });
   }
+  out.field = ZI.opsSortRows(out.field);
+  out.camp = ZI.opsSortRows(out.camp);
   // Attention
   const j = ZI.getInjury && ZI.getInjury(); if (j) out.attention.push('Injured: heals with ' + Math.ceil(j.remainingMs / 60000) + ' more play minutes.');
   if (ZI.isBroken && ZI.isBroken()) out.attention.push('Broken: the survivor needs rest.');
