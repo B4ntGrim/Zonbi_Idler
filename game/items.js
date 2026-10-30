@@ -203,6 +203,7 @@ ZI.GEAR_ITEMS.push(
   { id:'combat_axe',    name:'Combat Axe',      slot:'melee',   cat:'weapon', rarity:'epic',     icon:'🪓', dmg:52,armor:0,carryW:4,speedDelta:-4,lootBonus:0, desc:'10% decapitate on unarmored.' },
   { id:'shock_baton',   name:'Shock Baton',     slot:'melee',   cat:'weapon', rarity:'epic',     icon:'⚡', dmg:30,armor:0,carryW:2,speedDelta:2,lootBonus:0, desc:'Every hit applies 3s paralysis.' },
   { id:'jet_sledge',    name:'Jet-Assisted Sledge',slot:'melee',cat:'weapon', rarity:'legendary',icon:'🔨', dmg:88,armor:0,carryW:6,speedDelta:-10,lootBonus:0, desc:'Shockwave knockback; smashes barricades.' },
+  { id:'siegebreaker_maul', name:'Siegebreaker Maul',slot:'melee',cat:'weapon',rarity:'exotic',icon:'🔨',dmg:112,armor:0,carryW:7,speedDelta:-14,lootBonus:0,staggerPct:25,desc:'A T5 breaching maul built to stagger armored threats. Heavy and slow.' },
   // ===== FINISHED GEAR — Ranged =====
   { id:'pipe_shotgun',  name:'Improvised Pipe Shotgun',slot:'primary',cat:'weapon',rarity:'common',icon:'🔫', dmg:55,armor:0,carryW:3,speedDelta:-3,lootBonus:0, desc:'Cone spread — hits up to 3.' },
   { id:'compound_bow',  name:'Compound Bow',    slot:'primary', cat:'weapon', rarity:'uncommon', icon:'🏹', dmg:40,armor:0,carryW:3,speedDelta:-2,lootBonus:0, desc:'Silent — zero noise.' },

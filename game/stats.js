@@ -111,12 +111,16 @@ ZI.onXp = function(fn) { ZI._xpListeners.push(fn); return () => { ZI._xpListener
 // Award raw XP to one track (routes through addStatXp + notifies listeners).
 ZI.awardXp = function(profId, amount, meta) {
   if (!profId || !(amount > 0)) return;
+  // Read skill books add a persistent, title-specific percentage to this profession.
+  // The catch-up grant remains based on the unmodified action amount.
+  const bookXpPct = ZI.bookXpBonus ? ZI.bookXpBonus(profId) : 0;
+  const earned = Math.round(amount * (1 + bookXpPct / 100));
   // Catch-up XP (Oct 29, replaces rust decay): extra XP on top of earned XP, only while enabled (off until the
   // inactivity ramp is approved). Earned XP is never reduced.
   const bonus = ZI.catchUpBonus ? ZI.catchUpBonus(profId, Math.round(amount)) : 0;
-  const total = Math.round(amount) + bonus;
+  const total = earned + bonus;
   ZI.addStatXp(profId, total);
-  ZI._xpListeners.forEach(fn => { try { fn(profId, total, Object.assign({}, meta || {}, bonus ? { catchUpBonus: bonus } : {})); } catch (e) {} });
+  ZI._xpListeners.forEach(fn => { try { fn(profId, total, Object.assign({}, meta || {}, bookXpPct ? { bookXpPct } : {}, bonus ? { catchUpBonus: bonus } : {})); } catch (e) {} });
 };
 // Emit a named action; splits its base XP (× scale) across mapped professions.
 // Flat XP-bonus items (§5) add +N per track when that track is already granted.

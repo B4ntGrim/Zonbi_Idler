@@ -991,6 +991,8 @@ window.SatelliteTraversalScreen = function SatelliteTraversalScreen({ setScreen,
         if (foodGot) got.push(`${foodGot} Canned Food`);
         const nl = { ...looted, [key]: true }; setLooted(nl); writeJ('zi_trav_looted', nl);
         if (roll <= chance) {
+          const literature = ZI.rollLiteratureLoot && ZI.rollLiteratureLoot(cell);
+          if (literature) got.push(`${literature.icon || '📚'} ${literature.name} (carried)`);
           ZI.emitAction && ZI.emitAction('loot', 1 + cell.difficulty * 0.3); // Scavenging XP only on a clean search
           res = { tone:'good', text:`Clean search (${chance}% safe, rolled ${roll}). You scavenge ${cell.name}: ${got.join(', ')}. +Scavenging XP.` };
         } else {
@@ -4067,6 +4069,7 @@ window.StockpileScreen = function StockpileScreen({ initialTab = 'recycler', pre
   React.useEffect(() => { setSub(initialTab === 'loadout' || initialTab === 'storage' ? initialTab : 'recycler'); }, [initialTab]);
   const [loadout, setLoadout] = React.useState(() => Z.getLoadout());
   const [stash, setStash] = React.useState(() => Z.getStash());
+  const [literatureNote, setLiteratureNote] = React.useState('');
   // Re-read the one stash/loadout store whenever it changes (crafts finishing, equips on another screen).
   React.useEffect(() => {
     let queued = null;
@@ -4162,6 +4165,7 @@ window.StockpileScreen = function StockpileScreen({ initialTab = 'recycler', pre
 
             <div className="panel" style={{ padding:0, flexShrink:0 }}>
               <div className="panel-title">Stored Equipment &amp; Supplies</div>
+              {literatureNote && <div role="status" style={{ padding:'7px 10px', color:'var(--green)', fontFamily:'var(--font-mono)', fontSize:10, borderBottom:'1px solid var(--border)' }}>{literatureNote}</div>}
               <div style={{ padding:10, display:'flex', gap:8, flexWrap:'wrap', alignItems:'center' }}>
                 <span style={{ flex:'1 1 220px', fontFamily:'var(--font-mono)', fontSize:10, color:'var(--text2)' }}>Base reserves · matching items grouped by quantity. Choose what to wear and carry in Gear &amp; Loadout.</span>
                 <button className="btn" onClick={() => setSub('loadout')}>Gear &amp; Loadout</button>
@@ -4171,9 +4175,19 @@ window.StockpileScreen = function StockpileScreen({ initialTab = 'recycler', pre
                 {Object.keys(stashCounts).map(id => Z.getGearItem(id)).filter(Boolean).map(it => {
                   const dur = Z.itemDurability(it);
                   const isFood = FOOD_SPRITE_INDEX[it.id] !== undefined;
+                  const read = it.cat === 'book' && Z.isSkillBookRead && Z.isSkillBookRead(it.id);
+                  const isLiterature = it.cat === 'book' || it.cat === 'tome';
+                  const actLiterature = action => {
+                    const result = action === 'read' ? Z.readSkillBook(it.id) : Z.burnLiterature(it.id);
+                    setLiteratureNote(result.text || result.reason || ''); setStash(Z.getStash());
+                  };
                   return <div key={it.id} style={{ padding:8, background:isFood ? 'rgba(61,207,142,0.08)' : 'var(--bg3)', border:'1px solid var(--border)', borderTop:`2px solid ${isFood ? 'var(--green)' : rc(it.rarity)}` }}>
                     <div style={{ display:'flex', gap:8, alignItems:'center' }}>{itemVisual(it, isFood ? 42 : 18)}<span style={{ flex:1, fontFamily:'var(--font-body)', fontSize:13 }}>{it.name}</span><b style={{ fontFamily:'var(--font-mono)', fontSize:12, color:'var(--amber)' }}>×{stashCounts[it.id]}</b></div>
-                    <div style={{ fontFamily:'var(--font-mono)', fontSize:9, color:'var(--text2)', marginTop:4 }}>{it.rarity}{dur ? ` · Condition ${Math.round(dur.current)}/${dur.max}` : ''}</div>
+                    <div style={{ fontFamily:'var(--font-mono)', fontSize:9, color:'var(--text2)', marginTop:4 }}>{isLiterature ? (it.cat === 'book' ? `${read ? 'Read · ' : 'Unread · '}+${it.bookXpPct}% ${it.bookProfession} XP` : (it.tomeSeries ? 'Tome-series copy' : 'Ungrouped tome')) : it.rarity}{dur ? ` · Condition ${Math.round(dur.current)}/${dur.max}` : ''}</div>
+                    {isLiterature && <div style={{ display:'flex', gap:5, marginTop:6 }}>
+                      {it.cat === 'book' && <button className="btn" disabled={!!read || !Z.atBaseOrCamp()} onClick={() => actLiterature('read')} title={!Z.atBaseOrCamp() ? 'Read at base or camp' : 'Read once for its permanent profession XP bonus'}>{read ? 'Lesson learned' : 'Read'}</button>}
+                      <button className="btn" disabled={!Z.atBaseOrCamp()} onClick={() => actLiterature('burn')} title="Convert one copy into kindling at base or camp">Convert to kindling</button>
+                    </div>}
                   </div>;
                 })}
                 {!stashCount && <div style={{ fontFamily:'var(--font-mono)', fontSize:11, color:'var(--text2)' }}>No stored equipment or supplies. Completed crafts appear here.</div>}

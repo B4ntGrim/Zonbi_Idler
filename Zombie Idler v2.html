@@ -31,6 +31,7 @@
 <script src="game/police-station.js?v=20261029-policepoi1"></script>
 <script src="game/routes.js?v=20261025-clock-parity"></script>
 <script src="game/survival-data.js?v=1791700100000"></script>
+<script src="game/literature.js?v=20261030-literature2"></script>
 <script src="game/bootstrap.js?v=20261025-clock-parity"></script>
 <script src="game/progression-live.js?v=20261029-proposals1"></script>
 <script src="game/character.js?v=20261030-look2"></script>
@@ -50,7 +51,7 @@
 <script type="text/babel" src="character-sprite.jsx?v=20261030-look2"></script>
 <script type="text/babel" src="character-creation.jsx?v=20261030-look2"></script>
 <script type="text/babel" src="operations-ui.jsx?v=20261029-duties1"></script>
-<script type="text/babel" src="screens-v2.jsx?v=20261028-stat02"></script>
+<script type="text/babel" src="screens-v2.jsx?v=20261030-literature1"></script>
 <script type="text/babel" src="screens-v2b.jsx?v=20261027-shop1"></script>
 <script type="text/babel" src="screens-v3.jsx?v=20261030-ssbg01"></script>
 <style>
@@ -3568,7 +3569,11 @@ function RmatCraftingRecipeBrowser() {
     ? <img src={recipeSpriteById[recipe.id]} alt={recipe.name} style={{width:size,height:size,objectFit:'contain',imageRendering:'pixelated',flexShrink:0}} />
     : <span style={{fontSize:size}}>{recipe.icon}</span>;
   const sel = recipes.find(r => r.id === selId) || null;
-  const canCraft = (r) => Object.entries(r.cost).every(([k, q]) => (stock[k] || 0) >= q);
+  const tomeGate = (r) => ZI.tomeSchematicGate ? ZI.tomeSchematicGate(r.id) : null;
+  const canCraft = (r) => {
+    const gate = tomeGate(r);
+    return (!gate || gate.unlocked) && Object.entries(r.cost).every(([k, q]) => (stock[k] || 0) >= q);
+  };
 
   const fmtDur = (sec) => {
     if (sec < 3600) return `${Math.round(sec / 60)}m`;
@@ -3744,7 +3749,9 @@ function RmatCraftingRecipeBrowser() {
                         });
                       })()}
                     </div>
-                    {ok
+                    {tomeGate(r) && !tomeGate(r).unlocked
+                      ? <span className="tag" style={{color:'#c59af2', borderColor:'#c59af2', background:'rgba(160,100,220,0.12)'}}>🔒 Schematic Locked</span>
+                      : ok
                       ? <span className="tag" style={{color:'#3dcf8e', borderColor:'#3dcf8e', background:'rgba(61,207,142,0.12)'}}>✓ Craftable</span>
                       : <span className="tag" style={{color:'#f06a5a', borderColor:'#f06a5a', background:'rgba(207,61,61,0.12)'}}>✗ Missing</span>}
                   </div>
@@ -3778,6 +3785,7 @@ function RmatCraftingRecipeBrowser() {
         {sel ? (() => {
           const tc = tierColor(sel.tier);
           const ok = canCraft(sel);
+          const gate = tomeGate(sel);
           const rates = (ZI.CRAFT_DROP_RATES && ZI.CRAFT_DROP_RATES[sel.enemy]) || [0,0,0,0,0,0];
           return (
             <div className="panel" style={{flex:1, display:'flex', flexDirection:'column', overflow:'hidden'}}>
@@ -3800,6 +3808,7 @@ function RmatCraftingRecipeBrowser() {
                   <InfoRow label="Craft Time" value={`${fmtDur(sel.time)} game · ${fmtReal(craftRealSec(sel))} real`} color="var(--amber)"/>
                   <InfoRow label="Drop Source" value={sel.enemy} color="var(--red2)"/>
                   <InfoRow label="Unlocked By" value={sel.unlock} color="var(--text2)"/>
+                  {gate && <InfoRow label="Tome Schematic" value={`${gate.series} · ${gate.currentCopies}/${gate.copies} copies${gate.missing?.length ? ` · Needs ${gate.missing.join(', ')}` : ''}`} color={gate.unlocked ? '#3dcf8e' : '#c59af2'}/>}
                 </div>
                 <div className="divider"/>
                 <div style={{fontFamily:'var(--font-mono)', fontSize:9, color:'var(--text3)', margin:'8px 0'}}>REQUIRED MATERIALS</div>
@@ -3835,7 +3844,7 @@ function RmatCraftingRecipeBrowser() {
                   background: ok ? '#1a3020' : 'var(--bg4)', color: ok ? '#3dcf8e' : 'var(--text3)',
                   border:`1px solid ${ok ? '#3dcf8e' : 'var(--border)'}`,
                 }}>
-                  {ok ? (sel.tier === 5 ? '⚠ Begin Exotic Craft' : '⚙ Craft Now') : '✗ Materials Insufficient'}
+                  {gate && !gate.unlocked ? '🔒 Schematic Locked' : ok ? (sel.tier === 5 ? '⚠ Begin Exotic Craft' : '⚙ Craft Now') : '✗ Materials Insufficient'}
                 </button>
               </div>
             </div>
