@@ -12,8 +12,8 @@ ZI.CHAR_CREATION = {
   version: 3,
   defaultName: 'Yael Strom',
   genders: [
-    { id: 'male',   label: 'Male',   art: { src: 'assets/wandering-characters/creation-male-v1.png', walk:'assets/wandering-characters/creation-male-walk-concept-v1.png' } },
-    { id: 'female', label: 'Female', art: { src: 'assets/wandering-characters/creation-female-v1.png', walk:'assets/wandering-characters/creation-female-walk-concept-v1.png' } },
+    { id: 'male',   label: 'Male',   art: { src: 'assets/wandering-characters/creation-male-v1.png', walk:'assets/wandering-characters/creation-male-walk-v2.png', walkCols:4, walkRows:4, walkAspect:1.2326 } },
+    { id: 'female', label: 'Female', art: { src: 'assets/wandering-characters/creation-female-v1.png', walk:'assets/wandering-characters/creation-female-walk-v2.png', walkCols:4, walkRows:4, walkAspect:1.2250 } },
   ],
   // Appearance is cosmetic. The layered character sprite previews each category separately.
   appearance: {
@@ -75,9 +75,12 @@ ZI.validSurvivorProfile = function(p) {
   if (!p || typeof p !== 'object' || Array.isArray(p)) return null;
   if (!C.genders.some(g => g.id === p.gender)) return null;
   const src = Object.assign({}, p.appearance && typeof p.appearance === 'object' && !Array.isArray(p.appearance) ? p.appearance : {}), app = {};
-  // Version 1 profiles stored the colour (olive / ash / rust) under `clothing`; carry it over to clothingColor.
-  if (!src.clothingColor && ['olive', 'ash', 'rust'].indexOf(src.clothing) >= 0) { src.clothingColor = src.clothing; delete src.clothing; }
-  if (!src.jacketColor && src.clothingColor) src.jacketColor = src.clothingColor;
+  // Older profiles stored the jacket colour as `clothing` or `clothingColor`.
+  // The current model calls that component `jacketColor`; discard the legacy keys after migration.
+  const legacyJacketColor = src.clothingColor || (['olive', 'ash', 'rust'].includes(src.clothing) ? src.clothing : null);
+  if (!src.jacketColor && legacyJacketColor) src.jacketColor = legacyJacketColor;
+  if (legacyJacketColor && src.clothing === legacyJacketColor) delete src.clothing;
+  delete src.clothingColor;
   Object.entries(C.appearance).forEach(([k, c]) => { app[k] = c.options.some(o => o.id === src[k]) ? src[k] : c.options[0].id; });
   const prof = (ZI.LEADER_ARCHETYPES || []).some(a => a.id === p.profession) ? p.profession : null;
   const name = typeof p.name === 'string' && p.name.trim() ? p.name.trim().slice(0, 24) : C.defaultName;

@@ -56,7 +56,9 @@ function CharacterSprite({ gender, appearance = {}, frame = 0, width = 220 }) {
     {shape('M-5 37 L6 37 L10 47 L14 49 L14 53 L-8 53 L-9 47 Z', boots)}
     <path d="M-7 49 L14 49" stroke="#bb9c75" strokeWidth="1"/>
   </g>;
-  return <svg role="img" aria-label={`${gender || 'Survivor'} character preview`} width={width} height={Math.round(width*1.5)} viewBox="0 0 80 120" shapeRendering="crispEdges" style={{ imageRendering:'pixelated', background:'radial-gradient(ellipse at 50% 43%, #252727 0%, #0b0d0d 73%)', border:'1px solid var(--border)', maxWidth:'100%' }}>
+  // Boots extend to y=121 (with a 1.6px outline); keep a small bottom margin so
+  // the animated stride never clips the soles at the SVG viewport edge.
+  return <svg role="img" aria-label={`${gender || 'Survivor'} character preview`} width={width} height={Math.round(width*1.55)} viewBox="0 0 80 124" shapeRendering="crispEdges" style={{ imageRendering:'pixelated', background:'radial-gradient(ellipse at 50% 43%, #252727 0%, #0b0d0d 73%)', border:'1px solid var(--border)', maxWidth:'100%' }}>
     <g transform={`translate(0 ${-bob})`}>
       {leg(33,back)}
       {leg(48,front)}

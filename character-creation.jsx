@@ -32,8 +32,18 @@ function CharacterCreationScreen({ mode, slot, onCancel, onConfirm }) {
   const portrait = (gid, size, animated = false) => {
     const gg = C.genders.find(x => x.id === gid);
     if (!gg) return <div style={{ width: size, height: size, border: '1px dashed var(--border)', display:'flex', alignItems:'center', justifyContent:'center', color:'var(--text3)', fontFamily:'var(--font-mono)', fontSize:11 }}>?</div>;
-    return animated && step === 1 ? <CharacterSprite gender={gid} appearance={appearance} frame={frame} width={size}/>
-      : animated ? <div role="img" aria-label={gg.label + ' 16-frame survivor animation'} style={{ width:size, height:Math.round(size*1.5), backgroundImage:`url("${gg.art.walk}")`, backgroundSize:'400% 400%', backgroundPosition:`${(frame % 4)*100/3}% ${Math.floor(frame/4)*100/3}%`, backgroundRepeat:'no-repeat', imageRendering:'pixelated', backgroundColor:'#0b0d0d', border:'1px solid var(--border)' }}/>
+    // The walk sheet is a cols x rows grid. Its cell is NOT 2:3 - height comes from the sheet's own
+    // walkAspect, or the frames are stretched vertically (the Oct 30 "poor animation" defect).
+    const cols = gg.art.walkCols || 4, rows = gg.art.walkRows || 4, n = cols * rows;
+    const walkBox = (px) => ({
+      width: px, height: Math.round(px * (gg.art.walkAspect || 1.5)),
+      backgroundImage: `url("${gg.art.walk}")`,
+      backgroundSize: `${cols * 100}% ${rows * 100}%`,
+      backgroundPosition: `${(frame % cols) * 100 / (cols - 1)}% ${Math.floor((frame % n) / cols) * 100 / (rows - 1)}%`,
+      backgroundRepeat: 'no-repeat', imageRendering: 'pixelated',
+      backgroundColor: '#0b0d0d', border: '1px solid var(--border)',
+    });
+    return animated ? <div role="img" aria-label={gg.label + ` ${n}-frame survivor animation`} style={walkBox(size)}/>
       : <img src={gg.art.src} alt={gg.label + ' survivor'} width={size} height={Math.round(size * 1.5)} style={{ objectFit:'contain', imageRendering:'pixelated', background:'#0b0d0d', border:'1px solid var(--border)' }}/>;
   };
   const chip = (txt) => <span style={{ fontFamily:'var(--font-mono)', fontSize:10, color:'var(--text2)', border:'1px solid var(--border)', padding:'2px 6px' }}>{txt}</span>;
@@ -66,7 +76,12 @@ function CharacterCreationScreen({ mode, slot, onCancel, onConfirm }) {
 
         {step === 1 && (
           <div style={{ display:'flex', gap:18, flexWrap:'wrap' }}>
-            <div style={{ flex:'0 0 auto', position:'sticky', top:12, alignSelf:'flex-start' }}>{portrait(gender, 220, true)}<div style={{ fontFamily:'var(--font-mono)', fontSize:10, color:'var(--text3)', marginTop:4 }}>16-frame preview · appearance updates live</div></div>
+            <div style={{ flex:'0 0 auto', position:'sticky', top:12, alignSelf:'flex-start', display:'flex', flexDirection:'column', gap:8 }}>
+              {portrait(gender, 220, true)}
+              <div style={{ fontFamily:'var(--font-mono)', fontSize:10, color:'var(--text3)' }}>16-frame walk cycle</div>
+              <CharacterSprite gender={gender} appearance={appearance} frame={frame} width={120}/>
+              <div style={{ fontFamily:'var(--font-mono)', fontSize:10, color:'var(--text3)' }}>your choices, updating live</div>
+            </div>
             <div style={{ flex:'1 1 320px', display:'flex', flexDirection:'column', gap:14, minWidth:0 }}>
               <label style={{ display:'flex', flexDirection:'column', gap:6, fontFamily:'var(--font-mono)', fontSize:11, color:'var(--text2)' }}>SURVIVOR NAME
                 <input value={name} maxLength={24} onChange={e => setName(e.target.value)} placeholder="Enter a survivor name" aria-label="Survivor name" style={{ padding:'9px 10px', background:'var(--bg3)', color:'var(--text)', border:'1px solid var(--border)', fontFamily:'var(--font-body)', fontSize:15 }}/>

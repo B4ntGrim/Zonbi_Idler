@@ -119,7 +119,10 @@ const fullRun = (seed, rollSeed, hours) => { const pc = { t: T0 }, E = mkEnv({ p
   Z.saveWanderRun(run0(Z, { lastTickAt: c.t })); for (let i = 1; i <= hours * 6; i++) { c.t = T0 + i * 600000; Z.WanderEngine.tick(c.t); }
   const store = Object.assign({}, E.store); delete store.zisim_lock; /* simulation locking stays on real time (A1) */ return { run: Z.getWanderRun(), store, Z }; };
 { const a = fullRun(11, 99, 6), b = fullRun(11, 99, 6);
-  check('5: same seed and configuration give identical final run state and storage (sorted-key fingerprint)', fp(a.run) === fp(b.run) && fp(a.store) === fp(b.store) && JSON.parse(a.store.zi_wander_loot || '[]').length > 0);
+  const differences = (x, y) => Object.keys(Object.assign({}, x, y)).filter(k => JSON.stringify(x[k]) !== JSON.stringify(y[k])).map(k => ({ key:k, first:x[k], second:y[k] }));
+  const comparableStore = store => { const copy = Object.assign({}, store); if (copy.zi_game_clock) { const clock = JSON.parse(copy.zi_game_clock); delete clock.at; copy.zi_game_clock = JSON.stringify(clock); } return copy; };
+  const storeA = comparableStore(a.store), storeB = comparableStore(b.store);
+  check('5: same seed and configuration give identical simulation state and gameplay storage (wall-clock timestamp excluded)', fp(a.run) === fp(b.run) && fp(storeA) === fp(storeB) && JSON.parse(a.store.zi_wander_loot || '[]').length > 0, JSON.stringify({ run:differences(a.run,b.run), storage:differences(storeA,storeB) }));
 }
 
 // ── Required test 6: streams are independent ──

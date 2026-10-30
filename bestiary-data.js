@@ -129,8 +129,7 @@ ZI.applyZombieTrait = function(base, traitId) {
   return out;
 };
 ZI.BESTIARY_ROSTER = [
-  // Crawler: a Simple Shambler (id 1) torn in half. Tier F (Sam, Oct 29: F for now). Sprite: to be decided
-  // later by Sam; none exported yet, so the field and Codex fall back to the drawn (SVG) zombie, as the draft requires until a validated atlas exists.
+  // Crawler: a Simple Shambler (id 1) torn in half. Tier F; sprite variants are display-only and mapped in zombie-sprites.js.
   ZI.applyZombieTrait(Object.assign({}, ZI.BESTIARY.find(z => z.id === 1), {
     id: 46, name: 'Crawler', tier: 'F', base: 'Crawler', traits: ['Halved', 'Soiled', 'Low to the ground'],
     weakness: ['Blunt weapons', 'Stomps'], ability: 'Drags itself after the living; half a body, half the threat',

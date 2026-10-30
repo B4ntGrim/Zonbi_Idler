@@ -27,13 +27,24 @@ const sig = (E, events) => {
 };
 const pair = (seedN, secs, runOverrides, policy) => {
   const t0 = Date.now();
-  const mk = () => { const E = mkEnv({ zi_wander_run: runState(t0, runOverrides), zi_wander_policy: JSON.stringify(policy || { id:'ethical' }) }); E.ZI.WanderEngine.rng = E.ZI.seededRng(seedN); return E; };
-  const L = mk(), O = mk(); const evL = [], evO = [];
+  // Both harnesses must share the same clock anchor too; otherwise a millisecond of test startup jitter can move a
+  // simulated event across midnight and change its intentionally daily-rotating encounter modifier.
+  const clock = JSON.stringify({ base:14 * 3600, day:1, at:t0, rate:60 });
+  const mk = () => { const E = mkEnv({ zi_world_seed:'1', zi_game_clock:clock, zi_wander_run: runState(t0, runOverrides), zi_wander_policy: JSON.stringify(policy || { id:'ethical' }) }); E.ZI.WanderEngine.rng = E.ZI.seededRng(seedN); return E; };
+  const L = mk(), O = mk(); const evL = [], evO = [], daily = { live:[], offline:[] };
+  for (const [label, E] of [['live',L],['offline',O]]) {
+    const original = E.ZI.worldDailyShift;
+    E.ZI.worldDailyShift = function(cell, salt, amplitude, atMs) {
+      const value = original.call(this, cell, salt, amplitude, atMs);
+      if (salt === 3) daily[label].push({ atMs, day:this.worldDayIndex(atMs), value });
+      return value;
+    };
+  }
   L.ZI.wanderMounted = true;
   for (let k = 1; k <= secs; k++) evL.push(...L.ZI.WanderEngine.liveStep(t0 + k * 1000));
   O.ZI.wanderMounted = false;
   evO.push(...O.ZI.WanderEngine.tick(t0 + secs * 1000));
-  return { L, O, evL, evO, sL: sig(L, evL), sO: sig(O, evO) };
+  return { L, O, evL, evO, daily, sL: sig(L, evL), sO: sig(O, evO) };
 };
 
 // ── A1. Live = offline for the same seed and elapsed time ──
@@ -44,7 +55,9 @@ for (const [seedN, secs, over, pol, label] of [
 ]) {
   const p = pair(seedN, secs, over, pol);
   const kinds = p.evL.reduce((m, e) => (m[e.kind + (e.outcome ? ':' + e.outcome : '')] = (m[e.kind + (e.outcome ? ':' + e.outcome : '')] || 0) + 1, m), {});
-  check('A1 ' + label + ': identical kills, XP by skill, loot, policy events, HP, retreats', p.sL === p.sO, JSON.stringify(kinds));
+  const live = JSON.parse(p.sL), offline = JSON.parse(p.sO), diff = Object.keys(live).filter(k => JSON.stringify(live[k]) !== JSON.stringify(offline[k])).map(k => ({ field:k, live:live[k], offline:offline[k] }));
+  const dailyDiff = p.daily.live.map((x,i) => ({ live:x, offline:p.daily.offline[i] })).filter(x => !x.offline || JSON.stringify(x.live) !== JSON.stringify(x.offline));
+  check('A1 ' + label + ': identical kills, XP by skill, loot, policy events, HP, retreats', p.sL === p.sO, JSON.stringify({ events:kinds, differences:diff, dailyDiff }));
   if (p.sL !== p.sO) { const a = JSON.parse(p.sL), b = JSON.parse(p.sO); for (const k in a) if (JSON.stringify(a[k]) !== JSON.stringify(b[k])) log('  diff ' + k + ': live ' + JSON.stringify(a[k]).slice(0, 160) + ' | offline ' + JSON.stringify(b[k]).slice(0, 160)); }
   else log('  ' + label + ': ' + JSON.stringify(kinds));
 }
