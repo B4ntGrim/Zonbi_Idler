@@ -58,24 +58,52 @@ to the real stat pipeline, rebuild the panel.
 | W11 | The **route-planning screen** gets a compact weather line, so routes are chosen with weather known | `[DECIDED]` |
 | W12 | Weather icons do not match the retro style and need regenerating | `[DECIDED]` |
 
-## 3. Conflicts to resolve before building
+## 3. Conflicts — all resolved (Sam, Oct 30, voice)
 
-1. **Calendar length.** Sam said a 240-day campaign, 4 seasons × 60 days. `ZI.getCalendar`
-   (`game/core.js:111`) runs a **364-day year** and has no season concept anywhere in live code.
-   `[OPEN]` Which is canon? Seasons cannot be built until this is settled.
-2. **Duplicate afflictions.** Building new `DRENCHED` / `CHILLED` / `OVERHEATED` statuses would sit
-   beside `ZI.MOODLES.Wet` and `ZI.MOODLES.Thirsty`, which already model the same ground in more
-   detail. `[OPEN]` Extend the moodles, or retire them first? Shipping both is the one outcome to
-   avoid.
-3. **Two unlisted weathers.** `WEATHER_EFFECTS` has **AcidRain** and **RadiationStorm**, which were
-   not in Sam's five. `[OPEN]` Keep, retire, or make them biome-specific hazards?
+### 3.1 Calendar `[DECIDED Sam]`
+The calendar **stays at 364 days** (`ZI.getCalendar`, `game/core.js:111`). Years roll over
+continuously; the game does not end. **Seasons are 4 x 91 game days**, cycling every year.
+
+**The 240-day figure was a unit mix-up, now settled.** It is **real-world days to reach level 100**,
+not campaign length. At 1 game day = 24 real minutes (CLOCK-01):
+
+| | |
+|---|---|
+| 1 game hour | 1 real minute |
+| 1 game day | 24 real minutes |
+| 1 season (91 game days) | ~1.5 real days |
+| 1 game year (364 game days) | ~6.1 real days |
+| 240 real days to L100 | **~39.5 game years** |
+
+So a player sees the seasons cycle roughly 40 times on the way to level 100. Weather is a
+short-term texture, not a campaign arc — which is what makes the duration cap below matter.
+
+### 3.2 Afflictions `[DECIDED Sam]`
+**Build on the existing ladder, do not replace it.** `ZI.MOODLES.Wet`
+(Damp → Wet → Soaked → **Drenched**) stays as the rain affliction, and **Chilled extends that same
+ladder** rather than becoming a separate status. There is **no new DRENCHED status**. Overheated
+pairs with the existing `ZI.MOODLES.Thirsty`.
+
+This closes the duplicate-systems risk: one ladder, not two.
+
+### 3.3 AcidRain and RadiationStorm `[DECIDED Sam]`
+**Kept.** They stay in `ZI.WEATHER_EFFECTS`. Whether they are seasonal or biome-driven goes to the
+audit (§4).
 
 ## 4. `[PROPOSED]` values for the audit
 Claude's placeholders; each belongs in a named constant.
 
 - Season weights — Spring: Clear 30 / Rain 40 / Fog 30 · Summer: Clear 60 / Heat Wave 30 / Rain 10 ·
-  Autumn: Clear 30 / Fog 35 / Rain 30 / Blizzard 5 · Winter: Clear 20 / Blizzard 50 / Rain 30
-- Event duration: 3–24 in-game hours, rolled per event, deterministic from save seed + day
+  Autumn: Clear 30 / Fog 35 / Rain 30 / Blizzard 5 · Winter: Clear 20 / Blizzard 50 / Rain 30.
+  `[AUDIT]` These must be **re-expressed for 91-day seasons** and must **assign AcidRain and
+  RadiationStorm** a home (seasonal or biome-based).
+- **Weather duration `[DECIDED Sam]`:** varies by season, with a **hard cap of 4 game days**.
+  Because 1 game hour = 1 real minute, that cap is **96 game hours = 96 real minutes** either way.
+  When an event reaches the cap the weather is **forced to change**, so it can never rain
+  indefinitely. Rolled deterministically from save seed + day.
+- `[AUDIT]` Per-season min/max ranges, as named constants —
+  `ZI.WEATHER_DURATION[season] = { minH, maxH }` with `maxH <= 96` enforced. A winter blizzard
+  should be able to run long while summer rain stays short.
 - Rain travel −15%, noise −1 (PF13 0–4 scale, floor 0)
 - Fog encounters −20%, scavenge −15%
 - Heat wave thirst drain +50%
@@ -91,3 +119,16 @@ Claude's placeholders; each belongs in a named constant.
   `tools/art-gen/prompts/campfire-dry-off.md`. Until it exists, reuse the idle pose beside the fire.
 - Weather and affliction icons queued at `tools/art-gen/prompts/weather-icons.md` and
   `affliction-icons.md`. The affliction prompt carries the §3.2 flag.
+
+## 6. Audit checklist
+
+Carried forward to the systems audit. Everything here is a number or rule nobody has validated yet.
+
+- [ ] Per-season duration ranges (Spring / Summer / Autumn / Winter), each within the 4-game-day cap
+- [ ] Forced-change rule: the roll after a capped event **must not repeat that weather**
+- [ ] Whether AcidRain and RadiationStorm are seasonal weathers or biome hazards
+- [ ] Forecast window per Insight point, checked against the 4-day cap — a window longer than the
+      cap would show weather that has not been rolled yet
+- [ ] Season weights re-expressed for 91-day seasons, with the two extra weathers assigned
+- [ ] Chilled's thresholds on the Wet ladder: which rung triggers it, and the cure time at the fire
+- [ ] Every weather modifier verified to change a **computed** stat, not just panel text
