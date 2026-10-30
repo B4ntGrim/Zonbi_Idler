@@ -33,6 +33,7 @@ DURATION = {
     'Winter': {'minH': 10, 'maxH': 96},
 }
 HAZARD_MAX_H = 8                 # AcidRain / RadiationStorm never run long
+CLEAR_GUARANTEE_H = 48           # [DECIDED Sam] forced Clear after this many consecutive bad hours
 HAZARDS = {'AcidRain', 'RadiationStorm'}
 BAD = {'Rain', 'Fog', 'HeatWave', 'Blizzard', 'AcidRain', 'RadiationStorm'}
 
@@ -50,10 +51,19 @@ def rand01(seed: int, day: int, salt: str) -> float:
 def roll(seed: int, years: float = 6.0):
     """Walk the calendar in game hours, emitting (season, weather, hours)."""
     events, hour, idx, prev = [], 0, 0, None
+    bad_run = 0                        # consecutive bad-weather hours
     total_h = int(YEAR_DAYS * 24 * years)
     while hour < total_h:
         day = hour // 24 + 1
         s = season_of(day)
+        if bad_run >= CLEAR_GUARANTEE_H:
+            # [DECIDED Sam] clear-sky guarantee: the chain is broken by force.
+            d = DURATION[s]
+            dur = max(1, int(d['minH'] + rand01(seed, idx, 'd') * (d['maxH'] - d['minH'])))
+            dur = min(dur, CAP_H)
+            events.append((s, 'Clear', dur, dur >= CAP_H))
+            hour += dur; idx += 1; prev = 'Clear'; bad_run = 0
+            continue
         w = dict(WEIGHTS[s])
         if prev is not None:
             w.pop(prev, None)          # forced change: never repeat
@@ -73,6 +83,7 @@ def roll(seed: int, years: float = 6.0):
         dur = int(lo + rand01(seed, idx, 'd') * (hi - lo))
         dur = max(1, min(dur, CAP_H))
         events.append((s, pick, dur, dur >= CAP_H))
+        bad_run = bad_run + dur if pick in BAD else 0
         hour += dur
         idx += 1
         prev = pick
@@ -105,8 +116,16 @@ def main() -> None:
                 worst, worst_s = cur, s
         else:
             cur = 0
+    allowed = CLEAR_GUARANTEE_H + max(d['maxH'] for d in DURATION.values())
     print(f'longest unbroken bad weather: {worst}h ({worst/24:.1f} game days, '
           f'{worst} real minutes) ending in {worst_s}')
+    print(f'  clear-sky guarantee {CLEAR_GUARANTEE_H}h + one max event = {allowed}h allowed '
+          f'-> {"PASS" if worst <= allowed else "FAIL"}')
+    for ss in SEASONS:
+        se = [e for e in ev if e[0] == ss]
+        tot = sum(e[2] for e in se)
+        cl = sum(e[2] for e in se if e[1] == 'Clear')
+        print(f'  {ss:<8} Clear share {100*cl/tot:>5.1f}%')
 
     reps = sum(1 for a, b in zip(ev, ev[1:]) if a[1] == b[1])
     print(f'consecutive repeats (must be 0): {reps}')
