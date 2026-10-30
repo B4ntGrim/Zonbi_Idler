@@ -687,7 +687,8 @@ window.SatelliteTraversalScreen = function SatelliteTraversalScreen({ setScreen,
   const [selectedSquare, setSelectedSquare] = React.useState(null);
   const [selectedSurvivors, setSelectedSurvivors] = React.useState([1]);
   const [mapPanMode, setMapPanMode] = React.useState(false);
-  const [showSectorMap, setShowSectorMap] = React.useState(false);
+  const [showMinimap, setShowMinimap] = React.useState(false);
+  const [sectorMapShape, setSectorMapShape] = React.useState('circle');
   const [mapDragging, setMapDragging] = React.useState(false);
   const [mapTransform, setMapTransform] = React.useState({ scale:1, x:0, y:0 });
   const mapViewportRef = React.useRef(null), mapDragRef = React.useRef(null), panMovedRef = React.useRef(false);
@@ -759,7 +760,23 @@ window.SatelliteTraversalScreen = function SatelliteTraversalScreen({ setScreen,
     const sectors = Array.from(byKey.values());
     return { sectors, minSx:Math.min(...sectors.map(s => s.sx)), maxSx:Math.max(...sectors.map(s => s.sx)), minSy:Math.min(...sectors.map(s => s.sy)), maxSy:Math.max(...sectors.map(s => s.sy)) };
   })();
-  const sectorOverviewCell = Math.max(22, Math.min(42, Math.floor(480 / Math.max(1, sectorOverview.maxSx - sectorOverview.minSx + 1))));
+  const sectorMapShapes = [
+    { id:'circle', label:'Circle' },
+    { id:'square', label:'Square' },
+    { id:'wide', label:'Wide' },
+    { id:'tall', label:'Tall' },
+  ];
+  const startPosition = readJ('zi_trav_start', null) || pos;
+  const startSector = { sx:Number.isFinite(startPosition.sx) ? startPosition.sx : Number.isFinite(startPosition.gx) ? Math.floor(startPosition.gx / COLS) : 0, sy:Number.isFinite(startPosition.sy) ? startPosition.sy : Number.isFinite(startPosition.gy) ? Math.floor(startPosition.gy / ROWS) : 0 };
+  const minimapCols = Math.max(1, sectorOverview.maxSx - sectorOverview.minSx + 1), minimapRows = Math.max(1, sectorOverview.maxSy - sectorOverview.minSy + 1);
+  const minimapWorldAspect = minimapCols * COLS / (minimapRows * ROWS);
+  const minimapFrameAspect = sectorMapShape === 'wide' ? 16/10 : sectorMapShape === 'tall' ? 10/16 : 1;
+  const minimapContentWidth = minimapWorldAspect > minimapFrameAspect ? 100 : 100 * minimapWorldAspect / minimapFrameAspect;
+  const minimapContentHeight = minimapWorldAspect > minimapFrameAspect ? 100 * minimapFrameAspect / minimapWorldAspect : 100;
+  const cameraWidth = Math.min(1, 1 / mapTransform.scale), cameraHeight = Math.min(1, 1 / mapTransform.scale);
+  const viewportSize = mapViewportRef.current;
+  const cameraX = Math.max(0, Math.min(1-cameraWidth, -mapTransform.x / Math.max(1, viewportSize ? viewportSize.clientWidth : 1) / mapTransform.scale));
+  const cameraY = Math.max(0, Math.min(1-cameraHeight, -mapTransform.y / Math.max(1, viewportSize ? viewportSize.clientHeight : 1) / mapTransform.scale));
   const squares = React.useMemo(() => {
     const list = [];
     for (let r = 0; r < ROWS; r++) for (let c = 0; c < COLS; c++) list.push(ZI.worldCell(view.sx * COLS + c, view.sy * ROWS + r, activeType));
@@ -848,7 +865,7 @@ window.SatelliteTraversalScreen = function SatelliteTraversalScreen({ setScreen,
   };
 
   const TUTORIAL = [
-    { title:'Day One of the Outbreak', body:'The grid is the land around you, seen from above. Each cell is a zone: homes, stores, depots. Some are locked until you push further out. Your map grows one connected 8×6 sector at a time. To scout a new sector, move within two cells of that edge, then use its cardinal arrow. Dim arrows are locked; discovered sectors stay available.' },
+    { title:'Day One of the Outbreak', body:'The grid is the land around you, seen from above. Each cell is a zone: homes, stores, depots. Some are locked until you push further out. Your map grows one connected 8×6 sector at a time. To scout a new sector, move within two cells of that edge, then use its cardinal arrow. Dim arrows are locked; discovered sectors stay available. There is no fixed world edge; exploration can keep expanding in every direction.' },
     { title:'You are Here', body:`Your survivor starts at ${posLabel}, marked with the pulsing ◉ YOU ARE HERE pin. Every outbreak drops you somewhere new. Smoke rises from a palisade nearby: the 🏰 Fort.` },
     { title:'Move one zone at a time', body:'The zones touching yours glow with a dashed outline. Click one of them to decide what to do there.' },
     { title:'Choose how to survive', body:'Travel moves you in. Loot grabs supplies once per zone. Scout reveals the danger first. Make Camp moves you in and sets a safe rest point. Hide shows which threats roam the zone.' },
@@ -1276,29 +1293,50 @@ window.SatelliteTraversalScreen = function SatelliteTraversalScreen({ setScreen,
             <span style={{ marginLeft:'auto', color:'var(--text2)' }}>Sector <b style={{ color:'var(--amber)' }}>{sectorTag(view.sx, view.sy)}</b> {ZI.isDevView() && <> · Seed #{worldSeed} / {ZI.MAX_SEED.toLocaleString()}</>}</span>
             {!inPlayerSector && <button className="btn" style={{ padding:'3px 10px', fontSize:11 }} onClick={() => setView({ sx:pos.sx, sy:pos.sy })}>◉ Back to my sector</button>}
             <button data-trav="pan-toggle" aria-pressed={mapPanMode} title="Toggle map dragging; use the wheel over the grid to zoom" onClick={() => { setMapPanMode(v => !v); setHoveredSquare(null); }} style={{ padding:'5px 9px', background:'#080807', border:'1px solid ' + (mapPanMode ? '#f0d060' : '#665838'), color:mapPanMode ? '#f0d060' : '#c9bd9f', fontFamily:'var(--font-mono)', fontSize:11, cursor:'pointer' }}>{mapPanMode ? '✥ Drag map: ON' : '✥ Drag map'}</button>
-            <button data-trav="sector-map-toggle" aria-expanded={showSectorMap} aria-controls="trav-sector-overview" onClick={() => setShowSectorMap(v => !v)} title="Show or hide the connected map of discovered sectors" style={{ padding:'5px 9px', background:showSectorMap ? 'rgba(240,208,96,0.14)' : '#080807', border:'1px solid ' + (showSectorMap ? '#f0d060' : '#665838'), color:showSectorMap ? '#f0d060' : '#c9bd9f', fontFamily:'var(--font-mono)', fontSize:11, cursor:'pointer' }}>{showSectorMap ? '▦ Close sector map' : '▦ Sector map'}</button>
+                        <button data-trav="minimap-toggle" aria-expanded={showMinimap} aria-controls="trav-minimap" onClick={() => setShowMinimap(v => !v)} title="Open the discovered-world minimap and display options" style={{ padding:'5px 9px', background:showMinimap ? 'rgba(240,208,96,0.14)' : '#080807', border:`1px solid ${showMinimap ? '#f0d060' : '#665838'}`, color:showMinimap ? '#f0d060' : '#c9bd9f', fontFamily:'var(--font-mono)', fontSize:11, cursor:'pointer' }}>{showMinimap ? '▦ Minimap ▴' : '▦ Minimap ▾'}</button>
             <button data-trav="zoom-reset" title="Reset map zoom and position" onClick={() => setMapTransform({ scale:1, x:0, y:0 })} style={{ padding:'5px 8px', background:'#080807', border:'1px solid #494236', color:'#c9bd9f', fontFamily:'var(--font-mono)', fontSize:11, cursor:'pointer' }}>{Math.round(mapTransform.scale * 100)}% · Reset</button>
           </div>
-          {showSectorMap && <div id="trav-sector-overview" data-trav="sector-overview" aria-label="Connected map of discovered sectors" style={{ position:'absolute', zIndex:8, top:58, right:50, width:'min(460px, calc(100% - 100px))', maxHeight:140, overflow:'auto', display:'flex', alignItems:'center', gap:10, padding:'8px 10px', border:'1px solid #887a57', boxShadow:'0 8px 24px rgba(0,0,0,0.75)', background:'#080807' }}>
-            <div style={{ flexShrink:0, fontFamily:'var(--font-mono)', fontSize:9, lineHeight:1.45, color:'var(--text2)' }}>
-              <div style={{ color:'var(--amber)', letterSpacing:'0.08em' }}>SECTOR MAP</div>
-              <div><span style={{ color:'#ff3b3b' }}>●</span> You <span style={{ color:'#f0d060' }}>■</span> Viewing</div>
+                    {showMinimap && <div id="trav-minimap" data-trav="minimap" aria-label="Discovered-world minimap and display options" style={{ position:'absolute', zIndex:8, top:58, right:50, width:'min(500px, calc(100% - 24px))', maxHeight:260, overflow:'auto', padding:10, border:'1px solid #887a57', boxShadow:'0 8px 24px rgba(0,0,0,0.75)', background:'#080807' }}>
+            <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', gap:8, marginBottom:8, fontFamily:'var(--font-mono)' }}>
+              <div>
+                <div style={{ color:'var(--amber)', fontSize:10, letterSpacing:'0.08em' }}>WORLD MINIMAP</div>
+                <div style={{ color:'var(--text2)', fontSize:9, marginTop:3 }}><span style={{ color:'#64db67' }}>■</span> explored <span style={{ color:'#e24d4d', marginLeft:7 }}>●</span> starting sector <span style={{ color:'#fff', marginLeft:7 }}>□</span> camera view</div>
+              </div>
+              <span style={{ color:'var(--text2)', fontSize:9 }}>Infinite world · discovered sectors</span>
             </div>
-            <div style={{ flex:1, overflow:'auto', maxHeight:76 }}>
-              <div style={{ display:'grid', gridTemplateColumns:'repeat(' + (sectorOverview.maxSx - sectorOverview.minSx + 1) + ', ' + sectorOverviewCell + 'px)', gridTemplateRows:'repeat(' + (sectorOverview.maxSy - sectorOverview.minSy + 1) + ', 25px)', width:'max-content', margin:'0 auto' }}>
-                {Array.from({ length:(sectorOverview.maxSy - sectorOverview.minSy + 1) * (sectorOverview.maxSx - sectorOverview.minSx + 1) }, (_,i) => {
-                  const cols = sectorOverview.maxSx - sectorOverview.minSx + 1;
-                  const sx = sectorOverview.minSx + i % cols, sy = sectorOverview.minSy + Math.floor(i / cols);
-                  const known = sectorOverview.sectors.some(s => s.sx === sx && s.sy === sy);
-                  if (!known) return <div key={sx + ',' + sy} aria-hidden="true"/>;
-                  const playerSx = Number.isFinite(pos.sx) ? pos.sx : Math.floor(pos.gx / COLS), playerSy = Number.isFinite(pos.sy) ? pos.sy : Math.floor(pos.gy / ROWS);
-                  const current = view.sx === sx && view.sy === sy, player = playerSx === sx && playerSy === sy;
-                  return <button key={sx + ',' + sy} onClick={() => { setView({ sx, sy }); setSelectedSquare(null); setHoveredSquare(null); setShowSectorMap(false); }} aria-pressed={current} title={'Open discovered sector ' + sectorTag(sx,sy) + (player ? ' · survivor here' : '')} style={{ width:sectorOverviewCell, height:25, padding:0, display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', border:current && player ? '2px solid #ff3b3b' : current ? '2px solid #f0d060' : player ? '2px solid #ff3b3b' : '1px solid #887a57', background:current ? 'rgba(240,208,96,0.18)' : player ? 'rgba(255,59,59,0.13)' : '#242017', color:current ? '#f0d060' : player ? '#ff7777' : '#d6c8a9', cursor:'pointer', fontFamily:'var(--font-mono)', fontSize:8, lineHeight:1 }}>
-                    <span>{sectorTag(sx,sy)}</span><span style={{ fontSize:7, color:player ? '#ff7777' : current ? '#f0d060' : 'transparent' }}>{player ? 'YOU' : current ? 'VIEW' : '·'}</span>
+            <div role="group" aria-label="Minimap shape" style={{ display:'flex', gap:6, marginBottom:8, flexWrap:'wrap' }}>
+              {sectorMapShapes.map(shape => <button key={shape.id} type="button" data-trav={`minimap-shape-${shape.id}`} aria-pressed={sectorMapShape === shape.id} onClick={() => setSectorMapShape(shape.id)} style={{ display:'flex', alignItems:'center', gap:5, padding:'4px 7px', border:`1px solid ${sectorMapShape === shape.id ? '#f0d060' : '#494236'}`, background:sectorMapShape === shape.id ? 'rgba(240,208,96,0.12)' : '#12110e', color:sectorMapShape === shape.id ? '#f0d060' : '#c9bd9f', cursor:'pointer', fontFamily:'var(--font-mono)', fontSize:9 }}>
+                <svg width="30" height="20" viewBox="0 0 30 20" aria-hidden="true">{shape.id === 'circle' ? <circle cx="15" cy="10" r="8" fill="#20331f" stroke="#64db67"/> : <rect x={shape.id === 'wide' ? 1 : shape.id === 'tall' ? 8 : 6} y={shape.id === 'tall' ? 1 : 2} width={shape.id === 'wide' ? 28 : shape.id === 'tall' ? 14 : 18} height={shape.id === 'wide' ? 16 : 18} fill="#20331f" stroke="#64db67"/>}<circle cx="10" cy="9" r="1.7" fill="#e24d4d"/><path d="M14 7 L22 7 L20 13 L12 13 Z" fill="none" stroke="#fff" strokeWidth="1.3"/></svg>
+                {shape.label}
+              </button>)}
+            </div>
+            <div data-trav="minimap-canvas" style={{ position:'relative', width:sectorMapShape === 'circle' ? 'min(100%, 220px)' : '100%', margin:sectorMapShape === 'circle' ? '0 auto' : 0, aspectRatio:sectorMapShape === 'wide' ? '16 / 10' : sectorMapShape === 'tall' ? '10 / 16' : '1 / 1', maxHeight:sectorMapShape === 'circle' ? 'none' : 220, overflow:'hidden', border:sectorMapShape === 'circle' ? '2px solid #79725f' : '1px solid #36332b', borderRadius:sectorMapShape === 'circle' ? '50%' : 2, background:'#020302' }}>
+              <div style={{ position:'absolute', left:'50%', top:'50%', width:`${minimapContentWidth}%`, height:`${minimapContentHeight}%`, transform:'translate(-50%, -50%)', overflow:'hidden', background:'#030503' }}>
+                {sectorOverview.sectors.map(({sx,sy}) => {
+                  const isCurrent = view.sx === sx && view.sy === sy, isStartSector = startSector.sx === sx && startSector.sy === sy;
+                  const left = ((sx-sectorOverview.minSx)/minimapCols)*100, top = ((sy-sectorOverview.minSy)/minimapRows)*100;
+                  const width = 100/minimapCols, height = 100/minimapRows;
+                  const cells = Array.from({length:COLS*ROWS}, (_,i) => {
+                    const col = i%COLS, row = Math.floor(i/COLS), cell = ZI.worldCell(sx*COLS+col,sy*ROWS+row,'scavenge');
+                    const color = cell.poiType ? '#e2b34a' : biomeColors[cell.biome]?.fill || '#263027';
+                    const atStart = startPosition.gx === cell.gx && startPosition.gy === cell.gy;
+                    return <span key={cell.gx+','+cell.gy} title={cell.name} style={{ position:'relative', background:color, border:'1px solid rgba(5,8,5,0.48)', minWidth:0, minHeight:0 }}>
+                      {atStart && <i aria-label="Starting location" style={{ position:'absolute', inset:0, display:'grid', placeItems:'center', color:'#ff5555', fontStyle:'normal', fontSize:8, textShadow:'0 0 2px #000' }}>●</i>}
+                    </span>;
+                  });
+                  return <button key={sx+','+sy} onClick={() => { setView({sx,sy}); setSelectedSquare(null); setHoveredSquare(null); }} aria-pressed={isCurrent} title={`Open explored chunk ${sectorTag(sx,sy)}${isStartSector ? ' · starting chunk' : ''}${isCurrent ? ' · camera view' : ''}`} style={{ position:'absolute', left:`${left}%`, top:`${top}%`, width:`${width}%`, height:`${height}%`, display:'grid', gridTemplateColumns:`repeat(${COLS}, 1fr)`, gridTemplateRows:`repeat(${ROWS}, 1fr)`, padding:0, gap:0, overflow:'hidden', border:0, outline:isCurrent ? '2px solid #fff' : '1px solid rgba(91,117,80,0.68)', outlineOffset:isCurrent ? -2 : -1, background:'#101710', cursor:'pointer' }}>
+                    {cells}
                   </button>;
                 })}
+                {(() => {
+                  const left = ((view.sx-sectorOverview.minSx)/minimapCols + cameraX/minimapCols)*100;
+                  const top = ((view.sy-sectorOverview.minSy)/minimapRows + cameraY/minimapRows)*100;
+                  const width = cameraWidth/minimapCols*100, height = cameraHeight/minimapRows*100;
+                  return <div data-trav="minimap-camera-frame" aria-label="Area visible in main traversal map" title="Current camera view" style={{ position:'absolute', zIndex:4, left:`${left}%`, top:`${top}%`, width:`${width}%`, height:`${height}%`, pointerEvents:'none', border:'2px solid #fff', background:'rgba(255,255,255,0.08)', clipPath:'polygon(12% 0, 100% 0, 88% 100%, 0 100%)', filter:'drop-shadow(0 0 2px #000)' }}/>
+                })()}
               </div>
             </div>
+            <div style={{ color:'var(--text2)', fontFamily:'var(--font-mono)', fontSize:9, marginTop:6 }}>Each pixel is one cell in a discovered chunk. Select a chunk to open it; the white angled frame tracks the main map view.</div>
           </div>}
           {/* Cardinal sector arrows */}
           {Object.entries(DIRS).map(([d, D]) => {
