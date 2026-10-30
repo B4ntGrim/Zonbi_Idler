@@ -1,4 +1,9 @@
-"""AUD-01 pass 3 — flat damage reduction.
+"""AUD-01 pass 3 — flat damage reduction.  [SUPERSEDED Oct 30]
+
+Retired by STAT-03 Addendum C5: Sam replaced flat DR with a single Elemental
+Resistance after this sim showed flat DR made low tiers trivial. Kept for the
+record; the live model is elem_res_sim.py.
+
 
 Sam's Oct 30 decision (STAT-03 Addendum B2): shield leaves the rank system and
 its slot is taken by FLAT damage reduction, which subtracts a fixed amount per
