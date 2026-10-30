@@ -1017,7 +1017,9 @@ window.SatelliteTraversalScreen = function SatelliteTraversalScreen({ setScreen,
       const sp = ZI.spendTravScout();
       if (!sp.ok) { setActionResult({ tone:'warn', text: sp.reason }); setTravTick(t => t + 1); return; }
       const ns = { ...scouted, [key]: true }; setScouted(ns); writeJ('zi_trav_scouted', ns);
-      const xpS = ZI.travEmitOnce('scout', ck, 'scout', 1); // P1: Stealth XP once per cell per real day
+      // SCOUT-01 (Sam, Oct 30): XP is earned PER CHARGE, but only for a square not already
+      // scouted in this 12-game-hour window.
+      const xpS = ZI.scoutEmitXp ? ZI.scoutEmitXp(ck) : false;
       const danger = ZI.THREAT_LABELS[Math.min(5, cell.threatLevel)];
       res = { tone:'info', text:`Scouted ${coord}: threat ${danger}, ${cell.biome} terrain, supplies up to RMAT T${cell.rmatTier}. ${looted[key] ? 'Already looted.' : 'Unlooted.'}${xpS ? ' +Stealth XP.' : ' No XP: already earned here today.'} Traversal scouts ${sp.left}/${sp.max} today.` };
     } else if (id === 'camp' && !ZI.canCampAt(cell)) {

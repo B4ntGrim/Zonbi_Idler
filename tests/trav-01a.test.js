@@ -37,7 +37,7 @@ const arm = (id) => { const m = doBody.search(new RegExp(`if \\(id === '${id}'[^
   const spends = []; for (let i = 0; i < 6; i++) spends.push(ZI.spendTravScout());
   check('1: a new real day gives 5 Traversal scouts (data-table value)', first.left === 5 && first.max === 5 && ZI.TRAVERSAL_SCOUT_CHARGES_PER_DAY === 5, JSON.stringify(first));
   check('1: each Traversal Scout spends 1 (5 → 0); the 6th is refused', spends.slice(0, 5).every((r, i) => r.ok && r.left === 4 - i) && !spends[5].ok && ZI.getTravScouts().left === 0, JSON.stringify(spends.map(r => r.left)));
-  check('1: the refusal carries the reason text', spends[5].reason === 'No Traversal scouts left today. Refills at midnight.', spends[5].reason);
+  check('1: the refusal carries the reason text', spends[5].reason === 'No Traversal scouts left. The pool refills every 12 game hours.', spends[5].reason);
   check('1: Wandering scout charges (zi_charges) are unchanged by Traversal scouting', JSON.stringify(ZI.getBaseCharges()) === wBefore && ZI.chargeTotals().scout === JSON.parse(wBefore).scout, wBefore);
   const sc = arm('scout');
   check('1: screen — Scout spends ZI.spendTravScout and stops on refusal (no XP, no reveal)', /ZI\.spendTravScout\(\)/.test(sc) && /if \(!sp\.ok\)[^\n]*return;/.test(sc) && !/spendCharge/.test(sc));
@@ -46,13 +46,16 @@ const arm = (id) => { const m = doBody.search(new RegExp(`if \\(id === '${id}'[^
 
 // ── 2: refill at local midnight; an offline return across one or more midnights refills once, to 5 ──
 { const { ZI, setNow } = mkEnv(); ZI.spendTravScout(); ZI.spendTravScout(); ZI.spendTravScout();
-  setNow(at(DAY1, 13.9)); const lateSame = ZI.getTravScouts().left;                       // 23:54 same day
-  setNow(new Date(2026, 9, 22, 0, 0, 30).getTime()); const after = ZI.getTravScouts().left;  // 00:00:30 next day
-  check('2: no refill before local midnight; full 5 just after it', lateSame === 2 && after === 5, lateSame + ' → ' + after);
+  // SCOUT-01 (Sam, Oct 30): the pool refills every 12 GAME hours (12 real minutes), not at local midnight.
+  const opened = ZI.getTravScouts().at;
+  const lateSame = ZI.getTravScouts(opened + ZI.TRAV_SCOUT_RESET_MS - 1000).left;
+  const after = ZI.getTravScouts(opened + ZI.TRAV_SCOUT_RESET_MS).left;
+  check('2: no refill before the 12-game-hour window closes; full 5 once it does', lateSame === 2 && after === 5, lateSame + ' → ' + after);
   ZI.spendTravScout(); setNow(new Date(2026, 9, 25, 9, 0).getTime()); const multi = ZI.getTravScouts();
   ZI.spendTravScout(); const afterSpend = ZI.getTravScouts().left;
-  check('2: a return after several midnights refills once, to exactly 5 (never above the daily amount)', multi.left === 5 && afterSpend === 4, multi.left + ' then ' + afterSpend);
-  check('2: the day key is the shared local-midnight key (ZI._localDayKey)', ZI._travToday() === ZI._localDayKey(new Date(2026, 9, 25, 9, 0).getTime())); }
+  check('2: a long absence refills once, to exactly 5 (never above the pool size)', multi.left === 5 && afterSpend === 4, multi.left + ' then ' + afterSpend);
+  check('2: the window is 12 game hours, and the real-day offline cap is untouched',
+    ZI.TRAV_SCOUT_RESET_MS === 12 * ZI.REAL_MS_PER_GAME_HOUR && ZI.OFFLINE_CAP_MS === 24 * 60 * 60 * 1000); }
 
 // ── 3: Scout, Hide and Travel grant XP once per cell per real day; another cell the same day grants again ──
 { const { ZI, xp, setNow } = mkEnv(); const n = (act) => xp.filter(e => e.action === act).length;
@@ -65,8 +68,8 @@ const arm = (id) => { const m = doBody.search(new RegExp(`if \\(id === '${id}'[^
   check('3: kinds are separate (Scout on a cell does not use up Hide there)', ZI.travXpAvailable('travel', '1,1') && !ZI.travXpAvailable('scout', '1,1'));
   setNow(new Date(2026, 9, 22, 8, 0).getTime());
   check('3: the next real day grants XP again on the same cell', ZI.travEmitOnce('scout', '1,1', 'scout', 1) === true);
-  check('3: screen — Travel, Scout and Hide arms use travEmitOnce with the cell key; no unlimited emitAction left in them',
-    /travEmitOnce\('travel', ck, 'move', 2\)/.test(arm('travel')) && /travEmitOnce\('scout', ck, 'scout', 1\)/.test(arm('scout')) && /travEmitOnce\('hide', ck, 'sneak', 1\)/.test(arm('hide'))
+  check('3: screen — Travel and Hide use travEmitOnce; Scout uses the SCOUT-01 per-charge path; no unlimited emitAction left in them',
+    /travEmitOnce\('travel', ck, 'move', 2\)/.test(arm('travel')) && /ZI\.scoutEmitXp\(ck\)/.test(arm('scout')) && /travEmitOnce\('hide', ck, 'sneak', 1\)/.test(arm('hide'))
     && !/ZI\.emitAction\('(move|scout|sneak|camp)'/.test(arm('travel') + arm('scout') + arm('hide') + arm('camp'))); }
 
 // ── 4: Hide shows the threat level and the tier range Wandering can draw; matches ZI._bgZombie for the same state ──

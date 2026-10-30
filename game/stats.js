@@ -424,23 +424,89 @@ ZI.spendCampUse = function(now) {
   try { localStorage.setItem(ZI.TRAV_CAMP_LAST_USED_KEY, String(now)); } catch (e) {}
   return { ok:true, available:false, availableAt:now + ZI.TRAV_RESET_MS, remainingMs:ZI.TRAV_RESET_MS };
 };
-ZI.TRAV_SCOUT_KEY = 'zi_trav_scout';     // { day, left }
+ZI.TRAV_SCOUT_KEY = 'zi_trav_scout';     // { at, left } — 'at' opens the 12-game-hour window
 ZI.TRAV_XP_DAY_KEY = 'zi_trav_xp_day';   // { day, done: { '<kind>:<gx>,<gy>': 1 } }
 ZI._travToday = function() {
   const t = ZI.clockNow ? ZI.clockNow() : Date.now(), d = new Date(t);
   return ZI._localDayKey ? ZI._localDayKey(t) : (d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate());
 };
 // Reading never writes: a stored day that is not today reads as a full pool (refills once, however many midnights passed).
-ZI.getTravScouts = function() {
-  const max = ZI.TRAVERSAL_TABLE.scoutChargesPerDay, day = ZI._travToday(), r = ZI._rj(ZI.TRAV_SCOUT_KEY, null);
-  if (!r || r.day !== day) return { day, left: max, max };
-  return { day, left: Math.max(0, Math.min(max, r.left | 0)), max };
+// SCOUT-01 (Sam, Oct 30): the scout pool refills every 12 GAME hours (12 real minutes), not at
+// local midnight. A record still holding the old { day, left } shape reads as a full pool, so no
+// save migration is needed. The window opens on the first spend, not on the first read.
+ZI.TRAV_SCOUT_RESET_MS = 12 * ZI.REAL_MS_PER_GAME_HOUR;
+ZI.getTravScouts = function(now) {
+  now = Number.isFinite(now) ? now : ZI.clockNow();
+  const max = ZI.TRAVERSAL_TABLE.scoutChargesPerDay, r = ZI._rj(ZI.TRAV_SCOUT_KEY, null);
+  const at = r && Number.isFinite(r.at) ? r.at : null;
+  if (at == null || now >= at + ZI.TRAV_SCOUT_RESET_MS) return { at: null, left: max, max, resetsAt: null };
+  return { at, left: Math.max(0, Math.min(max, r.left | 0)), max, resetsAt: at + ZI.TRAV_SCOUT_RESET_MS };
 };
-ZI.spendTravScout = function() {
-  const s = ZI.getTravScouts();
-  if (s.left <= 0) return { ok: false, reason: 'No Traversal scouts left today. Refills at midnight.', left: 0, max: s.max };
-  ZI._wj(ZI.TRAV_SCOUT_KEY, { day: s.day, left: s.left - 1 });
-  return { ok: true, left: s.left - 1, max: s.max };
+ZI.spendTravScout = function(now) {
+  now = Number.isFinite(now) ? now : ZI.clockNow();
+  const s = ZI.getTravScouts(now);
+  if (s.left <= 0) return { ok: false, reason: 'No Traversal scouts left. The pool refills every 12 game hours.', left: 0, max: s.max, resetsAt: s.resetsAt };
+  const at = s.at == null ? now : s.at;
+  ZI._wj(ZI.TRAV_SCOUT_KEY, { at, left: s.left - 1 });
+  return { ok: true, left: s.left - 1, max: s.max, resetsAt: at + ZI.TRAV_SCOUT_RESET_MS };
+};
+// Scout XP is earned PER CHARGE (Sam, Oct 30) rather than once per cell per real day, but only
+// for a square not already scouted in this window — so charges pay out while re-scouting the
+// same square does not. Other Traversal actions keep the per-real-day rule in travEmitOnce.
+ZI.TRAV_SCOUT_XP_KEY = 'zi_trav_scout_xp';   // { at, done: { 'gx,gy': 1 } }
+ZI._scoutXpRecord = function(now) {
+  now = Number.isFinite(now) ? now : ZI.clockNow();
+  const r = ZI._rj(ZI.TRAV_SCOUT_XP_KEY, null);
+  const at = r && Number.isFinite(r.at) ? r.at : null;
+  if (at == null || now >= at + ZI.TRAV_SCOUT_RESET_MS) return { at: null, done: {} };
+  return { at, done: (r && r.done) || {} };
+};
+ZI.scoutXpAvailable = function(cellKey, now) { return !ZI._scoutXpRecord(now).done[cellKey]; };
+ZI.scoutEmitXp = function(cellKey, now, scale) {
+  now = Number.isFinite(now) ? now : ZI.clockNow();
+  const rec = ZI._scoutXpRecord(now);
+  if (rec.done[cellKey]) return false;
+  rec.done[cellKey] = 1;
+  ZI._wj(ZI.TRAV_SCOUT_XP_KEY, { at: rec.at == null ? now : rec.at, done: rec.done });
+  ZI.emitAction && ZI.emitAction('scout', scale === undefined ? 1 : scale);
+  return true;
+};
+// ── Scout reach (Sam, Oct 30) ────────────────────────────────────────────────
+// Base is the adjacent square. Gear, Stealth, a working vehicle and a scouting bird each widen
+// it, and the total is clamped to 9. Sam, Oct 30: "if I were in a certain vehicle with a bonus to
+// traversal square travel length, the adjacent squares should expand to reflect that".
+ZI.SCOUT_RANGE_BASE = 1;
+ZI.SCOUT_RANGE_MAX = 9;
+ZI.SCOUT_STEALTH_LEVELS_PER_STEP = 4;   // matches the Stealth line "+1 scout revealed every 4 levels"
+ZI.SCOUT_VEHICLE_RANGE = 1;             // [PROPOSED] until vehicles carry their own traversal-length bonus
+ZI.scoutRangeParts = function() {
+  const parts = { base: ZI.SCOUT_RANGE_BASE, gear: 0, stealth: 0, vehicle: 0, companion: 0 };
+  try {
+    const lo = ZI.getLoadout ? ZI.getLoadout() : {};
+    Object.keys(lo).forEach(slot => {
+      const it = lo[slot] && ZI.getGearItem ? ZI.getGearItem(lo[slot]) : null;
+      if (it && Number(it.scoutRange) > 0) parts.gear += Number(it.scoutRange);
+    });
+  } catch (e) {}
+  const lvl = ZI.statLevel ? ZI.statLevel('stealth') : 1;
+  parts.stealth = Math.floor((Number(lvl) || 1) / ZI.SCOUT_STEALTH_LEVELS_PER_STEP);
+  const v = ZI.getVehicle ? ZI.getVehicle() : null;
+  if (v && v.found) parts.vehicle = Number(v.scoutRange) > 0 ? Number(v.scoutRange) : ZI.SCOUT_VEHICLE_RANGE;
+  // Scouting Pigeon / Hawk: in development. The hook is here so the birds only have to supply a
+  // number; nothing is invented for them yet.
+  parts.companion = ZI.scoutCompanionRange ? (Number(ZI.scoutCompanionRange()) || 0) : 0;
+  return parts;
+};
+ZI.scoutRange = function() {
+  const p = ZI.scoutRangeParts();
+  const total = p.base + p.gear + p.stealth + p.vehicle + p.companion;
+  return Math.max(ZI.SCOUT_RANGE_BASE, Math.min(ZI.SCOUT_RANGE_MAX, total));
+};
+// Chebyshev distance: a square is scoutable when it is within the current reach.
+ZI.canScoutCell = function(from, to) {
+  if (!from || !to) return false;
+  const d = Math.max(Math.abs((to.gx | 0) - (from.gx | 0)), Math.abs((to.gy | 0) - (from.gy | 0)));
+  return d > 0 && d <= ZI.scoutRange();
 };
 ZI._travXpDone = function() { const day = ZI._travToday(), r = ZI._rj(ZI.TRAV_XP_DAY_KEY, null); return (r && r.day === day && r.done) ? { day, done: r.done } : { day, done: {} }; };
 // cellKey: 'gx,gy' for per-cell limits, or any fixed label (Make camp uses 'any': once per real day overall).

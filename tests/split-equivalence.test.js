@@ -53,6 +53,13 @@ DATA_CHANGED.add('CRAFT_RECIPES');
 ['professionName','_levelFromXp','_summaryFromSnapshot','slotSummary','TRAV_RESET_MS',
  'TRAV_HIDE_MAX_PER_GAME_DAY'].forEach(k => ADDED.add(k));
 ['_summary','listSlots','_hideUsesAt','getHideUses','spendHideUse','getCampCooldown','spendCampUse'].forEach(k => CHANGED_FN.add(k));
+// SCOUT-01 (Sam, Oct 30): Traversal scout charges refill every 12 GAME hours, XP is earned per
+// charge for squares not yet scouted in that window, and reach grows from the adjacent square to
+// at most 9 via gear, Stealth, a working vehicle and a scouting bird. The legacy monolith predates it.
+['TRAV_SCOUT_RESET_MS','TRAV_SCOUT_XP_KEY','_scoutXpRecord','scoutXpAvailable','scoutEmitXp',
+ 'SCOUT_RANGE_BASE','SCOUT_RANGE_MAX','SCOUT_STEALTH_LEVELS_PER_STEP','SCOUT_VEHICLE_RANGE',
+ 'scoutRangeParts','scoutRange','canScoutCell'].forEach(k => ADDED.add(k));
+['getTravScouts','spendTravScout'].forEach(k => CHANGED_FN.add(k));
 // Intentional post-split additions/changes: seeded sector POI placement and daily modifiers; current recipe
 // generation and loot/wander rules; and expanded world/background catalogues. Keep the legacy comparison scoped
 // to portions that are still intended to be equivalent.
