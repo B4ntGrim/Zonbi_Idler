@@ -10,11 +10,11 @@ Sam's Oct 30 decisions (STAT-03 Addendum B):
 from __future__ import annotations
 
 ATTRS = ['S', 'U', 'R', 'V', 'I', 'V2', 'A', 'L']
-CAP = 13
-MILESTONES = [20, 35, 50, 70, 85]
-MAXL = 100
+CAP = 10                 # [DECIDED Sam, Addendum C] 8 x 10 = 80
+MILESTONES = [50]        # [PROPOSED] one point, to make L2-L80 total exactly 80
+MAXL = 80                # launch ceiling; design max stays 100
 RANKS_TO_CAP = 30
-GATE = 2          # rankCap = GATE x attribute
+GATE = 3          # [DECIDED Sam] attribute 10 -> rank 30 exactly
 
 
 def points_by(level: int) -> int:
@@ -99,8 +99,20 @@ def main() -> None:
         rc = min(RANKS_TO_CAP, GATE * v)
         print(f'  Vitality {v:>2} -> maxHp rank cap {rc:>2} of {RANKS_TO_CAP} '
               f'({"gated" if rc < RANKS_TO_CAP else "ungated"})')
-    print('  The gate binds until Vitality 15, which is above the cap of 13 - so under')
-    print('  Addendum B the maxHp rank is NEVER fully unlocked. See the report.')
+    print()
+    print('--- FAIL CHECK: can every stat reach rank 30 at the launch cap? ---')
+    final = spend(MAXL, EVEN)
+    worst = min(min(RANKS_TO_CAP, GATE * v) for v in final.values())
+    print(f'  lowest rankCap across all 8 attributes at L{MAXL}: {worst} of {RANKS_TO_CAP}'
+          f'  -> {"PASS" if worst >= RANKS_TO_CAP else "FAIL"}')
+    print()
+    print('--- attributes fully unlocked (rank 30 reachable) on the way up ---')
+    print(f'{"level":>6}{"focused":>10}{"even":>8}')
+    for L in (20, 40, 60, MAXL):
+        fo, ev2 = spend(L, focused_order()), spend(L, EVEN)
+        uf = sum(1 for v in fo.values() if GATE * v >= RANKS_TO_CAP)
+        ue = sum(1 for v in ev2.values() if GATE * v >= RANKS_TO_CAP)
+        print(f'{L:>6}{uf:>10}{ue:>8}')
 
 
 if __name__ == '__main__':
