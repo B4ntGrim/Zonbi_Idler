@@ -195,3 +195,147 @@ scale with absence length rather than being flat.
 ## Not done
 - No game code was touched; the other session's uncommitted files were left alone.
 - The existing test suite was not re-run — nothing this audit produced is loaded by the game.
+
+---
+
+# AUD-01b re-run (Oct 30, after Sam's decisions)
+
+Sam answered all four calls from the audit above, and three of the four answers changed the design
+rather than just picking a number. Everything here re-verifies against those answers.
+
+**All four re-runs PASS.**
+
+| Re-run | Subject | Result |
+|---|---|---|
+| 1 | Clear-sky guarantee | **PASS** — worst bad run 621h → 132h |
+| 2 | Progression at cap 10, gate 3 | **PASS** — every stat reaches rank 30 |
+| 3 | Elemental Resistance | **PASS** — physical untouched, floors at 50% |
+| 4 | Catch-up scaling with absence | **PASS** — no exploit, long absence now wins |
+
+## Re-run 1 — Clear-sky guarantee
+`CLEAR_GUARANTEE_H = 48` forces Clear once consecutive bad hours reach 48.
+
+| | Before | After |
+|---|---|---|
+| Longest unbroken bad weather | 621h (10.4 real hours) | **132h** (2.2 real hours) |
+| Allowed (48h + one max event) | — | 144h → **PASS** |
+| Winter Clear share | 28.9% | **42.6%** |
+| Consecutive repeats | 0 | 0 |
+| Longest single event | 94h | 94h (cap 96h) |
+
+## Re-run 2 — Progression at cap 10
+The contradiction is gone, and it was the cap that was wrong, not the gate.
+
+| Check | Result |
+|---|---|
+| 79 level points + 1 milestone = 80 = 8 × 10 | **PASS** — exact |
+| Builds identical at the launch cap L80 | **PASS** |
+| Lowest rankCap across all 8 attributes at L80 | **30 of 30 — PASS** |
+| Any level granting nothing | none |
+| First attribute capped, focused build | L11 |
+
+**The differentiation finally measurable.** The old power metric was linear in points and showed a
+0.0% gap at every level. Counting *attributes fully unlocked* instead shows what Sam actually
+designed:
+
+| Level | Focused | Even |
+|---|---|---|
+| 20 | **1** | 0 |
+| 40 | **3** | 0 |
+| 60 | **6** | 0 |
+| 80 | 8 | 8 |
+
+Identical destination, very different journey — differentiation is **when** stats become reachable.
+
+**VIT-01 resolved.** Vitality 10 now ungates maxHp to rank 30; under the old 2× gate it topped out
+at 26 forever.
+
+## Re-run 3 — Elemental Resistance
+Replaces flat DR. One resistance for all elements, armor still physical.
+
+| FAIL check | Result |
+|---|---|
+| Physical-only tiers changed by resistance | **PASS** — never applied |
+| Elemental damage below 50% of post-armor | **PASS** — floors at exactly 50% at rank 30 |
+
+**The trivialisation test that killed flat DR.** Hits to down a 150HP survivor with an F-tier zombie:
+
+| | hits |
+|---|---|
+| raw | 34.6 |
+| armor alone at L80 | 49.9 |
+| **Elemental Resistance at L80** | **81.0** |
+| flat DR at L80 (retired) | 174.4 |
+
+Low tiers still soften, but from gear the player chose rather than from a mechanic that punished
+weak attackers hardest. Fixed by construction: resistance cannot touch a physical attacker.
+
+### `[OPEN]` Elemental coverage is uneven
+Tagged from the live bestiary:
+
+| Tier | F | E | D | C | B | A | S | BOSS |
+|---|---|---|---|---|---|---|---|---|
+| elemental | 3/3 | **0/4** | 4/6 | 5/7 | 2/9 | 3/8 | 2/7 | **0/1** |
+
+**E tier and the BOSS are entirely physical**, so Elemental Resistance does nothing against them.
+For E tier that is probably fine — it is one early band. The BOSS is the problem: a stat every
+player has fully maxed by L80 is dead weight in the fight the whole run builds toward. Either the
+BOSS needs an elemental attack, or this is a deliberate "bring the right tool" statement. Worth
+deciding before it is built.
+
+## Re-run 4 — Catch-up scaling with absence
+`allowance = ALLOWANCE × level-1 XP × min(daysAway, 14) / 14`
+
+| Days away | Allowance granted |
+|---|---|
+| 2 | 7.1 XP |
+| 5 | 17.9 XP |
+| **14** | **50.0 XP** |
+| 30 | 50.0 XP (capped) |
+
+A fortnight away is worth **seven times** a skipped weekend, which is what Sam asked for. The
+no-exploit rule holds: always-active finishes ahead of every intermittent pattern.
+
+### The trade, stated plainly
+Totals over 120 days shifted against the frequent-short-break player:
+
+| Pattern | Flat allowance | Scaled allowance |
+|---|---|---|
+| 5-on / 2-off | 1.89% | **0.27%** |
+| 10-on / 10-off | 0.80% | **0.57%** |
+
+Scaling by absence length necessarily takes from the weekend player to give to the returner. That is
+the trade Sam chose, and the ordering is now correct — but the weekend player gets noticeably less
+than they did an hour ago.
+
+## Updated constants
+
+Removed: `ZI.FLAT_DR_PER_RANK`, `ZI.FLAT_DR_TIER_SCALE`, `ZI.DAMAGE_FLOOR_PCT`, and the 2.5 gate.
+
+| Constant | Value | Source |
+|---|---|---|
+| `ZI.ATTR_CAP` | **10** | Addendum C1 |
+| `ZI.ATTR_RANK_GATE` | **3** | Addendum C1 |
+| `ZI.LAUNCH_MAX_LEVEL` | **80** (design max 100) | Addendum C2 |
+| `ZI.ATTR_MILESTONE_LEVELS` | `[50]` `[PROPOSED]` | Addendum C2 |
+| `ZI.ELEM_RESIST_CAP` | **0.50** over 30 ranks | Addendum C5 |
+| `ZI.WEATHER_CLEAR_GUARANTEE_H` | **48** | WX-01 |
+| `ZI.CATCHUP_AWAY_CAP_DAYS` | **14** | PROF-01 P5 |
+| `ZI.CATCHUP_ACCRUAL_DAYS` | 2 | PROF-01 P2 |
+| `ZI.CATCHUP_ALLOWANCE` | 0.50 of level-1 XP | PROF-01 P4 |
+| `ZI.CATCHUP_MAX_RATE` | 0.15 | PROF-01 |
+| `ZI.WEATHER_DURATION.*` | Spring 4–36, Summer 3–28, Autumn 6–48, Winter 10–96 | Pass 1 |
+| `ZI.WEATHER_HAZARD_MAX_H` | 8 | Pass 1 |
+| `ZI.WEATHER_FORECAST_BUFFER` | 3 events | Pass 1 |
+| `ZI.CHILLED_TRIGGER_RUNG` | Soaked | Pass 1 |
+| `ZI.CHILLED_CURE_H` | 2 | Pass 1 |
+
+## What still needs Sam
+1. **The BOSS has no elemental attack** — Elemental Resistance is dead weight in the final fight.
+2. **Milestone level `[PROPOSED: 50]`** — the single bonus point's home is still a guess.
+3. **The weekend player's reduced bonus** — correct ordering, but is 0.27% too little?
+
+## Correction
+FAIL check 2 in re-run 3 was implemented backwards on the first attempt — it tested for resistance
+being too *weak* rather than too strong. Corrected before the result was recorded; the check as
+written fails only if elemental damage drops below 50% of post-armor, which it never does.
