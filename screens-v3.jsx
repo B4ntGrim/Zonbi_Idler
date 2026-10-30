@@ -687,6 +687,7 @@ window.SatelliteTraversalScreen = function SatelliteTraversalScreen({ setScreen,
   const [selectedSquare, setSelectedSquare] = React.useState(null);
   const [selectedSurvivors, setSelectedSurvivors] = React.useState([1]);
   const [mapPanMode, setMapPanMode] = React.useState(false);
+  const [showSectorMap, setShowSectorMap] = React.useState(false);
   const [mapDragging, setMapDragging] = React.useState(false);
   const [mapTransform, setMapTransform] = React.useState({ scale:1, x:0, y:0 });
   const mapViewportRef = React.useRef(null), mapDragRef = React.useRef(null), panMovedRef = React.useRef(false);
@@ -1275,9 +1276,10 @@ window.SatelliteTraversalScreen = function SatelliteTraversalScreen({ setScreen,
             <span style={{ marginLeft:'auto', color:'var(--text2)' }}>Sector <b style={{ color:'var(--amber)' }}>{sectorTag(view.sx, view.sy)}</b> {ZI.isDevView() && <> · Seed #{worldSeed} / {ZI.MAX_SEED.toLocaleString()}</>}</span>
             {!inPlayerSector && <button className="btn" style={{ padding:'3px 10px', fontSize:11 }} onClick={() => setView({ sx:pos.sx, sy:pos.sy })}>◉ Back to my sector</button>}
             <button data-trav="pan-toggle" aria-pressed={mapPanMode} title="Toggle map dragging; use the wheel over the grid to zoom" onClick={() => { setMapPanMode(v => !v); setHoveredSquare(null); }} style={{ padding:'5px 9px', background:'#080807', border:'1px solid ' + (mapPanMode ? '#f0d060' : '#665838'), color:mapPanMode ? '#f0d060' : '#c9bd9f', fontFamily:'var(--font-mono)', fontSize:11, cursor:'pointer' }}>{mapPanMode ? '✥ Drag map: ON' : '✥ Drag map'}</button>
+            <button data-trav="sector-map-toggle" aria-expanded={showSectorMap} aria-controls="trav-sector-overview" onClick={() => setShowSectorMap(v => !v)} title="Show or hide the connected map of discovered sectors" style={{ padding:'5px 9px', background:showSectorMap ? 'rgba(240,208,96,0.14)' : '#080807', border:'1px solid ' + (showSectorMap ? '#f0d060' : '#665838'), color:showSectorMap ? '#f0d060' : '#c9bd9f', fontFamily:'var(--font-mono)', fontSize:11, cursor:'pointer' }}>{showSectorMap ? '▦ Close sector map' : '▦ Sector map'}</button>
             <button data-trav="zoom-reset" title="Reset map zoom and position" onClick={() => setMapTransform({ scale:1, x:0, y:0 })} style={{ padding:'5px 8px', background:'#080807', border:'1px solid #494236', color:'#c9bd9f', fontFamily:'var(--font-mono)', fontSize:11, cursor:'pointer' }}>{Math.round(mapTransform.scale * 100)}% · Reset</button>
           </div>
-          <div data-trav="sector-overview" aria-label="Connected map of discovered sectors" style={{ flexShrink:0, display:'flex', alignItems:'center', gap:10, minHeight:44, margin:'0 44px 6px', padding:'4px 8px', border:'1px solid var(--border)', background:'rgba(6,8,10,0.88)' }}>
+          {showSectorMap && <div id="trav-sector-overview" data-trav="sector-overview" aria-label="Connected map of discovered sectors" style={{ position:'absolute', zIndex:8, top:58, right:50, width:'min(460px, calc(100% - 100px))', maxHeight:140, overflow:'auto', display:'flex', alignItems:'center', gap:10, padding:'8px 10px', border:'1px solid #887a57', boxShadow:'0 8px 24px rgba(0,0,0,0.75)', background:'#080807' }}>
             <div style={{ flexShrink:0, fontFamily:'var(--font-mono)', fontSize:9, lineHeight:1.45, color:'var(--text2)' }}>
               <div style={{ color:'var(--amber)', letterSpacing:'0.08em' }}>SECTOR MAP</div>
               <div><span style={{ color:'#ff3b3b' }}>●</span> You <span style={{ color:'#f0d060' }}>■</span> Viewing</div>
@@ -1291,13 +1293,13 @@ window.SatelliteTraversalScreen = function SatelliteTraversalScreen({ setScreen,
                   if (!known) return <div key={sx + ',' + sy} aria-hidden="true"/>;
                   const playerSx = Number.isFinite(pos.sx) ? pos.sx : Math.floor(pos.gx / COLS), playerSy = Number.isFinite(pos.sy) ? pos.sy : Math.floor(pos.gy / ROWS);
                   const current = view.sx === sx && view.sy === sy, player = playerSx === sx && playerSy === sy;
-                  return <button key={sx + ',' + sy} onClick={() => { setView({ sx, sy }); setSelectedSquare(null); setHoveredSquare(null); }} aria-pressed={current} title={'Open discovered sector ' + sectorTag(sx,sy) + (player ? ' · survivor here' : '')} style={{ width:sectorOverviewCell, height:25, padding:0, display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', border:current && player ? '2px solid #ff3b3b' : current ? '2px solid #f0d060' : player ? '2px solid #ff3b3b' : '1px solid #887a57', background:current ? 'rgba(240,208,96,0.18)' : player ? 'rgba(255,59,59,0.13)' : '#242017', color:current ? '#f0d060' : player ? '#ff7777' : '#d6c8a9', cursor:'pointer', fontFamily:'var(--font-mono)', fontSize:8, lineHeight:1 }}>
+                  return <button key={sx + ',' + sy} onClick={() => { setView({ sx, sy }); setSelectedSquare(null); setHoveredSquare(null); setShowSectorMap(false); }} aria-pressed={current} title={'Open discovered sector ' + sectorTag(sx,sy) + (player ? ' · survivor here' : '')} style={{ width:sectorOverviewCell, height:25, padding:0, display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', border:current && player ? '2px solid #ff3b3b' : current ? '2px solid #f0d060' : player ? '2px solid #ff3b3b' : '1px solid #887a57', background:current ? 'rgba(240,208,96,0.18)' : player ? 'rgba(255,59,59,0.13)' : '#242017', color:current ? '#f0d060' : player ? '#ff7777' : '#d6c8a9', cursor:'pointer', fontFamily:'var(--font-mono)', fontSize:8, lineHeight:1 }}>
                     <span>{sectorTag(sx,sy)}</span><span style={{ fontSize:7, color:player ? '#ff7777' : current ? '#f0d060' : 'transparent' }}>{player ? 'YOU' : current ? 'VIEW' : '·'}</span>
                   </button>;
                 })}
               </div>
             </div>
-          </div>
+          </div>}
           {/* Cardinal sector arrows */}
           {Object.entries(DIRS).map(([d, D]) => {
             const chk = canView(d);
