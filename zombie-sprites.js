@@ -67,7 +67,20 @@ ZI_ART.ZOMBIE_SPRITES = {
   '106': { file:'106-the-plague-archon', w:125, h:86, src:'art/zombies/106-the-plague-archon.png' },
   '107': { file:'107-the-sub-zero-colossus', w:125, h:86, src:'art/zombies/107-the-sub-zero-colossus.png' },
   '108': { file:'108-the-apex-prime', w:128, h:86, src:'art/zombies/108-the-apex-prime.png' },
+  'crawler': { file:'crawler-v1', w:112, h:50, src:'art/zombies/crawler-v1.png', fit:'cover' },
+  'crawler-split': { file:'crawler-split-v1', w:112, h:50, src:'art/zombies/crawler-split-v1.png', fit:'cover' },
+  // ---- SS tier (BESTIARY-03, Sam's team, Oct 30). Locked height 76 px. ----
+  // Registered so the art lives in one place and is ready. They cannot appear in game yet: every
+  // bestiary entry is still id 1-45 and none is SS tier, so ZOMBIE_SPRITE_MAP has nothing to
+  // attach them to. They light up when bestiary-data.js is rebuilt on art ids 49-108.
+  '109': { file:'109-vitriol-warlord',   w:114, h:76, src:'art/zombies/tier-SS/vitriol-warlord.png' },
+  '110': { file:'110-carillon-tyrant',   w:95,  h:76, src:'art/zombies/tier-SS/carillon-tyrant.png' },
+  '111': { file:'111-bedrock-marshal',   w:114, h:76, src:'art/zombies/tier-SS/bedrock-marshal.png' },
+  '112': { file:'112-grave-overlord-ss', w:88,  h:76, src:'art/zombies/tier-SS/grave-overlord-ss.png' },
 };
+
+// The SS tier's sprite keys, so other code finds them without hard-coding numbers.
+ZI_ART.SS_SPRITE_KEYS = ['109', '110', '111', '112'];
 
 // Which field-bestiary entries (ZI.BESTIARY, ids 1-45) use which sprite in Wandering fights and the Codex.
 // Every field entry now has new art (Oct 24), matched by base type and look; a list = variants (each fight picks
@@ -119,6 +132,7 @@ ZI_ART.ZOMBIE_SPRITE_MAP = {
   43: ['094'],
   44: ['103'],
   45: ['100'],
+  46: ['crawler', 'crawler-split'],
 };
 
 // Returns { src, w, h, file } for a field-bestiary id, or null to fall back to the SVG painter.
