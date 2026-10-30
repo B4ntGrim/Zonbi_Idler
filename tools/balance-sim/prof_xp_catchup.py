@@ -20,6 +20,7 @@ BASE_XP_L1    = 100
 # AUD-01 pass 4 — Sam's Oct 30 decisions
 ACCRUAL_DAYS  = 2            # P2: was 3; 2 catches the weekend player
 ALLOWANCE     = 0.50         # P4: was 0.25
+AWAY_CAP_DAYS = 14           # P5: allowance scales with days away up to this
 MAX_RATE      = 0.15         # unchanged
 
 def xp_to_next(level):
@@ -43,8 +44,10 @@ class Profession:
         requirement - so the bonus lands hardest relative to a neglected
         low-level profession instead of a high-level one."""
         self.idle_days += days
-        if self.idle_days >= accrual_days and self.allowance <= 0:
-            cap = ALLOWANCE * xp_to_next(1)          # P3: based on level-1 XP
+        if self.idle_days >= accrual_days:
+            # P5: scale with how long they were away, capped at AWAY_CAP_DAYS.
+            scale = min(self.idle_days, AWAY_CAP_DAYS) / AWAY_CAP_DAYS
+            cap = ALLOWANCE * xp_to_next(1) * scale
             self.allowance = self.allowance_cap = cap
 
     def rate(self):
@@ -175,3 +178,32 @@ def pass4():
 
 if __name__ == '__main__':
     pass4()
+
+def pass4b():
+    DAYS = 120
+    pats = [('always active',  lambda d: True),
+            ('5 on / 2 off',   lambda d: d % 7 < 5),
+            ('10 on / 10 off', lambda d: (d // 10) % 2 == 0),
+            ('14 off first',   lambda d: d >= 14),
+            ('30 off first',   lambda d: d >= 30)]
+    print(f'\n=== AUD-01b RE-RUN 4 — allowance scales with days away (cap {AWAY_CAP_DAYS}d) ===\n')
+    print(f'{"pattern":>18}{"active":>8}{"total XP":>11}{"bonus XP":>10}{"bonus %":>9}')
+    base = None; fails = []
+    for name, fn in pats:
+        p = run(DAYS, 8, fn)
+        tot = p.base_earned + p.boost_earned
+        if name == 'always active': base = tot
+        elif tot > base: fails.append((name, tot, base))
+        active = sum(1 for d in range(DAYS) if fn(d))
+        print(f'{name:>18}{active:>8}{tot:>11.0f}{p.boost_earned:>10.1f}'
+              f'{pct(p.boost_earned, p.base_earned):>8.2f}%')
+    print(f'\nFAIL CHECK: intermittent ahead of always-active? '
+          f'{"FAIL " + str(fails) if fails else "PASS"}')
+    print('\nDoes a long absence now beat a weekend?')
+    for days in (2, 5, 14, 30):
+        p = Profession('t', 8)
+        p.tick_idle(days, ACCRUAL_DAYS)
+        print(f'  {days:>2}d away -> allowance {p.allowance_cap:>6.1f} XP')
+
+if __name__ == '__main__':
+    pass4b()
