@@ -225,7 +225,8 @@
   const R = ZI.WANDER_REST_TABLE, baseRegen = R.restHpPerMinutePct;
   try {
     Object.defineProperty(R, 'restHpPerMinutePct', { configurable: true, enumerable: true,
-      get() { const m = L.mods(); return baseRegen * (L.value('hpRegen') / P.statDef('hpRegen').start) * Math.max(0.1, 1 + (m.hpRegen || 0)); } });
+      get() { const m = L.mods(); // MED-01 M10: the splint's regen burst multiplies the rest rate while it lasts.
+        return baseRegen * (L.value('hpRegen') / P.statDef('hpRegen').start) * Math.max(0.1, 1 + (m.hpRegen || 0)) * (1 + (ZI.medRegenBonus ? ZI.medRegenBonus() : 0)); } });
   } catch (e) {}
 
   // ─── Shop: Auto-Eat (H5; price and gate are PLACEHOLDERS) ───────────────────

@@ -301,7 +301,7 @@ Scope stays Solo-only. Map circuit building and survival expansion remain separa
 | `reference/art-02-width-clamp-batch-oct30.md` | Width clamp is a phone-only ladder inversion; proposes global width fit at 0.65 share | Oct 30 |
 | `reference/stat-03-hybrid-attributes-vs-stat02-oct30.md` | SURVIVAL attributes vs STAT-02 ranks; proposes attributes-gate-ranks hybrid | Oct 30 |
 | `reference/prof-01-xp-catchup-sim-oct30.md` | Profession XP catch-up simulated: safe but inert at proposed values | Oct 30 |
-| `reference/med-01-crutch-and-splint-oct30.md` | Crude Crutch + Improvised Splint: durability, wound step-down, RMAT as unlock | Oct 30 |
+| `reference/med-01-crutch-and-splint-oct30.md` | Crude Crutch + Improvised Splint: durability, wound step-down, RMAT as unlock. **BUILT Oct 30** (batch A); open items answered; splint art still open | Oct 30 |
 | `reference/wx-01-weather-seasons-afflictions-oct30.md` | Weather/seasons/afflictions; 364-day calendar with 91-day seasons, 4-game-day weather cap, builds on the existing Wet ladder | Oct 30 |
 | `reference/aud-01-systems-audit-oct30.md` | Systems audit + AUD-01b re-run: all 4 passes clean at cap 10 / gate 3, clear-sky guarantee, Elemental Resistance, scaled catch-up; constants table | Oct 30 |
 | `reference/sch-01-operations-layout-oct30.md` | SCH-01: Schedule (Operations) page layout — L1-L4 decided (drop the duplicate Solo section, sort Now and next with return times, Open buttons on attention, proposals hidden by default); away-efficiency direction and the 24 h offline ceiling | Oct 30 |

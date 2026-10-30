@@ -803,3 +803,92 @@ ZI.wearEquippedOnKill = function() {
   drain('vest');
   return worn;
 };
+
+// ─── MED-01 — Reusable medical aids (Sam, Oct 30) ────────────────────────────
+// reference/med-01-crutch-and-splint-oct30.md. M5: reusable, never consumed on use.
+// M7: each use rolls a CUMULATIVE break chance, so use N breaks at breakPerUse x N
+// (8% crutch -> certain by the 13th; 6% splint -> certain by the 17th).
+// M6: a successful use steps the wound track down one tier.
+// M10: the splint adds a short HP-regen burst that refreshes rather than stacking.
+// Sam, Oct 30: the splint heals the same one tier as the crutch — the regen burst and
+// the longer life are what make it the upgrade. Unlocking it SPENDS 10 Trace RMAT (M8).
+// They carry no slot: they sit in the stash and are used at base from the Stats page.
+ZI.MED_AIDS = {
+  crude_splint:      { breakPerUse: 0.08, woundSteps: 1, regenPct: 0,    regenGameHours: 0 },
+  improvised_splint: { breakPerUse: 0.06, woundSteps: 1, regenPct: 0.50, regenGameHours: 2 },
+};
+ZI.MED_SPLINT_UNLOCK = { key: 'zi_splint_unlocked', rmatTier: 'T0', rmatQty: 10 };
+ZI.MED_AID_USES_KEY = 'zi_med_aid_uses';
+ZI.MED_REGEN_KEY = 'zi_med_regen_burst';
+ZI.GEAR_ITEMS.push(
+  { id:'crude_splint', name:'Crude Crutch', cat:'medical', rarity:'common', icon:'🩼', carryW:1,
+    desc:'Two sticks and a strip of curtain. Take the weight off a bad leg — until it snaps.' },
+  { id:'improvised_splint', name:'Improvised Splint', cat:'medical', rarity:'uncommon', icon:'🪢', carryW:1,
+    desc:'Bound and padded properly. Sets the limb and keeps mending for a while after.' },
+);
+ZI.getMedAidUses = function() { try { return JSON.parse(localStorage.getItem(ZI.MED_AID_USES_KEY) || '{}'); } catch (e) { return {}; } };
+ZI.saveMedAidUses = function(m) { try { localStorage.setItem(ZI.MED_AID_USES_KEY, JSON.stringify(m)); } catch (e) {} };
+ZI.medAidUses = function(itemId) { const n = ZI.getMedAidUses()[itemId]; return Number.isFinite(n) ? n : 0; };
+// Chance that the NEXT use breaks it (M7).
+ZI.medAidBreakChance = function(itemId) {
+  const cfg = ZI.MED_AIDS[itemId]; if (!cfg) return 0;
+  return Math.min(1, cfg.breakPerUse * (ZI.medAidUses(itemId) + 1));
+};
+ZI.isSplintUnlocked = function() { try { return localStorage.getItem(ZI.MED_SPLINT_UNLOCK.key) === '1'; } catch (e) { return false; } };
+// M8: Trace RMAT unlocks the next medical tier. Sam, Oct 30: the 10 are spent.
+ZI.unlockImprovisedSplint = function() {
+  const U = ZI.MED_SPLINT_UNLOCK;
+  if (ZI.isSplintUnlocked()) return { ok:false, reason:'Already unlocked.' };
+  const held = (ZI.getRmatHoldings ? ZI.getRmatHoldings() : {})[U.rmatTier] || 0;
+  if (held < U.rmatQty) return { ok:false, reason:'Needs ' + U.rmatQty + ' Trace RMAT — you have ' + held + '.' };
+  ZI.addRmat(U.rmatTier, -U.rmatQty);
+  try { localStorage.setItem(U.key, '1'); } catch (e) {}
+  return { ok:true, text:'Improvised Splint schematic unlocked for ' + U.rmatQty + ' Trace RMAT.' };
+};
+// M10: a short regen burst. Re-use refreshes the window; it never stacks.
+ZI.addMedRegenBurst = function(pct, gameHours) {
+  const until = (ZI.now ? ZI.now() : Date.now()) + gameHours * ZI.REAL_MS_PER_GAME_HOUR;
+  try { localStorage.setItem(ZI.MED_REGEN_KEY, JSON.stringify({ pct: pct, until: until })); } catch (e) {}
+};
+ZI.medRegenBurst = function() {
+  let b; try { b = JSON.parse(localStorage.getItem(ZI.MED_REGEN_KEY) || 'null'); } catch (e) { b = null; }
+  if (!b || !(b.until > (ZI.now ? ZI.now() : Date.now()))) return null;
+  return b;
+};
+ZI.medRegenBonus = function() { const b = ZI.medRegenBurst(); return b ? (b.pct || 0) : 0; };
+// Why a use is not available right now, or null when it is.
+ZI.medAidBlocker = function(itemId) {
+  if (!ZI.MED_AIDS[itemId]) return 'That is not a medical aid.';
+  if (ZI.atBaseOrCamp && !ZI.atBaseOrCamp()) return 'Use it at your base or camp.';
+  if (!(ZI.getStash ? ZI.getStash() : []).includes(itemId)) return 'Store it at base first.';
+  const L = ZI.PROG && ZI.PROG.LIVE; if (!L) return 'Status unavailable.';
+  if (!(L.settleStatus().wounds > 0)) return 'No wounds to tend.';
+  return null;
+};
+// Use one. rng is injectable so tests are deterministic; play uses Math.random.
+ZI.useMedAid = function(itemId, rng) {
+  const blocked = ZI.medAidBlocker(itemId);
+  if (blocked) return { ok:false, reason: blocked };
+  const cfg = ZI.MED_AIDS[itemId], L = ZI.PROG.LIVE;
+  const status = L.settleStatus(), before = status.wounds;
+  status.wounds = Math.max(0, before - cfg.woundSteps);
+  L.saveStatus(status);
+  if (cfg.regenPct > 0) ZI.addMedRegenBurst(cfg.regenPct, cfg.regenGameHours);
+  const chance = ZI.medAidBreakChance(itemId);
+  const broke = (typeof rng === 'function' ? rng() : Math.random()) < chance;
+  const uses = ZI.getMedAidUses();
+  uses[itemId] = (uses[itemId] || 0) + 1;
+  if (broke) {
+    const stash = ZI.getStash(), at = stash.indexOf(itemId);
+    if (at >= 0) { stash.splice(at, 1); ZI.saveStash(stash); }
+    delete uses[itemId]; // a fresh one starts its break ladder over
+  }
+  ZI.saveMedAidUses(uses);
+  const item = ZI.getGearItem(itemId), name = item ? item.name : itemId;
+  const labels = ZI.PROG.STATUS && ZI.PROG.STATUS.wounds ? ZI.PROG.STATUS.wounds.tiers : null;
+  const tier = i => (labels && labels[i] ? labels[i].name : String(i));
+  return { ok:true, broke: broke, chance: chance, uses: broke ? 0 : uses[itemId],
+    woundsBefore: before, woundsAfter: status.wounds,
+    regen: cfg.regenPct > 0 ? { pct: cfg.regenPct, gameHours: cfg.regenGameHours } : null,
+    text: tier(before) + ' → ' + tier(status.wounds) + (cfg.regenPct > 0 ? ' · +' + Math.round(cfg.regenPct * 100) + '% regen for ' + cfg.regenGameHours + ' game hours' : '') + (broke ? ' · the ' + name + ' broke.' : '') };
+};

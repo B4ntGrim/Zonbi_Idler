@@ -10,7 +10,12 @@ ZI.CRAFT_RECIPES = [
   { id:'nail_board',   name:'Nail Board',   icon:'🪓', tier:0, out:[{n:'Trace RMAT',q:2}], cost:{wood:15,metal:8}, time:300, unlock:'Default', enemy:'Shambler', lore:'A plank. With nails in it. Classic.' },
   { id:'scrap_wire',   name:'Scrap Wire',   icon:'🔗', tier:0, out:[{n:'Trace RMAT',q:4}], cost:{metal:20}, time:480, unlock:'Default', enemy:'Crawler', lore:'Stripped from a chain-link fence. Still has rust. You call that character.' },
   { id:'tinder_bundle',name:'Tinder Bundle',icon:'🌿', tier:0, out:[{n:'Trace RMAT',q:2},{n:'Fuel',q:5}], cost:{wood:25}, time:360, unlock:'Default', enemy:'Crawler', lore:'Dried bark, dead leaves, and something unidentifiable. It burns, which is all that matters.' },
-  { id:'crude_splint', name:'Crude Splint', icon:'🩼', tier:0, out:[{n:'Trace RMAT',q:2}], cost:{wood:10,cloth:8}, time:240, unlock:'Scavenge Camp (Rank 1)', enemy:'Crawler', lore:"Two sticks and a strip of curtain. A field doctor's last resort." },
+  // MED-01 (Sam, Oct 30): M1 renamed to Crude Crutch, id kept so existing saves survive.
+  // M4 it no longer outputs Trace RMAT — it produces the crutch itself. kind:'gear' keeps the
+  // RMAT grant in jobs.js from firing. M8: Trace RMAT now unlocks the next medical tier instead.
+  { id:'crude_splint', name:'Crude Crutch', icon:'🩼', tier:0, kind:'gear', out:[{n:'Crude Crutch',q:1}], grantsGear:'crude_splint', grantsQty:1, cost:{wood:10,cloth:8}, time:240, unlock:'Scavenge Camp (Rank 1)', enemy:'Crawler', lore:"Two sticks and a strip of curtain. A field doctor's last resort." },
+  // MED-01 M9: the upgrade. Gated by ZI.recipeGate below; craft time is [PROPOSED].
+  { id:'improvised_splint', name:'Improvised Splint', icon:'🪢', tier:1, kind:'gear', out:[{n:'Improvised Splint',q:1}], grantsGear:'improvised_splint', grantsQty:1, cost:{wood:15,cloth:12}, time:600, unlock:'Trace RMAT ×10', enemy:'Crawler', lore:'Padded, bound and actually set. The limb keeps mending after you walk away.' },
 
   // ── T1 — Scrap-Grade (Uncommon) ──
   { id:'reinforced_pack',name:'Reinforced Pack',icon:'🎒', tier:1, out:[{n:'Mechanical RMAT',q:1}], cost:{metal:40}, time:2700, unlock:'Default', enemy:'Shambler', lore:'Stitched together from warehouse shelving and dumpster finds. Smells like regret.' },
@@ -133,4 +138,23 @@ ZI.CRAFT_DROP_RATES = {
   Titan:     [25, 25, 25, 15, 7, 3],
   Colossus:  [10, 15, 20, 25, 20, 10],
   Nightmare: [3, 7, 10, 15, 30, 35],
+};
+
+// ─── Recipe gates (MED-01, Oct 30) ───────────────────────────────────────────
+// One entry point for "this recipe is listed but locked". The crafting browser calls
+// ZI.recipeGate; tome schematics keep their own gate and are delegated to unchanged.
+ZI.medRecipeGate = function(recipeId) {
+  if (recipeId !== 'improvised_splint' || !ZI.MED_SPLINT_UNLOCK) return null;
+  const U = ZI.MED_SPLINT_UNLOCK, held = (ZI.getRmatHoldings ? ZI.getRmatHoldings() : {})[U.rmatTier] || 0;
+  const unlocked = ZI.isSplintUnlocked ? ZI.isSplintUnlocked() : false;
+  return { label:'Medical Tier', series:'Trace RMAT', seriesId:'med_tier',
+    currentCopies: Math.min(held, U.rmatQty), copies: U.rmatQty, item:'Improvised Splint',
+    requirements:{}, station:null,
+    missing: (unlocked || held >= U.rmatQty) ? [] : [(U.rmatQty - held) + ' more Trace RMAT'],
+    unlocked: unlocked };
+};
+ZI.recipeGate = function(recipeId) {
+  const med = ZI.medRecipeGate(recipeId);
+  if (med) return med;
+  return ZI.tomeSchematicGate ? ZI.tomeSchematicGate(recipeId) : null;
 };

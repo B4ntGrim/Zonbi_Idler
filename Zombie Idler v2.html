@@ -17,8 +17,8 @@
 <script src="game/save.js?v=20261029-charops1"></script>
 <script src="game/stats.js?v=20261029-charops1"></script>
 <script src="game/progression.js?v=20261028-stat02c"></script>
-<script src="game/items.js?v=20261028-wander-pace"></script>
-<script src="game/crafting.js?v=1791700100000"></script>
+<script src="game/items.js?v=20261030-med01"></script>
+<script src="game/crafting.js?v=20261030-med01"></script>
 <script src="game/combat.js?v=1791700100000"></script>
 <script src="game/factions.js?v=1791700100000"></script>
 <script src="game/camp.js?v=20261030-look2"></script>
@@ -33,7 +33,7 @@
 <script src="game/survival-data.js?v=1791700100000"></script>
 <script src="game/literature.js?v=20261030-literature2"></script>
 <script src="game/bootstrap.js?v=20261025-clock-parity"></script>
-<script src="game/progression-live.js?v=20261029-proposals1"></script>
+<script src="game/progression-live.js?v=20261030-med01"></script>
 <script src="game/character.js?v=20261030-look2"></script>
 <script src="game/operations.js?v=20261030-sch01a"></script>
 <script src="bestiary-data.js?v=20261029-charops1"></script>
@@ -47,7 +47,7 @@
 <script src="crafting-frame-proposals.js?v=20261027-craft-proposals3"></script>
 <script type="text/babel" src="crafting-frame-proposals.jsx?v=20261027-craft-proposals7"></script>
 <script type="text/babel" src="tweaks-panel.jsx?v=1791700100000"></script>
-<script type="text/babel" src="progression-ui.jsx?v=20261028-stat02c"></script>
+<script type="text/babel" src="progression-ui.jsx?v=20261030-med01"></script>
 <script type="text/babel" src="character-sprite.jsx?v=20261030-look2"></script>
 <script type="text/babel" src="character-creation.jsx?v=20261030-look2"></script>
 <script type="text/babel" src="operations-ui.jsx?v=20261030-sch01a"></script>
@@ -3479,7 +3479,7 @@ function RmatCraftingRecipeBrowser() {
     nail_board: 'art/crafting/recipes/nail-board-v1.png',
     scrap_wire: 'art/crafting/recipes/scrap-wire-v1.png',
     tinder_bundle: 'art/crafting/recipes/tinder-bundle-v1.png',
-    crude_splint: 'art/crafting/recipes/crude-splint-v3.png',
+    crude_splint: 'art/crafting/recipes/crude-splint-v2.png',
     reinforced_pack: 'art/crafting/recipes/reinforced-pack-v1.png',
     barricade_panel: 'art/crafting/recipes/barricade-panel-v1.png',
     cloth_wrap_kit: 'art/crafting/recipes/cloth-wrap-kit-v1.png',
@@ -3569,7 +3569,7 @@ function RmatCraftingRecipeBrowser() {
     ? <img src={recipeSpriteById[recipe.id]} alt={recipe.name} style={{width:size,height:size,objectFit:'contain',imageRendering:'pixelated',flexShrink:0}} />
     : <span style={{fontSize:size}}>{recipe.icon}</span>;
   const sel = recipes.find(r => r.id === selId) || null;
-  const tomeGate = (r) => ZI.tomeSchematicGate ? ZI.tomeSchematicGate(r.id) : null;
+  const tomeGate = (r) => ZI.recipeGate ? ZI.recipeGate(r.id) : (ZI.tomeSchematicGate ? ZI.tomeSchematicGate(r.id) : null);
   const canCraft = (r) => {
     const gate = tomeGate(r);
     return (!gate || gate.unlocked) && Object.entries(r.cost).every(([k, q]) => (stock[k] || 0) >= q);
@@ -3808,7 +3808,7 @@ function RmatCraftingRecipeBrowser() {
                   <InfoRow label="Craft Time" value={`${fmtDur(sel.time)} game · ${fmtReal(craftRealSec(sel))} real`} color="var(--amber)"/>
                   <InfoRow label="Drop Source" value={sel.enemy} color="var(--red2)"/>
                   <InfoRow label="Unlocked By" value={sel.unlock} color="var(--text2)"/>
-                  {gate && <InfoRow label="Tome Schematic" value={`${gate.series} · ${gate.currentCopies}/${gate.copies} copies${gate.missing?.length ? ` · Needs ${gate.missing.join(', ')}` : ''}`} color={gate.unlocked ? '#3dcf8e' : '#c59af2'}/>}
+                  {gate && <InfoRow label={gate.label || "Tome Schematic"} value={`${gate.series} · ${gate.currentCopies}/${gate.copies} copies${gate.missing?.length ? ` · Needs ${gate.missing.join(', ')}` : ''}`} color={gate.unlocked ? '#3dcf8e' : '#c59af2'}/>}
                 </div>
                 <div className="divider"/>
                 <div style={{fontFamily:'var(--font-mono)', fontSize:9, color:'var(--text3)', margin:'8px 0'}}>REQUIRED MATERIALS</div>

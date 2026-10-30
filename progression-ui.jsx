@@ -1,4 +1,6 @@
 // progression-ui.jsx — STAT-02 Survivor panel (Stats screen): level, upgrade picks, condition words, Eat, away summary.
+// MED-01 (Sam, Oct 30): reusable medical aids are used from here, beside Eat and Nap, because this is where the
+// wound track is shown. reference/med-01-crutch-and-splint-oct30.md.
 // UI rule: show names and rounded values only. Never show ranks, the curve dial, pity weights or modifier formulas.
 function SurvivorProgressPanel() {
   const ZI = window.ZI, P = ZI && ZI.PROG, L = P && P.LIVE;
@@ -27,6 +29,8 @@ function SurvivorProgressPanel() {
   const eat = () => { const r = L.eat(); setNote(r.ok ? `Ate ${r.name}.` : r.reason); bump(n => n + 1); };
   const nap = () => { const r = L.nap(); setNote(r.ok ? 'Took a nap.' : r.reason); bump(n => n + 1); };
   const dismissAway = () => { const s = L.getStatus(); s.lastAway = null; L.saveStatus(s); };
+  const useAid = (id) => { const r = ZI.useMedAid(id); setNote(r.ok ? r.text : r.reason); bump(n => n + 1); };
+  const unlockSplint = () => { const r = ZI.unlockImprovisedSplint(); setNote(r.ok ? r.text : r.reason); bump(n => n + 1); };
 
   return (
     <div className="panel" style={{ flex:'1 1 100%', display:'flex', flexDirection:'column' }} data-testid="survivor-progress">
@@ -72,6 +76,34 @@ function SurvivorProgressPanel() {
           <span style={{ ...mono, color:'var(--text3)' }}>{autoEat ? 'Auto-Eat is on.' : 'Auto-Eat: buy it in the Shop.'}</span>
           {note && <span style={{ ...mono, color:'var(--text2)' }}>{note}</span>}
         </div>
+
+        {/* MED-01: reusable medical aids. Each use steps the wound down a tier and may break the aid. */}
+        {(() => {
+          const aids = Object.keys(ZI.MED_AIDS || {});
+          if (!aids.length || !ZI.getStash) return null;
+          const stash = ZI.getStash(), owned = aids.filter(id => stash.includes(id));
+          const locked = ZI.isSplintUnlocked ? !ZI.isSplintUnlocked() : false;
+          const burst = ZI.medRegenBurst ? ZI.medRegenBurst() : null;
+          if (!owned.length && !locked && !burst) return null;
+          return (
+            <div style={{ display:'flex', alignItems:'center', gap:6, flexWrap:'wrap' }} data-med-aids="1">
+              {owned.map(id => {
+                const item = ZI.getGearItem(id), risk = Math.round(ZI.medAidBreakChance(id) * 100);
+                const blocked = ZI.medAidBlocker(id), used = ZI.medAidUses(id);
+                return <button key={id} style={btn} data-med-aid={id} disabled={!!blocked}
+                  onClick={() => useAid(id)}
+                  title={blocked || `Steps your wound down one tier · used ${used} time${used === 1 ? '' : 's'} · ${risk}% chance this use breaks it`}>
+                  {(item && item.icon) || '🩼'} Use {(item && item.name) || id} · {risk}% break
+                </button>;
+              })}
+              {locked && <button style={btn} data-med-unlock="1" onClick={unlockSplint}
+                title={`Spend ${ZI.MED_SPLINT_UNLOCK.rmatQty} Trace RMAT to unlock the Improvised Splint schematic`}>
+                🔓 Unlock Improvised Splint · {ZI.MED_SPLINT_UNLOCK.rmatQty} Trace RMAT
+              </button>}
+              {burst && <span style={{ ...mono, color:'var(--green)' }}>+{Math.round(burst.pct * 100)}% regen for a short while</span>}
+            </div>
+          );
+        })()}
 
         <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill, minmax(150px, 1fr))', gap:4 }}>
           {P.visibleStats().map(s => {

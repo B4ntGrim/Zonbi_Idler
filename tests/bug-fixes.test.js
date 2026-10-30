@@ -18,7 +18,9 @@ const finishJobs = (E) => { const js = JSON.parse(E.store.zi_jobs || '{"v":1,"jo
 // ── Bug 1: crafted gear reaches the one stash, can be equipped, and both screens read the same loadout ──
 {
   const E = mkEnv({}), ZI = E.ZI;
-  const r = ZI.CRAFT_RECIPES.find(x => x.kind === 'gear');
+  // MED-01 (Oct 30): medical aids are kind:'gear' but deliberately have no slot (they live in the stash and
+  // are used at base), so this picks a gear recipe whose item is actually equippable.
+  const r = ZI.CRAFT_RECIPES.find(x => { const g = x.kind === 'gear' && x.grantsGear && ZI.getGearItem(x.grantsGear); return !!(g && g.slot); });
   let notified = 0; const off = ZI.onInventoryChange(() => notified++);
   ZI.enqueueJob('craft', r.id, 1, {}, 1); finishJobs(E);
   check('B1: crafted gear item created (job finished)', !(JSON.parse(E.store.zi_jobs).jobs || []).some(j => j.refId === r.id));
