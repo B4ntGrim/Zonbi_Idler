@@ -97,3 +97,18 @@ would notice.
 
 → **Audit pass 4** re-runs the model under P2–P4 and fails the design if any intermittent pattern
 finishes ahead of always-active.
+
+## P5 — the allowance scales with time away `[DECIDED Sam, Oct 30]`
+
+Audit pass 4 found that a flat level-1-XP allowance gave a 30-day absence (0.11%) *less* than a
+skipped weekend (1.89%) — the opposite of catch-up. Sam's fix:
+
+**The allowance scales with days away**, from the 2-day threshold up to a **14-day cap**. A
+fortnight away earns the largest boost; beyond that it stops growing.
+
+Unchanged: the 2-day threshold (P2), the 15% max rate, and the level-1-XP base (P3).
+
+`[PROPOSED]` form: `allowance = ALLOWANCE x xp_to_next(1) x min(daysAway, 14) / 14`
+
+The no-exploit rule still governs: playing every day must finish ahead of any intermittent pattern,
+so nobody gains by staying away deliberately. → verified in **AUD-01b re-run 4**.

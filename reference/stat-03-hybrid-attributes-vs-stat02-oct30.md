@@ -215,7 +215,10 @@ literally nothing; grow it slower and the stat is dead weight. Two guards, both 
 → Both go to **audit pass 3**, which fails the design if any current-zone tier becomes harmless or
 if flat DR contributes under 5% mitigation at L35–70.
 
-## B3. Attribute caps and convergence `[DECIDED Sam]`
+## B3. Attribute caps and convergence  ~~`[DECIDED Sam]`~~  **SUPERSEDED by Addendum C**
+
+> Cap 13 / 104 points / milestones at L20-85 are **retired**. See Addendum C below.
+
 
 **Every build converges at L100.** Sam's reasoning: everyone faces the same final boss, so everyone
 needs the full kit available. What differentiates players is the **order** they take things in, not
