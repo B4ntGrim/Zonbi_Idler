@@ -84,3 +84,9 @@ reports/_to_delete/
 # archive of the repo into the repo is circular. Manifests and file lists stay.
 handoff/to-cloud/**/*.tar
 handoff/to-cloud/**/*.tar.gz
+
+# ART-04: never commit an API key or generated-art scratch
+tools/art-gen/.env
+tools/art-gen/*.key
+tools/art-gen/*.secret
+art/generated-originals/art-04/
