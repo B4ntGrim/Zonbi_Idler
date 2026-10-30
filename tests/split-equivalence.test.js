@@ -37,6 +37,15 @@ ADDED.add('getUnclaimedRouteRewards'); ADDED.add('ROUTE_XP_MULTIPLIERS');
 ['MED_AIDS','MED_AID_USES_KEY','MED_REGEN_KEY','MED_SPLINT_UNLOCK','getMedAidUses','saveMedAidUses','medAidUses',
  'medAidBreakChance','medAidBlocker','useMedAid','isSplintUnlocked','unlockImprovisedSplint','addMedRegenBurst',
  'medRegenBurst','medRegenBonus','medRecipeGate','recipeGate'].forEach(k => ADDED.add(k));
+// Hand tools and salvage baseline (Sam, Oct 30): five tools with ready/worn/broken states that recover
+// contextual materials in Traversal, Wandering and Routes, assist Recycler jobs, and can be repaired.
+// Reviewed Oct 30: the three changed functions all exist to reserve a tool for an assisted recycle job and
+// hand it back (worn on completion, unchanged on cancel). The legacy monolith predates all of it.
+['carriedHandTool','useCarriedHandTool','handToolForPoi','handToolRepairCheck','repairHandTool',
+ 'routeToolSalvage','handToolScavenge','recyclerToolMatch','brokenToolRecyclerItems','addMaterial'].forEach(k => ADDED.add(k));
+['_grantJob','cancelJob','grantRecycleOutput','queueRecycle','equipGear','wanderPolicyStep','resolveRunNodes',
+ 'resolvePreparedRouteNodes'].forEach(k => CHANGED_FN.add(k));
+DATA_CHANGED.add('CRAFT_RECIPES');
 // Intentional post-split additions/changes: seeded sector POI placement and daily modifiers; current recipe
 // generation and loot/wander rules; and expanded world/background catalogues. Keep the legacy comparison scoped
 // to portions that are still intended to be equivalent.

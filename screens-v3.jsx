@@ -984,7 +984,8 @@ window.SatelliteTraversalScreen = function SatelliteTraversalScreen({ setScreen,
       if (tutStep >= 0 && tutStep < TUTORIAL.length) setTimeout(() => { setActionCell(null); setTutTarget('wandering'); setTutPoint(true); }, 1600); // TRAV-01a S6: was 'routes'
       if (looted[key]) { res = { tone:'warn', text:`${coord} has already been picked clean.` }; }
       else {
-        const chance = ZI.lootSafeChance(cell);
+        const routeAid = ZI.poiRouteAid && ZI.poiRouteAid(cell);
+        const chance = Math.min(95, ZI.lootSafeChance(cell) + (routeAid ? routeAid.bonus : 0));
         const roll = Math.floor(Math.random() * 100) + 1;
         const got = grantRandomMats(cell.rmatTier || 0, cell);
         const foodGot = ZI.PROG && ZI.PROG.LIVE && ZI.PROG.LIVE.rollLocationFood ? ZI.PROG.LIVE.rollLocationFood(cell) : 0; // STAT-02: real food from locations
@@ -993,9 +994,15 @@ window.SatelliteTraversalScreen = function SatelliteTraversalScreen({ setScreen,
         if (roll <= chance) {
           const literature = ZI.rollLiteratureLoot && ZI.rollLiteratureLoot(cell);
           if (literature) got.push(`${literature.icon || '📚'} ${literature.name} (carried)`);
+          const foundTool = ZI.handToolForPoi && ZI.handToolForPoi(cell.poiType);
+          if (foundTool && ZI.grantGear && ZI.grantGear(foundTool, 1)) { const tool = ZI.getGearItem(foundTool); got.push(`${tool ? tool.name : 'Hand tool'} added to Stockpile`); }
+          const toolFinds = ZI.handToolScavenge ? ZI.handToolScavenge(cell.poiType) : [];
+          got.push(...toolFinds);
+          if (routeAid && ZI.consumePoiRouteAid) ZI.consumePoiRouteAid(cell);
           ZI.emitAction && ZI.emitAction('loot', 1 + cell.difficulty * 0.3); // Scavenging XP only on a clean search
           res = { tone:'good', text:`Clean search (${chance}% safe, rolled ${roll}). You scavenge ${cell.name}: ${got.join(', ')}. +Scavenging XP.` };
         } else {
+          if (routeAid && ZI.consumePoiRouteAid) ZI.consumePoiRouteAid(cell);
           const run = ZI.getWanderRun ? ZI.getWanderRun() : { hp:100 };
           const dmg = ZI.lootFailDamage(cell);
           const hp = Math.max(1, (run.hp == null ? 100 : run.hp) - dmg);
@@ -1056,6 +1063,10 @@ window.SatelliteTraversalScreen = function SatelliteTraversalScreen({ setScreen,
     if (id === 'loot' && site && site.id === 'pharmacy' && !window.confirm('At a neutral pharmacy, taking supplies lowers your reputation with every faction. Continue scavenging?')) return;
     if (site && id !== 'enter') ZI.recordPoiDecision && ZI.recordPoiDecision(cell, id, label || id);
     if (id === 'enter') { if (note) setActionResult({ tone:'info', text:note }); enterWandering(cell, label); return; }
+    if (id === 'story') {
+      const result = ZI.resolvePoiStoryChoice && ZI.resolvePoiStoryChoice(cell, label);
+      setActionResult(result || { tone:'info', text:note || 'The encounter passes quietly.' }); setTravTick(t => t + 1); return;
+    }
     if (id === 'dialogue') { if (note) setActionResult({ tone:'info', text:note }); return; }
     doAction(id, cell);
   };
@@ -1180,7 +1191,7 @@ window.SatelliteTraversalScreen = function SatelliteTraversalScreen({ setScreen,
     const xpNote = (kind, label) => ZI.travXpAvailable(kind, kind === 'camp' ? 'any' : ck) ? `${label} XP once per ${kind === 'camp' ? 'day' : 'zone a day'}` : 'XP already earned today';
     return [
       { id:'travel', icon:'➜', label:'Travel',    reason: here ? "You're already here." : far, cost: `Moves you in · ${xpNote('travel', 'Athletics')}` },
-      { id:'loot',   icon:'◈', label:'Loot',      reason: far || (looted[key] ? 'Already looted.' : null), cost: `Once per zone · ${chance}% safe · a failed roll hurts` },
+      { id:'loot',   icon:'◈', label:'Loot',      reason: far || (looted[key] ? 'Already looted.' : null), cost: `Once per zone · ${Math.min(95, chance + ((ZI.poiRouteAid && ZI.poiRouteAid(c)) ? ZI.poiRouteAid(c).bonus : 0))}% safe${(ZI.poiRouteAid && ZI.poiRouteAid(c)) ? ' · local lead' : ''} · a failed roll hurts` },
       { id:'scout',  icon:'👁', label: ZI.isPoliceStationCell && ZI.isPoliceStationCell(c) ? 'Scout Police Station' : 'Scout', reason: far || (ts.left <= 0 ? 'No Traversal scouts left today. Refills at midnight.' : null), cost: `1 Traversal scout (${ts.left}/${ts.max} today) · ${xpNote('scout', 'Stealth')}` },
       { id:'hide',   icon:'◌', label:'Hide',      reason: far || (hideUses.left <= 0 ? `Ready in ${shortWait(Math.max(0, hideUses.nextAt - ZI.clockNow()))}.` : null), cost: `${ZI.TRAVERSAL_TABLE.hideGameHours} game hours · ${hideUses.left}/${hideUses.max} uses left · each returns after 24h · ${xpNote('hide', 'Stealth')}` },
       { id:'camp',   icon:'⛺', label:'Make Camp', reason: far || (!ZI.canCampAt(c) ? "You can't make camp here while Fallow Ground is in progress." : !campCooldown.available ? `Ready in ${shortWait(campCooldown.remainingMs)}.` : null), cost: `Until 06:00 next game day · 24h refill after use · sets your rest point · ${xpNote('camp', 'Command')}` },
@@ -1222,6 +1233,7 @@ window.SatelliteTraversalScreen = function SatelliteTraversalScreen({ setScreen,
     const start = readJ('zi_trav_start', null), seen = hideSeen[key];
     const intel = ZI.getInfiltrationIntel && ZI.getInfiltrationIntel();
     const poiSite = ZI.poiSiteForCell && ZI.poiSiteForCell(c);
+    const routeAid = ZI.poiRouteAid && ZI.poiRouteAid(c);
     const feats = [ZI.isFortCell(c) && '🏰 Fort', poiSite && `${poiSite.icon} ${poiSite.name}`, ZI.isFallowCell(c) && '🌾 Fallow Ground', camp && camp.gx === c.gx && camp.gy === c.gy && '⛺ Your camp', start && start.gx === c.gx && start.gy === c.gy && '◎ Starting zone'].filter(Boolean);
     const far = locked ? 'Locked zone.' : (!here && !adj) ? 'Too far — move next to it.' : null;
     const acts = zoneActs(c);
@@ -1246,6 +1258,7 @@ window.SatelliteTraversalScreen = function SatelliteTraversalScreen({ setScreen,
         {line('Danger', `${ZI.THREAT_LABELS[Math.min(5, c.threatLevel || 0)]} (${c.threatLevel || 0}/5)`, (c.threatLevel || 0) > 3 ? 'var(--red2)' : 'var(--amber)', 'danger')}
         {line('Threats', seen ? `Tiers ${seen.range} (from your last Hide)` : 'Unknown — Hide here to learn', seen ? 'var(--text)' : 'var(--text3)', 'threats')}
         {intel && intel.gx === c.gx && intel.gy === c.gy && line('Intel', `Survey team reported near ${intel.coord}`, '#7fe0ff', 'faction-intel')}
+        {routeAid && line('Local lead', `Safer approach · +${routeAid.bonus}% safety on your next loot attempt`, '#7fe0ff', 'story-route-aid')}
         {line('Features', feats.length ? feats.join(' · ') : 'None', 'var(--text)', 'features')}
         {poiSite && <div data-trav="poi-dialogue" data-poi={poiSite.id} style={{ marginTop:10, padding:11, background:'rgba(240,208,96,0.07)', border:'1px solid rgba(240,208,96,0.45)' }}>
           <div style={{ display:'flex', alignItems:'center', gap:10, marginBottom:8 }}>
@@ -1255,6 +1268,11 @@ window.SatelliteTraversalScreen = function SatelliteTraversalScreen({ setScreen,
             <div style={{ fontFamily:'var(--font-title)', fontSize:18, lineHeight:1.15, color:'var(--amber)' }}>{poiSite.icon} {poiSite.name}</div>
           </div>
           <div style={{ fontFamily:'var(--font-body)', fontSize:15, color:'var(--text2)', lineHeight:1.45, marginBottom:9 }}>{poiSite.arrival}</div>
+          {(() => { const thread = ZI.poiStoryForCell && ZI.poiStoryForCell(c); if (!thread) return null; return <div data-story-npc={thread.npc.id} style={{ marginBottom:9, padding:'8px 9px', borderLeft:'2px solid #7fe0ff', background:'rgba(127,224,255,0.06)' }}>
+            <div style={{ fontFamily:'var(--font-title)', color:'#7fe0ff', fontSize:15 }}>{thread.npc.name}{thread.bond ? ` · remembers you (${thread.bond})` : ''}</div>
+            <div style={{ fontFamily:'var(--font-body)', fontSize:13, color:'var(--text2)', lineHeight:1.4 }}>{thread.npc.tell} {thread.relicFound ? 'The keepsake you found still connects you.' : 'Your past gives the moment a familiar edge.'}</div>
+            <div style={{ display:'flex', flexDirection:'column', gap:5, marginTop:7 }}>{thread.options.map((option, i) => <button key={`story-${i}`} data-story-choice={option.storyChoice} disabled={!!far} onClick={() => runSiteAction('story', c, null, option.storyChoice)} style={{ textAlign:'left', padding:'7px 9px', cursor:far ? 'not-allowed' : 'pointer', opacity:far ? 0.55 : 1, background:'var(--bg3)', border:'1px solid var(--border)', color:'var(--text)' }}><span style={{ marginRight:8 }}>{option.icon}</span>{option.label}</button>)}</div>
+          </div>; })()}
           <div style={{ display:'flex', flexDirection:'column', gap:6 }}>{poiSite.options.map((option, i) => { const optionReason = far || (option.kind === 'enter' && !here ? 'Travel to this square before entering.' : null); return <button key={i} data-poi-option={option.label} disabled={!!optionReason} title={optionReason || ''} onClick={() => runSiteAction(option.kind || 'dialogue', c, option.text, option.label)} style={{ display:'flex', alignItems:'center', gap:9, textAlign:'left', padding:'9px 10px', cursor:optionReason ? 'not-allowed' : 'pointer', opacity:optionReason ? 0.55 : 1, background:'var(--bg3)', border:'1px solid var(--border)', color:'var(--text)' }}>
             <span style={{ width:24, flexShrink:0, textAlign:'center', fontSize:19 }}>{option.icon}</span><span style={{ fontFamily:'var(--font-body)', fontSize:15, lineHeight:1.25 }}>{option.label}</span>
           </button>; })}</div>
@@ -2159,8 +2177,9 @@ window.WanderingScreen = function WanderingScreen({ route, setScreen }) {
   };
   const zombieMetricsFor = (enemy) => {
     const sprite = window.ZI_ART.zombieSprite && window.ZI_ART.zombieSprite(enemy.bestiaryId, enemy.id);
-    const lookScale = !sprite && window.ZI_ART.zombieLook ? (window.ZI_ART.zombieLook(enemy.type).scale || 1) : 1;
-    let targetHeight = zombieHeightForTier(enemy.tier);
+    const lookScale = window.ZI_ART.zombieLook ? (window.ZI_ART.zombieLook(enemy.type).scale || 1) : 1;
+    // Sprite-backed crawlers keep their existing low-to-the-ground display size; stats are unaffected.
+    let targetHeight = Math.round(zombieHeightForTier(enemy.tier) * (sprite && sprite.fit === 'cover' ? lookScale : 1));
     const sourceHeight = sprite ? sprite.h * 2 : 96 * lookScale;
     const maxW = sceneWidth * 0.5, w = sprite ? sprite.w * 2 * targetHeight / sourceHeight : 0;
     if (w > maxW) targetHeight = Math.round(targetHeight * maxW / w);
@@ -2297,6 +2316,7 @@ window.WanderingScreen = function WanderingScreen({ route, setScreen }) {
         if (r.outcome === 'healed') lines.push({ type:'player', text:`⛑ You patch yourself up mid-fight (${r.healSource === 'base' ? 'base charge' : 'med kit'}).` });
         if (r.outcome === 'revived') lines.push({ type:'player', text:'💀 Revenant Infusion triggers — back on your feet.' });
         if (r.outcome === 'win' || r.outcome === 'healed') lines.push({ type:'kill', text:`💀 ${r.enemy} defeated! +${r.xp} XP · looted ${r.loot ? r.loot.name : 'nothing'}` });
+        if (r.toolFinds && r.toolFinds.length) lines.push({ type:'init', text:`🧰 Tool salvage: ${r.toolFinds.join(', ')}` });
         if (r.toppedUp) lines.push({ type:'player', text:'⛑ Heal used to top up.' });
         if (r.worn && r.worn.length) lines.push({ type:'enemy', text:`⚠ Worn out: ${r.worn.join(', ')} — repair in Stockpile → Storage before it helps again.` });
         if (r.outcome === 'forcedRetreat' && r.fr) lines.push({ type:'enemy', text:`☠ ${window.ZI.forcedRetreatText(r.fr)}` });
@@ -3121,10 +3141,10 @@ window.WanderingScreen = function WanderingScreen({ route, setScreen }) {
             );
             // Sprite art is uniformly scaled to the height assigned to its bestiary tier.
             return (<>{retinue}
-              <div className={threatClass} style={{ ...wrap, width: spr.w * 2 }} data-zombie-sprite={spr.file}>
+              <div className={threatClass} style={{ ...wrap, width: spr.w * 2, ...(spr.fit === 'cover' ? { height:spr.h * 2 } : {}) }} data-zombie-sprite={spr.file}>
                 <span className="zi-character-shadow" aria-hidden="true"/>
                 <img src={spr.src} alt="" width={spr.w * 2} height={spr.h * 2} draggable={false}
-                  style={{ display:'block', width:'100%', height:'auto', imageRendering:'pixelated', transformOrigin:'50% 100%',
+                  style={{ display:'block', width:'100%', height:spr.fit === 'cover' ? '100%' : 'auto', objectFit:spr.fit || undefined, objectPosition:spr.fit === 'cover' ? 'center 50%' : undefined, imageRendering:'pixelated', transformOrigin:'50% 100%',
                     transform: window.ZI_ART.ZOMBIE_WALK_POSES[animFrame % 4] }}/>
                 {dead && <span aria-hidden="true">{[0,1,2,3].map(n => <i key={n} className="zi-ash-particle"/>)}</span>}
               </div></>
@@ -3298,13 +3318,13 @@ window.WanderingScreen = function WanderingScreen({ route, setScreen }) {
 
       {/* ── GEAR LOADOUT OVERLAY ── */}
       {showGear && (() => {
-        const filterCat = { ALL:null, WEAPONS:'weapon', ARMOR:'armor', GEAR:'gear', ITEMS:'consumable' }[gearFilter];
+        const filterCat = { ALL:null, WEAPONS:'weapon', ARMOR:'armor', GEAR:'gear', ITEMS:'consumable', TOOLS:'tool' }[gearFilter];
         const visibleStash = stash.map(id => window.ZI.getGearItem(id)).filter(Boolean)
           .filter(it => !filterCat || it.cat === filterCat);
         const rc = (r) => window.ZI.RARITY_COLORS[r] || 'var(--text3)';
         const equip = (id) => { const it = window.ZI.getGearItem(id); const r = window.ZI.equipGear(id, it.slot); if (r) { setLoadout({ ...r.loadout }); setStash([ ...r.stash ]); } };
         const unequip = (slotId) => { const r = window.ZI.unequipGear(slotId); setLoadout({ ...r.loadout }); setStash([ ...r.stash ]); };
-        const groups = [['weapon','WEAPONS'],['armor','ARMOR'],['gear','GEAR'],['consumable','CONSUMABLES']];
+        const groups = [['weapon','WEAPONS'],['armor','ARMOR'],['gear','GEAR'],['consumable','CONSUMABLES'],['tool','TOOLS']];
         const StatBar = ({ label, value, color }) => (
           <div style={{ marginBottom:7 }}>
             <div style={{ display:'flex', justifyContent:'space-between', fontFamily:'var(--font-mono)', fontSize:9, marginBottom:2 }}>
@@ -3333,7 +3353,7 @@ window.WanderingScreen = function WanderingScreen({ route, setScreen }) {
                     <div style={{ display:'flex', flexDirection:'column', gap:5 }}>
                       <InfoRow label="Weapon Dmg" value={`+${Math.round(gearStats.weaponDamage * 0.25)}`} color="var(--red2)"/>
                       <InfoRow label="Loot Find" value={`+${gearStats.lootFind}`} color="var(--green)"/>
-                      <InfoRow label="Slots Filled" value={`${gearStats.filled}/14`} color="var(--text2)"/>
+                      <InfoRow label="Slots Filled" value={`${gearStats.filled}/${window.ZI.GEAR_SLOTS.length}`} color="var(--text2)"/>
                     </div>
                     {!gearStats.hasWeapon && (
                       <div style={{ marginTop:8, fontFamily:'var(--font-mono)', fontSize:8, color:'var(--red2)', lineHeight:1.5 }}>⚠ No weapon equipped — combat damage relies on base stats only.</div>
@@ -3365,7 +3385,7 @@ window.WanderingScreen = function WanderingScreen({ route, setScreen }) {
                                     <span style={{ fontSize:15 }}>{it.icon}</span>
                                     <div style={{ minWidth:0, flex:1 }}>
                                       <div style={{ fontFamily:'var(--font-mono)', fontSize:9, color:'var(--text)', whiteSpace:'nowrap', overflow:'hidden', textOverflow:'ellipsis' }}>{it.name}</div>
-                                      <div style={{ fontFamily:'var(--font-mono)', fontSize:8, color:'var(--text3)' }}>{s.label}</div>
+                                      <div style={{ fontFamily:'var(--font-mono)', fontSize:8, color:'var(--text3)' }}>{s.label}{it.toolCondition ? ` · ${it.toolCondition}` : ''}</div>
                                       {dur && <div data-slot-durability="popup" style={{ marginTop:3 }}>
                                         <div style={{ fontFamily:'var(--font-mono)', fontSize:9, color:durColor, whiteSpace:'nowrap' }}>Durability {Math.round(dur.current)}/{dur.max}</div>
                                         <div style={{ width:'100%', height:6, marginTop:2, background:'var(--bg4)', borderRadius:2 }}><div style={{ height:'100%', width:`${durPct}%`, background:durColor, borderRadius:2 }}/></div>
@@ -3387,7 +3407,7 @@ window.WanderingScreen = function WanderingScreen({ route, setScreen }) {
                 <div style={{ flex:1, minWidth:0, display:'flex', flexDirection:'column' }}>
                   <div className="panel" style={{ flex:1, display:'flex', flexDirection:'column', overflow:'hidden' }}>
                     <div style={{ display:'flex', gap:4, padding:'8px 8px 0' }}>
-                      {['ALL','WEAPONS','ARMOR','GEAR','ITEMS'].map(t => (
+                      {['ALL','WEAPONS','ARMOR','GEAR','ITEMS','TOOLS'].map(t => (
                         <button key={t} onClick={() => setGearFilter(t)} style={{
                           fontFamily:'var(--font-mono)', fontSize:9, padding:'3px 9px', cursor:'pointer',
                           background: gearFilter===t ? '#2a2318' : 'transparent',
@@ -3399,15 +3419,15 @@ window.WanderingScreen = function WanderingScreen({ route, setScreen }) {
                     </div>
                     <div style={{ flex:1, overflow:'auto', padding:8, display:'grid', gridTemplateColumns:'repeat(auto-fill, minmax(150px,1fr))', gap:4, alignContent:'start' }}>
                       {visibleStash.map(it => (
-                        <div key={it.id} onClick={() => equip(it.id)} title={ZI.describeGearItem(it)} style={{
-                          padding:'6px 8px', cursor:'pointer', background:'var(--bg3)',
+                        <div key={it.id} onClick={() => it.slot && equip(it.id)} title={`${ZI.describeGearItem(it)}${it.slot ? '\nClick to equip' : ''}`} style={{
+                          padding:'6px 8px', cursor:it.slot ? 'pointer' : 'default', background:'var(--bg3)',
                           border:'1px solid var(--border)', borderTop:`2px solid ${rc(it.rarity)}`,
                           display:'flex', alignItems:'center', gap:7,
                         }}>
-                          <span style={{ fontSize:15 }}>{it.icon}</span>
+                          {it.sprite ? <img src={it.sprite} alt={it.name} style={{ width:28, height:28, objectFit:'contain', imageRendering:'pixelated' }}/> : <span style={{ fontSize:15 }}>{it.icon}</span>}
                           <div style={{ minWidth:0, flex:1 }}>
                             <div style={{ fontFamily:'var(--font-mono)', fontSize:9, color:'var(--text)', whiteSpace:'nowrap', overflow:'hidden', textOverflow:'ellipsis' }}>{it.name}</div>
-                            <div style={{ fontFamily:'var(--font-mono)', fontSize:8, color:rc(it.rarity) }}>{it.rarity} · {it.cat}</div>
+                            <div style={{ fontFamily:'var(--font-mono)', fontSize:8, color:it.toolCondition === 'broken' ? 'var(--red2)' : rc(it.rarity) }}>{it.cat === 'tool' ? `Tool · ${it.toolCondition}` : `${it.rarity} · ${it.cat}`}</div>
                             <div style={{ fontFamily:'var(--font-mono)', fontSize:7, color:'var(--text2)', whiteSpace:'nowrap', overflow:'hidden', textOverflow:'ellipsis' }}>
                               {ZI.itemStatLines(it).slice(0,2).join(' · ') || it.desc || it.cat}
                             </div>
@@ -3711,13 +3731,14 @@ window.RecyclerScreen = function RecyclerScreen() {
     ];
     // Prepend items gathered from Wandering runs so fresh loot recycles first.
     const wander = (ZI.getWanderLoot && ZI.getWanderLoot()) || [];
-    return [...wander, ...starter];
+    const brokenTools = (ZI.brokenToolRecyclerItems && ZI.brokenToolRecyclerItems()) || [];
+    return [...wander, ...brokenTools, ...starter];
   });
 
   // Queue lives in the persisted, always-on Job Engine (zi_jobs) — not local
   // state — so it survives tab switches, reloads, and settles offline.
   const [, forceRerender] = React.useState(0);
-  React.useEffect(() => { const t = setInterval(() => forceRerender(n => n + 1), 250); return () => clearInterval(t); }, []);
+  React.useEffect(() => { const t = setInterval(() => { forceRerender(n => n + 1); setInventory(inv => [...inv.filter(it => !it.fromToolScrap), ...((ZI.brokenToolRecyclerItems && ZI.brokenToolRecyclerItems()) || [])]); }, 1000); return () => clearInterval(t); }, []);
   const queue = ZI.jobsByType('recycle');
   const gameMode = ZI.currentGameMode();
   const isCampMode = gameMode === 'camp';
@@ -3745,6 +3766,10 @@ window.RecyclerScreen = function RecyclerScreen() {
     if (r.ok) setInventory(inv => inv.filter(i => i.id !== item.id));
     // Note: the item is NOT removed from zi_wander_loot here — it's removed by
     // ZI.grantRecycleOutput on completion, so a cancelled job doesn't lose it.
+  };
+  const addWithTool = (item, family) => {
+    const r = ZI.queueRecycle(item, op.id, undefined, family);
+    if (r.ok) setInventory(inv => inv.filter(i => i.id !== item.id));
   };
 
   const removeFromQueue = (jobId) => {
@@ -3845,6 +3870,8 @@ window.RecyclerScreen = function RecyclerScreen() {
             {visible.map(item => {
               const tColor = ZI.tierColor(item);
               const tMeta = ZI.tierMeta(item);
+              const assist = ZI.recyclerToolMatch && ZI.recyclerToolMatch(item);
+              const hasAssistTool = assist && ZI.getStash().some(id => { const g = ZI.getGearItem(id); return g && g.toolFamily === assist.family && g.toolCondition !== 'broken'; });
               return (
               <div key={item.id}
                 onClick={() => addToQueue(item)}
@@ -3860,6 +3887,7 @@ window.RecyclerScreen = function RecyclerScreen() {
                   <span style={{ display:'flex', alignItems:'center', gap:5, minWidth:0 }}>
                     <span style={{ color:tColor, fontSize:11, flexShrink:0 }} title={`Tier ${tMeta.label}`}>◆</span>
                     {item.fromWandering && <span title="Recovered from a Wandering run" style={{ color:'var(--green)', flexShrink:0 }}>◈</span>}
+                    {item.sprite && <img src={item.sprite} alt="" style={{ width:24, height:24, objectFit:'contain', imageRendering:'pixelated' }}/>}
                     <span style={{ fontFamily:'var(--font-body)', fontSize:12, color:tColor, whiteSpace:'nowrap', overflow:'hidden', textOverflow:'ellipsis' }}>{item.name}</span>
                   </span>
                   <Tag color={tColor}>{tMeta.label}</Tag>
@@ -3874,9 +3902,12 @@ window.RecyclerScreen = function RecyclerScreen() {
                     );
                   })}
                 </div>
-                <div style={{ display:'flex', justifyContent:'space-between' }}>
+                <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', gap:5 }}>
                   <span style={{ fontFamily:'var(--font-mono)', fontSize:9, color:'#aab4bc' }} title="Drives recycle time, not value">Weight: {item.weight}kg</span>
-                  <span style={{ fontFamily:'var(--font-mono)', fontSize:9, color:'var(--amber)' }}>+ Add</span>
+                  <div style={{ display:'flex', gap:5, alignItems:'center' }}>
+                    {hasAssistTool && <button onClick={e => { e.stopPropagation(); addWithTool(item, assist.family); }} title={`${assist.label} assists this salvage and wears one condition step when the job completes`} style={{ fontFamily:'var(--font-mono)', fontSize:8, padding:'2px 4px', cursor:'pointer', color:'var(--green)', background:'var(--bg4)', border:'1px solid var(--green)' }}>Use {assist.label}</button>}
+                    <span style={{ fontFamily:'var(--font-mono)', fontSize:9, color:'var(--amber)' }}>+ Add</span>
+                  </div>
                 </div>
               </div>
               );
@@ -4094,6 +4125,7 @@ window.StockpileScreen = function StockpileScreen({ initialTab = 'recycler', pre
     fish_legendary:14, powdered_milk:15, hard_cheese:16, canned_butter:17, meat:18, vegetables:19,
   };
   const itemVisual = (it, size=18) => {
+    if (it && it.sprite) return <img src={it.sprite} alt={it.name} title={it.name} style={{ width:size, height:size, objectFit:'contain', flex:`0 0 ${size}px`, imageRendering:'pixelated' }}/>;
     const spriteIndex = it ? FOOD_SPRITE_INDEX[it.id] : undefined;
     if (spriteIndex !== undefined) return <span role="img" aria-label={it.name} title={it.name} style={{
       display:'inline-block', flex:`0 0 ${size}px`, width:size, height:size,
@@ -4103,12 +4135,13 @@ window.StockpileScreen = function StockpileScreen({ initialTab = 'recycler', pre
     return <span aria-hidden="true" style={{ fontSize:size * 0.82, lineHeight:1, flexShrink:0 }}>{it && it.icon || '📦'}</span>;
   };
   const repair = (id) => { const it = Z.getGearItem(id); if (!it) return; const d = Z.itemDurability(it); if (!d || d.current >= d.max) return; if (!Z.canAffordRepair(it)) return; const cost = Z.repairCost(it); const M = window.ZI_MATERIALS||{}; Object.entries(cost.materials).forEach(([k,q])=>{ if(M[k]) M[k].current=Math.max(0,M[k].current-q); }); Object.entries(cost.rmat||{}).forEach(([k,q])=>Z.addRmat(k,-q)); Z.enqueueJob('repair', id, Math.max(30, Math.round((d.max-d.current)*2)), {}); setLoadout({ ...Z.getLoadout() }); };
-  const filterCat = { ALL:null, WEAPONS:'weapon', ARMOR:'armor', GEAR:'gear', ITEMS:'consumable' }[gearFilter];
+  const repairTool = (id) => { const r = Z.repairHandTool(id); setStash(Z.getStash()); setLoadout({ ...Z.getLoadout() }); setLiteratureNote(r.ok ? `${Z.getGearItem(r.itemId)?.name || 'Tool'} repaired.` : r.reason); };
+  const filterCat = { ALL:null, WEAPONS:'weapon', ARMOR:'armor', GEAR:'gear', ITEMS:'consumable', TOOLS:'tool' }[gearFilter];
   // Group stash item ids → counts, then filter.
   const stashCounts = stash.reduce((m, id) => { m[id] = (m[id]||0)+1; return m; }, {});
   const visibleStash = Object.keys(stashCounts).map(id => Z.getGearItem(id)).filter(Boolean)
     .filter(it => !filterCat || it.cat === filterCat);
-  const gearGroups = [['weapon','WEAPONS'],['armor','ARMOR'],['gear','GEAR'],['consumable','CONSUMABLES']];
+  const gearGroups = [['weapon','WEAPONS'],['armor','ARMOR'],['gear','GEAR'],['consumable','CONSUMABLES'],['tool','TOOLS']];
   return (
     <div style={{ display:'flex', flexDirection:'column', height:'100%', overflow:'hidden' }}>
       {/* Sub-menu */}
@@ -4174,6 +4207,7 @@ window.StockpileScreen = function StockpileScreen({ initialTab = 'recycler', pre
               <div style={{ padding:'0 10px 10px', display:'grid', gridTemplateColumns:'repeat(auto-fill, minmax(200px,1fr))', gap:6 }}>
                 {Object.keys(stashCounts).map(id => Z.getGearItem(id)).filter(Boolean).map(it => {
                   const dur = Z.itemDurability(it);
+                  const toolRepair = it.cat === 'tool' && it.toolCondition !== 'ready' ? Z.handToolRepairCheck(it.id) : null;
                   const isFood = FOOD_SPRITE_INDEX[it.id] !== undefined;
                   const read = it.cat === 'book' && Z.isSkillBookRead && Z.isSkillBookRead(it.id);
                   const isLiterature = it.cat === 'book' || it.cat === 'tome';
@@ -4183,10 +4217,14 @@ window.StockpileScreen = function StockpileScreen({ initialTab = 'recycler', pre
                   };
                   return <div key={it.id} style={{ padding:8, background:isFood ? 'rgba(61,207,142,0.08)' : 'var(--bg3)', border:'1px solid var(--border)', borderTop:`2px solid ${isFood ? 'var(--green)' : rc(it.rarity)}` }}>
                     <div style={{ display:'flex', gap:8, alignItems:'center' }}>{itemVisual(it, isFood ? 42 : 18)}<span style={{ flex:1, fontFamily:'var(--font-body)', fontSize:13 }}>{it.name}</span><b style={{ fontFamily:'var(--font-mono)', fontSize:12, color:'var(--amber)' }}>×{stashCounts[it.id]}</b></div>
-                    <div style={{ fontFamily:'var(--font-mono)', fontSize:9, color:'var(--text2)', marginTop:4 }}>{isLiterature ? (it.cat === 'book' ? `${read ? 'Read · ' : 'Unread · '}+${it.bookXpPct}% ${it.bookProfession} XP` : (it.tomeSeries ? 'Tome-series copy' : 'Ungrouped tome')) : it.rarity}{dur ? ` · Condition ${Math.round(dur.current)}/${dur.max}` : ''}</div>
+                    <div style={{ fontFamily:'var(--font-mono)', fontSize:9, color:it.toolCondition === 'broken' ? 'var(--red2)' : 'var(--text2)', marginTop:4 }}>{it.cat === 'tool' ? `Tool · ${it.toolCondition}` : isLiterature ? (it.cat === 'book' ? `${read ? 'Read · ' : 'Unread · '}+${it.bookXpPct}% ${it.bookProfession} XP` : (it.tomeSeries ? 'Tome-series copy' : 'Ungrouped tome')) : it.rarity}{dur ? ` · Condition ${Math.round(dur.current)}/${dur.max}` : ''}</div>
                     {isLiterature && <div style={{ display:'flex', gap:5, marginTop:6 }}>
                       {it.cat === 'book' && <button className="btn" disabled={!!read || !Z.atBaseOrCamp()} onClick={() => actLiterature('read')} title={!Z.atBaseOrCamp() ? 'Read at base or camp' : 'Read once for its permanent profession XP bonus'}>{read ? 'Lesson learned' : 'Read'}</button>}
                       <button className="btn" disabled={!Z.atBaseOrCamp()} onClick={() => actLiterature('burn')} title="Convert one copy into kindling at base or camp">Convert to kindling</button>
+                    </div>}
+                    {toolRepair && <div style={{ display:'flex', alignItems:'center', gap:5, marginTop:6 }}>
+                      <button className="btn" disabled={!toolRepair.ok || !Z.atBaseOrCamp()} onClick={() => { const r = Z.repairHandTool(it.id); setLiteratureNote(r.ok ? `${it.name} repaired.` : r.reason); setStash(Z.getStash()); }} title={toolRepair.ok ? 'Repair with Mechanical 2 or Engineering 2; costs 2 Metal and 1 Electronics' : toolRepair.reason}>Repair tool</button>
+                      <span style={{ fontFamily:'var(--font-mono)', fontSize:8, color:'var(--text3)' }}>{toolRepair.reason || 'Mechanical 2 / Engineering 2 · 2 Metal + 1 Electronics'}</span>
                     </div>}
                   </div>;
                 })}
@@ -4217,7 +4255,8 @@ window.StockpileScreen = function StockpileScreen({ initialTab = 'recycler', pre
                         {Z.GEAR_SLOTS.filter(s => s.accepts === cat).map(s => {
                           const it = loadout[s.id] && Z.getGearItem(loadout[s.id]);
                           const dur = it ? Z.itemDurability(it) : null;
-                          const worn = it ? Z.itemWorn(it) : false;
+                          const worn = it ? (Z.itemWorn(it) || it.toolCondition === 'broken') : false;
+                          const toolRepair = it && it.cat === 'tool' && it.toolCondition !== 'ready' ? Z.handToolRepairCheck(it.id) : null;
                           const durPct = dur ? (dur.current / dur.max) * 100 : 100;
                           const durColor = durPct <= 20 ? '#f06a5a' : durPct <= 50 ? '#E0A93F' : '#3dcf8e';
                           const damaged = dur && dur.current < dur.max;
@@ -4235,7 +4274,7 @@ window.StockpileScreen = function StockpileScreen({ initialTab = 'recycler', pre
                                     {itemVisual(it, 28)}
                                     <div style={{ minWidth:0, flex:1 }}>
                                       <div style={{ fontFamily:'var(--font-mono)', fontSize:9, color: worn ? '#f06a5a' : 'var(--text)', whiteSpace:'nowrap', overflow:'hidden', textOverflow:'ellipsis' }}>{it.name}{worn ? ' (worn)' : ''}</div>
-                                      <div style={{ fontFamily:'var(--font-mono)', fontSize:8, color:'var(--text3)' }}>{s.label}</div>
+                                      <div style={{ fontFamily:'var(--font-mono)', fontSize:8, color:'var(--text3)' }}>{s.label}{it.toolCondition ? ` · ${it.toolCondition}` : ''}</div>
                                     </div>
                                     <button onClick={(e) => { e.stopPropagation(); unequip(s.id); }} title="Unequip" style={{
                                       fontFamily:'var(--font-mono)', fontSize:8, padding:'1px 5px', cursor:'pointer',
@@ -4259,6 +4298,7 @@ window.StockpileScreen = function StockpileScreen({ initialTab = 'recycler', pre
                                       )}
                                     </div>
                                   )}
+                                  {toolRepair && <button onClick={(e) => { e.stopPropagation(); repairTool(it.id); }} disabled={!toolRepair.ok || !Z.atBaseOrCamp()} title={toolRepair.ok ? 'Repair with Mechanical 2 or Engineering 2; costs 2 Metal and 1 Electronics' : toolRepair.reason} style={{ fontFamily:'var(--font-mono)', fontSize:8, padding:'2px 5px', cursor:toolRepair.ok ? 'pointer' : 'not-allowed', color:toolRepair.ok ? 'var(--green)' : 'var(--text3)', background:'var(--bg4)', border:'1px solid var(--border)' }}>Repair · 2 Metal + 1 Electronics</button>}
                                 </>
                               ) : (
                                 <span style={{ fontFamily:'var(--font-mono)', fontSize:9, color:'var(--text3)' }}>{s.label}</span>
@@ -4280,7 +4320,7 @@ window.StockpileScreen = function StockpileScreen({ initialTab = 'recycler', pre
                 {/* Crafted stash */}
                 <div style={{ flex:'1 1 320px', minWidth:0 }}>
                   <div style={{ display:'flex', gap:4, marginBottom:8 }}>
-                    {['ALL','WEAPONS','ARMOR','GEAR','ITEMS'].map(t => (
+                    {['ALL','WEAPONS','ARMOR','GEAR','ITEMS','TOOLS'].map(t => (
                       <button key={t} onClick={() => setGearFilter(t)} style={{
                         fontFamily:'var(--font-mono)', fontSize:9, padding:'3px 9px', cursor:'pointer',
                         background: gearFilter===t ? '#2a2318' : 'transparent',
@@ -4291,8 +4331,8 @@ window.StockpileScreen = function StockpileScreen({ initialTab = 'recycler', pre
                   </div>
                   <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill, minmax(150px,1fr))', gap:4, alignContent:'start' }}>
                     {visibleStash.map(it => (
-                      <div key={it.id} onClick={() => equip(it.id)} title={`${ZI.describeGearItem(it)}\nClick to equip`} style={{
-                        padding:'6px 8px', cursor:'pointer', background:'var(--bg3)',
+                      <div key={it.id} onClick={() => it.slot && equip(it.id)} title={`${ZI.describeGearItem(it)}${it.slot ? '\nClick to equip' : ''}`} style={{
+                        padding:'6px 8px', cursor:it.slot ? 'pointer' : 'default', background:'var(--bg3)',
                         border:'1px solid var(--border)', borderTop:`2px solid ${rc(it.rarity)}`,
                         display:'flex', alignItems:'center', gap:7,
                       }}>
@@ -4301,7 +4341,7 @@ window.StockpileScreen = function StockpileScreen({ initialTab = 'recycler', pre
                           <div style={{ fontFamily:'var(--font-mono)', fontSize:9, color:'var(--text)', whiteSpace:'nowrap', overflow:'hidden', textOverflow:'ellipsis' }}>
                             {it.name}{stashCounts[it.id] > 1 ? ` ×${stashCounts[it.id]}` : ''}
                           </div>
-                          <div style={{ fontFamily:'var(--font-mono)', fontSize:8, color:rc(it.rarity) }}>{it.rarity} · {it.cat}</div>
+                          <div style={{ fontFamily:'var(--font-mono)', fontSize:8, color:it.toolCondition === 'broken' ? 'var(--red2)' : rc(it.rarity) }}>{it.cat === 'tool' ? `Tool · ${it.toolCondition}` : `${it.rarity} · ${it.cat}`}</div>
                           <div style={{ fontFamily:'var(--font-mono)', fontSize:7, color:'var(--text2)', whiteSpace:'nowrap', overflow:'hidden', textOverflow:'ellipsis' }}>
                             {ZI.itemStatLines(it).slice(0,2).join(' · ') || it.desc || it.cat}
                           </div>

@@ -22,6 +22,7 @@ ZI.GEAR_SLOTS = [
   { id:'consumable2', label:'Stim',       accepts:'consumable', group:'consumable' },
   { id:'consumable3', label:'Food',       accepts:'consumable', group:'consumable' },
   { id:'throwable',   label:'Throw',      accepts:'consumable', group:'consumable' },
+  { id:'toolbelt',    label:'Utility Tool', accepts:'tool',      group:'tool' },
   { id:'back',        label:'Back',       accepts:'gear',       group:'gear' },
   { id:'trinket',     label:'Trinket',    accepts:'gear',       group:'gear' },
 ];
@@ -44,6 +45,7 @@ ZI.GEAR_ITEMS = [
   { id:'balaclava',  name:'Tactical Balaclava',slot:'mask',      cat:'armor',  rarity:'uncommon',  icon:'🥷', dmg:0, armor:1,  carryW:0, speedDelta:0,  lootBonus:0,  desc:'Minor protection.' },
   { id:'vest_t3',    name:'SAPI Plate Carrier',slot:'vest',      cat:'armor',  rarity:'legendary', icon:'🦺', dmg:0, armor:35, carryW:5, speedDelta:-12,lootBonus:0,  desc:'Military-grade ceramic. Stops rifle rounds.' },
   { id:'vest_t1',    name:'Padded Jacket',     slot:'vest',      cat:'armor',  rarity:'common',    icon:'🧥', dmg:0, armor:8,  carryW:2, speedDelta:0,  lootBonus:0,  desc:'Civilian padding. Minimal ballistic value.' },
+  { id:'bone_vest',  name:'Bone-Plated Vest',   slot:'vest',      cat:'armor',  rarity:'uncommon',  icon:'🦴', dmg:0, armor:12, carryW:3, speedDelta:-1, lootBonus:0, durability:{ max:80, current:80, drainPerUse:1 }, desc:'A crude protective vest reinforced with scavenged bone plates.' },
   { id:'old_padded_jacket', name:'Old Padded Jacket', slot:'vest', cat:'armor', rarity:'common', icon:'🧥', dmg:0, armor:4, carryW:2, speedDelta:0, lootBonus:0, desc:'Worn thin and patched twice. Better than nothing.' }, // JD1a (B1): from the Elder Jester; armor 4, 2 kg
   { id:'gloves_t2',  name:'Combat Gloves',     slot:'gloves',    cat:'armor',  rarity:'uncommon',  icon:'🧤', dmg:0, armor:2,  carryW:0, speedDelta:0,  lootBonus:0,  desc:'+10% melee damage. Improved grip.' },
   { id:'boots_t2',   name:'Tactical Boots',    slot:'boots',     cat:'armor',  rarity:'rare',      icon:'🥾', dmg:0, armor:1,  carryW:0, speedDelta:8,  lootBonus:0,  desc:'-20% movement noise. Sprint bonus.' },
@@ -63,6 +65,22 @@ ZI.GEAR_ITEMS = [
   { id:'ration',     name:'MRE Ration',        slot:'consumable3',cat:'consumable',rarity:'common', icon:'🥫', dmg:0, armor:0, carryW:1, speedDelta:0, lootBonus:0, effect:{heal:12}, desc:'+40% stamina regen 120s.' },
   { id:'grenade',    name:'Frag Grenade',      slot:'throwable', cat:'consumable',rarity:'uncommon',icon:'💣', dmg:0, armor:0, carryW:1, speedDelta:0, lootBonus:0, effect:{killEnemy:true}, desc:'120 blast / 5m radius.' },
   { id:'flashbang',  name:'Flashbang',         slot:'throwable', cat:'consumable',rarity:'uncommon',icon:'🧨', dmg:0, armor:0, carryW:0, speedDelta:0, lootBonus:0, effect:{stun:true}, desc:'Stun 6s / 8m radius.' },
+  // Hand tools use separate state IDs so worn copies do not degrade untouched spares.
+  { id:'screwdriver', name:'Field Screwdriver', slot:'toolbelt', cat:'tool', rarity:'common', icon:'🔧', sprite:'art/tools/screwdriver-v1.png', toolFamily:'screwdriver', toolCondition:'ready', toolNextId:'screwdriver_worn', carryW:1, weight:1, desc:'Carefully recovers electronics from mixed salvage.' },
+  { id:'screwdriver_worn', name:'Worn Field Screwdriver', slot:'toolbelt', cat:'tool', rarity:'common', icon:'🔧', sprite:'art/tools/screwdriver-worn-v1.png', toolFamily:'screwdriver', toolCondition:'worn', toolNextId:'screwdriver_broken', toolRepairId:'screwdriver', carryW:1, weight:1, desc:'Still usable, but close to failing.' },
+  { id:'screwdriver_broken', name:'Broken Field Screwdriver', slot:'toolbelt', cat:'tool', rarity:'common', icon:'🔧', sprite:'art/tools/screwdriver-broken-v1.png', toolFamily:'screwdriver', toolCondition:'broken', toolRepairId:'screwdriver', toolScrap:true, outputs:{ metal:2 }, carryW:1, weight:1, desc:'Repair with Mechanical or Engineering skill, or recycle for scrap.' },
+  { id:'wrench', name:'Adjustable Wrench', slot:'toolbelt', cat:'tool', rarity:'common', icon:'🔧', sprite:'art/tools/wrench-v1.png', toolFamily:'wrench', toolCondition:'ready', toolNextId:'wrench_worn', carryW:1, weight:1, desc:'Recovers nuts and bolts from mechanical salvage.' },
+  { id:'wrench_worn', name:'Worn Adjustable Wrench', slot:'toolbelt', cat:'tool', rarity:'common', icon:'🔧', sprite:'art/tools/wrench-worn-v1.png', toolFamily:'wrench', toolCondition:'worn', toolNextId:'wrench_broken', toolRepairId:'wrench', carryW:1, weight:1, desc:'Still usable, but close to failing.' },
+  { id:'wrench_broken', name:'Broken Adjustable Wrench', slot:'toolbelt', cat:'tool', rarity:'common', icon:'🔧', sprite:'art/tools/wrench-broken-v1.png', toolFamily:'wrench', toolCondition:'broken', toolRepairId:'wrench', toolScrap:true, outputs:{ metal:3 }, carryW:1, weight:1, desc:'Repair with Mechanical or Engineering skill, or recycle for scrap.' },
+  { id:'needlenose_pliers', name:'Needle-Nose Pliers', slot:'toolbelt', cat:'tool', rarity:'common', icon:'🗜️', sprite:'art/tools/pliers-v1.png', toolFamily:'pliers', toolCondition:'ready', toolNextId:'needlenose_pliers_worn', carryW:1, weight:1, desc:'Recovers wiring and can salvage bone fragments after zombie encounters.' },
+  { id:'needlenose_pliers_worn', name:'Worn Needle-Nose Pliers', slot:'toolbelt', cat:'tool', rarity:'common', icon:'🗜️', sprite:'art/tools/pliers-worn-v1.png', toolFamily:'pliers', toolCondition:'worn', toolNextId:'needlenose_pliers_broken', toolRepairId:'needlenose_pliers', carryW:1, weight:1, desc:'Still usable, but close to failing.' },
+  { id:'needlenose_pliers_broken', name:'Broken Needle-Nose Pliers', slot:'toolbelt', cat:'tool', rarity:'common', icon:'🗜️', sprite:'art/tools/pliers-broken-v1.png', toolFamily:'pliers', toolCondition:'broken', toolRepairId:'needlenose_pliers', toolScrap:true, outputs:{ metal:2 }, carryW:1, weight:1, desc:'Repair with Mechanical or Engineering skill, or recycle for scrap.' },
+  { id:'claw_hammer', name:'Claw Hammer', slot:'toolbelt', cat:'tool', rarity:'common', icon:'🔨', sprite:'art/tools/claw-hammer-v1.png', toolFamily:'hammer', toolCondition:'ready', toolNextId:'claw_hammer_worn', carryW:1, weight:1, desc:'Recovers nails while scavenging built-up locations.' },
+  { id:'claw_hammer_worn', name:'Worn Claw Hammer', slot:'toolbelt', cat:'tool', rarity:'common', icon:'🔨', sprite:'art/tools/claw-hammer-worn-v1.png', toolFamily:'hammer', toolCondition:'worn', toolNextId:'claw_hammer_broken', toolRepairId:'claw_hammer', carryW:1, weight:1, desc:'Still usable, but close to failing.' },
+  { id:'claw_hammer_broken', name:'Broken Claw Hammer', slot:'toolbelt', cat:'tool', rarity:'common', icon:'🔨', sprite:'art/tools/claw-hammer-broken-v1.png', toolFamily:'hammer', toolCondition:'broken', toolRepairId:'claw_hammer', toolScrap:true, outputs:{ metal:2, wood:1 }, carryW:1, weight:1, desc:'Repair with Mechanical or Engineering skill, or recycle for scrap.' },
+  { id:'acetylene_torch', name:'Acetylene Torch & Portable Tank', slot:'toolbelt', cat:'tool', rarity:'uncommon', icon:'🔥', sprite:'art/tools/acetylene-torch-v1.png', toolFamily:'torch', toolCondition:'ready', toolNextId:'acetylene_torch_worn', carryW:5, weight:5, desc:'Cuts plate salvage into scrap metal while Wandering; consumes Fuel and wears with use.' },
+  { id:'acetylene_torch_worn', name:'Worn Acetylene Torch & Tank', slot:'toolbelt', cat:'tool', rarity:'uncommon', icon:'🔥', sprite:'art/tools/acetylene-torch-worn-v1.png', toolFamily:'torch', toolCondition:'worn', toolNextId:'acetylene_torch_broken', toolRepairId:'acetylene_torch', carryW:5, weight:5, desc:'Still usable, but close to failing.' },
+  { id:'acetylene_torch_broken', name:'Broken Acetylene Torch & Tank', slot:'toolbelt', cat:'tool', rarity:'uncommon', icon:'🔥', sprite:'art/tools/acetylene-torch-broken-v1.png', toolFamily:'torch', toolCondition:'broken', toolRepairId:'acetylene_torch', toolScrap:true, outputs:{ metal:3 }, carryW:5, weight:5, desc:'Repair with Mechanical or Engineering skill, or recycle for scrap.' },
 ];
 // Build the mechanical part of every item description from the values the game
 // actually uses. Optional attributeBonuses supports future S.U.R.V.I.V.A.L.
@@ -109,6 +127,56 @@ ZI.describeGearItem = function(item) {
   return [item.desc || '', ...ZI.itemStatLines(item)].filter(Boolean).join('\n');
 };
 ZI.getGearItem = function(id) { return ZI.GEAR_ITEMS.find(g => g.id === id) || null; };
+ZI.handToolForPoi = function(poiType, rng) {
+  const pools = { 'hardware-store':['screwdriver','needlenose_pliers','claw_hammer','acetylene_torch'], scrapyard:['wrench','needlenose_pliers','claw_hammer','acetylene_torch'] };
+  const pool = pools[poiType]; if (!pool || !pool.length) return null;
+  rng = rng || Math.random;
+  return pool[Math.floor(Math.min(0.999999, Math.max(0, rng())) * pool.length)];
+};
+ZI.carriedHandTool = function(family) {
+  const equipped = ZI.getLoadout && ZI.getGearItem(ZI.getLoadout().toolbelt);
+  if (equipped && equipped.cat === 'tool' && equipped.toolFamily === family && equipped.toolCondition !== 'broken') return equipped;
+  for (const entry of ZI.getCarried ? ZI.getCarried() : []) {
+    const item = ZI.getGearItem(entry.id);
+    if (item && item.cat === 'tool' && item.toolFamily === family && item.toolCondition !== 'broken' && entry.qty > 0) return item;
+  }
+  return null;
+};
+ZI.useCarriedHandTool = function(family) {
+  const loadout = ZI.getLoadout ? ZI.getLoadout() : {};
+  const equipped = loadout.toolbelt && ZI.getGearItem(loadout.toolbelt);
+  if (equipped && equipped.toolFamily === family && equipped.toolCondition !== 'broken') {
+    loadout.toolbelt = equipped.toolNextId || loadout.toolbelt; ZI.saveLoadout(loadout); return true;
+  }
+  const carried = ZI.getCarried ? ZI.getCarried() : [];
+  const index = carried.findIndex(entry => { const item = ZI.getGearItem(entry.id); return item && item.cat === 'tool' && item.toolFamily === family && item.toolCondition !== 'broken' && entry.qty > 0; });
+  if (index < 0) return false;
+  const entry = carried[index], item = ZI.getGearItem(entry.id);
+  entry.qty -= 1; if (entry.qty <= 0) carried.splice(index, 1);
+  if (item.toolNextId) carried.push({ id:item.toolNextId, qty:1 });
+  ZI.saveCarried(carried); return true;
+};
+ZI.handToolRepairCheck = function(itemId) {
+  const item = ZI.getGearItem(itemId);
+  if (!item || item.cat !== 'tool' || !item.toolRepairId || item.toolCondition === 'ready') return { ok:false, reason:'This tool does not need repair.' };
+  const skill = Math.max((ZI.statLevel && ZI.statLevel('mechanical')) || 1, (ZI.statLevel && ZI.statLevel('engineering')) || 1);
+  if (skill < 2) return { ok:false, reason:'Requires Mechanical 2 or Engineering 2.' };
+  const M = window.ZI_MATERIALS || {};
+  if (((M.metal && M.metal.current) || 0) < 2 || ((M.electronics && M.electronics.current) || 0) < 1) return { ok:false, reason:'Repair costs 2 Metal and 1 Electronics.' };
+  return { ok:true, repairId:item.toolRepairId, cost:{ metal:2, electronics:1 } };
+};
+ZI.repairHandTool = function(itemId) {
+  const check = ZI.handToolRepairCheck(itemId); if (!check.ok) return check;
+  const stash = ZI.getStash(), index = stash.indexOf(itemId), loadout = ZI.getLoadout();
+  const equipped = loadout.toolbelt === itemId;
+  if (index < 0 && !equipped) return { ok:false, reason:'Store or equip the broken tool before repairing it.' };
+  const M = window.ZI_MATERIALS || {};
+  M.metal.current -= check.cost.metal; M.electronics.current -= check.cost.electronics;
+  if (equipped) { loadout.toolbelt = check.repairId; ZI.saveLoadout(loadout); }
+  else { stash[index] = check.repairId; ZI.saveStash(stash); }
+  if (ZI.emitAction) ZI.emitAction('repair', 1);
+  return { ok:true, itemId:check.repairId };
+};
 
 // ─── ITEM PURPOSE TAXONOMY ("every item earns its place") ────────────────────
 // Derives a purpose[] array + marketValue for every gear item so nothing reads
@@ -274,6 +342,7 @@ ZI.grantGear = function(itemId, qty) {
 // Equip an item from stash into its compatible slot. Returns {loadout, stash}.
 ZI.equipGear = function(itemId, slotId) {
   const item = ZI.getGearItem(itemId); if (!item) return null;
+  if (item.cat === 'tool' && item.toolCondition === 'broken') return null;
   const slot = ZI.GEAR_SLOTS.find(s => s.id === slotId); if (!slot || slot.accepts !== item.cat) return null;
   const loadout = ZI.getLoadout();
   // Takes exactly ONE copy out of the stash (was: every copy with this id — Batch 1B fix).

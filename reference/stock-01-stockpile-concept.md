@@ -43,3 +43,7 @@
 
 - **One list, many views.** The Storage list and the Loadout screen must read the same stash data, never two copies.
 - **Greyed, not hidden.** A missing button teaches nothing; a greyed one with a reason teaches the rule.
+
+## 6. Related proposal `[PROPOSED Oct 30]`
+
+- Physical handyman tools kept in Stockpile can enable specialized Recycler jobs, wear down with use, and be repaired, kept as spares, or intentionally recycled when worn out. See `vehicle-recycler-tools-proposal.md` for the connected vehicle recovery loop and open implementation decisions.

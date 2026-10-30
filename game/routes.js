@@ -228,6 +228,30 @@ ZI.getRoutePreparation=function(route,threatLevel){
     ]
   };
 };
+// Field tools can recover small, node-specific materials during a route run.
+// They use the same carried/equipped inventory and condition progression as Wandering.
+ZI.routeToolSalvage=function(type){
+  const finds=[];
+  const award=(family,material,amount,label)=>{
+    if(!ZI.carriedHandTool||!ZI.carriedHandTool(family))return;
+    const got=ZI.addMaterial?ZI.addMaterial(material,amount):0;
+    if(got>0){ZI.useCarriedHandTool(family);finds.push('+'+got+' '+label+' ('+family+')');}
+  };
+  if(type==='combat')award('pliers','bones',1,'Bone Fragments');
+  if(type==='loot'){
+    award('hammer','fasteners',2,'Fasteners');
+    award('screwdriver','electronics',1,'Electronics');
+    award('pliers','wiring',1,'Wiring');
+  }
+  if(type==='vehicle'){
+    award('wrench','fasteners',2,'Fasteners');
+    if(ZI.carriedHandTool&&ZI.carriedHandTool('torch')){
+      const fuel=window.ZI_MATERIALS&&window.ZI_MATERIALS.fuel;
+      if(fuel&&fuel.current>=1){const got=ZI.addMaterial?ZI.addMaterial('metal',3):0;if(got>0){fuel.current-=1;ZI.useCarriedHandTool('torch');finds.push('+'+got+' Metal plate scrap (torch, −1 Fuel)');}}
+    }
+  }
+  return finds;
+};
 ZI.resolvePreparedRouteNodes=function(route,mode,preparation){
   const P=preparation,lootMult=mode==='passive'?0.7:1,log=[],actions=[{id:'move',scale:1}];
   let loot=0,losses=null,avoided=0,won=0,lost=0;
@@ -241,7 +265,8 @@ ZI.resolvePreparedRouteNodes=function(route,mode,preparation){
       }else if(Math.random()*100<P.combatWinChance){
         won++;const g=3+Math.floor(Math.random()*route.rmatTier*3+4);loot+=g;
         actions.push({id:'kill',scale:0.6,meta:{noCellKill:true}});
-        log.push({node,type,text:'Cleared — +'+g+' salvage'});
+        const tools=ZI.routeToolSalvage(type);
+        log.push({node,type,text:'Cleared — +'+g+' salvage'+(tools.length?' · '+tools.join(', '):'')});
       }else{
         lost++;losses='Survivor injured';actions.push({id:'endure',scale:1});
         log.push({node,type,text:'Overrun — encounter readiness was insufficient'});
@@ -249,13 +274,15 @@ ZI.resolvePreparedRouteNodes=function(route,mode,preparation){
     }else if(type==='loot'){
       const g=Math.round((6+Math.random()*(route.rmatTier*5+6)+P.lootFind)*lootMult);
       loot+=g;actions.push({id:'loot',scale:1});
-      log.push({node,type,text:'Looted +'+g+' '+matName});
+      const tools=ZI.routeToolSalvage(type);
+      log.push({node,type,text:'Looted +'+g+' '+matName+(tools.length?' · '+tools.join(', '):'')});
     }else if(type==='hazard'){
       const dmg=Math.round(route.risk*3*Math.random());loot=Math.max(0,loot-dmg);
       actions.push({id:'endure',scale:1});
       log.push({node,type,text:dmg?'Hazard — lost '+dmg+' salvage':'Hazard avoided'});
     }else if(type==='vehicle'){
-      log.push({node,type,text:'Vehicle site inspected on foot'});
+      const tools=ZI.routeToolSalvage(type);
+      log.push({node,type,text:'Vehicle site inspected on foot'+(tools.length?' · '+tools.join(', '):'')});
     }else if(type==='extraction'){
       loot=Math.round(loot*lootMult);log.push({node,type,text:'Extraction'});
     }else{
@@ -367,21 +394,22 @@ ZI.resolveRunNodes = function(route, squadIds, mode, threatLevel, preparation) {
     const type = ZI.routeNodeType(node);
     if (type === 'combat') {
       const won = Math.random() * 100 < prob;
-      if (won) { const g = 3 + Math.floor(Math.random() * route.rmatTier * 3 + 4); loot += g; log.push({ node, type, text:`Cleared — +${g} salvage` }); }
+      if (won) { const g = 3 + Math.floor(Math.random() * route.rmatTier * 3 + 4); loot += g; const tools=ZI.routeToolSalvage(type); log.push({ node, type, text:`Cleared — +${g} salvage${tools.length ? ` · ${tools.join(', ')}` : ''}` }); }
       else { log.push({ node, type, text:`Overrun — took injuries` }); if (!losses) losses = 'Survivor injured'; }
     } else if (type === 'loot') {
       const g = Math.round((6 + Math.random() * (route.rmatTier * 5 + 6)) * lootMult);
-      loot += g; log.push({ node, type, text:`Looted +${g} ${matName}` });
+      loot += g; const tools=ZI.routeToolSalvage(type); log.push({ node, type, text:`Looted +${g} ${matName}${tools.length ? ` · ${tools.join(', ')}` : ''}` });
     } else if (type === 'hazard') {
       const dmg = Math.round(route.risk * 3 * Math.random());
       log.push({ node, type, text:`Hazard — ${dmg ? `lost ${dmg} salvage` : 'avoided'}` });
       loot = Math.max(0, loot - dmg);
     } else if (type === 'vehicle') {
+      const tools=ZI.routeToolSalvage(type);
       if (ZI.hasWorkingVehicle && ZI.hasWorkingVehicle()) {
         vehicleWear += route.vehicleWear || 10;
-        log.push({ node, type, text:`Vehicle checkpoint — −${route.vehicleWear || 10}% condition` });
+        log.push({ node, type, text:`Vehicle checkpoint — −${route.vehicleWear || 10}% condition${tools.length ? ` · ${tools.join(', ')}` : ''}` });
       } else {
-        log.push({ node, type, text:`Abandoned vehicles — nothing drivable here` });
+        log.push({ node, type, text:`Abandoned vehicles — nothing drivable here${tools.length ? ` · ${tools.join(', ')}` : ''}` });
       }
     } else if (type === 'extraction') {
       loot = Math.round(loot * lootMult);

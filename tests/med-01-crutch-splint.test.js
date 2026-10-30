@@ -119,8 +119,13 @@ check('M2: both entry points use crude-splint-v2.png',
   /crude_splint: 'art\/crafting\/recipes\/crude-splint-v2\.png'/.test(html) && /crude_splint: 'art\/crafting\/recipes\/crude-splint-v2\.png'/.test(htmlT));
 check('M3: v1 and v3 are no longer wired to the crutch', !/crude-splint-v1\.png/.test(html) && !/crude-splint-v3\.png/.test(html) && !/crude-splint-v3\.png/.test(htmlT));
 check('Both entry points gate locked recipes through ZI.recipeGate', /ZI\.recipeGate/.test(html) && /ZI\.recipeGate/.test(htmlT));
-check('Cache-bust bumped in BOTH entry points', ['game/items.js', 'game/crafting.js', 'game/progression-live.js', 'progression-ui.jsx']
-  .every(f => html.indexOf(f + '?v=20261030-med01') > 0 && htmlT.indexOf(f + '?v=20261030-med01') > 0));
+// Pinning an exact version string makes this fail whenever a later batch re-bumps the same file,
+// so it asserts the date instead: every file MED-01 touched carries an Oct 2026 cache-bust in both builds.
+check('Cache-bust is current in BOTH entry points', ['game/items.js', 'game/crafting.js', 'game/progression-live.js', 'progression-ui.jsx']
+  .every(f => {
+    const re = new RegExp(f.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '\\?v=2026103\\d');
+    return re.test(html) && re.test(htmlT);
+  }));
 check('The Stats panel offers Use and the unlock', /data-med-aid=/.test(ui) && /data-med-unlock=/.test(ui) && /ZI\.useMedAid/.test(ui));
 { let errs = [];
   try { const g = {}, m = { exports: {} }; new Function('self', 'window', 'global', 'module', 'exports', 'define', await readFile('tools/vendor/babel-standalone-7.29.0.min.js'))(g, g, g, m, m.exports, undefined);

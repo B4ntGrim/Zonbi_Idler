@@ -247,11 +247,26 @@ ZI.wanderPolicyStep = function(rng, ctx) {
   const lootMult = { ethical:0.8, immoral:1, criminal:1.25, heinous:1.8 }[P.id] || 1;
   const loot = ok && (e.kind === 'loot' || e.kind === 'raid' || e.kind === 'trade')
     ? { name: e.name.replace(/ \(.*\)$/, '') + ' haul', value: Math.max(2, Math.round((6 + lvl * 0.6) * lootMult)), rarity: rng() < 0.12 * lootMult ? 'Uncommon' : 'Common' } : null;
+  const toolFinds = [];
+  const fieldTool = (family, material, amount, label) => {
+    if (!ok || !ZI.carriedHandTool || !ZI.carriedHandTool(family)) return;
+    const got = ZI.addMaterial ? ZI.addMaterial(material, amount) : 0;
+    if (got > 0) { ZI.useCarriedHandTool(family); toolFinds.push(`+${got} ${label}`); }
+  };
+  if (e.id === 'storehouse') { fieldTool('screwdriver','electronics',1,'Electronics (screwdriver)'); fieldTool('pliers','wiring',1,'Wiring (pliers)'); }
+  if (e.id === 'vehicle') {
+    fieldTool('wrench','fasteners',2,'Fasteners (wrench)');
+    const fuel = window.ZI_MATERIALS && window.ZI_MATERIALS.fuel;
+    if (ok && fuel && fuel.current >= 1 && ZI.carriedHandTool && ZI.carriedHandTool('torch')) {
+      const got = ZI.addMaterial ? ZI.addMaterial('metal',3) : 0;
+      if (got > 0) { fuel.current -= 1; ZI.useCarriedHandTool('torch'); toolFinds.push(`+${got} plate scrap (−1 Fuel)`); }
+    }
+  }
   const dmg = ok ? 0 : Math.round(4 + rng() * 8 + (e.kind === 'raid' || e.kind === 'faction' ? 6 : 0));
   const how = e.kind === 'zombie' ? (P.resolve === 'evade' ? 'evaded' : 'cut down') : ok ? 'handled' : 'botched';
   const reaction = faction && ZI.poiFactionReaction && ZI.poiFactionReaction(ZI.getTravZone && ZI.getTravZone(), faction);
-  const text = `${P.icon} ${e.name}${fName ? ` (${fName}${hex ? `, hexagon ${hex > 0 ? '+' : ''}${hex}%` : ''})` : ''} — ${ok ? 'success' : 'failed'} (${chance}%): ${how}${loot ? `, +${loot.name}` : ''}${dmg ? `, took ${dmg} dmg` : ''} · ${e.checks[0]} XP${repTxt}${reaction ? ` · ${reaction.text}` : ''}`;
-  return { ok, encounter:e, chance, loot, dmg, faction, factionReaction:reaction, text, tone: ok ? 'player' : 'enemy' };
+  const text = `${P.icon} ${e.name}${fName ? ` (${fName}${hex ? `, hexagon ${hex > 0 ? '+' : ''}${hex}%` : ''})` : ''} — ${ok ? 'success' : 'failed'} (${chance}%): ${how}${loot ? `, +${loot.name}` : ''}${dmg ? `, took ${dmg} dmg` : ''} · ${e.checks[0]} XP${repTxt}${reaction ? ` · ${reaction.text}` : ''}${toolFinds.length ? ` · tools: ${toolFinds.join(', ')}` : ''}`;
+  return { ok, encounter:e, chance, loot, dmg, faction, factionReaction:reaction, toolFinds, text, tone: ok ? 'player' : 'enemy' };
 };
 // Messages for the Wandering combat log, delivered next time that screen is open.
 ZI.queueWanderLog = function(text) { const q = ZI._rj('zi_wander_log_queue', []); q.push(text); ZI._wj('zi_wander_log_queue', q); };
@@ -364,6 +379,9 @@ ZI.WanderSim = {
     out.mats = T.matsMin + Math.floor(rng() * T.matsSpread); state.mats = (state.mats || 0) + out.mats;
     if (ZI.emitAction) { ZI.emitAction('kill', (z.xp || 10) / 10); ZI.emitAction('loot', 1); }
     out.loot = { name: z.name + ' salvage', value: Math.max(1, z.xp), rarity: 'Common' };
+    if (ZI.carriedHandTool && ZI.carriedHandTool('pliers') && ZI.addMaterial && ZI.addMaterial('bones',1) > 0) {
+      ZI.useCarriedHandTool('pliers'); out.toolFinds = ['+1 Bone Fragments (teeth and bone salvage)'];
+    }
     if (ZI.simPickup) { if (!ZI.simPickup(state, out.loot)) out.tooHeavy = true; } else state.carried = (state.carried || []).concat([out.loot]);
     if (ZI.wearEquippedOnKill) out.worn = ZI.wearEquippedOnKill();
     if (state.hp < T.topUpBelowHp && ZI.chargeTotals && ZI.chargeTotals().heal > 0) { const h = ZI.simHeal(state, rng, false); if (h.ok) { out.toppedUp = true; out.healSource = h.source; } }

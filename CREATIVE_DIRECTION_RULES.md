@@ -154,3 +154,19 @@ This project is also a learning experience for Sam. Alongside design answers, br
 > **Sam decides. The Creative Director proposes, explains and writes instructions. Claude Code applies them and implements.**
 >
 > **Every decision has a reason, lives in one place, and is propagated everywhere it applies.**
+
+## Quarantine: `reports/_to_delete/`
+
+Claude cannot delete files on E: by default — `rm` returns "Operation not permitted" until Sam
+approves deletion for the session. So scratch and superseded files are **moved** to
+`reports/_to_delete/`, never left scattered through the project.
+
+The rule:
+1. Working scratch Claude creates — intermediate renders, encoded transfers, throwaway sims,
+   superseded copies — is prefixed `_` and moved here once the work that needed it is done.
+2. Nothing referenced by the game's HTML, by `reference/`, or by `tools/` is ever moved here.
+   If Claude is unsure, the file stays where it is and Claude says so instead.
+3. Claude never deletes from here. Sam empties it.
+4. Anything here is safe to delete unread. If something turns out to matter, it was put here by
+   mistake — say so and it goes back.
+5. The folder is gitignored, so quarantined files are never committed.

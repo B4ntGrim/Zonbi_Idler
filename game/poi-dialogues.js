@@ -155,3 +155,71 @@ ZI.poiFactionReaction = function(cell, faction) {
     : `${name} has heard you ${cue.text.toLowerCase()} at ${cue.site.name}; they watch your response.`;
   return { tone, text:line, cue };
 };
+
+// Persistent narrative threads: recurring locals, survivor-specific recollections,
+// and keepsakes. Choices can leave a small, practical Traversal advantage behind.
+const STORY_KEY = 'zi_traversal_story';
+const readStory = () => { const s = ZI._rj ? ZI._rj(STORY_KEY, {}) : {}; return s && typeof s === 'object' && !Array.isArray(s) ? s : {}; };
+const writeStory = s => { if (ZI._wj) ZI._wj(STORY_KEY, s); };
+const STORY_NPCS = {
+  'community-shelter': { id:'mara', name:'Mara Velez', tell:'She folds the corner of every map twice before handing it over.', keepsake:'a school-bus token' },
+  pharmacy: { id:'eli', name:'Eli Park', tell:'He counts each bottle under his breath, then leaves one aside.', keepsake:'a faded clinic badge' },
+  'grocery-store': { id:'jo', name:'Jo Bell', tell:'They sort dented cans by sound instead of reading the labels.', keepsake:'a handwritten shopping list' },
+  'transit-depot': { id:'ren', name:'Ren Okafor', tell:'They tap a rhythm on the route board before choosing a direction.', keepsake:'a punched transit pass' },
+  library: { id:'ada', name:'Ada Ruiz', tell:'She slips a bookmark into any page she thinks you should remember.', keepsake:'a library checkout card' },
+};
+const BACKGROUND_MEMORIES = {
+  vanguard:'You remember the habit of checking exits before taking a seat.', forager:'You remember how your old mentor marked safe water without a sign.',
+  artisan:'You remember your first supervisor teaching you to listen for a failing bearing.', envoy:'You remember the pause that helped a tense room settle.',
+  journalist:'You remember a source who only spoke after you put your notebook away.', salvager:'You remember which scrap piles were worth the climb.', coordinator:'You remember how a delayed convoy could unravel a whole plan.',
+};
+ZI.poiStoryForCell = function(cell) {
+  const site = ZI.poiSiteForCell(cell), npc = site && STORY_NPCS[site.id];
+  if (!site || !npc) return null;
+  const state = readStory(), bond = state.npcs && state.npcs[npc.id] || 0;
+  const profile = ZI.getSurvivorProfile && ZI.getSurvivorProfile();
+  const background = profile && profile.profession;
+  const memory = BACKGROUND_MEMORIES[background] || 'A small old-world habit comes back as you read the room.';
+  const relicFound = !!(state.relics && state.relics[npc.id]);
+  return { npc, bond, memory, relicFound, options:[
+    { label: bond > 0 ? 'Share what you remember' : 'Offer a small kindness', icon:'☕', storyChoice:'kindness' },
+    { label: relicFound ? 'Recall the keepsake' : `Ask about ${npc.keepsake}`, icon:'◇', storyChoice:'keepsake' },
+    { label: 'Mark a safer approach', icon:'🧭', storyChoice:'route' },
+  ] };
+};
+ZI.resolvePoiStoryChoice = function(cell, choice) {
+  const story = ZI.poiStoryForCell(cell); if (!story) return null;
+  const state = readStory(), npc = story.npc;
+  state.npcs = state.npcs || {}; state.relics = state.relics || {}; state.routeAids = state.routeAids || {};
+  if (choice === 'kindness') {
+    state.npcs[npc.id] = Math.min(3, (state.npcs[npc.id] || 0) + 1);
+    const bonus = (ZI.getSurvivorProfile && ZI.getSurvivorProfile())?.profession === 'envoy';
+    if (bonus && ZI.emitAction) ZI.emitAction('dialogue', 1);
+    writeStory(state);
+    return { tone:'good', text:`${npc.name} recognizes the old-world memory in your words. ${npc.tell} They share a useful detail about the next stretch of Traversal.${bonus ? ' Your background helps the conversation land.' : ''}` };
+  }
+  if (choice === 'keepsake') {
+    if (!state.relics[npc.id]) { state.relics[npc.id] = true; state.npcs[npc.id] = Math.min(3, (state.npcs[npc.id] || 0) + 1); }
+    writeStory(state);
+    return { tone:'info', text:`The ${npc.keepsake} brings back a brief memory: ${story.memory} ${npc.name} trusts you with a note about the route ahead.` };
+  }
+  if (choice === 'route') {
+    state.routeAids[`${cell.gx},${cell.gy}`] = { bonus:15, expires: (ZI.clockNow ? ZI.clockNow() : Date.now()) + 7 * 86400000 };
+    writeStory(state);
+    return { tone:'good', text:`${npc.name} points out a quieter approach. Your next Traversal loot attempt here gets +15% safety; the lead lasts seven days.` };
+  }
+  return null;
+};
+ZI.poiRouteAid = function(cell) {
+  const aid = cell && readStory().routeAids && readStory().routeAids[`${cell.gx},${cell.gy}`];
+  return aid && aid.expires > (ZI.clockNow ? ZI.clockNow() : Date.now()) ? aid : null;
+};
+ZI.consumePoiRouteAid = function(cell) {
+  const state = readStory(), key = cell && `${cell.gx},${cell.gy}`;
+  if (!key || !state.routeAids || !state.routeAids[key]) return false;
+  delete state.routeAids[key]; writeStory(state); return true;
+};
+ZI.poiRelicMemory = function(cell) {
+  const site = ZI.poiSiteForCell(cell), npc = site && STORY_NPCS[site.id];
+  return npc && readStory().relics && readStory().relics[npc.id] ? { npc:npc.name, memory:BACKGROUND_MEMORIES[(ZI.getSurvivorProfile && ZI.getSurvivorProfile() || {}).profession] || 'A familiar voice returns in memory.' } : null;
+};

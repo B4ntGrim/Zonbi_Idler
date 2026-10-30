@@ -332,6 +332,9 @@ window.ZI_MATERIALS = (function() {
     electronics: { name:'Electronics', icon:'⚡', color:'#6ab0e0', current:0,  max:200, sources:['Appliances','Vehicles','Lab loot'] },
     fuel:        { name:'Fuel',        icon:'🔥', color:'#e07a30', current:0, max:300, sources:['Vehicle siphons','Generators','Caches'] },
     medical:     { name:'Medical',     icon:'💊', color:'#50c878', current:0,  max:150, sources:['Hospital loot','Pharmacy','Crafted'] },
+    bones:       { name:'Bone Fragments', icon:'🦴', color:'#d7cbb0', current:0, max:200, sources:['Pliers salvage after zombie encounters','Crafting salvage'] },
+    fasteners:   { name:'Fasteners', icon:'⚙', color:'#aeb8c2', current:0, max:200, sources:['Hammer and wrench salvage','Workshops'] },
+    wiring:      { name:'Wiring', icon:'〰', color:'#d89b52', current:0, max:200, sources:['Needle-nose pliers','Electrical salvage'] },
   };
   const KEY = 'zi_materials';
   let persisted = {};
@@ -351,6 +354,11 @@ window.ZI_MATERIALS = (function() {
   });
   return wrapped;
 })();
+ZI.addMaterial = function(key, amount) {
+  const m = window.ZI_MATERIALS && window.ZI_MATERIALS[key];
+  if (!m || !Number.isFinite(amount) || amount <= 0) return 0;
+  const before = m.current; m.current = Math.min(m.max, before + Math.floor(amount)); return m.current - before;
+};
 
 // ─── RECYCLER OPERATORS + QUEUEING (Bugs 2 and 3) ────────────────────────────
 // Operator roster (moved from the Recycler screen so game rules can check it). Camp survivors may only run the
@@ -368,15 +376,40 @@ ZI.availableRecyclerOperators = function(mode) {
 };
 ZI.defaultRecyclerOperator = function(mode) { const m = mode === undefined ? ZI.currentGameMode() : mode; return m === 'camp' ? 'mira' : 'solo'; };
 ZI.canUseRecyclerOperator = function(opId, mode) { return ZI.availableRecyclerOperators(mode).some(o => o.id === opId); };
-// Queue one item on the normal recycle job lane. Same duration/output maths the screen used before.
-ZI.queueRecycle = function(item, opId, mode) {
+ZI.recyclerToolMatch = function(item) {
+  const o = item && item.outputs || {};
+  if (o.metal > 0 && o.electronics > 0) return { family:'screwdriver', label:'Screwdriver' };
+  if (o.metal > 0) return { family:'wrench', label:'Wrench' };
+  if (o.electronics > 0) return { family:'pliers', label:'Pliers' };
+  return null;
+};
+// Queue one item on the normal recycle job lane; an assisted job reserves its tool until finish/cancel.
+ZI.queueRecycle = function(item, opId, mode, toolAssist) {
   if (!ZI.canUseRecyclerOperator(opId, mode)) return { ok:false, reason:'operator not available in this mode' };
   if (!ZI.isRecyclable(item)) return { ok:false, reason:'not recyclable' };
   const op = ZI.RECYCLER_OPERATORS.find(o => o.id === opId);
   const effSpeed = op.speed + (ZI.recyclerOpSpeedBonus ? ZI.recyclerOpSpeedBonus() : 0);
-  const duration = item.weight * 14000 / effSpeed / 1000; // enqueueJob wants seconds
-  const boosted = Object.assign({}, item, { outputs: Object.fromEntries(Object.entries(item.outputs).map(([k, v]) => [k, Math.floor(v * op.bonusMult)])) });
-  const job = ZI.enqueueJob('recycle', item.id, duration, { item: boosted }, 1);
+  const match = toolAssist ? ZI.recyclerToolMatch(item) : null;
+  if (toolAssist && (!match || match.family !== toolAssist)) return { ok:false, reason:'that tool does not fit this salvage' };
+  if (toolAssist && item.fromToolScrap) return { ok:false, reason:'broken tools can be recycled, but cannot assist a recycler job' };
+  let reservedToolId = null;
+  if (toolAssist && !item.fromToolScrap) {
+    const stash = ZI.getStash(), index = stash.findIndex(id => { const g = ZI.getGearItem(id); return g && g.toolFamily === toolAssist && g.toolCondition !== 'broken'; });
+    if (index < 0) return { ok:false, reason:'keep a usable matching tool in Stockpile first' };
+    reservedToolId = stash.splice(index, 1)[0]; ZI.saveStash(stash);
+  }
+  if (item.fromToolScrap) {
+    const stash = ZI.getStash(), index = stash.indexOf(item.gearItemId);
+    if (index < 0) return { ok:false, reason:'broken tool is no longer in Stockpile' };
+    reservedToolId = stash.splice(index, 1)[0]; ZI.saveStash(stash);
+  }
+  const duration = item.weight * (toolAssist === 'pliers' ? 10500 : 14000) / effSpeed / 1000;
+  const outputs = Object.fromEntries(Object.entries(item.outputs).map(([k, v]) => [k, Math.floor(v * op.bonusMult)]));
+  if (toolAssist === 'wrench' && outputs.metal > 0) outputs.metal += 1;
+  if (toolAssist === 'screwdriver' && outputs.electronics > 0) outputs.electronics += 1;
+  if (toolAssist === 'pliers' && outputs.electronics > 0) { outputs.wiring = (outputs.wiring || 0) + 1; }
+  const boosted = Object.assign({}, item, { outputs });
+  const job = ZI.enqueueJob('recycle', item.id, duration, { item:boosted, toolFamily:toolAssist || null, reservedToolId }, 1);
   return { ok:true, job };
 };
 // Eligible = has material outputs, is not a story item, and is not already in the recycle queue.
@@ -384,6 +417,33 @@ ZI.isRecyclable = function(item) {
   if (!item || !item.outputs || !Object.values(item.outputs).some(v => v > 0)) return false;
   if (item.isStory || (ZI.isStoryItem && (ZI.isStoryItem(item.id) || (item.gearId && ZI.isStoryItem(item.gearId))))) return false;
   return !ZI.jobsByType('recycle').some(j => j.refId === item.id);
+};
+ZI.brokenToolRecyclerItems = function() {
+  const seen = {};
+  return ZI.getStash().map(id => ZI.getGearItem(id)).filter(g => g && g.toolScrap).map(g => {
+    const n = seen[g.id] || 0; seen[g.id] = n + 1;
+    return { id:`tool-scrap:${g.id}:${n}`, name:g.name, tier:1, rarity:'Common', weight:g.weight || 1, outputs:Object.assign({}, g.outputs), sprite:g.sprite, icon:g.icon, fromToolScrap:true, gearItemId:g.id };
+  });
+};
+ZI.handToolScavenge = function(poiType) {
+  const finds = [];
+  const award = (family, material, amount, label) => {
+    if (!ZI.carriedHandTool || !ZI.carriedHandTool(family)) return;
+    const got = ZI.addMaterial(material, amount);
+    if (got > 0) { ZI.useCarriedHandTool(family); finds.push(`+${got} ${label} (tool)`); }
+  };
+  if (['hardware-store','school','scrapyard','office-building'].includes(poiType)) award('hammer','fasteners',2,'Fasteners');
+  if (['hardware-store','scrapyard','police-station','transit-depot'].includes(poiType)) award('pliers','wiring',1,'Wiring');
+  if (['hardware-store','police-station','transit-depot'].includes(poiType)) award('screwdriver','electronics',1,'Electronics');
+  if (['scrapyard','gas-station','police-station'].includes(poiType) && ZI.carriedHandTool && ZI.carriedHandTool('wrench')) award('wrench','fasteners',2,'Fasteners');
+  if (['scrapyard','gas-station','hardware-store'].includes(poiType) && ZI.carriedHandTool && ZI.carriedHandTool('torch')) {
+    const fuel = window.ZI_MATERIALS && window.ZI_MATERIALS.fuel;
+    if (fuel && fuel.current >= 1) {
+      const got = ZI.addMaterial('metal',3);
+      if (got > 0) { fuel.current -= 1; ZI.useCarriedHandTool('torch'); finds.push(`+${got} Metal from cut plate scrap (−1 Fuel)`); }
+    }
+  }
+  return finds;
 };
 // Recycle All: queues every eligible item through queueRecycle (the normal job lane and grantRecycleOutput).
 ZI.recycleAll = function(items, opId, mode) {
