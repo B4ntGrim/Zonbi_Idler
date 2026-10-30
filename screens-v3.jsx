@@ -686,6 +686,10 @@ window.SatelliteTraversalScreen = function SatelliteTraversalScreen({ setScreen,
   const [hoveredSquare, setHoveredSquare] = React.useState(null);
   const [selectedSquare, setSelectedSquare] = React.useState(null);
   const [selectedSurvivors, setSelectedSurvivors] = React.useState([1]);
+  const [mapPanMode, setMapPanMode] = React.useState(false);
+  const [mapDragging, setMapDragging] = React.useState(false);
+  const [mapTransform, setMapTransform] = React.useState({ scale:1, x:0, y:0 });
+  const mapViewportRef = React.useRef(null), mapDragRef = React.useRef(null), panMovedRef = React.useRef(false);
 
   // Map types - each has its own grid of destination squares
   const mapTypes = [
@@ -717,6 +721,31 @@ window.SatelliteTraversalScreen = function SatelliteTraversalScreen({ setScreen,
     return p;
   });
   const [view, setView] = React.useState(() => ({ sx: pos.sx || 0, sy: pos.sy || 0 }));
+  React.useEffect(() => { setMapTransform({ scale:1, x:0, y:0 }); }, [activeType]);
+  React.useEffect(() => { setMapTransform(prev => ({ scale:prev.scale, x:0, y:0 })); }, [view.sx, view.sy]);
+  const clampMapOffset = (x, y, scale) => { const box = mapViewportRef.current; if (!box) return { x, y };
+    const maxX = box.clientWidth * (1 - scale), maxY = box.clientHeight * (1 - scale);
+    return { x:Math.max(Math.min(0,maxX), Math.min(Math.max(0,maxX),x)), y:Math.max(Math.min(0,maxY), Math.min(Math.max(0,maxY),y)) }; };
+  const zoomMapAt = (clientX, clientY, factor) => { const box = mapViewportRef.current; if (!box) return;
+    const rect = box.getBoundingClientRect(); const px = clientX - rect.left, py = clientY - rect.top;
+    setMapTransform(prev => { const scale = Math.max(0.2, Math.min(1.8, prev.scale * factor)); const ratio = scale / prev.scale;
+      const next = clampMapOffset(px - (px - prev.x) * ratio, py - (py - prev.y) * ratio, scale); return { scale, ...next }; }); };
+  const handleMapWheel = e => { e.preventDefault(); zoomMapAt(e.clientX, e.clientY, e.deltaY < 0 ? 1.12 : 0.89); };
+  const handleMapPointerDown = e => { if (!mapPanMode || (e.pointerType === 'mouse' && e.button !== 0) || e.target.closest('button')) return;
+    e.preventDefault(); mapDragRef.current = { id:e.pointerId, x:e.clientX, y:e.clientY, ox:mapTransform.x, oy:mapTransform.y, moved:false };
+    e.currentTarget.setPointerCapture(e.pointerId); setMapDragging(true); };
+  const handleMapPointerMove = e => { const drag = mapDragRef.current; if (!drag || drag.id !== e.pointerId) return;
+    const dx = e.clientX - drag.x, dy = e.clientY - drag.y; if (Math.abs(dx) + Math.abs(dy) > 3) { drag.moved = true; panMovedRef.current = true; }
+    const box = mapViewportRef.current; if (!box) return;
+    const requestedX = drag.ox + dx, requestedY = drag.oy + dy;
+    const boundsX = box.clientWidth * (1 - mapTransform.scale), boundsY = box.clientHeight * (1 - mapTransform.scale);
+    const minX = Math.min(0,boundsX), maxX = Math.max(0,boundsX), minY = Math.min(0,boundsY), maxY = Math.max(0,boundsY), edge = 72;
+    const direction = requestedX < minX-edge ? 'e' : requestedX > maxX+edge ? 'w' : requestedY < minY-edge ? 's' : requestedY > maxY+edge ? 'n' : null;
+    if (direction && canView(direction).ok) { mapDragRef.current = null; setMapDragging(false); goView(direction); return; }
+    setMapTransform({ scale:mapTransform.scale, ...clampMapOffset(requestedX, requestedY, mapTransform.scale) }); };
+  const handleMapPointerUp = e => { const drag = mapDragRef.current; if (!drag || drag.id !== e.pointerId) return;
+    mapDragRef.current = null; setMapDragging(false); if (e.currentTarget.hasPointerCapture(e.pointerId)) e.currentTarget.releasePointerCapture(e.pointerId);
+    if (drag.moved) window.setTimeout(() => { panMovedRef.current = false; }, 0); };
   // Smoke-test fix (Oct 20): follow moves the game makes itself (forced retreat home, return after a Base rest).
   React.useEffect(() => ZI.onTravPosChange ? ZI.onTravPosChange(() => { const p = readJ('zi_trav_pos', null); if (p && p.gx != null) { setPos(p); setView({ sx: p.sx || 0, sy: p.sy || 0 }); } }) : undefined, []);
   const [explored, setExplored] = React.useState(() => ZI.getExploredSectors());
@@ -797,8 +826,8 @@ window.SatelliteTraversalScreen = function SatelliteTraversalScreen({ setScreen,
     if (t.sx === pos.sx && t.sy === pos.sy) return { ok:true };
     if (explored.includes(t.sx + ',' + t.sy)) return { ok:true };
     if (!inPlayerSector) return { ok:false, why:'Return to your own sector first.' };
-    const nearEdge = d === 'n' ? pos.row === 0 : d === 's' ? pos.row === ROWS - 1 : d === 'w' ? pos.col === 0 : pos.col === COLS - 1;
-    return nearEdge ? { ok:true } : { ok:false, why:`Move to the ${DIRS[d].label.toLowerCase()} edge of this sector to scout beyond it.` };
+    const nearEdge = d === 'n' ? pos.row <= 1 : d === 's' ? pos.row >= ROWS - 2 : d === 'w' ? pos.col <= 1 : pos.col >= COLS - 2;
+    return nearEdge ? { ok:true } : { ok:false, why:`Move closer to the ${DIRS[d].label.toLowerCase()} edge of this sector to scout beyond it.` };
   };
   const goView = (d) => {
     const chk = canView(d); if (!chk.ok) return;
@@ -808,7 +837,7 @@ window.SatelliteTraversalScreen = function SatelliteTraversalScreen({ setScreen,
   };
 
   const TUTORIAL = [
-    { title:'Day One of the Outbreak', body:'The grid is the land around you, seen from above. Each cell is a zone: homes, stores, depots. Some are locked until you push further out. The arrows around the map show the next sector over, once you stand on that edge.' },
+    { title:'Day One of the Outbreak', body:'The grid is the land around you, seen from above. Each cell is a zone: homes, stores, depots. Some are locked until you push further out. Your map grows one connected 8×6 sector at a time. To scout a new sector, move within two cells of that edge, then use its cardinal arrow. Dim arrows are locked; discovered sectors stay available.' },
     { title:'You are Here', body:`Your survivor starts at ${posLabel}, marked with the pulsing ◉ YOU ARE HERE pin. Every outbreak drops you somewhere new. Smoke rises from a palisade nearby: the 🏰 Fort.` },
     { title:'Move one zone at a time', body:'The zones touching yours glow with a dashed outline. Click one of them to decide what to do there.' },
     { title:'Choose how to survive', body:'Travel moves you in. Loot grabs supplies once per zone. Scout reveals the danger first. Make Camp moves you in and sets a safe rest point. Hide shows which threats roam the zone.' },
@@ -1216,7 +1245,7 @@ window.SatelliteTraversalScreen = function SatelliteTraversalScreen({ setScreen,
         ) : renderSoloBar()}
         {/* Map grid */}
         <div className="panel" style={{
-          flex:1, padding:'12px 34px 30px', position:'relative', overflow:'auto',
+          flex:1, minHeight:0, display:'flex', flexDirection:'column', padding:'12px 34px 30px', position:'relative', overflow:'hidden',
           background: `
             radial-gradient(ellipse at 30% 20%, rgba(200,169,110,0.04), transparent),
             radial-gradient(ellipse at 70% 80%, rgba(168,85,247,0.04), transparent),
@@ -1227,6 +1256,7 @@ window.SatelliteTraversalScreen = function SatelliteTraversalScreen({ setScreen,
             <span style={{ color:'#ff3b3b', fontWeight:'bold' }}>◉ YOU ARE HERE · {posLabel}{pos.name ? ` · ${pos.name.replace(/ [A-H]\d+$/, '')}` : ''}</span>
             {setScreen && <button className="btn btn-amber" style={{ padding:'3px 10px', fontSize:11 }} onClick={() => setScreen('hack-slash')}>▶ Wander here</button>}
             <span style={{ color:'#f0d060' }}>┅ adjacent zones: click to act</span>
+            <span role="note" style={{ color:'var(--text2)', fontSize:10 }}>From your sector, move within 2 cells of an edge to unlock that direction. Discovered sectors stay available.</span>
             {fortPos && fallowQ.state === 'none' && !ZI.factionsUnlocked() && <span style={{ color:'#f0d060' }}>🏰 Fort at {fortPos.coord}: smoke behind a palisade</span>}
             {fallowQ.state === 'active' && <span style={{ color:'#a2dca2' }}>🌾 Fallow Ground: {ZI.fallowProgress()}/{ZI.fallowGoal()} kills at {fallowQ.cell.coord} (wander there)</span>}
             {fallowQ.state === 'ready' && <span style={{ color:'#7fd88f', fontWeight:'bold' }}>🌾 Field cleared: travel into the Fort at {fortPos && fortPos.coord} to turn in</span>}
@@ -1234,6 +1264,8 @@ window.SatelliteTraversalScreen = function SatelliteTraversalScreen({ setScreen,
             {camp && <span>⛺ Camp {String.fromCharCode(65 + camp.col) + (camp.row + 1)}{(camp.sx || camp.sy) ? ' · ' + sectorTag(camp.sx, camp.sy) : ''}</span>}
             <span style={{ marginLeft:'auto', color:'var(--text2)' }}>Sector <b style={{ color:'var(--amber)' }}>{sectorTag(view.sx, view.sy)}</b> {ZI.isDevView() && <> · Seed #{worldSeed} / {ZI.MAX_SEED.toLocaleString()}</>}</span>
             {!inPlayerSector && <button className="btn" style={{ padding:'3px 10px', fontSize:11 }} onClick={() => setView({ sx:pos.sx, sy:pos.sy })}>◉ Back to my sector</button>}
+            <button data-trav="pan-toggle" aria-pressed={mapPanMode} title="Toggle map dragging; use the wheel over the grid to zoom" onClick={() => { setMapPanMode(v => !v); setHoveredSquare(null); }} style={{ padding:'5px 9px', background:'#080807', border:'1px solid ' + (mapPanMode ? '#f0d060' : '#665838'), color:mapPanMode ? '#f0d060' : '#c9bd9f', fontFamily:'var(--font-mono)', fontSize:11, cursor:'pointer' }}>{mapPanMode ? '✥ Drag map: ON' : '✥ Drag map'}</button>
+            <button data-trav="zoom-reset" title="Reset map zoom and position" onClick={() => setMapTransform({ scale:1, x:0, y:0 })} style={{ padding:'5px 8px', background:'#080807', border:'1px solid #494236', color:'#c9bd9f', fontFamily:'var(--font-mono)', fontSize:11, cursor:'pointer' }}>{Math.round(mapTransform.scale * 100)}% · Reset</button>
           </div>
           {/* Cardinal sector arrows */}
           {Object.entries(DIRS).map(([d, D]) => {
@@ -1247,7 +1279,7 @@ window.SatelliteTraversalScreen = function SatelliteTraversalScreen({ setScreen,
             return (
               <button key={d} onClick={() => goView(d)} disabled={!chk.ok}
                 title={chk.ok ? `View ${D.label}: sector ${sectorTag(t.sx, t.sy)}${known ? '' : ' (unexplored)'}` : chk.why}
-                style={{ position:'absolute', zIndex:5, ...place, width: d==='n'||d==='s' ? 64 : 24, height: d==='n'||d==='s' ? 22 : 64,
+                style={{ position:'absolute', zIndex:5, ...place, width: d==='n'||d==='s' ? 92 : 42, height: d==='n'||d==='s' ? 32 : 84,
                   display:'flex', alignItems:'center', justifyContent:'center', gap:4, cursor: chk.ok ? 'pointer' : 'not-allowed',
                   background: chk.ok ? 'rgba(240,208,96,0.14)' : 'var(--bg3)', border:`1px solid ${chk.ok ? '#f0d060' : 'var(--border)'}`,
                   color: chk.ok ? '#f0d060' : 'var(--text3)', fontFamily:'var(--font-mono)', fontSize:11, opacity: chk.ok ? 1 : 0.6 }}>
@@ -1255,11 +1287,13 @@ window.SatelliteTraversalScreen = function SatelliteTraversalScreen({ setScreen,
               </button>
             );
           })}
+          <div ref={mapViewportRef} data-trav="map-viewport" style={{ position:'relative', flex:1, minHeight:0, overflow:'hidden', touchAction:mapPanMode ? 'none' : 'pan-y' }}>
+          <div data-trav="map-canvas" aria-label="Traversal map grid" onWheel={handleMapWheel} onPointerDown={handleMapPointerDown} onPointerMove={handleMapPointerMove} onPointerUp={handleMapPointerUp} onPointerCancel={handleMapPointerUp} style={{ position:'absolute', inset:0, display:'flex', flexDirection:'column', transform:'translate(' + mapTransform.x + 'px, ' + mapTransform.y + 'px) scale(' + mapTransform.scale + ')', transformOrigin:'0 0', cursor:mapPanMode ? (mapDragging ? 'grabbing' : 'grab') : 'default', userSelect:mapPanMode ? 'none' : 'auto', touchAction:mapPanMode ? 'none' : 'pan-y' }}>
           {/* Coordinate labels */}
-          <div style={{ display:'grid', gridTemplateColumns:`32px repeat(${COLS}, 1fr)`, gap:2, marginBottom:2 }}>
+          <div style={{ display:'grid', gridTemplateColumns:`32px repeat(${COLS}, minmax(0, 1fr))`, gap:2, marginBottom:2, flexShrink:0 }}>
             <div/>
             {Array.from({length:COLS}).map((_, c) => (
-              <div key={c} style={{ textAlign:'center', fontFamily:'var(--font-mono)', fontSize:9, color:'var(--text3)' }}>
+              <div key={c} style={{ textAlign:'center', fontFamily:'var(--font-mono)', fontSize:14, fontWeight:700, color:'var(--text2)', lineHeight:1.25 }}>
                 {String.fromCharCode(65+c)}
               </div>
             ))}
@@ -1267,8 +1301,8 @@ window.SatelliteTraversalScreen = function SatelliteTraversalScreen({ setScreen,
 
           {/* Grid rows */}
           {Array.from({length:ROWS}).map((_, r) => (
-            <div key={r} style={{ display:'grid', gridTemplateColumns:`32px repeat(${COLS}, 1fr)`, gap:2, marginBottom:2 }}>
-              <div style={{ display:'flex', alignItems:'center', justifyContent:'center', fontFamily:'var(--font-mono)', fontSize:9, color:'var(--text3)' }}>
+            <div key={r} style={{ display:'grid', gridTemplateColumns:`32px repeat(${COLS}, minmax(0, 1fr))`, gap:2, marginBottom:2, flex:1, minHeight:0 }}>
+              <div style={{ display:'flex', alignItems:'center', justifyContent:'center', fontFamily:'var(--font-mono)', fontSize:14, fontWeight:700, color:'var(--text2)' }}>
                 {r+1}
               </div>
               {Array.from({length:COLS}).map((_, c) => {
@@ -1283,10 +1317,11 @@ window.SatelliteTraversalScreen = function SatelliteTraversalScreen({ setScreen,
 
                 return (
                   <div key={c} data-cell={square.gx + ',' + square.gy}
-                    onPointerDown={(e) => { lastPointer.current = e.pointerType || 'mouse'; setPanelFocus(null); }}
-                    onMouseEnter={() => setHoveredSquare(square)}
-                    onMouseLeave={() => setHoveredSquare(null)}
+                    onPointerDown={(e) => { if (mapPanMode) return; lastPointer.current = e.pointerType || 'mouse'; setPanelFocus(null); }}
+                    onMouseEnter={() => { if (!mapPanMode) setHoveredSquare(square); }}
+                    onMouseLeave={() => { if (!mapPanMode) setHoveredSquare(null); }}
                     onClick={() => {
+                      if (mapPanMode || panMovedRef.current) return;
                       if (!isCampMode) { openSoloPanel(square); return; } // TRAV-01a T13: select, don't hover (every platform)
                       if (isLocked) return;
                       if (isHere(r, c) && ZI.isFortCell(gOf(r, c))) { setFortOpen(true); return; } // inside the Fort's cell
@@ -1386,6 +1421,9 @@ window.SatelliteTraversalScreen = function SatelliteTraversalScreen({ setScreen,
             </div>
           ))}
 
+
+          </div>
+          </div>
           {/* Legend */}
           <div style={{ marginTop:12, display:'flex', gap:14, padding:'6px 8px', background:'var(--bg2)', border:'1px solid var(--border)', alignItems:'center' }}>
             <div style={{ fontFamily:'var(--font-mono)', fontSize:9, color:'var(--text3)' }}>LEGEND:</div>
