@@ -59,7 +59,7 @@ ZI.WORLD_POI_POLICY = [
   { id:'pharmacy', name:'Pharmacy', chance:0.16, biomes:['metro','suburbia'], spacing:4, salt:103, lesser:true },
   { id:'grocery-store', name:'Grocery Store', chance:0.22, biomes:['metro','suburbia'], spacing:3, salt:104, lesser:true },
   { id:'library', name:'Library', chance:0.14, biomes:['metro','suburbia'], spacing:4, salt:105, lesser:true },
-  { id:'gas-station', name:'Gas Station', chance:0.18, biomes:['metro','suburbia','perimeter'], spacing:3, salt:106 },
+  { id:'gas-station', name:'Gas Station', chance:0.18, biomes:['mountain','metro','suburbia','perimeter'], spacing:3, salt:106 },
   { id:'laundromat', name:'Laundromat', chance:0.14, biomes:['metro','suburbia'], spacing:3, salt:107, lesser:true },
   { id:'hardware-store', name:'Hardware Store', chance:0.14, biomes:['metro','suburbia'], spacing:3, salt:108 },
   { id:'community-shelter', name:'Community Shelter', chance:0.10, biomes:['metro','suburbia'], spacing:4, salt:109 },
@@ -67,8 +67,8 @@ ZI.WORLD_POI_POLICY = [
   { id:'transit-depot', name:'Transit Depot', chance:0.08, biomes:['metro'], spacing:4, salt:111 },
   { id:'school', name:'School', chance:0.12, biomes:['metro','suburbia'], spacing:3, salt:112 },
   { id:'office-building', name:'Office Building', chance:0.10, biomes:['metro','suburbia'], spacing:3, salt:113, lesser:true },
-  { id:'scrapyard', name:'Scrapyard', chance:0.10, biomes:['suburbia','perimeter'], spacing:3, salt:114, lesser:true },
-  { id:'church', name:'Church', chance:0.12, biomes:['metro','suburbia'], spacing:4, salt:115 },
+  { id:'scrapyard', name:'Scrapyard', chance:0.10, biomes:['mountain','suburbia','perimeter'], spacing:3, salt:114, lesser:true },
+  { id:'church', name:'Church', chance:0.12, biomes:['mountain','suburbia','metro','perimeter'], spacing:4, salt:115 },
 ];
 ZI.WORLD_POI_SECTOR_CAP = 3; // Regular POIs; new non-start sectors may add one unseen lesser POI.
 ZI.WORLD_ORDINARY_NAMES = ZI.WORLD_NAMES.scavenge;
