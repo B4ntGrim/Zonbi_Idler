@@ -686,6 +686,12 @@ window.SatelliteTraversalScreen = function SatelliteTraversalScreen({ setScreen,
   const [hoveredSquare, setHoveredSquare] = React.useState(null);
   const [selectedSquare, setSelectedSquare] = React.useState(null);
   const [selectedSurvivors, setSelectedSurvivors] = React.useState([1]);
+  const [mapPanMode, setMapPanMode] = React.useState(false);
+  const [showMinimap, setShowMinimap] = React.useState(false);
+  const [sectorMapShape, setSectorMapShape] = React.useState('circle');
+  const [mapDragging, setMapDragging] = React.useState(false);
+  const [mapTransform, setMapTransform] = React.useState({ scale:1, x:0, y:0 });
+  const mapViewportRef = React.useRef(null), mapDragRef = React.useRef(null), panMovedRef = React.useRef(false);
 
   // Map types - each has its own grid of destination squares
   const mapTypes = [
@@ -717,9 +723,60 @@ window.SatelliteTraversalScreen = function SatelliteTraversalScreen({ setScreen,
     return p;
   });
   const [view, setView] = React.useState(() => ({ sx: pos.sx || 0, sy: pos.sy || 0 }));
+  React.useEffect(() => { setMapTransform({ scale:1, x:0, y:0 }); }, [activeType]);
+  React.useEffect(() => { setMapTransform(prev => ({ scale:prev.scale, x:0, y:0 })); }, [view.sx, view.sy]);
+  const clampMapOffset = (x, y, scale) => { const box = mapViewportRef.current; if (!box) return { x, y };
+    const maxX = box.clientWidth * (1 - scale), maxY = box.clientHeight * (1 - scale);
+    return { x:Math.max(Math.min(0,maxX), Math.min(Math.max(0,maxX),x)), y:Math.max(Math.min(0,maxY), Math.min(Math.max(0,maxY),y)) }; };
+  const zoomMapAt = (clientX, clientY, factor) => { const box = mapViewportRef.current; if (!box) return;
+    const rect = box.getBoundingClientRect(); const px = clientX - rect.left, py = clientY - rect.top;
+    setMapTransform(prev => { const scale = Math.max(0.2, Math.min(1.8, prev.scale * factor)); const ratio = scale / prev.scale;
+      const next = clampMapOffset(px - (px - prev.x) * ratio, py - (py - prev.y) * ratio, scale); return { scale, ...next }; }); };
+  const handleMapWheel = e => { e.preventDefault(); zoomMapAt(e.clientX, e.clientY, e.deltaY < 0 ? 1.12 : 0.89); };
+  const handleMapPointerDown = e => { if (!mapPanMode || (e.pointerType === 'mouse' && e.button !== 0) || e.target.closest('button')) return;
+    e.preventDefault(); mapDragRef.current = { id:e.pointerId, x:e.clientX, y:e.clientY, ox:mapTransform.x, oy:mapTransform.y, moved:false };
+    e.currentTarget.setPointerCapture(e.pointerId); setMapDragging(true); };
+  const handleMapPointerMove = e => { const drag = mapDragRef.current; if (!drag || drag.id !== e.pointerId) return;
+    const dx = e.clientX - drag.x, dy = e.clientY - drag.y; if (Math.abs(dx) + Math.abs(dy) > 3) { drag.moved = true; panMovedRef.current = true; }
+    const box = mapViewportRef.current; if (!box) return;
+    const requestedX = drag.ox + dx, requestedY = drag.oy + dy;
+    const boundsX = box.clientWidth * (1 - mapTransform.scale), boundsY = box.clientHeight * (1 - mapTransform.scale);
+    const minX = Math.min(0,boundsX), maxX = Math.max(0,boundsX), minY = Math.min(0,boundsY), maxY = Math.max(0,boundsY), edge = 72;
+    const direction = requestedX < minX-edge ? 'e' : requestedX > maxX+edge ? 'w' : requestedY < minY-edge ? 's' : requestedY > maxY+edge ? 'n' : null;
+    if (direction && canView(direction).ok) { mapDragRef.current = null; setMapDragging(false); goView(direction); return; }
+    setMapTransform({ scale:mapTransform.scale, ...clampMapOffset(requestedX, requestedY, mapTransform.scale) }); };
+  const handleMapPointerUp = e => { const drag = mapDragRef.current; if (!drag || drag.id !== e.pointerId) return;
+    mapDragRef.current = null; setMapDragging(false); if (e.currentTarget.hasPointerCapture(e.pointerId)) e.currentTarget.releasePointerCapture(e.pointerId);
+    if (drag.moved) window.setTimeout(() => { panMovedRef.current = false; }, 0); };
   // Smoke-test fix (Oct 20): follow moves the game makes itself (forced retreat home, return after a Base rest).
   React.useEffect(() => ZI.onTravPosChange ? ZI.onTravPosChange(() => { const p = readJ('zi_trav_pos', null); if (p && p.gx != null) { setPos(p); setView({ sx: p.sx || 0, sy: p.sy || 0 }); } }) : undefined, []);
   const [explored, setExplored] = React.useState(() => ZI.getExploredSectors());
+  const sectorOverview = (() => {
+    const byKey = new Map();
+    (explored || []).forEach(k => { const [sx,sy] = String(k).split(',').map(Number); if (Number.isFinite(sx) && Number.isFinite(sy)) byKey.set(sx + ',' + sy, { sx, sy }); });
+    byKey.set(view.sx + ',' + view.sy, { sx:view.sx, sy:view.sy });
+    const playerSx = Number.isFinite(pos.sx) ? pos.sx : Math.floor(pos.gx / COLS), playerSy = Number.isFinite(pos.sy) ? pos.sy : Math.floor(pos.gy / ROWS);
+    byKey.set(playerSx + ',' + playerSy, { sx:playerSx, sy:playerSy });
+    const sectors = Array.from(byKey.values());
+    return { sectors, minSx:Math.min(...sectors.map(s => s.sx)), maxSx:Math.max(...sectors.map(s => s.sx)), minSy:Math.min(...sectors.map(s => s.sy)), maxSy:Math.max(...sectors.map(s => s.sy)) };
+  })();
+  const sectorMapShapes = [
+    { id:'circle', label:'Circle' },
+    { id:'square', label:'Square' },
+    { id:'wide', label:'Wide' },
+    { id:'tall', label:'Tall' },
+  ];
+  const startPosition = readJ('zi_trav_start', null) || pos;
+  const startSector = { sx:Number.isFinite(startPosition.sx) ? startPosition.sx : Number.isFinite(startPosition.gx) ? Math.floor(startPosition.gx / COLS) : 0, sy:Number.isFinite(startPosition.sy) ? startPosition.sy : Number.isFinite(startPosition.gy) ? Math.floor(startPosition.gy / ROWS) : 0 };
+  const minimapCols = Math.max(1, sectorOverview.maxSx - sectorOverview.minSx + 1), minimapRows = Math.max(1, sectorOverview.maxSy - sectorOverview.minSy + 1);
+  const minimapWorldAspect = minimapCols * COLS / (minimapRows * ROWS);
+  const minimapFrameAspect = sectorMapShape === 'wide' ? 16/10 : sectorMapShape === 'tall' ? 10/16 : 1;
+  const minimapContentWidth = minimapWorldAspect > minimapFrameAspect ? 100 : 100 * minimapWorldAspect / minimapFrameAspect;
+  const minimapContentHeight = minimapWorldAspect > minimapFrameAspect ? 100 * minimapFrameAspect / minimapWorldAspect : 100;
+  const cameraWidth = Math.min(1, 1 / mapTransform.scale), cameraHeight = Math.min(1, 1 / mapTransform.scale);
+  const viewportSize = mapViewportRef.current;
+  const cameraX = Math.max(0, Math.min(1-cameraWidth, -mapTransform.x / Math.max(1, viewportSize ? viewportSize.clientWidth : 1) / mapTransform.scale));
+  const cameraY = Math.max(0, Math.min(1-cameraHeight, -mapTransform.y / Math.max(1, viewportSize ? viewportSize.clientHeight : 1) / mapTransform.scale));
   const squares = React.useMemo(() => {
     const list = [];
     for (let r = 0; r < ROWS; r++) for (let c = 0; c < COLS; c++) list.push(ZI.worldCell(view.sx * COLS + c, view.sy * ROWS + r, activeType));
@@ -797,8 +854,8 @@ window.SatelliteTraversalScreen = function SatelliteTraversalScreen({ setScreen,
     if (t.sx === pos.sx && t.sy === pos.sy) return { ok:true };
     if (explored.includes(t.sx + ',' + t.sy)) return { ok:true };
     if (!inPlayerSector) return { ok:false, why:'Return to your own sector first.' };
-    const nearEdge = d === 'n' ? pos.row === 0 : d === 's' ? pos.row === ROWS - 1 : d === 'w' ? pos.col === 0 : pos.col === COLS - 1;
-    return nearEdge ? { ok:true } : { ok:false, why:`Move to the ${DIRS[d].label.toLowerCase()} edge of this sector to scout beyond it.` };
+    const nearEdge = d === 'n' ? pos.row <= 1 : d === 's' ? pos.row >= ROWS - 2 : d === 'w' ? pos.col <= 1 : pos.col >= COLS - 2;
+    return nearEdge ? { ok:true } : { ok:false, why:`Move closer to the ${DIRS[d].label.toLowerCase()} edge of this sector to scout beyond it.` };
   };
   const goView = (d) => {
     const chk = canView(d); if (!chk.ok) return;
@@ -808,7 +865,7 @@ window.SatelliteTraversalScreen = function SatelliteTraversalScreen({ setScreen,
   };
 
   const TUTORIAL = [
-    { title:'Day One of the Outbreak', body:'The grid is the land around you, seen from above. Each cell is a zone: homes, stores, depots. Some are locked until you push further out. The arrows around the map show the next sector over, once you stand on that edge.' },
+    { title:'Day One of the Outbreak', body:'The grid is the land around you, seen from above. Each cell is a zone: homes, stores, depots. Some are locked until you push further out. Your map grows one connected 8×6 sector at a time. To scout a new sector, move within two cells of that edge, then use its cardinal arrow. Dim arrows are locked; discovered sectors stay available. There is no fixed world edge; exploration can keep expanding in every direction.' },
     { title:'You are Here', body:`Your survivor starts at ${posLabel}, marked with the pulsing ◉ YOU ARE HERE pin. Every outbreak drops you somewhere new. Smoke rises from a palisade nearby: the 🏰 Fort.` },
     { title:'Move one zone at a time', body:'The zones touching yours glow with a dashed outline. Click one of them to decide what to do there.' },
     { title:'Choose how to survive', body:'Travel moves you in. Loot grabs supplies once per zone. Scout reveals the danger first. Make Camp moves you in and sets a safe rest point. Hide shows which threats roam the zone.' },
@@ -1216,7 +1273,7 @@ window.SatelliteTraversalScreen = function SatelliteTraversalScreen({ setScreen,
         ) : renderSoloBar()}
         {/* Map grid */}
         <div className="panel" style={{
-          flex:1, padding:'12px 34px 30px', position:'relative', overflow:'auto',
+          flex:1, minHeight:0, display:'flex', flexDirection:'column', padding:'12px 34px 30px', position:'relative', overflow:'hidden',
           background: `
             radial-gradient(ellipse at 30% 20%, rgba(200,169,110,0.04), transparent),
             radial-gradient(ellipse at 70% 80%, rgba(168,85,247,0.04), transparent),
@@ -1227,6 +1284,7 @@ window.SatelliteTraversalScreen = function SatelliteTraversalScreen({ setScreen,
             <span style={{ color:'#ff3b3b', fontWeight:'bold' }}>◉ YOU ARE HERE · {posLabel}{pos.name ? ` · ${pos.name.replace(/ [A-H]\d+$/, '')}` : ''}</span>
             {setScreen && <button className="btn btn-amber" style={{ padding:'3px 10px', fontSize:11 }} onClick={() => setScreen('hack-slash')}>▶ Wander here</button>}
             <span style={{ color:'#f0d060' }}>┅ adjacent zones: click to act</span>
+            <span role="note" style={{ color:'var(--text2)', fontSize:10 }}>From your sector, move within 2 cells of an edge to unlock that direction. Discovered sectors stay available.</span>
             {fortPos && fallowQ.state === 'none' && !ZI.factionsUnlocked() && <span style={{ color:'#f0d060' }}>🏰 Fort at {fortPos.coord}: smoke behind a palisade</span>}
             {fallowQ.state === 'active' && <span style={{ color:'#a2dca2' }}>🌾 Fallow Ground: {ZI.fallowProgress()}/{ZI.fallowGoal()} kills at {fallowQ.cell.coord} (wander there)</span>}
             {fallowQ.state === 'ready' && <span style={{ color:'#7fd88f', fontWeight:'bold' }}>🌾 Field cleared: travel into the Fort at {fortPos && fortPos.coord} to turn in</span>}
@@ -1234,7 +1292,52 @@ window.SatelliteTraversalScreen = function SatelliteTraversalScreen({ setScreen,
             {camp && <span>⛺ Camp {String.fromCharCode(65 + camp.col) + (camp.row + 1)}{(camp.sx || camp.sy) ? ' · ' + sectorTag(camp.sx, camp.sy) : ''}</span>}
             <span style={{ marginLeft:'auto', color:'var(--text2)' }}>Sector <b style={{ color:'var(--amber)' }}>{sectorTag(view.sx, view.sy)}</b> {ZI.isDevView() && <> · Seed #{worldSeed} / {ZI.MAX_SEED.toLocaleString()}</>}</span>
             {!inPlayerSector && <button className="btn" style={{ padding:'3px 10px', fontSize:11 }} onClick={() => setView({ sx:pos.sx, sy:pos.sy })}>◉ Back to my sector</button>}
+            <button data-trav="pan-toggle" aria-pressed={mapPanMode} title="Toggle map dragging; use the wheel over the grid to zoom" onClick={() => { setMapPanMode(v => !v); setHoveredSquare(null); }} style={{ padding:'5px 9px', background:'#080807', border:'1px solid ' + (mapPanMode ? '#f0d060' : '#665838'), color:mapPanMode ? '#f0d060' : '#c9bd9f', fontFamily:'var(--font-mono)', fontSize:11, cursor:'pointer' }}>{mapPanMode ? '✥ Drag map: ON' : '✥ Drag map'}</button>
+                        <button data-trav="minimap-toggle" aria-expanded={showMinimap} aria-controls="trav-minimap" onClick={() => setShowMinimap(v => !v)} title="Open the discovered-world minimap and display options" style={{ padding:'5px 9px', background:showMinimap ? 'rgba(240,208,96,0.14)' : '#080807', border:`1px solid ${showMinimap ? '#f0d060' : '#665838'}`, color:showMinimap ? '#f0d060' : '#c9bd9f', fontFamily:'var(--font-mono)', fontSize:11, cursor:'pointer' }}>{showMinimap ? '▦ Minimap ▴' : '▦ Minimap ▾'}</button>
+            <button data-trav="zoom-reset" title="Reset map zoom and position" onClick={() => setMapTransform({ scale:1, x:0, y:0 })} style={{ padding:'5px 8px', background:'#080807', border:'1px solid #494236', color:'#c9bd9f', fontFamily:'var(--font-mono)', fontSize:11, cursor:'pointer' }}>{Math.round(mapTransform.scale * 100)}% · Reset</button>
           </div>
+                    {showMinimap && <div id="trav-minimap" data-trav="minimap" aria-label="Discovered-world minimap and display options" style={{ position:'absolute', zIndex:8, top:58, right:50, width:'min(500px, calc(100% - 24px))', maxHeight:260, overflow:'auto', padding:10, border:'1px solid #887a57', boxShadow:'0 8px 24px rgba(0,0,0,0.75)', background:'#080807' }}>
+            <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', gap:8, marginBottom:8, fontFamily:'var(--font-mono)' }}>
+              <div>
+                <div style={{ color:'var(--amber)', fontSize:10, letterSpacing:'0.08em' }}>WORLD MINIMAP</div>
+                <div style={{ color:'var(--text2)', fontSize:9, marginTop:3 }}><span style={{ color:'#64db67' }}>■</span> explored <span style={{ color:'#e24d4d', marginLeft:7 }}>●</span> starting sector <span style={{ color:'#fff', marginLeft:7 }}>□</span> camera view</div>
+              </div>
+              <span style={{ color:'var(--text2)', fontSize:9 }}>Infinite world · discovered sectors</span>
+            </div>
+            <div role="group" aria-label="Minimap shape" style={{ display:'flex', gap:6, marginBottom:8, flexWrap:'wrap' }}>
+              {sectorMapShapes.map(shape => <button key={shape.id} type="button" data-trav={`minimap-shape-${shape.id}`} aria-pressed={sectorMapShape === shape.id} onClick={() => setSectorMapShape(shape.id)} style={{ display:'flex', alignItems:'center', gap:5, padding:'4px 7px', border:`1px solid ${sectorMapShape === shape.id ? '#f0d060' : '#494236'}`, background:sectorMapShape === shape.id ? 'rgba(240,208,96,0.12)' : '#12110e', color:sectorMapShape === shape.id ? '#f0d060' : '#c9bd9f', cursor:'pointer', fontFamily:'var(--font-mono)', fontSize:9 }}>
+                <svg width="30" height="20" viewBox="0 0 30 20" aria-hidden="true">{shape.id === 'circle' ? <circle cx="15" cy="10" r="8" fill="#20331f" stroke="#64db67"/> : <rect x={shape.id === 'wide' ? 1 : shape.id === 'tall' ? 8 : 6} y={shape.id === 'tall' ? 1 : 2} width={shape.id === 'wide' ? 28 : shape.id === 'tall' ? 14 : 18} height={shape.id === 'wide' ? 16 : 18} fill="#20331f" stroke="#64db67"/>}<circle cx="10" cy="9" r="1.7" fill="#e24d4d"/><path d="M14 7 L22 7 L20 13 L12 13 Z" fill="none" stroke="#fff" strokeWidth="1.3"/></svg>
+                {shape.label}
+              </button>)}
+            </div>
+            <div data-trav="minimap-canvas" style={{ position:'relative', width:sectorMapShape === 'circle' ? 'min(100%, 220px)' : '100%', margin:sectorMapShape === 'circle' ? '0 auto' : 0, aspectRatio:sectorMapShape === 'wide' ? '16 / 10' : sectorMapShape === 'tall' ? '10 / 16' : '1 / 1', maxHeight:sectorMapShape === 'circle' ? 'none' : 220, overflow:'hidden', border:sectorMapShape === 'circle' ? '2px solid #79725f' : '1px solid #36332b', borderRadius:sectorMapShape === 'circle' ? '50%' : 2, background:'#020302' }}>
+              <div style={{ position:'absolute', left:'50%', top:'50%', width:`${minimapContentWidth}%`, height:`${minimapContentHeight}%`, transform:'translate(-50%, -50%)', overflow:'hidden', background:'#030503' }}>
+                {sectorOverview.sectors.map(({sx,sy}) => {
+                  const isCurrent = view.sx === sx && view.sy === sy, isStartSector = startSector.sx === sx && startSector.sy === sy;
+                  const left = ((sx-sectorOverview.minSx)/minimapCols)*100, top = ((sy-sectorOverview.minSy)/minimapRows)*100;
+                  const width = 100/minimapCols, height = 100/minimapRows;
+                  const cells = Array.from({length:COLS*ROWS}, (_,i) => {
+                    const col = i%COLS, row = Math.floor(i/COLS), cell = ZI.worldCell(sx*COLS+col,sy*ROWS+row,'scavenge');
+                    const color = cell.poiType ? '#e2b34a' : biomeColors[cell.biome]?.fill || '#263027';
+                    const atStart = startPosition.gx === cell.gx && startPosition.gy === cell.gy;
+                    return <span key={cell.gx+','+cell.gy} title={cell.name} style={{ position:'relative', background:color, border:'1px solid rgba(5,8,5,0.48)', minWidth:0, minHeight:0 }}>
+                      {atStart && <i aria-label="Starting location" style={{ position:'absolute', inset:0, display:'grid', placeItems:'center', color:'#ff5555', fontStyle:'normal', fontSize:8, textShadow:'0 0 2px #000' }}>●</i>}
+                    </span>;
+                  });
+                  return <button key={sx+','+sy} onClick={() => { setView({sx,sy}); setSelectedSquare(null); setHoveredSquare(null); }} aria-pressed={isCurrent} title={`Open explored chunk ${sectorTag(sx,sy)}${isStartSector ? ' · starting chunk' : ''}${isCurrent ? ' · camera view' : ''}`} style={{ position:'absolute', left:`${left}%`, top:`${top}%`, width:`${width}%`, height:`${height}%`, display:'grid', gridTemplateColumns:`repeat(${COLS}, 1fr)`, gridTemplateRows:`repeat(${ROWS}, 1fr)`, padding:0, gap:0, overflow:'hidden', border:0, outline:isCurrent ? '2px solid #fff' : '1px solid rgba(91,117,80,0.68)', outlineOffset:isCurrent ? -2 : -1, background:'#101710', cursor:'pointer' }}>
+                    {cells}
+                  </button>;
+                })}
+                {(() => {
+                  const left = ((view.sx-sectorOverview.minSx)/minimapCols + cameraX/minimapCols)*100;
+                  const top = ((view.sy-sectorOverview.minSy)/minimapRows + cameraY/minimapRows)*100;
+                  const width = cameraWidth/minimapCols*100, height = cameraHeight/minimapRows*100;
+                  return <div data-trav="minimap-camera-frame" aria-label="Area visible in main traversal map" title="Current camera view" style={{ position:'absolute', zIndex:4, left:`${left}%`, top:`${top}%`, width:`${width}%`, height:`${height}%`, pointerEvents:'none', border:'2px solid #fff', background:'rgba(255,255,255,0.08)', clipPath:'polygon(12% 0, 100% 0, 88% 100%, 0 100%)', filter:'drop-shadow(0 0 2px #000)' }}/>
+                })()}
+              </div>
+            </div>
+            <div style={{ color:'var(--text2)', fontFamily:'var(--font-mono)', fontSize:9, marginTop:6 }}>Each pixel is one cell in a discovered chunk. Select a chunk to open it; the white angled frame tracks the main map view.</div>
+          </div>}
           {/* Cardinal sector arrows */}
           {Object.entries(DIRS).map(([d, D]) => {
             const chk = canView(d);
@@ -1247,7 +1350,7 @@ window.SatelliteTraversalScreen = function SatelliteTraversalScreen({ setScreen,
             return (
               <button key={d} onClick={() => goView(d)} disabled={!chk.ok}
                 title={chk.ok ? `View ${D.label}: sector ${sectorTag(t.sx, t.sy)}${known ? '' : ' (unexplored)'}` : chk.why}
-                style={{ position:'absolute', zIndex:5, ...place, width: d==='n'||d==='s' ? 64 : 24, height: d==='n'||d==='s' ? 22 : 64,
+                style={{ position:'absolute', zIndex:5, ...place, width: d==='n'||d==='s' ? 92 : 42, height: d==='n'||d==='s' ? 32 : 84,
                   display:'flex', alignItems:'center', justifyContent:'center', gap:4, cursor: chk.ok ? 'pointer' : 'not-allowed',
                   background: chk.ok ? 'rgba(240,208,96,0.14)' : 'var(--bg3)', border:`1px solid ${chk.ok ? '#f0d060' : 'var(--border)'}`,
                   color: chk.ok ? '#f0d060' : 'var(--text3)', fontFamily:'var(--font-mono)', fontSize:11, opacity: chk.ok ? 1 : 0.6 }}>
@@ -1255,11 +1358,13 @@ window.SatelliteTraversalScreen = function SatelliteTraversalScreen({ setScreen,
               </button>
             );
           })}
+          <div ref={mapViewportRef} data-trav="map-viewport" style={{ position:'relative', flex:1, minHeight:0, overflow:'hidden', touchAction:mapPanMode ? 'none' : 'pan-y' }}>
+          <div data-trav="map-canvas" aria-label="Traversal map grid" onWheel={handleMapWheel} onPointerDown={handleMapPointerDown} onPointerMove={handleMapPointerMove} onPointerUp={handleMapPointerUp} onPointerCancel={handleMapPointerUp} style={{ position:'absolute', inset:0, display:'flex', flexDirection:'column', transform:'translate(' + mapTransform.x + 'px, ' + mapTransform.y + 'px) scale(' + mapTransform.scale + ')', transformOrigin:'0 0', cursor:mapPanMode ? (mapDragging ? 'grabbing' : 'grab') : 'default', userSelect:mapPanMode ? 'none' : 'auto', touchAction:mapPanMode ? 'none' : 'pan-y' }}>
           {/* Coordinate labels */}
-          <div style={{ display:'grid', gridTemplateColumns:`32px repeat(${COLS}, 1fr)`, gap:2, marginBottom:2 }}>
+          <div style={{ display:'grid', gridTemplateColumns:`32px repeat(${COLS}, minmax(0, 1fr))`, gap:2, marginBottom:2, flexShrink:0 }}>
             <div/>
             {Array.from({length:COLS}).map((_, c) => (
-              <div key={c} style={{ textAlign:'center', fontFamily:'var(--font-mono)', fontSize:9, color:'var(--text3)' }}>
+              <div key={c} style={{ textAlign:'center', fontFamily:'var(--font-mono)', fontSize:14, fontWeight:700, color:'var(--text2)', lineHeight:1.25 }}>
                 {String.fromCharCode(65+c)}
               </div>
             ))}
@@ -1267,8 +1372,8 @@ window.SatelliteTraversalScreen = function SatelliteTraversalScreen({ setScreen,
 
           {/* Grid rows */}
           {Array.from({length:ROWS}).map((_, r) => (
-            <div key={r} style={{ display:'grid', gridTemplateColumns:`32px repeat(${COLS}, 1fr)`, gap:2, marginBottom:2 }}>
-              <div style={{ display:'flex', alignItems:'center', justifyContent:'center', fontFamily:'var(--font-mono)', fontSize:9, color:'var(--text3)' }}>
+            <div key={r} style={{ display:'grid', gridTemplateColumns:`32px repeat(${COLS}, minmax(0, 1fr))`, gap:2, marginBottom:2, flex:1, minHeight:0 }}>
+              <div style={{ display:'flex', alignItems:'center', justifyContent:'center', fontFamily:'var(--font-mono)', fontSize:14, fontWeight:700, color:'var(--text2)' }}>
                 {r+1}
               </div>
               {Array.from({length:COLS}).map((_, c) => {
@@ -1283,10 +1388,11 @@ window.SatelliteTraversalScreen = function SatelliteTraversalScreen({ setScreen,
 
                 return (
                   <div key={c} data-cell={square.gx + ',' + square.gy}
-                    onPointerDown={(e) => { lastPointer.current = e.pointerType || 'mouse'; setPanelFocus(null); }}
-                    onMouseEnter={() => setHoveredSquare(square)}
-                    onMouseLeave={() => setHoveredSquare(null)}
+                    onPointerDown={(e) => { if (mapPanMode) return; lastPointer.current = e.pointerType || 'mouse'; setPanelFocus(null); }}
+                    onMouseEnter={() => { if (!mapPanMode) setHoveredSquare(square); }}
+                    onMouseLeave={() => { if (!mapPanMode) setHoveredSquare(null); }}
                     onClick={() => {
+                      if (mapPanMode || panMovedRef.current) return;
                       if (!isCampMode) { openSoloPanel(square); return; } // TRAV-01a T13: select, don't hover (every platform)
                       if (isLocked) return;
                       if (isHere(r, c) && ZI.isFortCell(gOf(r, c))) { setFortOpen(true); return; } // inside the Fort's cell
@@ -1386,6 +1492,9 @@ window.SatelliteTraversalScreen = function SatelliteTraversalScreen({ setScreen,
             </div>
           ))}
 
+
+          </div>
+          </div>
           {/* Legend */}
           <div style={{ marginTop:12, display:'flex', gap:14, padding:'6px 8px', background:'var(--bg2)', border:'1px solid var(--border)', alignItems:'center' }}>
             <div style={{ fontFamily:'var(--font-mono)', fontSize:9, color:'var(--text3)' }}>LEGEND:</div>
