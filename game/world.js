@@ -50,6 +50,125 @@ ZI.WORLD_NAMES = {
   patrol:   ['North Watchtower','East Perimeter','South Bridge','West Approach','Inner Wall'],
   raid:     ['Mall Complex','Police Station','Hospital','Military Depot','Lab Bunker'],
 };
+// Specialized sites are rolled once per fixed 8x6 sector, not placed by drawing
+// from every cell's ordinary-name pool. Rates are initial tuning values; each
+// type can place at most once per sector and respects its biome/spacing rules.
+ZI.WORLD_POI_POLICY = [
+  { id:'police-station', name:'Police Station', chance:0.10, biomes:['metro'], spacing:4, salt:101 },
+  { id:'water-treatment-plant', name:'Water Treatment Plant', chance:0.08, biomes:['metro'], spacing:4, salt:102 },
+  { id:'pharmacy', name:'Pharmacy', chance:0.16, biomes:['metro','suburbia'], spacing:4, salt:103, lesser:true },
+  { id:'grocery-store', name:'Grocery Store', chance:0.22, biomes:['metro','suburbia'], spacing:3, salt:104, lesser:true },
+  { id:'library', name:'Library', chance:0.14, biomes:['metro','suburbia'], spacing:4, salt:105, lesser:true },
+  { id:'gas-station', name:'Gas Station', chance:0.18, biomes:['metro','suburbia','perimeter'], spacing:3, salt:106 },
+  { id:'laundromat', name:'Laundromat', chance:0.14, biomes:['metro','suburbia'], spacing:3, salt:107, lesser:true },
+  { id:'hardware-store', name:'Hardware Store', chance:0.14, biomes:['metro','suburbia'], spacing:3, salt:108 },
+  { id:'community-shelter', name:'Community Shelter', chance:0.10, biomes:['metro','suburbia'], spacing:4, salt:109 },
+  { id:'fire-station', name:'Fire Station', chance:0.12, biomes:['metro','suburbia'], spacing:4, salt:110 },
+  { id:'transit-depot', name:'Transit Depot', chance:0.08, biomes:['metro'], spacing:4, salt:111 },
+  { id:'school', name:'School', chance:0.12, biomes:['metro','suburbia'], spacing:3, salt:112 },
+  { id:'office-building', name:'Office Building', chance:0.10, biomes:['metro','suburbia'], spacing:3, salt:113, lesser:true },
+  { id:'scrapyard', name:'Scrapyard', chance:0.10, biomes:['suburbia','perimeter'], spacing:3, salt:114, lesser:true },
+  { id:'church', name:'Church', chance:0.12, biomes:['metro','suburbia'], spacing:4, salt:115 },
+];
+ZI.WORLD_POI_SECTOR_CAP = 3; // Regular POIs; new non-start sectors may add one unseen lesser POI.
+ZI.WORLD_ORDINARY_NAMES = ZI.WORLD_NAMES.scavenge;
+const poiSectorCache = new Map();
+ZI.poiPlacementsForSector = function(sx, sy, seed) {
+  const key = `${seed}:${sx}:${sy}`;
+  if (poiSectorCache.has(key)) return poiSectorCache.get(key);
+  const C = ZI.SECTOR_COLS, R = ZI.SECTOR_ROWS;
+  const start = (() => { try { return JSON.parse(localStorage.getItem('zi_trav_start') || localStorage.getItem('zi_trav_pos') || 'null'); } catch (e) { return null; } })();
+  // The initial position is chosen before the Fort is settled. Defer POI placement
+  // until that fixed, seed-picked Fort cell exists so the two sites cannot overlap it.
+  if (!start || !Number.isFinite(start.gx) || !localStorage.getItem('zi_fort1_pos')) return [];
+  const startSx = Number.isFinite(start.sx) ? start.sx : Math.floor(start.gx / C);
+  const startSy = Number.isFinite(start.sy) ? start.sy : Math.floor(start.gy / R);
+  const isStartSector = sx === startSx && sy === startSy;
+  const storageKey = `zi_world_poi_sites_${seed}_${sx}_${sy}`;
+  try {
+    const saved = JSON.parse(localStorage.getItem(storageKey) || 'null');
+    if (Array.isArray(saved)) { poiSectorCache.set(key, saved); return saved; }
+  } catch (e) {}
+  const biomes = ['mountain','suburbia','metro','perimeter'];
+  const cells = [];
+  for (let row=0; row<R; row++) for (let col=0; col<C; col++) {
+    const gx = sx*C+col, gy = sy*R+row;
+    const n = ZI.valueNoise(seed,gx,gy,5,3), dist = Math.sqrt(gx*gx+gy*gy);
+    const bi = Math.max(0,Math.min(3,Math.floor(n*2.2+dist/12)));
+    cells.push({ gx, gy, col, row, biome:biomes[bi] });
+  }
+  const placed = [], occupied = new Set();
+  const fort = (() => { try { return JSON.parse(localStorage.getItem('zi_fort1_pos') || 'null'); } catch (e) { return null; } })();
+  const target = isStartSector ? 2 : ZI.WORLD_POI_SECTOR_CAP;
+  const putPolicy = (policy, index) => {
+    if (placed.some(p => p.id === policy.id)) return false;
+    const candidates = cells.filter(c => policy.biomes.includes(c.biome) && !(fort && c.gx === fort.gx && c.gy === fort.gy))
+      .map(c => ({ ...c, rank:ZI.hash01(seed,c.gx,c.gy,1200+index) }))
+      .sort((a,b) => a.rank-b.rank);
+    const choice = candidates.find(c => {
+      for (const p of placed) if (Math.max(Math.abs(p.gx-c.gx),Math.abs(p.gy-c.gy)) < Math.max(policy.spacing,p.spacing)) return false;
+      return !occupied.has(`${c.gx},${c.gy}`);
+    });
+    if (!choice) return false;
+    const site = { gx:choice.gx, gy:choice.gy, col:choice.col, row:choice.row, biome:choice.biome, id:policy.id, name:policy.name, spacing:policy.spacing, lesser:!!policy.lesser };
+    placed.push(site); occupied.add(`${site.gx},${site.gy}`); return true;
+  };
+  const policyOrder = ZI.WORLD_POI_POLICY.map((policy,index) => ({ policy,index, roll:ZI.hash01(seed,sx,sy,2200+policy.salt) }));
+  // Chance rolls preserve the existing seed-weighted mix. Deterministic fallback
+  // fills the requested core count when compatible sites remain in this biome.
+  policyOrder.filter(x => x.roll < x.policy.chance).sort((a,b) => a.roll-b.roll).forEach(x => { if (placed.length < target) putPolicy(x.policy,x.index); });
+  policyOrder.filter(x => !placed.some(p => p.id === x.policy.id))
+    .sort((a,b) => (a.roll / a.policy.chance) - (b.roll / b.policy.chance))
+    .forEach(x => { if (placed.length < target) putPolicy(x.policy,x.index); });
+
+  // Keep each extra site as a discovery reward. POI ids from earlier explored
+  // sectors are persisted per seed, so revisiting/reloading never rerolls them.
+  if (!isStartSector) {
+    const seenKey = `zi_world_poi_seen_${seed}`;
+    let seen = [];
+    try { const raw = JSON.parse(localStorage.getItem(seenKey) || '[]'); if (Array.isArray(raw)) seen = raw; } catch (e) {}
+    // Migrate older saves by rebuilding prior explored sectors in their saved order.
+    if (!seen.length) {
+      let prior = new Set();
+      let explored = []; try { const raw = JSON.parse(localStorage.getItem('zi_world_explored') || '["0,0"]'); if (Array.isArray(raw)) explored = raw; } catch (e) {}
+      for (const sectorKey of explored) {
+        if (sectorKey === `${sx},${sy}`) continue;
+        const parts = sectorKey.split(',').map(Number); if (parts.length !== 2 || parts.some(Number.isNaN)) continue;
+        const [px,py] = parts, pk = `zi_world_poi_sites_${seed}_${px}_${py}`;
+        let earlier = null; try { earlier = JSON.parse(localStorage.getItem(pk) || 'null'); } catch (e) {}
+        if (!Array.isArray(earlier)) earlier = buildPriorSites(px,py,seed,prior,start,fort);
+        earlier.forEach(p => prior.add(p.id));
+        try { localStorage.setItem(pk, JSON.stringify(earlier)); } catch (e) {}
+      }
+      seen = Array.from(prior);
+    }
+    const seenSet = new Set(seen);
+    for (const x of ZI.WORLD_POI_POLICY.map((policy,index)=>({policy,index})).filter(x=>x.policy.lesser && !seenSet.has(x.policy.id) && !placed.some(p=>p.id===x.policy.id))) {
+      if (putPolicy(x.policy,x.index)) break;
+    }
+    const updated = new Set(seen); placed.forEach(p => updated.add(p.id));
+    try { localStorage.setItem(seenKey, JSON.stringify(Array.from(updated))); } catch (e) {}
+  } else {
+    try { localStorage.setItem(`zi_world_poi_seen_${seed}`, JSON.stringify(Array.from(new Set(placed.map(p=>p.id))))); } catch (e) {}
+  }
+  try { localStorage.setItem(storageKey, JSON.stringify(placed)); } catch (e) {}
+  // Keep memory bounded while the player explores many sectors.
+  if (poiSectorCache.size >= 64) poiSectorCache.delete(poiSectorCache.keys().next().value);
+  poiSectorCache.set(key, placed);
+  return placed;
+};
+// Rebuild an older explored sector without consulting the current sector's cache.
+function buildPriorSites(sx,sy,seed,prior,start,fort) {
+  const C=ZI.SECTOR_COLS,R=ZI.SECTOR_ROWS, biomes=['mountain','suburbia','metro','perimeter'], cells=[];
+  for(let row=0;row<R;row++) for(let col=0;col<C;col++) { const gx=sx*C+col,gy=sy*R+row,n=ZI.valueNoise(seed,gx,gy,5,3),dist=Math.sqrt(gx*gx+gy*gy),bi=Math.max(0,Math.min(3,Math.floor(n*2.2+dist/12))); cells.push({gx,gy,col,row,biome:biomes[bi]}); }
+  const startSx=start?(Number.isFinite(start.sx)?start.sx:Math.floor(start.gx/C)):0,startSy=start?(Number.isFinite(start.sy)?start.sy:Math.floor(start.gy/R)):0,isStart=sx===startSx&&sy===startSy,target=isStart?2:ZI.WORLD_POI_SECTOR_CAP,placed=[],occupied=new Set();
+  const put=(policy,index)=>{ if(placed.some(p=>p.id===policy.id))return false; const candidates=cells.filter(c=>policy.biomes.includes(c.biome)&&!(fort&&c.gx===fort.gx&&c.gy===fort.gy)).map(c=>({...c,rank:ZI.hash01(seed,c.gx,c.gy,1200+index)})).sort((a,b)=>a.rank-b.rank); const choice=candidates.find(c=>placed.every(p=>Math.max(Math.abs(p.gx-c.gx),Math.abs(p.gy-c.gy))>=Math.max(policy.spacing,p.spacing))&&!occupied.has(`${c.gx},${c.gy}`)); if(!choice)return false; const site={gx:choice.gx,gy:choice.gy,col:choice.col,row:choice.row,biome:choice.biome,id:policy.id,name:policy.name,spacing:policy.spacing,lesser:!!policy.lesser}; placed.push(site);occupied.add(`${site.gx},${site.gy}`);return true; };
+  const order=ZI.WORLD_POI_POLICY.map((policy,index)=>({policy,index,roll:ZI.hash01(seed,sx,sy,2200+policy.salt)}));
+  order.filter(x=>x.roll<x.policy.chance).sort((a,b)=>a.roll-b.roll).forEach(x=>{if(placed.length<target)put(x.policy,x.index);});
+  order.filter(x=>!placed.some(p=>p.id===x.policy.id)).sort((a,b)=>(a.roll/a.policy.chance)-(b.roll/b.policy.chance)).forEach(x=>{if(placed.length<target)put(x.policy,x.index);});
+  if(!isStart) for(const x of ZI.WORLD_POI_POLICY.map((policy,index)=>({policy,index})).filter(x=>x.policy.lesser&&!prior.has(x.policy.id)&&!placed.some(p=>p.id===x.policy.id))) if(put(x.policy,x.index))break;
+  return placed;
+}
 ZI.sectorLabel = function(sx, sy) {
   const ns = sy === 0 ? '' : (sy < 0 ? 'N' + (-sy) : 'S' + sy);
   const ew = sx === 0 ? '' : (sx < 0 ? 'W' + (-sx) : 'E' + sx);
@@ -65,14 +184,16 @@ ZI.worldCell = function(gx, gy, type) {
   const biomes = ['mountain','suburbia','metro','perimeter'];
   const bi = Math.max(0, Math.min(3, Math.floor(n * 2.2 + dist / 12)));
   const pool = ZI.WORLD_NAMES[type] || ZI.WORLD_NAMES.scavenge;
+  const sectorSites = type === 'scavenge' ? ZI.poiPlacementsForSector(sx,sy,seed) : [];
+  const poi = sectorSites.find(site => site.gx === gx && site.gy === gy) || null;
   const coord = String.fromCharCode(65 + col) + (row + 1);
   const difficulty = Math.max(1, Math.min(5, 1 + Math.floor(dist / 6) + (n > 0.72 ? 1 : 0)));
   // 'cleared' is real player progress (kills in the cell), not a random hash band.
   const state = h < 0.08 ? 'locked' : (ZI.isCellCleared && ZI.isCellCleared(gx, gy)) ? 'cleared' : h > 0.92 ? 'contested' : 'available';
   return {
     id: `${type}-${gx}-${gy}`, gx, gy, sx, sy, row, col, coord,
-    name: pool[Math.floor(ZI.hash01(seed, gx, gy, 5) * pool.length)] + ' ' + coord,
-    biome: biomes[bi], difficulty, state,
+    name: (poi ? poi.name : pool[Math.floor(ZI.hash01(seed, gx, gy, 5) * pool.length)]) + ' ' + coord,
+    biome: biomes[bi], poiType:poi ? poi.id : null, difficulty, state,
     threatLevel: Math.min(5, difficulty + Math.floor(h * 2)),
     duration: 1 + Math.floor(h * 8),
     rmatTier: Math.min(5, Math.floor(difficulty * 0.8)),
@@ -92,7 +213,7 @@ ZI.markSectorExplored = function(sx, sy) {
 };
 // The survivor's Traversal map cell is where the idle Wandering patrol happens.
 ZI.zoneFromCell = function(c) {
-  return { gx:c.gx, gy:c.gy, sx:c.sx, sy:c.sy, row:c.row, col:c.col, name:c.name, biome:c.biome, difficulty:c.difficulty, threatLevel:c.threatLevel, rmatTier:c.rmatTier };
+  return { gx:c.gx, gy:c.gy, sx:c.sx, sy:c.sy, row:c.row, col:c.col, name:c.name, biome:c.biome, poiType:c.poiType || null, difficulty:c.difficulty, threatLevel:c.threatLevel, rmatTier:c.rmatTier };
 };
 ZI.getTravZone = function() {
   try { const p = JSON.parse(localStorage.getItem('zi_trav_pos') || 'null'); return p && p.name ? p : null; } catch (e) { return null; }
