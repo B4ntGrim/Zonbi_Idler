@@ -43,7 +43,8 @@
 <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
 <script src="image-slot.js"></script>
 <script src="game/core.js?v=20261029-proposals1"></script>
-<script src="game/world.js?v=1792640900000"></script>
+<script src="game/world.js?v=20261029-trav-controls2"></script>
+<script src="game/poi-dialogues.js?v=20261029-trav-controls2"></script>
 <script src="game/save.js?v=20261029-charops1"></script>
 <script src="game/stats.js?v=20261029-charops1"></script>
 <script src="game/progression.js?v=20261028-stat02c"></script>
@@ -51,22 +52,23 @@
 <script src="game/crafting.js?v=1791700100000"></script>
 <script src="game/combat.js?v=1791700100000"></script>
 <script src="game/factions.js?v=1791700100000"></script>
-<script src="game/camp.js?v=20261025-clock-parity"></script>
+<script src="game/camp.js?v=20261030-look2"></script>
 <script src="game/jobs.js?v=20261025-clock-parity"></script>
 <script src="game/economy.js?v=20261027-shop1"></script>
-<script src="game/wandering.js?v=20261029-charops1"></script>
+<script src="game/wandering.js?v=20261029-trav-controls2"></script>
 <script src="game/fort.js?v=1791700100000"></script>
 <script src="game/infiltration.js?v=20261026-infiltration1"></script>
 <script src="game/active.js?v=20261029-proposals1"></script>
+<script src="game/police-station.js?v=20261029-policepoi1"></script>
 <script src="game/routes.js?v=20261025-clock-parity"></script>
 <script src="game/survival-data.js?v=1791700100000"></script>
 <script src="game/bootstrap.js?v=20261025-clock-parity"></script>
 <script src="game/progression-live.js?v=20261029-proposals1"></script>
-<script src="game/character.js?v=20261029-look1"></script>
+<script src="game/character.js?v=20261030-cc-walk-v3"></script>
 <script src="game/operations.js?v=20261029-duties1"></script>
 <script src="bestiary-data.js?v=20261029-charops1"></script>
 <script src="pixel-art.js?v=1791700100000"></script>
-<script src="zombie-sprites.js?v=20261027-animfix"></script>
+<script src="zombie-sprites.js?v=20261030-art03"></script>
 <script src="bestiary-expanded.js?v=20261024-codex"></script>
 <script src="satellite-tiles.js?v=1791700100000"></script>
 <script src="weapon-design-data.js?v=20261027-weapons1"></script>
@@ -76,11 +78,12 @@
 <script type="text/babel" src="crafting-frame-proposals.jsx?v=20261027-craft-proposals7"></script>
 <script type="text/babel" src="tweaks-panel.jsx?v=1791700100000"></script>
 <script type="text/babel" src="progression-ui.jsx?v=20261028-stat02c"></script>
-<script type="text/babel" src="character-creation.jsx?v=20261029-look1"></script>
+<script type="text/babel" src="character-sprite.jsx?v=20261030-cc-walk-v2"></script>
+<script type="text/babel" src="character-creation.jsx?v=20261030-cc-walk-v2"></script>
 <script type="text/babel" src="operations-ui.jsx?v=20261029-duties1"></script>
 <script type="text/babel" src="screens-v2.jsx?v=20261028-stat02"></script>
 <script type="text/babel" src="screens-v2b.jsx?v=20261027-shop1"></script>
-<script type="text/babel" src="screens-v3.jsx?v=20261029-charops1"></script>
+<script type="text/babel" src="screens-v3.jsx?v=20261030-crawler2"></script>
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -3537,6 +3540,60 @@ function RmatCraftingRecipeBrowser() {
     fracture_engine: 'art/crafting/recipes/fracture-engine-v1.png',
     revenant_core: 'art/crafting/recipes/revenant-core-v1.png',
     signal_zero: 'art/crafting/recipes/signal-zero-v1.png',
+    rag_wrap: 'art/crafting/gear-recipes/rag_wrap-v1.png',
+    lucky_charm: 'art/crafting/gear-recipes/lucky_charm-v1.png',
+    scrap_adrenaline: 'art/crafting/gear-recipes/scrap_adrenaline-v1.png',
+    coal_paste: 'art/crafting/gear-recipes/coal_paste-v1.png',
+    field_bandage: 'art/crafting/gear-recipes/field_bandage-v1.png',
+    focus_tabs: 'art/crafting/gear-recipes/focus_tabs-v1.png',
+    salvagers_oil: 'art/crafting/gear-recipes/salvagers_oil-v1.png',
+    trauma_dressing: 'art/crafting/gear-recipes/trauma_dressing-v1.png',
+    overclock_patch: 'art/crafting/gear-recipes/overclock_patch-v1.png',
+    rmat_attractor: 'art/crafting/gear-recipes/rmat_attractor-v1.png',
+    thermal_gel: 'art/crafting/gear-recipes/thermal_gel-v1.png',
+    combat_stim_iv: 'art/crafting/gear-recipes/combat_stim_iv-v1.png',
+    apex_combat: 'art/crafting/gear-recipes/apex_combat-v1.png',
+    echo_siphon: 'art/crafting/gear-recipes/echo_siphon-v1.png',
+    nanite_serum: 'art/crafting/gear-recipes/nanite_serum-v1.png',
+    crystalline_surge: 'art/crafting/gear-recipes/crystalline_surge-v1.png',
+    crystalline_resonator: 'art/crafting/gear-recipes/crystalline_resonator-v1.png',
+    revenant_infusion: 'art/crafting/gear-recipes/revenant_infusion-v1.png',
+    echo_state: 'art/crafting/gear-recipes/echo_state-v1.png',
+    singularity_seed: 'art/crafting/gear-recipes/singularity_seed-v1.png',
+    iron_knuckles: 'art/crafting/gear-recipes/iron_knuckles-v1.png',
+    pipe_pistol: 'art/crafting/gear-recipes/pipe_pistol-v1.png',
+    spike_board: 'art/crafting/gear-recipes/spike_board-v1.png',
+    combat_knife: 'art/crafting/gear-recipes/combat_knife-v1.png',
+    steel_baton: 'art/crafting/gear-recipes/steel_baton-v1.png',
+    machete_blade: 'art/crafting/gear-recipes/machete_blade-v1.png',
+    combat_axe: 'art/crafting/gear-recipes/combat_axe-v1.png',
+    shock_baton: 'art/crafting/gear-recipes/shock_baton-v1.png',
+    jet_sledge: 'art/crafting/gear-recipes/jet_sledge-v1.png',
+    pipe_shotgun: 'art/crafting/gear-recipes/pipe_shotgun-v1.png',
+    compound_bow: 'art/crafting/gear-recipes/compound_bow-v1.png',
+    crossbow: 'art/crafting/gear-recipes/crossbow-v1.png',
+    shock_pistol: 'art/crafting/gear-recipes/shock_pistol-v1.png',
+    arc_carbine: 'art/crafting/gear-recipes/arc_carbine-v1.png',
+    flamethrower: 'art/crafting/gear-recipes/flamethrower-v1.png',
+    void_pulse_rifle: 'art/crafting/gear-recipes/void_pulse_rifle-v1.png',
+    scrap_helmet: 'art/crafting/gear-recipes/scrap_helmet-v1.png',
+    leather_gloves: 'art/crafting/gear-recipes/leather_gloves-v1.png',
+    soft_armor_vest: 'art/crafting/gear-recipes/soft_armor_vest-v1.png',
+    riot_helmet: 'art/crafting/gear-recipes/riot_helmet-v1.png',
+    combat_boots: 'art/crafting/gear-recipes/combat_boots-v1.png',
+    composite_helmet: 'art/crafting/gear-recipes/composite_helmet-v1.png',
+    molle_pack: 'art/crafting/gear-recipes/molle_pack-v1.png',
+    sensor_rig: 'art/crafting/gear-recipes/sensor_rig-v1.png',
+    perimeter_helmet: 'art/crafting/gear-recipes/perimeter_helmet-v1.png',
+    plate_carrier: 'art/crafting/gear-recipes/plate_carrier-v1.png',
+    runners_cloak: 'art/crafting/gear-recipes/runners_cloak-v1.png',
+    ghost_wrap: 'art/crafting/gear-recipes/ghost_wrap-v1.png',
+    adrenaline_shot: 'art/crafting/gear-recipes/adrenaline_shot-v1.png',
+    smoke_vial: 'art/crafting/gear-recipes/smoke_vial-v1.png',
+    tacticians_lens: 'art/crafting/gear-recipes/tacticians_lens-v1.png',
+    warlords_sigil: 'art/crafting/gear-recipes/warlords_sigil-v1.png',
+    combat_focus_draught: 'art/crafting/gear-recipes/combat_focus_draught-v1.png',
+    scholars_tonic: 'art/crafting/gear-recipes/scholars_tonic-v1.png',
   };
   const recipeIcon = (recipe, size) => recipeSpriteById[recipe.id]
     ? <img src={recipeSpriteById[recipe.id]} alt={recipe.name} style={{width:size,height:size,objectFit:'contain',imageRendering:'pixelated',flexShrink:0}} />
@@ -3758,7 +3815,7 @@ function RmatCraftingRecipeBrowser() {
               <div className="panel-title">Recipe Details</div>
               <div style={{flex:1, overflow:'auto', padding:10}}>
                 <div style={{display:'flex', alignItems:'center', gap:10, marginBottom:8}}>
-                  {recipeIcon(sel, 56)}
+                  {recipeIcon(sel, 96)}
                   <div>
                     <div style={{fontFamily:'var(--font-title)', fontSize:16, color:tc}}>{sel.name}</div>
                     <div style={{display:'flex', gap:5, marginTop:3}}>

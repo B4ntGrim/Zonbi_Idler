@@ -3,6 +3,11 @@
 // Satellite map traversal, side-scroller wandering, recycler, material economy
 
 window.ZI_ART = window.ZI_ART || {};
+function PoiBuildingMarker({ sprite, title, style = {} }) {
+  if (!sprite) return null;
+  const pos = `${sprite.col * 100 / 3}% ${sprite.row * 100 / 3}%`;
+  return <div aria-label={title || 'POI building'} title={title || ''} style={{ position:'absolute', left:'15%', top:'13%', width:'70%', height:'70%', backgroundImage:`url("${window.ZI.POI_SPRITE_ATLAS}")`, backgroundRepeat:'no-repeat', backgroundSize:'400% 400%', backgroundPosition:pos, imageRendering:'pixelated', filter:'drop-shadow(0 1px 2px rgba(0,0,0,.9))', pointerEvents:'none', ...style }}/>;
+}
 
 // ─── HIGH-DETAIL SURVIVOR SPRITE (36×48, painted + auto-outlined) ───────────
 // Painted in layers on a pixel grid, then every empty pixel touching the body
@@ -686,6 +691,12 @@ window.SatelliteTraversalScreen = function SatelliteTraversalScreen({ setScreen,
   const [hoveredSquare, setHoveredSquare] = React.useState(null);
   const [selectedSquare, setSelectedSquare] = React.useState(null);
   const [selectedSurvivors, setSelectedSurvivors] = React.useState([1]);
+  const [mapPanMode, setMapPanMode] = React.useState(false);
+  const [showMinimap, setShowMinimap] = React.useState(false);
+  const [minimapZoom, setMinimapZoom] = React.useState(1);
+  const [mapDragging, setMapDragging] = React.useState(false);
+  const [mapTransform, setMapTransform] = React.useState({ scale:1, x:0, y:0 });
+  const mapViewportRef = React.useRef(null), mapDragRef = React.useRef(null), panMovedRef = React.useRef(false);
 
   // Map types - each has its own grid of destination squares
   const mapTypes = [
@@ -717,9 +728,94 @@ window.SatelliteTraversalScreen = function SatelliteTraversalScreen({ setScreen,
     return p;
   });
   const [view, setView] = React.useState(() => ({ sx: pos.sx || 0, sy: pos.sy || 0 }));
+  React.useEffect(() => { setMapTransform({ scale:1, x:0, y:0 }); }, [activeType]);
+  React.useEffect(() => { setMapTransform(prev => ({ scale:prev.scale, x:0, y:0 })); }, [view.sx, view.sy]);
+  const clampMapOffset = (x, y, scale) => {
+    const box = mapViewportRef.current;
+    if (!box) return { x, y };
+    const maxX = box.clientWidth * (1 - scale), maxY = box.clientHeight * (1 - scale);
+    return { x:Math.max(Math.min(0,maxX), Math.min(Math.max(0,maxX),x)), y:Math.max(Math.min(0,maxY), Math.min(Math.max(0,maxY),y)) };
+  };
+  const zoomMapAt = (clientX, clientY, factor) => {
+    const box = mapViewportRef.current;
+    if (!box) return;
+    const rect = box.getBoundingClientRect();
+    const px = clientX - rect.left, py = clientY - rect.top;
+    setMapTransform(prev => {
+      const scale = Math.max(0.2, Math.min(1.8, prev.scale * factor));
+      const ratio = scale / prev.scale;
+      const next = clampMapOffset(px - (px - prev.x) * ratio, py - (py - prev.y) * ratio, scale);
+      return { scale, ...next };
+    });
+  };
+  const handleMapWheel = e => {
+    e.preventDefault();
+    zoomMapAt(e.clientX, e.clientY, e.deltaY < 0 ? 1.12 : 0.89);
+  };
+  const handleMapPointerDown = e => {
+    if (!mapPanMode || (e.pointerType === 'mouse' && e.button !== 0) || e.target.closest('button')) return;
+    e.preventDefault();
+    mapDragRef.current = { id:e.pointerId, x:e.clientX, y:e.clientY, ox:mapTransform.x, oy:mapTransform.y, moved:false };
+    e.currentTarget.setPointerCapture(e.pointerId);
+    setMapDragging(true);
+  };
+  const handleMapPointerMove = e => {
+    const drag = mapDragRef.current;
+    if (!drag || drag.id !== e.pointerId) return;
+    const dx = e.clientX - drag.x, dy = e.clientY - drag.y;
+    if (Math.abs(dx) + Math.abs(dy) > 3) { drag.moved = true; panMovedRef.current = true; }
+    const box = mapViewportRef.current;
+    if (box) {
+      const requestedX = drag.ox + dx, requestedY = drag.oy + dy;
+      const boundsX = box.clientWidth * (1 - mapTransform.scale), boundsY = box.clientHeight * (1 - mapTransform.scale);
+      const minX = Math.min(0,boundsX), maxX = Math.max(0,boundsX), minY = Math.min(0,boundsY), maxY = Math.max(0,boundsY);
+      const edge = 72;
+      const direction = requestedX < minX-edge ? 'e' : requestedX > maxX+edge ? 'w' : requestedY < minY-edge ? 's' : requestedY > maxY+edge ? 'n' : null;
+      if (direction && canView(direction).ok) {
+        mapDragRef.current = null;
+        setMapDragging(false);
+        goView(direction);
+        return;
+      }
+      setMapTransform({ scale:mapTransform.scale, ...clampMapOffset(requestedX, requestedY, mapTransform.scale) });
+    }
+  };
+  const handleMapPointerUp = e => {
+    const drag = mapDragRef.current;
+    if (!drag || drag.id !== e.pointerId) return;
+    mapDragRef.current = null;
+    setMapDragging(false);
+    if (e.currentTarget.hasPointerCapture(e.pointerId)) e.currentTarget.releasePointerCapture(e.pointerId);
+    if (drag.moved) window.setTimeout(() => { panMovedRef.current = false; }, 0);
+  };
   // Smoke-test fix (Oct 20): follow moves the game makes itself (forced retreat home, return after a Base rest).
   React.useEffect(() => ZI.onTravPosChange ? ZI.onTravPosChange(() => { const p = readJ('zi_trav_pos', null); if (p && p.gx != null) { setPos(p); setView({ sx: p.sx || 0, sy: p.sy || 0 }); } }) : undefined, []);
   const [explored, setExplored] = React.useState(() => ZI.getExploredSectors());
+  const sectorOverview = (() => {
+    const byKey = new Map();
+    (explored || []).forEach(k => { const [sx,sy] = String(k).split(',').map(Number); if (Number.isFinite(sx) && Number.isFinite(sy)) byKey.set(sx + ',' + sy, { sx, sy }); });
+    byKey.set(view.sx + ',' + view.sy, { sx:view.sx, sy:view.sy });
+    const playerSx = Number.isFinite(pos.sx) ? pos.sx : Math.floor(pos.gx / COLS), playerSy = Number.isFinite(pos.sy) ? pos.sy : Math.floor(pos.gy / ROWS);
+    byKey.set(playerSx + ',' + playerSy, { sx:playerSx, sy:playerSy });
+    const sectors = Array.from(byKey.values());
+    return { sectors, minSx:Math.min(...sectors.map(s => s.sx)), maxSx:Math.max(...sectors.map(s => s.sx)), minSy:Math.min(...sectors.map(s => s.sy)), maxSy:Math.max(...sectors.map(s => s.sy)) };
+  })();
+  const minimapCols = Math.max(1, sectorOverview.maxSx - sectorOverview.minSx + 1), minimapRows = Math.max(1, sectorOverview.maxSy - sectorOverview.minSy + 1);
+  const minimapWorldAspect = minimapCols * COLS / (minimapRows * ROWS);
+  const minimapFrameAspect = 1;
+  const minimapContentWidth = minimapWorldAspect > minimapFrameAspect ? 100 : 100 * minimapWorldAspect / minimapFrameAspect;
+  const minimapContentHeight = minimapWorldAspect > minimapFrameAspect ? 100 * minimapFrameAspect / minimapWorldAspect : 100;
+  const minimapKnownSectors = new Set((explored || []).map(String));
+  // Include gaps inside the known map bounds so undiscovered chunks stay visibly black.
+  const minimapSectors = [];
+  for (let sy = sectorOverview.minSy; sy <= sectorOverview.maxSy; sy++) for (let sx = sectorOverview.minSx; sx <= sectorOverview.maxSx; sx++) {
+    minimapSectors.push({ sx, sy, discovered:minimapKnownSectors.has(sx + ',' + sy) || (sx === view.sx && sy === view.sy) || (sx === (Number.isFinite(pos.sx) ? pos.sx : Math.floor(pos.gx / COLS)) && sy === (Number.isFinite(pos.sy) ? pos.sy : Math.floor(pos.gy / ROWS))) });
+  }
+  const cameraWidth = Math.min(1, 1 / mapTransform.scale), cameraHeight = Math.min(1, 1 / mapTransform.scale);
+  const viewportSize = mapViewportRef.current;
+  const cameraX = Math.max(0, Math.min(1-cameraWidth, -mapTransform.x / Math.max(1, viewportSize ? viewportSize.clientWidth : 1) / mapTransform.scale));
+  const cameraY = Math.max(0, Math.min(1-cameraHeight, -mapTransform.y / Math.max(1, viewportSize ? viewportSize.clientHeight : 1) / mapTransform.scale));
+  const handleMinimapWheel = e => { e.preventDefault(); setMinimapZoom(value => Math.max(0.2, Math.min(1.88, value * (e.deltaY < 0 ? 1.12 : 0.89)))); };
   const squares = React.useMemo(() => {
     const list = [];
     for (let r = 0; r < ROWS; r++) for (let c = 0; c < COLS; c++) list.push(ZI.worldCell(view.sx * COLS + c, view.sy * ROWS + r, activeType));
@@ -789,16 +885,16 @@ window.SatelliteTraversalScreen = function SatelliteTraversalScreen({ setScreen,
   const sectorTag = (sx, sy) => ZI.sectorLabel(sx, sy);
   const posLabel = String.fromCharCode(65 + pos.col) + (pos.row + 1) + ((pos.sx || pos.sy) ? ' · ' + sectorTag(pos.sx, pos.sy) : '');
   const inPlayerSector = view.sx === pos.sx && view.sy === pos.sy;
-  // Cardinal sector navigation — a new sector only generates when the survivor stands
-  // within 1 cell of it (on that edge of their own sector). Explored sectors reopen freely.
+  // Cardinal sector navigation — a new sector only generates when the survivor is within
+  // two cells of its edge in their own sector. Explored sectors reopen freely.
   const DIRS = { n:{ dx:0, dy:-1, label:'North', arrow:'▲' }, s:{ dx:0, dy:1, label:'South', arrow:'▼' }, w:{ dx:-1, dy:0, label:'West', arrow:'◀' }, e:{ dx:1, dy:0, label:'East', arrow:'▶' } };
   const canView = (d) => {
     const t = { sx: view.sx + DIRS[d].dx, sy: view.sy + DIRS[d].dy };
     if (t.sx === pos.sx && t.sy === pos.sy) return { ok:true };
     if (explored.includes(t.sx + ',' + t.sy)) return { ok:true };
     if (!inPlayerSector) return { ok:false, why:'Return to your own sector first.' };
-    const nearEdge = d === 'n' ? pos.row === 0 : d === 's' ? pos.row === ROWS - 1 : d === 'w' ? pos.col === 0 : pos.col === COLS - 1;
-    return nearEdge ? { ok:true } : { ok:false, why:`Move to the ${DIRS[d].label.toLowerCase()} edge of this sector to scout beyond it.` };
+    const nearEdge = d === 'n' ? pos.row <= 1 : d === 's' ? pos.row >= ROWS - 2 : d === 'w' ? pos.col <= 1 : pos.col >= COLS - 2;
+    return nearEdge ? { ok:true } : { ok:false, why:`Move closer to the ${DIRS[d].label.toLowerCase()} edge of this sector to scout beyond it.` };
   };
   const goView = (d) => {
     const chk = canView(d); if (!chk.ok) return;
@@ -808,7 +904,7 @@ window.SatelliteTraversalScreen = function SatelliteTraversalScreen({ setScreen,
   };
 
   const TUTORIAL = [
-    { title:'Day One of the Outbreak', body:'The grid is the land around you, seen from above. Each cell is a zone: homes, stores, depots. Some are locked until you push further out. The arrows around the map show the next sector over, once you stand on that edge.' },
+    { title:'Day One of the Outbreak', body:'The grid is the land around you, seen from above. Each cell is a zone: homes, stores, depots. Your map grows one connected 8×6 sector at a time. To scout a new sector, move within two cells of that edge, then use its cardinal arrow. Dim arrows mark sectors you cannot scout yet; hover or tap one to see why. Discovered sectors stay unlocked and connected to your map. There is no fixed world edge; exploration can keep expanding in every direction.' },
     { title:'You are Here', body:`Your survivor starts at ${posLabel}, marked with the pulsing ◉ YOU ARE HERE pin. Every outbreak drops you somewhere new. Smoke rises from a palisade nearby: the 🏰 Fort.` },
     { title:'Move one zone at a time', body:'The zones touching yours glow with a dashed outline. Click one of them to decide what to do there.' },
     { title:'Choose how to survive', body:'Travel moves you in. Loot grabs supplies once per zone. Scout reveals the danger first. Make Camp moves you in and sets a safe rest point. Hide shows which threats roam the zone.' },
@@ -856,12 +952,13 @@ window.SatelliteTraversalScreen = function SatelliteTraversalScreen({ setScreen,
   };
 
   const MAT_KEYS = ['metal','wood','cloth','electronics','fuel','medical'];
-  const grantRandomMats = (tier) => {
+  const grantRandomMats = (tier, cell) => {
     const M = window.ZI_MATERIALS || {}; const got = [];
     const n = 2 + Math.floor(Math.random() * 2);
+    const dailyYield = ZI.worldDailyShift ? ZI.worldDailyShift(cell, 5, ZI.WORLD_DAILY_VARIATION.lootYieldUnits) : 0;
     for (let i = 0; i < n; i++) {
       const k = MAT_KEYS[Math.floor(Math.random() * MAT_KEYS.length)];
-      const amt = 2 + Math.floor(Math.random() * (4 + tier * 2));
+      const amt = Math.max(1, 2 + Math.floor(Math.random() * (4 + tier * 2)) + dailyYield);
       if (M[k]) { M[k].current = Math.min(M[k].max, M[k].current + amt); got.push(`+${amt} ${M[k].name}`); }
     }
     return got;
@@ -887,16 +984,21 @@ window.SatelliteTraversalScreen = function SatelliteTraversalScreen({ setScreen,
       if (tutStep >= 0 && tutStep < TUTORIAL.length) setTimeout(() => { setActionCell(null); setTutTarget('wandering'); setTutPoint(true); }, 1600); // TRAV-01a S6: was 'routes'
       if (looted[key]) { res = { tone:'warn', text:`${coord} has already been picked clean.` }; }
       else {
-        const chance = ZI.lootSafeChance(cell);
+        const routeAid = ZI.poiRouteAid && ZI.poiRouteAid(cell);
+        const chance = Math.min(95, ZI.lootSafeChance(cell) + (routeAid ? routeAid.bonus : 0));
         const roll = Math.floor(Math.random() * 100) + 1;
-        const got = grantRandomMats(cell.rmatTier || 0);
+        const got = grantRandomMats(cell.rmatTier || 0, cell);
         const foodGot = ZI.PROG && ZI.PROG.LIVE && ZI.PROG.LIVE.rollLocationFood ? ZI.PROG.LIVE.rollLocationFood(cell) : 0; // STAT-02: real food from locations
         if (foodGot) got.push(`${foodGot} Canned Food`);
         const nl = { ...looted, [key]: true }; setLooted(nl); writeJ('zi_trav_looted', nl);
         if (roll <= chance) {
+          const literature = ZI.rollLiteratureLoot && ZI.rollLiteratureLoot(cell);
+          if (literature) got.push(`${literature.icon || '📚'} ${literature.name} (carried)`);
+          if (routeAid && ZI.consumePoiRouteAid) ZI.consumePoiRouteAid(cell);
           ZI.emitAction && ZI.emitAction('loot', 1 + cell.difficulty * 0.3); // Scavenging XP only on a clean search
           res = { tone:'good', text:`Clean search (${chance}% safe, rolled ${roll}). You scavenge ${cell.name}: ${got.join(', ')}. +Scavenging XP.` };
         } else {
+          if (routeAid && ZI.consumePoiRouteAid) ZI.consumePoiRouteAid(cell);
           const run = ZI.getWanderRun ? ZI.getWanderRun() : { hp:100 };
           const dmg = ZI.lootFailDamage(cell);
           const hp = Math.max(1, (run.hp == null ? 100 : run.hp) - dmg);
@@ -947,6 +1049,23 @@ window.SatelliteTraversalScreen = function SatelliteTraversalScreen({ setScreen,
     { id:'camp',   icon:'⛺', label:'Make Camp', desc:'Move in and set your rest point.' },
     { id:'hide',   icon:'◌', label:'Hide',      desc:'Stay hidden for 12 game hours. Two uses refill one at a time after 24 real hours.' },
   ];
+  const enterWandering = (cell, label) => {
+    ZI.recordPoiDecision && ZI.recordPoiDecision(cell, 'enter', label || 'Enter site');
+    if (ZI.isPoliceStationCell && ZI.isPoliceStationCell(cell)) ZI.beginPoliceStationSearch && ZI.beginPoliceStationSearch();
+    setScreen('hack-slash');
+  };
+  const runSiteAction = (id, cell, note, label) => {
+    const site = ZI.poiSiteForCell && ZI.poiSiteForCell(cell);
+    if (id === 'loot' && site && site.id === 'pharmacy' && !window.confirm('At a neutral pharmacy, taking supplies lowers your reputation with every faction. Continue scavenging?')) return;
+    if (site && id !== 'enter') ZI.recordPoiDecision && ZI.recordPoiDecision(cell, id, label || id);
+    if (id === 'enter') { if (note) setActionResult({ tone:'info', text:note }); enterWandering(cell, label); return; }
+    if (id === 'story') {
+      const result = ZI.resolvePoiStoryChoice && ZI.resolvePoiStoryChoice(cell, label);
+      setActionResult(result || { tone:'info', text:note || 'The encounter passes quietly.' }); setTravTick(t => t + 1); return;
+    }
+    if (id === 'dialogue') { if (note) setActionResult({ tone:'info', text:note }); return; }
+    doAction(id, cell);
+  };
 
   // ── TRAV-01a Solo layout: afflictions, preview bar, zone details panel (T4, T13, S5) ──
   const FAM_LABEL = { unexplored:'Unexplored', explored:'Explored', cleared:'Cleared' };
@@ -1012,6 +1131,46 @@ window.SatelliteTraversalScreen = function SatelliteTraversalScreen({ setScreen,
     );
   };
 
+  const renderSoloResources = () => {
+    const carried = ZI.getCarried ? ZI.getCarried() : [];
+    const stash = ZI.getStash ? ZI.getStash() : [];
+    const loadout = ZI.getLoadout ? ZI.getLoadout() : {};
+    const countItem = id => stash.filter(x => x === id).length
+      + Object.values(loadout).filter(x => x === id).length
+      + carried.reduce((sum, x) => sum + (x.id === id ? Number(x.qty) || 1 : 0), 0);
+    const carry = ZI.carryTotals ? ZI.carryTotals() : null;
+    const nutrition = ZI.getNutrition ? ZI.getNutrition() : null;
+    const top = ZI.getTopBarResources ? ZI.getTopBarResources() : {};
+    const medkits = countItem('medkit'), bandages = countItem('field_bandage'), food = top.Food?.current || 0;
+    const meter = (label, value, max, color, detail) => (
+      <div style={{ marginTop:6 }}>
+        <div style={{ display:'flex', justifyContent:'space-between', gap:6, fontFamily:'var(--font-mono)', fontSize:11, color:'var(--text2)', marginBottom:3 }}>
+          <span>{label}</span><span style={{ color:color || 'var(--text)' }}>{detail}</span>
+        </div>
+        <ProgressBar value={max > 0 ? Math.max(0, Math.min(100, value / max * 100)) : 0} color={color || 'var(--green)'} height={5}/>
+      </div>
+    );
+    return (
+      <div className="panel" data-trav="resources" style={{ padding:9 }}>
+        <div style={{ fontFamily:'var(--font-mono)', fontSize:10, color:'var(--text2)', marginBottom:5, letterSpacing:'0.1em' }}>FIELD RESOURCES</div>
+        {carry && <>
+          {meter('Pack weight', carry.loadKg, carry.capacityKg, carry.overCapacity ? 'var(--red2)' : 'var(--green)', `${carry.loadKg} / ${carry.capacityKg} kg`)}
+          {meter('Pack slots', carry.pocketsUsed, Math.max(1, carry.pocketsMax), carry.pocketsFree <= 0 ? 'var(--amber)' : 'var(--green)', `${carry.pocketsUsed} / ${carry.pocketsMax}`)}
+        </>}
+        {nutrition && meter('Nutrition', nutrition.current, nutrition.max || 100, nutrition.current < 25 ? 'var(--red2)' : 'var(--amber)', `${nutrition.current} / ${nutrition.max || 100}`)}
+        <div style={{ display:'flex', justifyContent:'space-between', gap:5, marginTop:8, paddingTop:6, borderTop:'1px solid var(--border)' }}>
+          {[['🧰','Medkits',medkits],['🩺','Bandages',bandages],['🥫','Food',food]].map(([icon,label,count]) => (
+            <div key={label} style={{ flex:1, minWidth:0, textAlign:'center', background:'var(--bg3)', padding:'5px 2px' }}>
+              <div style={{ fontSize:15 }}>{icon}</div>
+              <div style={{ fontFamily:'var(--font-mono)', fontSize:10, color:'var(--text3)' }}>{label}</div>
+              <div style={{ fontFamily:'var(--font-mono)', fontSize:13, color:'var(--text)', fontWeight:'bold' }}>{count}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  };
+
   const renderSoloBar = () => (
     <div className="panel" data-trav="preview-bar" style={{ display:'flex', alignItems:'center', gap:10, padding:'6px 10px', flexShrink:0, flexWrap:'wrap', fontFamily:'var(--font-mono)', fontSize:11, color:'var(--text2)' }}>
       <span data-trav="preview" style={{ flex:1, minWidth:180, color: soloPreview ? 'var(--text)' : 'var(--text3)' }}>{soloPreview ? previewLine(soloPreview) : 'Point at a zone for a quick look. Click, tap or confirm to open its details.'}</span>
@@ -1028,8 +1187,8 @@ window.SatelliteTraversalScreen = function SatelliteTraversalScreen({ setScreen,
     const xpNote = (kind, label) => ZI.travXpAvailable(kind, kind === 'camp' ? 'any' : ck) ? `${label} XP once per ${kind === 'camp' ? 'day' : 'zone a day'}` : 'XP already earned today';
     return [
       { id:'travel', icon:'➜', label:'Travel',    reason: here ? "You're already here." : far, cost: `Moves you in · ${xpNote('travel', 'Athletics')}` },
-      { id:'loot',   icon:'◈', label:'Loot',      reason: far || (looted[key] ? 'Already looted.' : null), cost: `Once per zone · ${chance}% safe · a failed roll hurts` },
-      { id:'scout',  icon:'👁', label:'Scout',     reason: far || (ts.left <= 0 ? 'No Traversal scouts left today. Refills at midnight.' : null), cost: `1 Traversal scout (${ts.left}/${ts.max} today) · ${xpNote('scout', 'Stealth')}` },
+      { id:'loot',   icon:'◈', label:'Loot',      reason: far || (looted[key] ? 'Already looted.' : null), cost: `Once per zone · ${Math.min(95, chance + ((ZI.poiRouteAid && ZI.poiRouteAid(c)) ? ZI.poiRouteAid(c).bonus : 0))}% safe${(ZI.poiRouteAid && ZI.poiRouteAid(c)) ? ' · local lead' : ''} · a failed roll hurts` },
+      { id:'scout',  icon:'👁', label: ZI.isPoliceStationCell && ZI.isPoliceStationCell(c) ? 'Scout Police Station' : 'Scout', reason: far || (ts.left <= 0 ? 'No Traversal scouts left today. Refills at midnight.' : null), cost: `1 Traversal scout (${ts.left}/${ts.max} today) · ${xpNote('scout', 'Stealth')}` },
       { id:'hide',   icon:'◌', label:'Hide',      reason: far || (hideUses.left <= 0 ? `Ready in ${shortWait(Math.max(0, hideUses.nextAt - ZI.clockNow()))}.` : null), cost: `${ZI.TRAVERSAL_TABLE.hideGameHours} game hours · ${hideUses.left}/${hideUses.max} uses left · each returns after 24h · ${xpNote('hide', 'Stealth')}` },
       { id:'camp',   icon:'⛺', label:'Make Camp', reason: far || (!ZI.canCampAt(c) ? "You can't make camp here while Fallow Ground is in progress." : !campCooldown.available ? `Ready in ${shortWait(campCooldown.remainingMs)}.` : null), cost: `Until 06:00 next game day · 24h refill after use · sets your rest point · ${xpNote('camp', 'Command')}` },
     ].concat((ZI.infiltrationOptions ? ZI.infiltrationOptions(c) : []).map(a => ({ ...a, reason: far || a.reason })));
@@ -1048,9 +1207,9 @@ window.SatelliteTraversalScreen = function SatelliteTraversalScreen({ setScreen,
   const focusId = actionCell ? focusOf(actionCell, panelFocus) : null;
   const runPanelItem = (id) => { const c = actionCell; if (!c) return; const it = panelItems(c).find(x => x.id === id); if (!it || !it.enabled) return; // greyed: nothing
     if (id === 'fort') { closeSoloPanel(); setFortOpen(true); }
-    else if (id === 'wander') setScreen('hack-slash');
+    else if (id === 'wander') { const site = ZI.poiSiteForCell && ZI.poiSiteForCell(c); enterWandering(c, site ? `Enter ${site.name}` : 'Start wandering'); }
     else if (id === 'close') { closeSoloPanel(); setHl({ gx: c.gx, gy: c.gy }); }
-    else { noteTutHover(id); doAction(id, c); } };
+    else { noteTutHover(id); runSiteAction(id, c); } };
   const movePanelFocus = (d) => { const it = panelItems(actionCell); if (!it.length) return; const k = Math.max(0, it.findIndex(x => x.id === focusId));
     const next = it[(k + d + it.length) % it.length].id; setPanelFocus(next); if (next !== 'fort' && next !== 'wander' && next !== 'close') noteTutHover(next); };
   React.useEffect(() => { if (panelFocus && focusId && focusId !== panelFocus) setPanelFocus(focusId); }, [panelFocus, focusId]); // pin by id
@@ -1069,18 +1228,20 @@ window.SatelliteTraversalScreen = function SatelliteTraversalScreen({ setScreen,
     const fam = ZI.cellFamiliarity(c.gx, c.gy), chance = ZI.lootSafeChance(c), tier = c.rmatTier || 0, ts = ZI.getTravScouts();
     const start = readJ('zi_trav_start', null), seen = hideSeen[key];
     const intel = ZI.getInfiltrationIntel && ZI.getInfiltrationIntel();
-    const feats = [ZI.isFortCell(c) && '🏰 Fort', ZI.isFallowCell(c) && '🌾 Fallow Ground', camp && camp.gx === c.gx && camp.gy === c.gy && '⛺ Your camp', start && start.gx === c.gx && start.gy === c.gy && '◎ Starting zone'].filter(Boolean);
+    const poiSite = ZI.poiSiteForCell && ZI.poiSiteForCell(c);
+    const routeAid = ZI.poiRouteAid && ZI.poiRouteAid(c);
+    const feats = [ZI.isFortCell(c) && '🏰 Fort', poiSite && `${poiSite.icon} ${poiSite.name}`, ZI.isFallowCell(c) && '🌾 Fallow Ground', camp && camp.gx === c.gx && camp.gy === c.gy && '⛺ Your camp', start && start.gx === c.gx && start.gy === c.gy && '◎ Starting zone'].filter(Boolean);
     const far = locked ? 'Locked zone.' : (!here && !adj) ? 'Too far — move next to it.' : null;
     const acts = zoneActs(c);
     const line = (label, value, color, attr) => (
-      <div data-line={attr} style={{ display:'flex', justifyContent:'space-between', gap:8, fontFamily:'var(--font-mono)', fontSize:11, padding:'2px 0' }}>
-        <span style={{ color:'var(--text3)' }}>{label}</span><span style={{ color: color || 'var(--text)', textAlign:'right' }}>{value}</span>
+      <div data-line={attr} style={{ display:'flex', justifyContent:'space-between', gap:8, fontFamily:'var(--font-mono)', fontSize:13, padding:'4px 0', lineHeight:1.35 }}>
+        <span style={{ color:'var(--text3)' }}>{label}</span><span style={{ flex:1, color: color || 'var(--text)', textAlign:'right' }}>{value}</span>
       </div>
     );
     return (
-      <div data-trav="zone-panel" data-tick={travTick}>
-        <div style={{ fontFamily:'var(--font-mono)', fontSize:11, color:'var(--text2)', letterSpacing:'0.1em' }}>ZONE {coord} · {here ? 'YOU ARE HERE' : adj ? 'NEXT TO YOU' : locked ? 'LOCKED' : 'FAR AWAY'}</div>
-        <div style={{ fontFamily:'var(--font-title)', fontSize:18, color:'var(--amber)', margin:'2px 0 8px' }}>{c.name}</div>
+      <div data-trav="zone-panel" data-tick={travTick} style={{ fontSize:14 }}>
+        <div style={{ fontFamily:'var(--font-mono)', fontSize:12, color:'var(--text2)', letterSpacing:'0.1em' }}>ZONE {coord} · {here ? 'YOU ARE HERE' : adj ? 'NEXT TO YOU' : locked ? 'LOCKED' : 'FAR AWAY'}</div>
+        <div style={{ fontFamily:'var(--font-title)', fontSize:20, color:'var(--amber)', margin:'3px 0 10px', lineHeight:1.2 }}>{c.name}</div>
         {inTutMenu && (
           <div style={{ display:'flex', alignItems:'center', gap:8, marginBottom:8, padding:'6px 9px', border:'1px solid #ff3b3b', background:'rgba(255,59,59,0.1)' }}>
             <span style={{ fontFamily:'var(--font-mono)', fontSize:11, color:'#ff3b3b', letterSpacing:'0.08em' }}>TUTORIAL</span>
@@ -1093,7 +1254,25 @@ window.SatelliteTraversalScreen = function SatelliteTraversalScreen({ setScreen,
         {line('Danger', `${ZI.THREAT_LABELS[Math.min(5, c.threatLevel || 0)]} (${c.threatLevel || 0}/5)`, (c.threatLevel || 0) > 3 ? 'var(--red2)' : 'var(--amber)', 'danger')}
         {line('Threats', seen ? `Tiers ${seen.range} (from your last Hide)` : 'Unknown — Hide here to learn', seen ? 'var(--text)' : 'var(--text3)', 'threats')}
         {intel && intel.gx === c.gx && intel.gy === c.gy && line('Intel', `Survey team reported near ${intel.coord}`, '#7fe0ff', 'faction-intel')}
+        {routeAid && line('Local lead', `Safer approach · +${routeAid.bonus}% safety on your next loot attempt`, '#7fe0ff', 'story-route-aid')}
         {line('Features', feats.length ? feats.join(' · ') : 'None', 'var(--text)', 'features')}
+        {poiSite && <div data-trav="poi-dialogue" data-poi={poiSite.id} style={{ marginTop:10, padding:11, background:'rgba(240,208,96,0.07)', border:'1px solid rgba(240,208,96,0.45)' }}>
+          <div style={{ display:'flex', alignItems:'center', gap:10, marginBottom:8 }}>
+            <div style={{ position:'relative', width:78, height:72, flexShrink:0, overflow:'hidden', background:'var(--bg3)', border:'1px solid var(--border)' }}>
+              <PoiBuildingMarker sprite={poiSite.sprite} title={poiSite.name} style={{ left:'5%', top:'5%', width:'90%', height:'90%' }}/>
+            </div>
+            <div style={{ fontFamily:'var(--font-title)', fontSize:18, lineHeight:1.15, color:'var(--amber)' }}>{poiSite.icon} {poiSite.name}</div>
+          </div>
+          <div style={{ fontFamily:'var(--font-body)', fontSize:15, color:'var(--text2)', lineHeight:1.45, marginBottom:9 }}>{poiSite.arrival}</div>
+          {(() => { const thread = ZI.poiStoryForCell && ZI.poiStoryForCell(c); if (!thread) return null; return <div data-story-npc={thread.npc.id} style={{ marginBottom:9, padding:'8px 9px', borderLeft:'2px solid #7fe0ff', background:'rgba(127,224,255,0.06)' }}>
+            <div style={{ fontFamily:'var(--font-title)', color:'#7fe0ff', fontSize:15 }}>{thread.npc.name}{thread.bond ? ` · remembers you (${thread.bond})` : ''}</div>
+            <div style={{ fontFamily:'var(--font-body)', fontSize:13, color:'var(--text2)', lineHeight:1.4 }}>{thread.npc.tell} {thread.relicFound ? 'The keepsake you found still connects you.' : 'Your past gives the moment a familiar edge.'}</div>
+            <div style={{ display:'flex', flexDirection:'column', gap:5, marginTop:7 }}>{thread.options.map((option, i) => <button key={`story-${i}`} data-story-choice={option.storyChoice} disabled={!!far} onClick={() => runSiteAction('story', c, null, option.storyChoice)} style={{ textAlign:'left', padding:'7px 9px', cursor:far ? 'not-allowed' : 'pointer', opacity:far ? 0.55 : 1, background:'var(--bg3)', border:'1px solid var(--border)', color:'var(--text)' }}><span style={{ marginRight:8 }}>{option.icon}</span>{option.label}</button>)}</div>
+          </div>; })()}
+          <div style={{ display:'flex', flexDirection:'column', gap:6 }}>{poiSite.options.map((option, i) => { const optionReason = far || (option.kind === 'enter' && !here ? 'Travel to this square before entering.' : null); return <button key={i} data-poi-option={option.label} disabled={!!optionReason} title={optionReason || ''} onClick={() => runSiteAction(option.kind || 'dialogue', c, option.text, option.label)} style={{ display:'flex', alignItems:'center', gap:9, textAlign:'left', padding:'9px 10px', cursor:optionReason ? 'not-allowed' : 'pointer', opacity:optionReason ? 0.55 : 1, background:'var(--bg3)', border:'1px solid var(--border)', color:'var(--text)' }}>
+            <span style={{ width:24, flexShrink:0, textAlign:'center', fontSize:19 }}>{option.icon}</span><span style={{ fontFamily:'var(--font-body)', fontSize:15, lineHeight:1.25 }}>{option.label}</span>
+          </button>; })}</div>
+        </div>}
         <div className="divider"/>
         <div style={{ display:'flex', flexDirection:'column', gap:5 }}>
           {ZI.isFortCell(c) && (here || adj) && (
@@ -1103,13 +1282,13 @@ window.SatelliteTraversalScreen = function SatelliteTraversalScreen({ setScreen,
             </button>
           )}
           {acts.map(a => (
-            <button key={a.id} data-action={a.id} data-panel-focus={focusId === a.id ? '1' : undefined} disabled={!!a.reason} onMouseEnter={() => noteTutHover(a.id)} onFocus={() => noteTutHover(a.id)} onClick={() => { noteTutHover(a.id); if (!a.reason) doAction(a.id, c); }} style={{
+              <button key={a.id} data-action={a.id} data-panel-focus={focusId === a.id ? '1' : undefined} disabled={!!a.reason} onMouseEnter={() => noteTutHover(a.id)} onFocus={() => noteTutHover(a.id)} onClick={() => { noteTutHover(a.id); if (!a.reason) runSiteAction(a.id, c); }} style={{
               display:'flex', alignItems:'center', gap:10, textAlign:'left', padding:'6px 10px', cursor: a.reason ? 'not-allowed' : 'pointer', opacity: a.reason ? 0.55 : 1,
               background:'var(--bg3)', border:`1px solid ${inTutMenu && tutHover.includes(a.id) ? '#ff3b3b' : 'var(--border)'}`, color:'var(--text)', boxShadow: focusId === a.id ? '0 0 0 2px #7fe0ff inset, 0 0 10px rgba(127,224,255,0.5)' : undefined }}>
-              <span style={{ width:24, fontSize:16, textAlign:'center', color:'#f0d060' }}>{a.icon}</span>
+              <span style={{ width:26, fontSize:19, textAlign:'center', color:'#f0d060' }}>{a.icon}</span>
               <span style={{ flex:1 }}>
-                <span style={{ display:'block', fontFamily:'var(--font-body)', fontSize:14 }}>{a.label}</span>
-                <span data-action-note={a.reason ? 'reason' : 'cost'} style={{ display:'block', fontFamily:'var(--font-mono)', fontSize:10, color: a.reason ? 'var(--red2)' : 'var(--text2)' }}>{a.reason || a.cost}</span>
+                <span style={{ display:'block', fontFamily:'var(--font-body)', fontSize:15 }}>{a.label}</span>
+                <span data-action-note={a.reason ? 'reason' : 'cost'} style={{ display:'block', fontFamily:'var(--font-mono)', fontSize:12, lineHeight:1.3, color: a.reason ? 'var(--red2)' : 'var(--text2)' }}>{a.reason || a.cost}</span>
               </span>
             </button>
           ))}
@@ -1118,7 +1297,7 @@ window.SatelliteTraversalScreen = function SatelliteTraversalScreen({ setScreen,
           <div data-trav="result" style={{ marginTop:8, padding:'8px 10px', background:'var(--bg4)', borderLeft:`3px solid ${toneColor[actionResult.tone]}`, fontFamily:'var(--font-body)', fontSize:13, color:'var(--text)', lineHeight:1.45 }}>{actionResult.text}</div>
         )}
         {here && setScreen && (
-          <button className="btn btn-amber" data-trav="wander" data-panel-focus={focusId === 'wander' ? '1' : undefined} style={{ width:'100%', marginTop:8, boxShadow: focusId === 'wander' ? '0 0 0 2px #7fe0ff inset, 0 0 10px rgba(127,224,255,0.5)' : undefined }} onClick={() => setScreen('hack-slash')}>▶ Start wandering around this {c.name.replace(/ [A-H]\d+$/, '')}</button>
+          <button className="btn btn-amber" data-trav="wander" data-panel-focus={focusId === 'wander' ? '1' : undefined} style={{ width:'100%', marginTop:8, boxShadow: focusId === 'wander' ? '0 0 0 2px #7fe0ff inset, 0 0 10px rgba(127,224,255,0.5)' : undefined }} onClick={() => enterWandering(c, poiSite ? `Enter ${poiSite.name}` : 'Start wandering')}>{poiSite ? `▶ Enter ${poiSite.name} · open Wandering` : ZI.isPoliceStationCell && ZI.isPoliceStationCell(c) ? '▶ Enter Police Station · open Wandering' : `▶ Start wandering around this ${c.name.replace(/ [A-H]\d+$/, '')}`}</button>
         )}
         <button className="btn" data-trav="close" data-panel-focus={focusId === 'close' ? '1' : undefined} style={{ width:'100%', marginTop:8, boxShadow: focusId === 'close' ? '0 0 0 2px #7fe0ff inset, 0 0 10px rgba(127,224,255,0.5)' : undefined }} onClick={closeSoloPanel}>Close</button>
       </div>
@@ -1173,20 +1352,20 @@ window.SatelliteTraversalScreen = function SatelliteTraversalScreen({ setScreen,
         </div>
 
         ) : renderAfflictions()}
-        {/* Material totals */}
-        <div className="panel" style={{ padding:8 }}>
-          <div style={{ fontFamily:'var(--font-mono)', fontSize:8, color:'var(--text3)', marginBottom:5, letterSpacing:'0.1em' }}>RESOURCES</div>
-          {Object.entries(window.ZI_MATERIALS).slice(0,6).map(([key, m]) => (
-            <div key={key} style={{ display:'flex', alignItems:'center', gap:6, marginBottom:3 }}>
-              <span style={{ fontSize:11 }}>{m.icon}</span>
-              <span style={{ fontFamily:'var(--font-mono)', fontSize:9, color:'var(--text2)', width:60, flexShrink:0 }}>{m.name}</span>
-              <div style={{ flex:1 }}>
-                <ProgressBar value={(m.current/m.max)*100} color={m.color} height={3}/>
+        {/* Camp Leader sees stored materials; Solo sees field-ready carry capacity and supplies. */}
+        {isCampMode ? (
+          <div className="panel" style={{ padding:8 }}>
+            <div style={{ fontFamily:'var(--font-mono)', fontSize:9, color:'var(--text2)', marginBottom:6, letterSpacing:'0.1em' }}>CAMP STOCK</div>
+            {Object.entries(window.ZI_MATERIALS).slice(0,6).map(([key, m]) => (
+              <div key={key} style={{ display:'flex', alignItems:'center', gap:6, marginBottom:4 }}>
+                <span style={{ fontSize:12 }}>{m.icon}</span>
+                <span style={{ fontFamily:'var(--font-mono)', fontSize:10, color:'var(--text2)', width:60, flexShrink:0 }}>{m.name}</span>
+                <div style={{ flex:1 }}><ProgressBar value={(m.current/m.max)*100} color={m.color} height={4}/></div>
+                <span style={{ fontFamily:'var(--font-mono)', fontSize:10, color:m.color, width:32, textAlign:'right' }}>{m.current}</span>
               </div>
-              <span style={{ fontFamily:'var(--font-mono)', fontSize:9, color:m.color, width:32, textAlign:'right' }}>{m.current}</span>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        ) : renderSoloResources()}
       </div>
 
       {/* CENTER: Satellite map */}
@@ -1216,17 +1395,19 @@ window.SatelliteTraversalScreen = function SatelliteTraversalScreen({ setScreen,
         ) : renderSoloBar()}
         {/* Map grid */}
         <div className="panel" style={{
-          flex:1, padding:'12px 34px 30px', position:'relative', overflow:'auto',
+          flex:1, minHeight:0, height:travNarrow ? 'min(70vh, 520px)' : undefined,
+          display:'flex', flexDirection:'column', padding:'12px 34px 30px', position:'relative', overflow:'hidden',
           background: `
             radial-gradient(ellipse at 30% 20%, rgba(200,169,110,0.04), transparent),
             radial-gradient(ellipse at 70% 80%, rgba(168,85,247,0.04), transparent),
             #0a0908
           `,
         }}>
-          <div style={{ display:'flex', alignItems:'center', gap:8, marginBottom:6, fontFamily:'var(--font-mono)', fontSize:11, color:'var(--text2)', flexWrap:'wrap' }}>
+          <div style={{ display:'flex', alignItems:'center', gap:8, marginBottom:6, flexShrink:0, fontFamily:'var(--font-mono)', fontSize:11, color:'var(--text2)', flexWrap:'wrap' }}>
             <span style={{ color:'#ff3b3b', fontWeight:'bold' }}>◉ YOU ARE HERE · {posLabel}{pos.name ? ` · ${pos.name.replace(/ [A-H]\d+$/, '')}` : ''}</span>
             {setScreen && <button className="btn btn-amber" style={{ padding:'3px 10px', fontSize:11 }} onClick={() => setScreen('hack-slash')}>▶ Wander here</button>}
             <span style={{ color:'#f0d060' }}>┅ adjacent zones: click to act</span>
+            <span role="note" style={{ color:'var(--text2)', fontSize:10 }}>From your sector, move within 2 cells of an edge to unlock that direction. Discovered sectors stay available.</span>
             {fortPos && fallowQ.state === 'none' && !ZI.factionsUnlocked() && <span style={{ color:'#f0d060' }}>🏰 Fort at {fortPos.coord}: smoke behind a palisade</span>}
             {fallowQ.state === 'active' && <span style={{ color:'#a2dca2' }}>🌾 Fallow Ground: {ZI.fallowProgress()}/{ZI.fallowGoal()} kills at {fallowQ.cell.coord} (wander there)</span>}
             {fallowQ.state === 'ready' && <span style={{ color:'#7fd88f', fontWeight:'bold' }}>🌾 Field cleared: travel into the Fort at {fortPos && fortPos.coord} to turn in</span>}
@@ -1234,7 +1415,57 @@ window.SatelliteTraversalScreen = function SatelliteTraversalScreen({ setScreen,
             {camp && <span>⛺ Camp {String.fromCharCode(65 + camp.col) + (camp.row + 1)}{(camp.sx || camp.sy) ? ' · ' + sectorTag(camp.sx, camp.sy) : ''}</span>}
             <span style={{ marginLeft:'auto', color:'var(--text2)' }}>Sector <b style={{ color:'var(--amber)' }}>{sectorTag(view.sx, view.sy)}</b> {ZI.isDevView() && <> · Seed #{worldSeed} / {ZI.MAX_SEED.toLocaleString()}</>}</span>
             {!inPlayerSector && <button className="btn" style={{ padding:'3px 10px', fontSize:11 }} onClick={() => setView({ sx:pos.sx, sy:pos.sy })}>◉ Back to my sector</button>}
+            <button data-trav="pan-toggle" aria-pressed={mapPanMode} title="Toggle map dragging; use the wheel over the grid to zoom" onClick={() => { setMapPanMode(v => !v); setHoveredSquare(null); }} style={{ padding:'5px 9px', background:'#080807', border:`1px solid ${mapPanMode ? '#f0d060' : '#665838'}`, color:mapPanMode ? '#f0d060' : '#c9bd9f', fontFamily:'var(--font-mono)', fontSize:11, cursor:'pointer' }}>{mapPanMode ? '✥ Drag map: ON' : '✥ Drag map'}</button>
+            <button data-trav="minimap-toggle" aria-expanded={showMinimap} aria-controls="trav-minimap" onClick={() => setShowMinimap(v => !v)} title="Open the discovered-world minimap and display options" style={{ padding:'5px 9px', background:showMinimap ? 'rgba(240,208,96,0.14)' : '#080807', border:`1px solid ${showMinimap ? '#f0d060' : '#665838'}`, color:showMinimap ? '#f0d060' : '#c9bd9f', fontFamily:'var(--font-mono)', fontSize:11, cursor:'pointer' }}>{showMinimap ? '▦ Minimap ▴' : '▦ Minimap ▾'}</button>
+            <button data-trav="zoom-reset" title="Reset map zoom and position" onClick={() => setMapTransform({ scale:1, x:0, y:0 })} style={{ padding:'5px 8px', background:'#080807', border:'1px solid #494236', color:'#c9bd9f', fontFamily:'var(--font-mono)', fontSize:11, cursor:'pointer' }}>{Math.round(mapTransform.scale * 100)}% · Reset</button>
           </div>
+          {showMinimap && <div id="trav-minimap" data-trav="minimap" aria-label="Discovered-world minimap" style={{ position:'absolute', zIndex:8, top:66, right:50, width:'min(500px, calc(100% - 24px))', maxHeight:260, overflow:'auto', padding:10, border:'1px solid #887a57', boxShadow:'0 8px 24px rgba(0,0,0,0.75)', background:'#080807' }}>
+            <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', gap:8, marginBottom:8, fontFamily:'var(--font-mono)' }}>
+              <div>
+                <div style={{ color:'var(--amber)', fontSize:10, letterSpacing:'0.08em' }}>WORLD MINIMAP</div>
+                <div style={{ color:'var(--text2)', fontSize:9, marginTop:3 }}><span style={{ color:'#64db67' }}>■</span> explored cells <span style={{ color:'#fff', marginLeft:7 }}>□</span> camera view</div>
+              </div>
+              <span style={{ color:'var(--text2)', fontSize:9 }}>{Math.round(minimapZoom*100)}%</span>
+            </div>
+            <div data-trav="minimap-canvas" onWheel={handleMinimapWheel} title="Hover here and scroll to zoom" style={{ position:'relative', width:'min(100%, 220px)', aspectRatio:'1 / 1', margin:'0 auto', overflow:'hidden', border:'2px solid #79725f', borderRadius:'50%', background:'#020302', touchAction:'none' }}>
+              <div style={{ position:'absolute', left:'50%', top:'50%', width:`${minimapContentWidth}%`, height:`${minimapContentHeight}%`, transform:`translate(-50%, -50%) scale(${minimapZoom})`, transformOrigin:'50% 50%', overflow:'hidden', background:'#000' }}>
+                {minimapSectors.map(({sx,sy,discovered}) => {
+                  const isCurrent = view.sx === sx && view.sy === sy;
+                  const left = ((sx-sectorOverview.minSx)/minimapCols)*100, top = ((sy-sectorOverview.minSy)/minimapRows)*100;
+                  const width = 100/minimapCols, height = 100/minimapRows;
+                  if (!discovered) return <div key={sx+','+sy} aria-label="Undiscovered area" title="Undiscovered" style={{ position:'absolute', left:`${left}%`, top:`${top}%`, width:`${width}%`, height:`${height}%`, background:'#000', border:'1px solid #080808' }}/>;
+                  const cells = Array.from({length:COLS*ROWS}, (_,i) => {
+                    const col = i%COLS, row = Math.floor(i/COLS), cell = ZI.worldCell(sx*COLS+col,sy*ROWS+row,'scavenge');
+                    const color = cell.poiType ? '#e2b34a' : biomeColors[cell.biome]?.fill || '#263027';
+                    const atPlayer = pos.gx === cell.gx && pos.gy === cell.gy;
+                    const discoveredCell = ZI.cellFamiliarity ? ZI.cellFamiliarity(cell.gx, cell.gy) !== 'unexplored' : true;
+                    return <span key={cell.gx+','+cell.gy} title={discoveredCell ? cell.name : 'Undiscovered'} style={{ position:'relative', background:discoveredCell ? color : '#000', border:'1px solid rgba(5,8,5,0.48)', minWidth:0, minHeight:0 }}>
+                      {atPlayer && <i aria-label="You are here" style={{ position:'absolute', left:'50%', top:'50%', width:12, height:12, display:'grid', placeItems:'center', transform:'translate(-50%, -50%)', border:'2px solid #ff3939', borderRadius:'50%', background:'rgba(5,5,5,0.8)', color:'#ff3939', fontStyle:'normal', fontSize:5, boxShadow:'0 0 4px #000' }}>●</i>}
+                    </span>;
+                  });
+                  return <button key={sx+','+sy} onClick={() => { setView({sx,sy}); setSelectedSquare(null); setHoveredSquare(null); }} aria-pressed={isCurrent} title={`Open explored chunk ${sectorTag(sx,sy)}${isCurrent ? ' · camera view' : ''}`} style={{ position:'absolute', left:`${left}%`, top:`${top}%`, width:`${width}%`, height:`${height}%`, display:'grid', gridTemplateColumns:`repeat(${COLS}, 1fr)`, gridTemplateRows:`repeat(${ROWS}, 1fr)`, padding:0, gap:0, overflow:'hidden', border:0, outline:isCurrent ? '2px solid #fff' : '1px solid rgba(91,117,80,0.68)', outlineOffset:isCurrent ? -2 : -1, background:'#101710', cursor:'pointer' }}>
+                    {cells}
+                  </button>;
+                })}
+                {(() => {
+                  const left = ((view.sx-sectorOverview.minSx)/minimapCols + cameraX/minimapCols)*100;
+                  const top = ((view.sy-sectorOverview.minSy)/minimapRows + cameraY/minimapRows)*100;
+                  const width = cameraWidth/minimapCols*100, height = cameraHeight/minimapRows*100;
+                  return <div data-trav="minimap-camera-frame" aria-label="Area visible in main traversal map" title="Current camera view" style={{ position:'absolute', zIndex:4, left:`${left}%`, top:`${top}%`, width:`${width}%`, height:`${height}%`, pointerEvents:'none', border:'2px solid #fff', background:'rgba(255,255,255,0.08)', clipPath:'polygon(12% 0, 100% 0, 88% 100%, 0 100%)', filter:'drop-shadow(0 0 2px #000)' }}/>
+                })()}
+                {(() => {
+                  const hereX = ((pos.gx-sectorOverview.minSx*COLS+0.5)/(minimapCols*COLS))*100;
+                  const hereY = ((pos.gy-sectorOverview.minSy*ROWS+0.5)/(minimapRows*ROWS))*100;
+                  return <svg aria-hidden="true" viewBox="0 0 100 100" preserveAspectRatio="none" style={{ position:'absolute', inset:0, width:'100%', height:'100%', zIndex:5, overflow:'visible', pointerEvents:'none' }}>
+                    <defs><marker id="minimap-you-arrow" markerWidth="5" markerHeight="5" refX="2.5" refY="2.5" orient="auto"><path d="M0,0 L5,2.5 L0,5 z" fill="#ff3939"/></marker></defs>
+                    <line x1="50" y1="15" x2={hereX} y2={hereY} stroke="#ff3939" strokeWidth="1.2" markerEnd="url(#minimap-you-arrow)"/>
+                    <text x="50" y="9" textAnchor="middle" fill="#ff5959" stroke="#080807" strokeWidth="0.8" paintOrder="stroke" fontSize={4 / minimapZoom} fontFamily="monospace" fontWeight="bold">YOU ARE HERE</text>
+                  </svg>;
+                })()}
+              </div>
+            </div>
+            <div style={{ color:'var(--text2)', fontFamily:'var(--font-mono)', fontSize:9, textAlign:'center', marginTop:6 }}>Scroll to zoom · select a chunk to open it.</div>
+          </div>}
           {/* Cardinal sector arrows */}
           {Object.entries(DIRS).map(([d, D]) => {
             const chk = canView(d);
@@ -1247,19 +1478,21 @@ window.SatelliteTraversalScreen = function SatelliteTraversalScreen({ setScreen,
             return (
               <button key={d} onClick={() => goView(d)} disabled={!chk.ok}
                 title={chk.ok ? `View ${D.label}: sector ${sectorTag(t.sx, t.sy)}${known ? '' : ' (unexplored)'}` : chk.why}
-                style={{ position:'absolute', zIndex:5, ...place, width: d==='n'||d==='s' ? 64 : 24, height: d==='n'||d==='s' ? 22 : 64,
+                style={{ position:'absolute', zIndex:5, ...place, width: d==='n'||d==='s' ? 92 : 42, height: d==='n'||d==='s' ? 32 : 84,
                   display:'flex', alignItems:'center', justifyContent:'center', gap:4, cursor: chk.ok ? 'pointer' : 'not-allowed',
                   background: chk.ok ? 'rgba(240,208,96,0.14)' : 'var(--bg3)', border:`1px solid ${chk.ok ? '#f0d060' : 'var(--border)'}`,
-                  color: chk.ok ? '#f0d060' : 'var(--text3)', fontFamily:'var(--font-mono)', fontSize:11, opacity: chk.ok ? 1 : 0.6 }}>
-                {D.arrow}{(d==='n'||d==='s') && <span style={{ fontSize:9 }}>{D.label.slice(0,1)}{known || !chk.ok ? '' : '·new'}</span>}
+                  color: chk.ok ? '#f0d060' : 'var(--text3)', fontFamily:'var(--font-mono)', fontSize:18, opacity: chk.ok ? 1 : 0.6 }}>
+                {D.arrow}{(d==='n'||d==='s') && <span style={{ fontSize:12 }}>{D.label.slice(0,1)}{known || !chk.ok ? '' : '·new'}</span>}
               </button>
             );
           })}
+          <div ref={mapViewportRef} data-trav="map-viewport" style={{ position:'relative', flex:1, minHeight:0, overflow:'hidden', touchAction:mapPanMode ? 'none' : 'pan-y' }}>
+          <div data-trav="map-canvas" aria-label="Traversal map grid" onWheel={handleMapWheel} onPointerDown={handleMapPointerDown} onPointerMove={handleMapPointerMove} onPointerUp={handleMapPointerUp} onPointerCancel={handleMapPointerUp} style={{ position:'absolute', inset:0, display:'flex', flexDirection:'column', transform:`translate(${mapTransform.x}px, ${mapTransform.y}px) scale(${mapTransform.scale})`, transformOrigin:'0 0', cursor:mapPanMode ? (mapDragging ? 'grabbing' : 'grab') : 'default', userSelect:mapPanMode ? 'none' : 'auto', touchAction:mapPanMode ? 'none' : 'pan-y' }}>
           {/* Coordinate labels */}
-          <div style={{ display:'grid', gridTemplateColumns:`32px repeat(${COLS}, 1fr)`, gap:2, marginBottom:2 }}>
+          <div style={{ display:'grid', gridTemplateColumns:`32px repeat(${COLS}, minmax(0, 1fr))`, gap:2, marginBottom:2, flexShrink:0 }}>
             <div/>
             {Array.from({length:COLS}).map((_, c) => (
-              <div key={c} style={{ textAlign:'center', fontFamily:'var(--font-mono)', fontSize:9, color:'var(--text3)' }}>
+              <div key={c} style={{ textAlign:'center', fontFamily:'var(--font-mono)', fontSize:14, fontWeight:700, color:'var(--text2)', lineHeight:1.25 }}>
                 {String.fromCharCode(65+c)}
               </div>
             ))}
@@ -1267,8 +1500,8 @@ window.SatelliteTraversalScreen = function SatelliteTraversalScreen({ setScreen,
 
           {/* Grid rows */}
           {Array.from({length:ROWS}).map((_, r) => (
-            <div key={r} style={{ display:'grid', gridTemplateColumns:`32px repeat(${COLS}, 1fr)`, gap:2, marginBottom:2 }}>
-              <div style={{ display:'flex', alignItems:'center', justifyContent:'center', fontFamily:'var(--font-mono)', fontSize:9, color:'var(--text3)' }}>
+            <div key={r} style={{ display:'grid', gridTemplateColumns:`32px repeat(${COLS}, minmax(0, 1fr))`, gap:2, marginBottom:2, flex:1, minHeight:0 }}>
+              <div style={{ display:'flex', alignItems:'center', justifyContent:'center', fontFamily:'var(--font-mono)', fontSize:14, fontWeight:700, color:'var(--text2)' }}>
                 {r+1}
               </div>
               {Array.from({length:COLS}).map((_, c) => {
@@ -1283,10 +1516,11 @@ window.SatelliteTraversalScreen = function SatelliteTraversalScreen({ setScreen,
 
                 return (
                   <div key={c} data-cell={square.gx + ',' + square.gy}
-                    onPointerDown={(e) => { lastPointer.current = e.pointerType || 'mouse'; setPanelFocus(null); }}
-                    onMouseEnter={() => setHoveredSquare(square)}
-                    onMouseLeave={() => setHoveredSquare(null)}
+                    onPointerDown={(e) => { if (mapPanMode) return; lastPointer.current = e.pointerType || 'mouse'; setPanelFocus(null); }}
+                    onMouseEnter={() => { if (!mapPanMode) setHoveredSquare(square); }}
+                    onMouseLeave={() => { if (!mapPanMode) setHoveredSquare(null); }}
                     onClick={() => {
+                      if (mapPanMode || panMovedRef.current) return;
                       if (!isCampMode) { openSoloPanel(square); return; } // TRAV-01a T13: select, don't hover (every platform)
                       if (isLocked) return;
                       if (isHere(r, c) && ZI.isFortCell(gOf(r, c))) { setFortOpen(true); return; } // inside the Fort's cell
@@ -1295,7 +1529,7 @@ window.SatelliteTraversalScreen = function SatelliteTraversalScreen({ setScreen,
                       setSelectedSquare(isSelected ? null : square);
                     }}
                     style={{
-                      aspectRatio:'1', position:'relative',
+                      minHeight:0, position:'relative',
                       background: bc.fill,
                       border: isHere(r, c) ? '2px solid #ff3b3b' : isAdjacent(r, c) && !isLocked ? '2px dashed #f0d060' : `2px solid ${isSelected ? '#f0d060' : isHovered ? '#e6c47e' : 'rgba(0,0,0,0.55)'}`,
                       cursor: isLocked ? 'not-allowed' : 'pointer',
@@ -1346,11 +1580,16 @@ window.SatelliteTraversalScreen = function SatelliteTraversalScreen({ setScreen,
                       ))}
                     </div>
                     {/* Fort + Fallow Ground markers */}
-                    {(() => { const gg = gOf(r, c); const cellG = { gx: gg.gx, gy: gg.gy };
+                    {(() => { const gg = gOf(r, c); const cellG = { gx: gg.gx, gy: gg.gy, biome:square.biome, name:square.name };
                       if (ZI.isFortCell(cellG)) return (
-                        <div title="The Hearthguard's Fort — a palisade of wooden pikes" style={{ position:'absolute', top:2, right:2, zIndex:4, fontSize:18, lineHeight:1, filter:'drop-shadow(0 0 3px #000)', pointerEvents:'none' }}>🏰</div>);
+                        <PoiBuildingMarker sprite={{ col:2, row:3 }} title="The Hearthguard's Fort — palisade and watch platform" style={{ zIndex:4 }}/>
+                      );
                       if (ZI.isSurveyCell(cellG)) return (
                         <div title="Survey Point — a survey team was seen here" style={{ position:'absolute', top:2, right:2, zIndex:4, fontSize:16, lineHeight:1, filter:'drop-shadow(0 0 3px #000)', pointerEvents:'none' }}>📡</div>);
+                      const poiMark = ZI.poiSiteForCell && ZI.poiSiteForCell(cellG);
+                      if (poiMark) return (
+                        <PoiBuildingMarker sprite={poiMark.sprite} title={poiMark.name} style={{ zIndex:4 }}/>
+                      );
                       if (ZI.isFallowCell(cellG) && fallowQ.state !== 'none' && fallowQ.state !== 'done') return (
                         <div title="Fallow Ground — clear this field for the Hearthguard" style={{ position:'absolute', top:2, right:2, zIndex:4, fontSize:16, lineHeight:1, filter:'drop-shadow(0 0 3px #000)', pointerEvents:'none' }}>🌾</div>);
                       return null; })()}
@@ -1385,6 +1624,9 @@ window.SatelliteTraversalScreen = function SatelliteTraversalScreen({ setScreen,
               })}
             </div>
           ))}
+
+          </div>
+          </div>
 
           {/* Legend */}
           <div style={{ marginTop:12, display:'flex', gap:14, padding:'6px 8px', background:'var(--bg2)', border:'1px solid var(--border)', alignItems:'center' }}>
@@ -1662,7 +1904,7 @@ window.WANDER_TUT_STEPS = [
     { tut:'scene', title:'This is the idle half of the game', body:'Your survivor patrols the zone they stand on the Traversal map — walking, fighting and looting on their own, even while you\'re on other tabs or away. Your job here isn\'t to watch the fight; it\'s to decide how risky the patrol should be.' },
     { tut:'hp', title:'Health is the clock on every run', body:'Each zombie chips away at HP. Hit 0 and the survivor is downed: sent home, carrying only part of their haul. Watching this bar tells you when to heal, slow down, or head back.' },
     { tut:'haul', title:'Your pack is at risk until you bank it', body:'Loot rides in the survivor\'s pack (🎒) while they\'re out. Nothing is safe until you Return to Base — if they go down first, most of it is lost. Levelling Scavenging lets them keep more. The core choice: push deeper for more, or go home and keep what you have.' },
-    { tut:'distance', title:'Distance, laps and checkpoints', body:'The further you travel, the tougher the zombies — each full bar is a lap (💀 ×1.1, ×1.2…). Checkpoints every 250 m are kept even if you\'re downed, and you can jump back to any of them on the slider below.' },
+    { tut:'distance', title:'Difficulty and checkpoints', body:'The further you travel, the tougher the zombies. Skull icons and the multiplier show the rising difficulty. Checkpoints every 250 m are kept even if you\'re downed; the shorter slider shows your journey and checkpoint markers.' },
     { tut:'actions', title:'Policy, pace and risk', body:'Your standing policy (the first button) decides what your survivor meets while you\'re away and whether they fight or slip past zombies. Ethical is slow and safe; Criminal pays more and makes enemies. Heal spends a first-aid charge; Walk, Jog and Run trade safety for speed. More actions holds Idle Run, Run Back, your Gear and equipped consumables.' },
     { tut:'log', title:'The combat log', body:'Every hit, kill, loot drop and checkpoint is recorded here, along with a recap of anything that happened while you were away. Check it to see what\'s been hurting you and what you picked up.' },
     { tut:'cmds', title:'Tools and what trains you', body:'Heal, scout and push are your hands-on tools; the patrol keeps fighting on its own either way. What your survivor does trains them: healing builds First Aid, scouting and pushing build Stealth, looting builds Scavenging, and each policy encounter trains the skills it tests. Skills you stop using never lose progress. When you come back, the log shows what happened while you were gone.' },
@@ -1738,6 +1980,7 @@ window.WanderingScreen = function WanderingScreen({ route, setScreen }) {
   const ZI = window.ZI;
   // The idle patrol happens wherever the survivor stands on the Traversal map.
   const zone = (ZI.getTravZone && ZI.getTravZone()) || null;
+  const poiCue = ZI.poiWanderingCue && ZI.poiWanderingCue(zone);
   const zoneBiome = zone && ZI.BIOMES.find(b => b.id === zone.biome);
   const sceneBackground = ({
     mountain: 'assets/wandering-backgrounds/mountain-country.png',
@@ -1760,6 +2003,7 @@ window.WanderingScreen = function WanderingScreen({ route, setScreen }) {
   const [encounters, setEncounters] = React.useState([]);
   const [combatLog, setCombatLog] = React.useState([
     { type:'info', text: zone ? `📍 Wandering around ${zone.name} (${zoneBiome ? zoneBiome.name : zone.biome})...` : 'Departing on Wandering patrol...' },
+    ...(poiCue ? [{ type:'init', text:`Traversal action carried into this run: ${poiCue.last.label}. Faction patrols may react to it.` }] : []),
     ...(() => { // opening the screen mid-retreat: say so in the log
       const rn = window.ZI.getWanderRun ? window.ZI.getWanderRun() : {}, Z = window.ZI;
       if (rn.withdrawing) return [{ type:'enemy', text:`↩ ${rn.withdrawCauses && Z.retreatWithdrawText ? Z.retreatWithdrawText(rn.withdrawCauses) : 'Retreating'} — ${Math.round(rn.withdrawLeftM || 0)} m back to the checkpoint.` }];
@@ -1929,12 +2173,21 @@ window.WanderingScreen = function WanderingScreen({ route, setScreen }) {
   };
   const zombieMetricsFor = (enemy) => {
     const sprite = window.ZI_ART.zombieSprite && window.ZI_ART.zombieSprite(enemy.bestiaryId, enemy.id);
-    const lookScale = !sprite && window.ZI_ART.zombieLook ? (window.ZI_ART.zombieLook(enemy.type).scale || 1) : 1;
-    let targetHeight = zombieHeightForTier(enemy.tier);
+    const lookScale = window.ZI_ART.zombieLook ? (window.ZI_ART.zombieLook(enemy.type).scale || 1) : 1;
+    // Sprite-backed crawlers keep their existing low-to-the-ground display size; stats are unaffected.
+    let targetHeight = Math.round(zombieHeightForTier(enemy.tier) * (sprite && sprite.fit === 'cover' ? lookScale : 1));
     const sourceHeight = sprite ? sprite.h * 2 : 96 * lookScale;
     const maxW = sceneWidth * 0.5, w = sprite ? sprite.w * 2 * targetHeight / sourceHeight : 0;
     if (w > maxW) targetHeight = Math.round(targetHeight * maxW / w);
     return { sprite, targetHeight, scale:targetHeight / sourceHeight, lookScale };
+  };
+  // SS-BG-01: minions stand behind a commander. Display only - they are not combatants, take no
+  // turns and are not in the encounter. Each is scaled to the F/E tier height by the same rule the
+  // commander uses, so it comes out visibly smaller without any bespoke scaling maths.
+  const minionMetricsFor = (m) => {
+    const targetHeight = zombieHeightForTier('F');
+    const sourceHeight = m.sprite.h * 2;
+    return { targetHeight, scale: targetHeight / sourceHeight };
   };
 
   // Animation tick
@@ -1987,7 +2240,7 @@ window.WanderingScreen = function WanderingScreen({ route, setScreen }) {
     const run = window.ZI.getWanderRun();
     window.ZI.syncWanderState({ active: true }); // FX4: speed and heal strength are no longer written by the screen
     const a = run.awaySummary;
-    if (a && (a.kills > 0 || a.dist > 5 || a.dmgTaken > 0)) {
+    if (a && (a.kills > 0 || a.dist > 5 || a.dmgTaken > 0 || a.policeStationQuestComplete)) {
       const mins = Math.floor((a.secs || 0) / 60), secs = Math.round((a.secs || 0) % 60);
       setCombatLog(prev => [...prev,
         { type:'init', text:`📡 Patrol ran in the background ${mins>0?`${mins}m `:''}${secs}s — traveled ${Math.round(a.dist)}m, ${a.kills} kills, +${a.xp} XP, +${a.mats} mats${a.dmgTaken ? `, took ${Math.round(a.dmgTaken)} damage (HP now ${Math.round(run.hp || 0)})` : ''}${a.loot ? ` · ${a.loot} item${a.loot>1?'s':''} added to your pack (bank it by returning to camp)` : ''}.` },
@@ -2275,34 +2528,22 @@ window.WanderingScreen = function WanderingScreen({ route, setScreen }) {
             {idleMode ? 'IDLE · auto-heal at 30% HP' : 'AUTO-COMBAT · initiative turns'}
           </div>
         </div>
-        {/* Row 2 — distance + journey checkpoints */}
-        <div data-tut="distance" style={{ flex:'1 1 100%', minWidth:0 }}>
+        {/* Row 2 — difficulty indicator + compact journey checkpoints */}
+        <div data-tut="distance" style={{ flex:'1 1 100%', minWidth:0, display:'flex', alignItems:'center', justifyContent:'space-between', gap:12, flexWrap:'wrap' }}>
           {(() => {
             const lap = Math.floor(scroll / 100);
             const lapColors = ['var(--amber)','var(--green2)','var(--blue)','var(--purple)','var(--red2)','#e0e0e0','#f0d040'];
             const fillColor = lapColors[lap % lapColors.length];
-            const prevColor = lap > 0 ? lapColors[(lap - 1) % lapColors.length] : null;
             // Logarithmic difficulty multiplier: x1.0 at lap 0, scaling up per lap.
             const mult = (1 + Math.log2(lap + 1) * 0.35).toFixed(1);
             return (
-              <>
-                <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:2 }}>
-                  <span style={{ fontFamily:'var(--font-mono)', fontSize:11, color:'var(--text2)', letterSpacing:'0.06em' }}>DISTANCE TRAVELED</span>
-                  {lap > 0 && (
-                    <span style={{ display:'flex', alignItems:'center', gap:3, fontFamily:'var(--font-mono)', fontSize:12, color:fillColor }}>
-                      {Array.from({ length: Math.min(lap, 8) }).map((_, i) => (
-                        <span key={i} style={{ fontSize:13 }}>💀</span>
-                      ))}
-                      {lap > 8 && <span style={{ color:'var(--text3)' }}>+{lap - 8}</span>}
-                      <span style={{ color:'var(--red2)', fontWeight:'bold', marginLeft:2 }}>x{mult}</span>
-                    </span>
-                  )}
-                </div>
-                {/* Lap-aware meter: previous lap color stays full underneath, current lap refills on top */}
-                <div style={{ height:7, background: prevColor || 'var(--bg4)', borderRadius:1, overflow:'hidden' }}>
-                  <div style={{ width:`${(scroll % 100)}%`, height:'100%', background:fillColor, transition:'width 0.1s linear' }}/>
-                </div>
-              </>
+              <span aria-label={`Difficulty multiplier x${mult}`} style={{ display:'flex', alignItems:'center', gap:3, fontFamily:'var(--font-mono)', fontSize:12, color:fillColor, flexShrink:0 }}>
+                {lap > 0 && Array.from({ length: Math.min(lap, 8) }).map((_, i) => (
+                  <span key={i} style={{ fontSize:13 }}>💀</span>
+                ))}
+                {lap > 8 && <span style={{ color:'var(--text3)' }}>+{lap - 8}</span>}
+                <span style={{ color:'var(--red2)', fontWeight:'bold', marginLeft:2 }}>x{mult}</span>
+              </span>
             );
           })()}
           {/* Linear journey slider — persists across tabs; checkpoints are selectable points */}
@@ -2311,7 +2552,7 @@ window.WanderingScreen = function WanderingScreen({ route, setScreen }) {
             const pct = (m) => Math.max(0, Math.min(100, (m / maxReached) * 100));
             // RB1c: the distance bar is display only; checkpoints are markers, not travel buttons.
             return (
-              <div style={{ marginTop:6 }}>
+              <div style={{ width:'25%', minWidth:120, maxWidth:320, flex:'0 1 25%' }}>
                 <div style={{ display:'flex', justifyContent:'space-between', fontFamily:'var(--font-mono)', fontSize:11, color:'var(--text2)', marginBottom:3 }}>
                   <span>0m</span>
                   <span style={{ color:'var(--amber)' }}>{Math.round(scroll)}m</span>
@@ -2493,13 +2734,14 @@ window.WanderingScreen = function WanderingScreen({ route, setScreen }) {
             .zi-pixel-burst i:nth-child(3) { left:21px; top:24px; } .zi-pixel-burst i:nth-child(4) { left:7px; top:22px; }
             .zi-pixel-burst i:nth-child(5) { left:3px; top:10px; } .zi-pixel-burst.electric i { color:#47dfff; background:#b7f8ff; }
             .zi-wheel-pixel { filter:drop-shadow(0 0 2px #18f4e4); animation:ziWheelPulse .9s steps(2,end) infinite; }
-            @media (prefers-reduced-motion: reduce) { .zi-wandering-scene-track, .zi-travel-ground, .zi-survivor-pixel, .zi-survivor-art, .zi-pixel-burst, .zi-wheel-pixel, .zi-threat-idle, .zi-threat-hit, .zi-threat-attack, .zi-threat-death, .zi-ash-particle { animation:none !important; } }
+            @media (prefers-reduced-motion: reduce) { .zi-wandering-scene-track, .zi-travel-ground, .zi-survivor-pixel, .zi-survivor-art, .zi-pixel-burst, .zi-wheel-pixel, .zi-threat-idle, .zi-threat-hit, .zi-threat-attack, .zi-threat-death, .zi-ash-particle, .zi-threat-minion { animation:none !important; transform:none !important; } }
           `}</style>
           {/* Each biome gets its own continuously looping side-scroll tile; two copies keep the seam off-screen. */}
           <div className="zi-wandering-scene-track" aria-hidden="true" style={{ zIndex:0, animationDuration:`${(sceneHeight * bgAspect / groundSpeed).toFixed(2)}s`, animationPlayState: survivorWalking ? 'running' : 'paused' }}>
             <img src={sceneBackground} alt="" draggable={false} onLoad={e => { const im = e.currentTarget; if (im.naturalHeight) setBgAspect(im.naturalWidth / im.naturalHeight); }}/>
             <img src={sceneBackground} alt="" draggable={false}/>
           </div>
+          {poiCue && <div data-wandering-poi-action="1" style={{ position:'absolute', top:9, left:9, zIndex:30, maxWidth:'48%', padding:'4px 8px', background:'rgba(12,12,12,.82)', border:'1px solid rgba(240,208,96,.7)', color:'var(--amber)', fontFamily:'var(--font-mono)', fontSize:10, textShadow:'0 1px 2px #000', pointerEvents:'none' }}>AT {poiCue.site.name.toUpperCase()} · {poiCue.last.label}</div>}
           {/* Parallax stars/dust (back layer, slow scroll) */}
           {!sceneBackground && <div style={{
             position:'absolute', inset:0,
@@ -2787,7 +3029,7 @@ window.WanderingScreen = function WanderingScreen({ route, setScreen }) {
                 backgroundSize:'400% 200%',
                 backgroundPosition:checkpointRestPose ? `${(recoveryFrame % 4) * 100 / 3}% ${Math.floor(recoveryFrame / 4) * 100}%` : `${recoveryBackgroundPosition}`,
                 filter:'drop-shadow(1px 0 #080a0d) drop-shadow(-1px 0 #080a0d) drop-shadow(0 1px #080a0d)',
-              }}/>} 
+              }}/>}
             {/* Close-combat sheets show legible walk cycles, bare-fist punches, or a melee swing. */}
             {injuredCombatPose && <div
               key={`injured-${survivorStrikeId}`}
@@ -2799,7 +3041,7 @@ window.WanderingScreen = function WanderingScreen({ route, setScreen }) {
                 backgroundSize:activeSurvivor.gender === 'female' ? '400% 200%' : '400% 400%',
                 backgroundPosition:'0% 0%',
                 filter:'drop-shadow(1px 0 #080a0d) drop-shadow(-1px 0 #080a0d) drop-shadow(0 1px #080a0d)',
-              }}/>} 
+              }}/>}
             {!injuredReturnPose && !checkpointRestPose && !injuredCombatPose && closeCombatLoadout && <div
               key={survivorStrikeId}
               className={`zi-survivor-art${survivorStriking ? (meleeEquipped ? ' melee-strike' : ' fist-strike') : ''}`}
@@ -2863,22 +3105,44 @@ window.WanderingScreen = function WanderingScreen({ route, setScreen }) {
               right: '20%', bottom: '12%',
               zIndex: 10, scale:String(zombieScale), transformOrigin:'50% 100%', // a string: React would turn a bare number into '1.6px', which browsers ignore
             };
-            if (!spr) return (
+            // SS-BG-01: commander's retinue, drawn behind it. Existing sprites, existing walk poses,
+            // no new art and no rule effect. Offsets are fractions of the commander's drawn width.
+            const minions = (window.ZI_ART.commanderMinions
+              ? window.ZI_ART.commanderMinions(encounter.bestiaryId, encounter.tier, encounter.id) : []);
+            const commanderW = spr ? spr.w * 2 * zombieScale : 96 * zombieScale;
+            const retinue = (!minions.length || dead) ? null : (
+              <div aria-hidden="true" style={{ position:'absolute', right:'20%', bottom:'12%', width:commanderW, height:1, zIndex:9, pointerEvents:'none' }}>
+                {minions.map((m, i) => {
+                  const mm = minionMetricsFor(m);
+                  return (
+                    <img key={i} className="zi-threat-minion" src={m.sprite.src} alt="" draggable={false}
+                      width={m.sprite.w * 2} height={m.sprite.h * 2}
+                      style={{ position:'absolute', bottom:`${-mm.targetHeight * m.dy}px`,
+                        left:`calc(50% + ${Math.round(commanderW * m.dx)}px)`,
+                        width:m.sprite.w * 2, height:'auto', imageRendering:'pixelated',
+                        transformOrigin:'50% 100%', translate:'-50% 0',
+                        scale:String(mm.scale), filter:'brightness(.48) saturate(.7) contrast(.9)',
+                        transform:`${window.ZI_ART.ZOMBIE_WALK_POSES[(animFrame + m.phase) % 4]}${m.flip ? ' scaleX(-1)' : ''}` }}/>
+                  );
+                })}
+              </div>
+            );
+            if (!spr) return (<>{retinue}
               <div className={threatClass} style={wrap}>
                 <span className="zi-character-shadow" aria-hidden="true"/>
                 <div dangerouslySetInnerHTML={{ __html: window.ZI_ART.zombieSvg(encounter.type, animFrame % 6) }}/>
                 {dead && <span aria-hidden="true">{[0,1,2,3].map(n => <i key={n} className="zi-ash-particle"/>)}</span>}
-              </div>
+              </div></>
             );
             // Sprite art is uniformly scaled to the height assigned to its bestiary tier.
-            return (
-              <div className={threatClass} style={{ ...wrap, width: spr.w * 2 }} data-zombie-sprite={spr.file}>
+            return (<>{retinue}
+              <div className={threatClass} style={{ ...wrap, width: spr.w * 2, ...(spr.fit === 'cover' ? { height:spr.h * 2 } : {}) }} data-zombie-sprite={spr.file}>
                 <span className="zi-character-shadow" aria-hidden="true"/>
                 <img src={spr.src} alt="" width={spr.w * 2} height={spr.h * 2} draggable={false}
-                  style={{ display:'block', width:'100%', height:'auto', imageRendering:'pixelated', transformOrigin:'50% 100%',
+                  style={{ display:'block', width:'100%', height:spr.fit === 'cover' ? '100%' : 'auto', objectFit:spr.fit || undefined, objectPosition:spr.fit === 'cover' ? 'center 50%' : undefined, imageRendering:'pixelated', transformOrigin:'50% 100%',
                     transform: window.ZI_ART.ZOMBIE_WALK_POSES[animFrame % 4] }}/>
                 {dead && <span aria-hidden="true">{[0,1,2,3].map(n => <i key={n} className="zi-ash-particle"/>)}</span>}
-              </div>
+              </div></>
             );
           })()}
           {/* Floating damage numbers over the zombie's head */}
@@ -3820,6 +4084,7 @@ window.StockpileScreen = function StockpileScreen({ initialTab = 'recycler', pre
   React.useEffect(() => { setSub(initialTab === 'loadout' || initialTab === 'storage' ? initialTab : 'recycler'); }, [initialTab]);
   const [loadout, setLoadout] = React.useState(() => Z.getLoadout());
   const [stash, setStash] = React.useState(() => Z.getStash());
+  const [literatureNote, setLiteratureNote] = React.useState('');
   // Re-read the one stash/loadout store whenever it changes (crafts finishing, equips on another screen).
   React.useEffect(() => {
     let queued = null;
@@ -3915,6 +4180,7 @@ window.StockpileScreen = function StockpileScreen({ initialTab = 'recycler', pre
 
             <div className="panel" style={{ padding:0, flexShrink:0 }}>
               <div className="panel-title">Stored Equipment &amp; Supplies</div>
+              {literatureNote && <div role="status" style={{ padding:'7px 10px', color:'var(--green)', fontFamily:'var(--font-mono)', fontSize:10, borderBottom:'1px solid var(--border)' }}>{literatureNote}</div>}
               <div style={{ padding:10, display:'flex', gap:8, flexWrap:'wrap', alignItems:'center' }}>
                 <span style={{ flex:'1 1 220px', fontFamily:'var(--font-mono)', fontSize:10, color:'var(--text2)' }}>Base reserves · matching items grouped by quantity. Choose what to wear and carry in Gear &amp; Loadout.</span>
                 <button className="btn" onClick={() => setSub('loadout')}>Gear &amp; Loadout</button>
@@ -3924,9 +4190,19 @@ window.StockpileScreen = function StockpileScreen({ initialTab = 'recycler', pre
                 {Object.keys(stashCounts).map(id => Z.getGearItem(id)).filter(Boolean).map(it => {
                   const dur = Z.itemDurability(it);
                   const isFood = FOOD_SPRITE_INDEX[it.id] !== undefined;
+                  const read = it.cat === 'book' && Z.isSkillBookRead && Z.isSkillBookRead(it.id);
+                  const isLiterature = it.cat === 'book' || it.cat === 'tome';
+                  const actLiterature = action => {
+                    const result = action === 'read' ? Z.readSkillBook(it.id) : Z.burnLiterature(it.id);
+                    setLiteratureNote(result.text || result.reason || ''); setStash(Z.getStash());
+                  };
                   return <div key={it.id} style={{ padding:8, background:isFood ? 'rgba(61,207,142,0.08)' : 'var(--bg3)', border:'1px solid var(--border)', borderTop:`2px solid ${isFood ? 'var(--green)' : rc(it.rarity)}` }}>
                     <div style={{ display:'flex', gap:8, alignItems:'center' }}>{itemVisual(it, isFood ? 42 : 18)}<span style={{ flex:1, fontFamily:'var(--font-body)', fontSize:13 }}>{it.name}</span><b style={{ fontFamily:'var(--font-mono)', fontSize:12, color:'var(--amber)' }}>×{stashCounts[it.id]}</b></div>
-                    <div style={{ fontFamily:'var(--font-mono)', fontSize:9, color:'var(--text2)', marginTop:4 }}>{it.rarity}{dur ? ` · Condition ${Math.round(dur.current)}/${dur.max}` : ''}</div>
+                    <div style={{ fontFamily:'var(--font-mono)', fontSize:9, color:'var(--text2)', marginTop:4 }}>{isLiterature ? (it.cat === 'book' ? `${read ? 'Read · ' : 'Unread · '}+${it.bookXpPct}% ${it.bookProfession} XP` : (it.tomeSeries ? 'Tome-series copy' : 'Ungrouped tome')) : it.rarity}{dur ? ` · Condition ${Math.round(dur.current)}/${dur.max}` : ''}</div>
+                    {isLiterature && <div style={{ display:'flex', gap:5, marginTop:6 }}>
+                      {it.cat === 'book' && <button className="btn" disabled={!!read || !Z.atBaseOrCamp()} onClick={() => actLiterature('read')} title={!Z.atBaseOrCamp() ? 'Read at base or camp' : 'Read once for its permanent profession XP bonus'}>{read ? 'Lesson learned' : 'Read'}</button>}
+                      <button className="btn" disabled={!Z.atBaseOrCamp()} onClick={() => actLiterature('burn')} title="Convert one copy into kindling at base or camp">Convert to kindling</button>
+                    </div>}
                   </div>;
                 })}
                 {!stashCount && <div style={{ fontFamily:'var(--font-mono)', fontSize:11, color:'var(--text2)' }}>No stored equipment or supplies. Completed crafts appear here.</div>}

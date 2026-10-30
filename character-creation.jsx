@@ -9,6 +9,14 @@ function CharacterCreationScreen({ mode, slot, onCancel, onConfirm }) {
   const [gender, setGender] = React.useState(null);
   const [appearance, setAppearance] = React.useState(() => ZI.charDefaultAppearance());
   const [profession, setProfession] = React.useState(null);
+  const [professionQuery, setProfessionQuery] = React.useState('');
+  const [name, setName] = React.useState('');
+  const [frame, setFrame] = React.useState(0);
+  React.useEffect(() => {
+    if (step === 0) return undefined;
+    const timer = window.setInterval(() => setFrame(f => (f + 1) % 16), 110);
+    return () => window.clearInterval(timer);
+  }, [step]);
   const accent = mode === 'camp' ? 'var(--green)' : 'var(--amber)';
   const steps = [
     { title: 'Choose Your Survivor', tag: 'Who will survive?', line: 'Every survivor has a story. Yours starts here.' },
@@ -16,16 +24,27 @@ function CharacterCreationScreen({ mode, slot, onCancel, onConfirm }) {
     { title: 'What Were You Before?', line: "The old world taught you something. Let's hope it was useful." },
     { title: 'One More Survivor', line: "The world ended. Your story didn't." },
   ];
-  const canNext = step === 0 ? !!gender : step === 2 ? !!profession : true;
+  const canNext = step === 0 ? !!gender : step === 1 ? !!name.trim() : step === 2 ? !!profession : true;
   const g = C.genders.find(x => x.id === gender);
-  const clothing = C.appearance.clothingColor.options.find(o => o.id === appearance.clothingColor);
   const prof = professions.find(p => p.id === profession);
   const optLabel = (k) => { const o = C.appearance[k].options.find(x => x.id === appearance[k]); return o ? o.label : '—'; };
 
-  const Portrait = ({ gid, size }) => {
+  const portrait = (gid, size, animated = false) => {
     const gg = C.genders.find(x => x.id === gid);
     if (!gg) return <div style={{ width: size, height: size, border: '1px dashed var(--border)', display:'flex', alignItems:'center', justifyContent:'center', color:'var(--text3)', fontFamily:'var(--font-mono)', fontSize:11 }}>?</div>;
-    return <div role="img" aria-label={gg.label + ' survivor'} style={{ width: size, height: size, backgroundImage: `url("${gg.art.src}")`, backgroundSize: gg.art.size, backgroundPosition: '0% 0%', backgroundRepeat: 'no-repeat', imageRendering: 'pixelated', filter: gid === gender && clothing ? clothing.filter : 'none' }}/>;
+    // The walk sheet is a cols x rows grid. Its cell is NOT 2:3 - height comes from the sheet's own
+    // walkAspect, or the frames are stretched vertically (the Oct 30 "poor animation" defect).
+    const cols = gg.art.walkCols || 4, rows = gg.art.walkRows || 4, n = cols * rows;
+    const walkBox = (px) => ({
+      width: px, height: Math.round(px * (gg.art.walkAspect || 1.5)),
+      backgroundImage: `url("${gg.art.walk}")`,
+      backgroundSize: `${cols * 100}% ${rows * 100}%`,
+      backgroundPosition: `${(frame % cols) * 100 / (cols - 1)}% ${Math.floor((frame % n) / cols) * 100 / (rows - 1)}%`,
+      backgroundRepeat: 'no-repeat', imageRendering: 'pixelated',
+      backgroundColor: '#0b0d0d', border: '1px solid var(--border)',
+    });
+    return animated ? <div role="img" aria-label={gg.label + ` ${n}-frame survivor animation`} style={walkBox(size)}/>
+      : <img src={gg.art.src} alt={gg.label + ' survivor'} width={size} height={Math.round(size * 1.5)} style={{ objectFit:'contain', imageRendering:'pixelated', background:'#0b0d0d', border:'1px solid var(--border)' }}/>;
   };
   const chip = (txt) => <span style={{ fontFamily:'var(--font-mono)', fontSize:10, color:'var(--text2)', border:'1px solid var(--border)', padding:'2px 6px' }}>{txt}</span>;
   const card = (active, onClick, children, key) => (
@@ -47,7 +66,7 @@ function CharacterCreationScreen({ mode, slot, onCancel, onConfirm }) {
           <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit, minmax(220px, 1fr))', gap:12 }}>
             {C.genders.map(x => card(gender === x.id, () => setGender(x.id), (
               <>
-                <div style={{ display:'flex', justifyContent:'center' }}><Portrait gid={x.id} size={180}/></div>
+                <div style={{ display:'flex', justifyContent:'center' }}>{portrait(x.id, 180)}</div>
                 <div style={{ fontFamily:'var(--font-title)', fontSize:18, color:'var(--text)', textAlign:'center' }}>{x.label}</div>
               </>
             ), x.id))}
@@ -57,11 +76,19 @@ function CharacterCreationScreen({ mode, slot, onCancel, onConfirm }) {
 
         {step === 1 && (
           <div style={{ display:'flex', gap:18, flexWrap:'wrap' }}>
-            <div style={{ flex:'0 0 auto', position:'sticky', top:12, alignSelf:'flex-start' }}><Portrait gid={gender} size={200}/></div>
+            <div style={{ flex:'0 0 auto', position:'sticky', top:12, alignSelf:'flex-start', display:'flex', flexDirection:'column', gap:8 }}>
+              {portrait(gender, 220, true)}
+              <div style={{ fontFamily:'var(--font-mono)', fontSize:10, color:'var(--text3)' }}>16-frame walk cycle</div>
+              <CharacterSprite gender={gender} appearance={appearance} frame={frame} width={120}/>
+              <div style={{ fontFamily:'var(--font-mono)', fontSize:10, color:'var(--text3)' }}>your choices, updating live</div>
+            </div>
             <div style={{ flex:'1 1 320px', display:'flex', flexDirection:'column', gap:14, minWidth:0 }}>
+              <label style={{ display:'flex', flexDirection:'column', gap:6, fontFamily:'var(--font-mono)', fontSize:11, color:'var(--text2)' }}>SURVIVOR NAME
+                <input value={name} maxLength={24} onChange={e => setName(e.target.value)} placeholder="Enter a survivor name" aria-label="Survivor name" style={{ padding:'9px 10px', background:'var(--bg3)', color:'var(--text)', border:'1px solid var(--border)', fontFamily:'var(--font-body)', fontSize:15 }}/>
+              </label>
               {Object.entries(C.appearance).map(([k, cat]) => (
                 <div key={k}>
-                  <div style={{ fontFamily:'var(--font-mono)', fontSize:11, color:'var(--text2)', letterSpacing:'0.12em', marginBottom:6 }}>{cat.label.toUpperCase()}{!cat.preview && <span style={{ letterSpacing:'normal', color:'var(--text3)', fontSize:10 }}> · saved, art coming</span>}</div>
+                  <div style={{ fontFamily:'var(--font-mono)', fontSize:11, color:'var(--text2)', letterSpacing:'0.12em', marginBottom:6 }}>{cat.label.toUpperCase()}</div>
                   <div style={{ display:'flex', gap:6, flexWrap:'wrap' }}>
                     {cat.options.map(o => (
                       <button key={o.id} className={appearance[k] === o.id ? 'btn btn-amber' : 'btn'} aria-pressed={appearance[k] === o.id} onClick={() => setAppearance(a => Object.assign({}, a, { [k]: o.id }))} style={{ textTransform:'none', letterSpacing:'normal', display:'inline-flex', alignItems:'center', gap:6 }}>{o.swatch && <span aria-hidden="true" style={{ width:12, height:12, background:o.swatch, border:'1px solid var(--border)', display:'inline-block' }}/>}{o.label}</button>
@@ -69,14 +96,19 @@ function CharacterCreationScreen({ mode, slot, onCancel, onConfirm }) {
                   </div>
                 </div>
               ))}
-              <div style={{ fontFamily:'var(--font-mono)', fontSize:10, color:'var(--text3)' }}>Looks only: no appearance choice changes your stats. The portrait shows the clothing colour; the other choices are saved with your survivor and appear once their art is drawn.</div>
+              <div style={{ fontFamily:'var(--font-mono)', fontSize:10, color:'var(--text3)' }}>Appearance is cosmetic. Each choice updates the preview; starting XP comes from your old-world background.</div>
             </div>
           </div>
         )}
 
         {step === 2 && (
-          <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit, minmax(240px, 1fr))', gap:12 }}>
-            {professions.map(p => card(profession === p.id, () => setProfession(p.id), (
+          <div style={{ display:'flex', gap:18, flexWrap:'wrap' }}>
+            <div style={{ flex:'0 0 auto', position:'sticky', top:12, alignSelf:'flex-start' }}>{portrait(gender, 180, true)}</div>
+            <div style={{ flex:'1 1 520px', minWidth:0, display:'grid', gridTemplateColumns:'repeat(auto-fit, minmax(240px, 1fr))', gap:12 }}>
+            <label style={{ gridColumn:'1 / -1', display:'flex', flexDirection:'column', gap:6, fontFamily:'var(--font-mono)', fontSize:11, color:'var(--text2)' }}>FIND AN OLD-WORLD BACKGROUND
+              <input value={professionQuery} onChange={e => setProfessionQuery(e.target.value)} placeholder="Search 24 backgrounds" aria-label="Search old-world backgrounds" style={{ padding:'9px 10px', background:'var(--bg3)', color:'var(--text)', border:'1px solid var(--border)', fontFamily:'var(--font-body)', fontSize:15 }}/>
+            </label>
+            {professions.filter(p => (p.title + ' ' + p.blurb + ' ' + p.lean).toLowerCase().includes(professionQuery.trim().toLowerCase())).map(p => card(profession === p.id, () => setProfession(p.id), (
               <>
                 <div style={{ display:'flex', alignItems:'center', gap:8 }}><span style={{ fontSize:20 }}>{p.icon}</span><span style={{ fontFamily:'var(--font-title)', fontSize:18, color:'var(--text)' }}>{p.title}</span></div>
                 <div style={{ fontFamily:'var(--font-body)', fontSize:13, color:'var(--text2)' }}>{p.blurb}</div>
@@ -85,13 +117,15 @@ function CharacterCreationScreen({ mode, slot, onCancel, onConfirm }) {
               </>
             ), p.id))}
             <div style={{ gridColumn:'1 / -1', fontFamily:'var(--font-mono)', fontSize:10, color:'var(--text3)' }}>Profession effects are starting Profession XP. They are separate from appearance, which has no effects.</div>
+            </div>
           </div>
         )}
 
         {step === 3 && (
           <div style={{ display:'flex', gap:18, flexWrap:'wrap' }}>
-            <div style={{ flex:'0 0 auto' }}><Portrait gid={gender} size={220}/></div>
+            <div style={{ flex:'0 0 auto' }}>{portrait(gender, 220, true)}</div>
             <div style={{ flex:'1 1 320px', display:'flex', flexDirection:'column', gap:10, minWidth:0 }}>
+              <div><span style={{ fontFamily:'var(--font-mono)', fontSize:11, color:'var(--text3)' }}>NAME </span><span style={{ fontFamily:'var(--font-title)', fontSize:18 }}>{name.trim()}</span> <button className="btn" onClick={() => setStep(1)}>Change</button></div>
               <div><span style={{ fontFamily:'var(--font-mono)', fontSize:11, color:'var(--text3)' }}>SURVIVOR </span><span style={{ fontFamily:'var(--font-title)', fontSize:18 }}>{g ? g.label : '—'}</span> <button className="btn" onClick={() => setStep(0)}>Change</button></div>
               <div style={{ display:'flex', gap:6, flexWrap:'wrap', alignItems:'center' }}><span style={{ fontFamily:'var(--font-mono)', fontSize:11, color:'var(--text3)' }}>LOOK </span>{Object.keys(C.appearance).map(k => <React.Fragment key={k}>{chip(C.appearance[k].label + ': ' + optLabel(k))}</React.Fragment>)}<button className="btn" onClick={() => setStep(1)}>Change</button></div>
               <div><span style={{ fontFamily:'var(--font-mono)', fontSize:11, color:'var(--text3)' }}>BEFORE </span><span style={{ fontFamily:'var(--font-title)', fontSize:18 }}>{prof ? prof.icon + ' ' + prof.title : '—'}</span> <button className="btn" onClick={() => setStep(2)}>Change</button></div>
@@ -105,7 +139,7 @@ function CharacterCreationScreen({ mode, slot, onCancel, onConfirm }) {
           <div style={{ flex:1 }}/>
           {step < 3
             ? <button className="btn btn-amber" disabled={!canNext} onClick={() => canNext && setStep(step + 1)}>Continue →</button>
-            : <button className="btn btn-amber" disabled={!gender || !profession} onClick={() => onConfirm({ gender, appearance, profession, createdAt: Date.now() })}>Start Surviving</button>}
+            : <button className="btn btn-amber" disabled={!gender || !profession || !name.trim()} onClick={() => onConfirm({ gender, appearance, profession, name:name.trim(), createdAt: Date.now() })}>Start Surviving</button>}
         </div>
       </div>
     </div>

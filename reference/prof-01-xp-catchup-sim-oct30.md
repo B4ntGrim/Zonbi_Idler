@@ -1,0 +1,66 @@
+# PROF-01 — Profession XP catch-up: simulation results (Oct 30)
+
+Sam asked for this to be modelled **before anything is built**. Model:
+`tools/balance-sim/prof_xp_catchup.py`. Source of the rules: "Character Creation Instructions
+(Draft)", Oct 28 — +15% max rate, 25% boosted allowance, decay as the allowance is consumed.
+The doc leaves *accumulation timing* unspecified, so that is the swept parameter.
+
+## 1. Headline: the mechanic is safe, but at the proposed values it is nearly inert
+
+120 game days, 40 base XP per active day.
+
+| Profession level | Pattern | Active days | End level | Total XP | Bonus XP | Bonus % |
+|---|---|---|---|---|---|---|
+| 8 | always active | 120 | 9 | 4800 | 0.0 | 0.00% |
+| 8 | 5 on / 2 off | 86 | 9 | 3440 | 0.0 | **0.00%** |
+| 8 | 10 on / 10 off | 60 | 9 | 2526 | 125.8 | 5.24% |
+| 8 | 30 off then active | 90 | 9 | 3643 | 43.2 | 1.20% |
+| 20 | 10 on / 10 off | 60 | 20 | 2569 | 168.5 | 7.02% |
+
+**Two findings:**
+
+1. **Deliberate inactivity never outperforms consistent practice.** Across every level (1, 8, 20),
+   every pattern and both accrual thresholds, "always active" ends with the most total XP and the
+   highest level. The audit's main worry is unfounded: a +15% rate on 25% of one level's XP cannot
+   pay back the days not worked. No stockpiling exploit appeared.
+
+2. **For the commonest real pattern it does nothing at all.** A 5-on/2-off rhythm earns **0.00%**
+   bonus, because a 2-day gap never reaches the 3-day accrual threshold. The mechanic only fires
+   for players who abandon a profession for ten days or more.
+
+## 2. The accrual threshold is a cliff, not a dial
+
+Level 8, 120 days, varying the accrual threshold:
+
+| Accrual threshold | "weekend" (5 on / 2 off) bonus | 10-on/10-off | idle beats active? |
+|---|---|---|---|
+| 1 day | 6.70% | 5.24% | No |
+| 2 days | 6.70% | 5.24% | No |
+| **3 days (doc)** | **0.00%** | 5.24% | No |
+| 5 days | 0.00% | 5.24% | No |
+| 7 days | 0.00% | 5.24% | No |
+
+The threshold does not scale the effect — it switches it on or off for a given rhythm. At 2 days
+the weekend player gets the full benefit; at 3 they get none. There is no setting that gives a
+little to short breaks and more to long ones.
+
+## 3. The bonus grows with level, which may be backwards
+Bonus share rises 2.99% (L1) → 5.24% (L8) → 7.02% (L20), because the 25% allowance is measured
+against `xp_to_next`, which grows on the `curveK 1.5` curve. A catch-up meant to help neglected
+low professions currently helps high ones most.
+
+## 4. Recommendations `[PROPOSED]`
+1. **Drop the accrual threshold to 2 days** if the intent is to soften ordinary breaks, or
+   **accept that this is a returning-player mechanic only** and leave it at 3+. The doc does not
+   say which was meant — this is the decision to make.
+2. **Raise the ceiling or the allowance** if the bonus is meant to be felt. At 15%/25% the biggest
+   effect seen anywhere was 170 XP over 120 days. Doubling the allowance to 50% is safe: inactivity
+   still loses on every pattern tested.
+3. **Make the allowance a flat multiple of level-1 XP**, not 25% of `xp_to_next`, if catch-up
+   should favour neglected low-level professions.
+4. Re-run before locking: `python3 tools/balance-sim/prof_xp_catchup.py`.
+
+## 5. Not yet modelled
+Offline catch-up, repeated inactivity cycles across all 16 tracks simultaneously, the no-damage
+Combat / stalled-Endurance case, and level-up boundary behaviour. The model is single-profession;
+extending it to 16 is straightforward once the rules above are settled.

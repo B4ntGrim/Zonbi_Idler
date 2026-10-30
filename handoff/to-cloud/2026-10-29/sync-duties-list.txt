@@ -1,0 +1,25 @@
+art/crafting/recipes/barricade-panel-v1.png
+art/crafting/recipes/cloth-wrap-kit-v1.png
+art/crafting/recipes/crude-splint-v1.png
+art/crafting/recipes/crude-splint-v2.png
+art/crafting/recipes/crude-splint-v3.png
+art/crafting/recipes/fuel-drum-v1.png
+art/crafting/recipes/nail-board-v1.png
+art/crafting/recipes/reinforced-pack-v1.png
+art/crafting/recipes/signal-booster-v1.png
+art/crafting/recipes/tinder-bundle-v1.png
+art/crafting/recipes/trauma-kit-v1.png
+art/crafting/recipes/wire-mesh-trap-v1.png
+game/operations.js
+operations-ui.jsx
+reference/art-generation-queue.md
+reports/char-crawler-ops-2026-10-29/REPORT.md
+reports/char-crawler-ops-2026-10-29/pre-change/char-crawler-ops.test.js
+reports/char-crawler-ops-2026-10-29/pre-change/operations-ui.jsx
+reports/char-crawler-ops-2026-10-29/pre-change/operations.js
+tests/char-crawler-ops.test.js
+CODE_STATE.md
+DESIGN_HANDOFF.md
+Zombie Idler v2 - TEST SAVE.html
+Zombie Idler v2.html
+bestiary-data.js

@@ -31,6 +31,11 @@ function StatLevelingScreen() {
       window.__ziXpFlashT = setTimeout(() => setXpFlash(null), 2400);
     });
   }, []);
+  React.useEffect(() => {
+    const offBooks = ZI.onLiteratureChange ? ZI.onLiteratureChange(() => forceXp(n => n + 1)) : null;
+    const offInventory = ZI.onInventoryChange ? ZI.onInventoryChange(() => forceXp(n => n + 1)) : null;
+    return () => { if (offBooks) offBooks(); if (offInventory) offInventory(); };
+  }, []);
 
   // Tick game clock: shared rate from game/core.js (1 game hour = 1 real minute).
   React.useEffect(() => {
@@ -355,6 +360,7 @@ function StatLevelingScreen() {
                   <div style={{ fontFamily:'var(--font-mono)', fontSize:8, color:'var(--text3)', marginTop:3, fontStyle:'italic' }}>
                     +XP: {xpCopy}
                   </div>
+                  {ZI.bookXpBonus && ZI.bookXpBonus(p.id) > 0 && <div data-book-xp={p.id} style={{ fontFamily:'var(--font-mono)', fontSize:9, color:'var(--green)', marginTop:3 }}>📖 Read books: +{ZI.bookXpBonus(p.id)}% profession XP</div>}
                   {(() => {
                     const r = ZI.skillRust ? ZI.skillRust(p.id) : { state:'fresh' };
                     if (r.state === 'fresh') return null;
@@ -433,6 +439,36 @@ function StatLevelingScreen() {
                 <div style={{ fontFamily:'var(--font-mono)', fontSize:9, color:'var(--text3)' }}>Click any SURVIVAL attribute to view its milestone unlock path.</div>
               </div>
             )}
+            <div className="divider"/>
+            <div data-tome-milestones="1" style={{ paddingBottom:4 }}>
+              <div style={{ fontFamily:'var(--font-mono)', fontSize:10, color:'var(--amber)', letterSpacing:'0.08em', marginBottom:7 }}>TOME SCHEMATICS</div>
+              {(ZI.TOME_SERIES || []).map(series => {
+                const progress = ZI.tomeSeriesProgress && ZI.tomeSeriesProgress(series.id);
+                if (!progress) return null;
+                const next = progress.next;
+                const xp = ZI.bookXpBonus ? ZI.bookXpBonus(series.profession) : 0;
+                return <div key={series.id} data-tome-series={series.id} style={{ padding:'7px 8px', marginBottom:6, background:'var(--bg3)', border:'1px solid var(--border)' }}>
+                  <div style={{ display:'flex', justifyContent:'space-between', gap:5, alignItems:'center' }}>
+                    <span style={{ fontFamily:'var(--font-body)', fontSize:12, color:'var(--text)' }}>{series.name}</span>
+                    <span style={{ fontFamily:'var(--font-mono)', fontSize:9, color:'var(--amber)' }}>{progress.copies}/{series.cap}</span>
+                  </div>
+                  {next ? <>
+                    <div style={{ fontFamily:'var(--font-mono)', fontSize:9, color:'var(--text2)', marginTop:4 }}>Next: {next.copies} copies · {next.item} schematic</div>
+                    <div style={{ fontFamily:'var(--font-mono)', fontSize:8, color:next.missing.length ? 'var(--amber)' : 'var(--text3)', marginTop:2 }}>
+                      {progress.copies < next.copies ? `${next.copies - progress.copies} more tome copies` : `Waiting for ${next.missing.join(', ')}`}
+                      {next.station ? ` · ${next.station}` : ''}
+                    </div>
+                  </> : <div style={{ fontFamily:'var(--font-mono)', fontSize:9, color:'var(--green)', marginTop:4 }}>Series complete · all schematics earned</div>}
+                  {xp > 0 && <div style={{ fontFamily:'var(--font-mono)', fontSize:8, color:'var(--green)', marginTop:3 }}>📖 Books add +{xp}% {series.profession} XP</div>}
+                </div>;
+              })}
+              {!(ZI.TOME_SERIES || []).length && <div style={{ fontFamily:'var(--font-mono)', fontSize:9, color:'var(--text3)' }}>No tome collections found yet.</div>}
+              {ZI.ungroupedTomeCount && ZI.ungroupedTomeCount() > 0 && <div data-ungrouped-tomes="1" style={{ padding:'6px 8px', marginBottom:6, background:'var(--bg3)', border:'1px solid var(--border)' }}>
+                <div style={{ display:'flex', justifyContent:'space-between', fontFamily:'var(--font-body)', fontSize:11, color:'var(--text)' }}><span>Ungrouped tomes</span><span>{ZI.ungroupedTomeCount()} copies</span></div>
+                <div style={{ fontFamily:'var(--font-mono)', fontSize:8, color:'var(--text3)', marginTop:2 }}>These copies are not assigned to a schematic series yet.</div>
+              </div>}
+              <div style={{ fontFamily:'var(--font-mono)', fontSize:8, color:'var(--text3)', lineHeight:1.4 }}>Copies are counted when stored at base. Book XP bonuses are tracked separately above.</div>
+            </div>
           </div>
         </div>
       </div>

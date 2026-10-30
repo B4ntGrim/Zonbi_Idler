@@ -94,6 +94,7 @@ ZI._appendGearRecipes = function(){ const R = ZI._gearRecipe; ZI.CRAFT_RECIPES.p
   R('combat_axe',1,3,9000,{metal:70,wood:20,cloth:10},'Armory (Rank 2)'),
   R('shock_baton',1,3,10800,{metal:40,electronics:50,fuel:20},'Research Lab (Rank 2)'),
   R('jet_sledge',1,4,21600,{metal:90,fuel:60,electronics:20},'Armory (Rank 3)'),
+  R('siegebreaker_maul',1,5,72000,{metal:120,wood:40,fuel:45,electronics:35},'Armory (Rank 4)'),
   // ── Ranged ──
   R('pipe_shotgun',1,1,3600,{metal:40,wood:20},'Armory (Rank 1)'),
   R('compound_bow',1,2,6300,{wood:40,metal:25,cloth:20},'Workshop (Rank 1)'),

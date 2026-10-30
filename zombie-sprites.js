@@ -67,7 +67,20 @@ ZI_ART.ZOMBIE_SPRITES = {
   '106': { file:'106-the-plague-archon', w:125, h:86, src:'art/zombies/106-the-plague-archon.png' },
   '107': { file:'107-the-sub-zero-colossus', w:125, h:86, src:'art/zombies/107-the-sub-zero-colossus.png' },
   '108': { file:'108-the-apex-prime', w:128, h:86, src:'art/zombies/108-the-apex-prime.png' },
+  'crawler': { file:'crawler-v1', w:112, h:50, src:'art/zombies/crawler-v1.png', fit:'cover' },
+  'crawler-split': { file:'crawler-split-v1', w:112, h:50, src:'art/zombies/crawler-split-v1.png', fit:'cover' },
+  // ---- SS tier (BESTIARY-03, Sam's team, Oct 30). Locked height 76 px. ----
+  // Registered so the art lives in one place and is ready. They cannot appear in game yet: every
+  // bestiary entry is still id 1-45 and none is SS tier, so ZOMBIE_SPRITE_MAP has nothing to
+  // attach them to. They light up when bestiary-data.js is rebuilt on art ids 49-108.
+  '109': { file:'109-vitriol-warlord',   w:114, h:76, src:'art/zombies/tier-SS/vitriol-warlord.png' },
+  '110': { file:'110-carillon-tyrant',   w:95,  h:76, src:'art/zombies/tier-SS/carillon-tyrant.png' },
+  '111': { file:'111-bedrock-marshal',   w:114, h:76, src:'art/zombies/tier-SS/bedrock-marshal.png' },
+  '112': { file:'112-grave-overlord-ss', w:88,  h:76, src:'art/zombies/tier-SS/grave-overlord-ss.png' },
 };
+
+// The SS tier's sprite keys, so other code finds them without hard-coding numbers.
+ZI_ART.SS_SPRITE_KEYS = ['109', '110', '111', '112'];
 
 // Which field-bestiary entries (ZI.BESTIARY, ids 1-45) use which sprite in Wandering fights and the Codex.
 // Every field entry now has new art (Oct 24), matched by base type and look; a list = variants (each fight picks
@@ -119,6 +132,7 @@ ZI_ART.ZOMBIE_SPRITE_MAP = {
   43: ['094'],
   44: ['103'],
   45: ['100'],
+  46: ['crawler', 'crawler-split'],
 };
 
 // Returns { src, w, h, file } for a field-bestiary id, or null to fall back to the SVG painter.
@@ -128,6 +142,52 @@ ZI_ART.zombieSprite = function(bestiaryId, seed) {
   if (!list || !list.length) return null;
   const s = Math.abs(Math.floor((Number(seed) || 0) * 1000)) % list.length;
   return ZI_ART.ZOMBIE_SPRITES[list[s]] || null;
+};
+
+// ---- SS-BG-01: background minions behind commander zombies (display only) ----
+// Commanders are the SS tier (BESTIARY-03): they visibly command a group. Lesser zombies stand
+// behind them using existing art and existing frames. Nothing here is read by any game rule --
+// combat stays 1v1 (wandering.js resolveEncounter takes a single enemy).
+
+// Pool the minions are drawn from: the F/E sprites, all 50 px tall.
+ZI_ART.MINION_POOL = ['049','050','051','052','053','054','055','057','058','059','060'];
+
+// Which bestiary entries show minions. Keyed by bestiary id OR by tier string.
+// 22 = the entry currently wearing the Grave Overlord sprite (095); the other three SS commanders
+// have no bestiary entries yet (bestiary-data.js is still ids 1-45), so they light up for free
+// once that roster is rebuilt on ids 49-108.
+ZI_ART.COMMANDER_IDS = { 22: true };
+ZI_ART.COMMANDER_TIERS = { SS: true, BOSS: false }; // BOSS wired but off, per the batch
+
+ZI_ART.isCommander = function(bestiaryId, tier) {
+  if (ZI_ART.COMMANDER_TIERS[tier]) return true;
+  return !!ZI_ART.COMMANDER_IDS[bestiaryId];
+};
+
+// 2-3 minions, chosen from the encounter's own seed so the same fight always shows the same group,
+// live and on replay. Returns [{ sprite, dx, dy, flip }] ordered back-to-front.
+// dx/dy are fractions of the commander's drawn width/height, applied by the caller.
+ZI_ART.commanderMinions = function(bestiaryId, tier, seed) {
+  if (!ZI_ART.isCommander(bestiaryId, tier)) return [];
+  const pool = ZI_ART.MINION_POOL.filter(k => ZI_ART.ZOMBIE_SPRITES[k]);
+  if (!pool.length) return [];
+  // Small deterministic PRNG off the encounter seed. No Math.random: replays must match.
+  let h = Math.abs(Math.floor((Number(seed) || 1) * 9973)) % 2147483647 || 1;
+  const rnd = () => (h = (h * 48271) % 2147483647) / 2147483647;
+  const count = 2 + (rnd() < 0.5 ? 0 : 1);
+  // Offsets clear the commander's silhouette. The centre slot sits far enough out that it is not
+  // swallowed by the commander; anything nearer than ~0.8 disappears behind a wide S/SS sprite.
+  const slots = [ { dx:-0.95, dy:0.04 }, { dx:0.92, dy:0.02 }, { dx:-1.45, dy:0.09 } ];
+  const picked = [], used = {};
+  for (let i = 0; i < count; i++) {
+    let k, guard = 0;
+    do { k = pool[Math.floor(rnd() * pool.length)]; } while (used[k] && ++guard < 12);
+    used[k] = 1;
+    // No mirroring. The source art is flipped to face left, toward the survivor; flipping a minion
+    // would turn it away from the fight and break the convention the whole roster follows.
+    picked.push({ sprite: ZI_ART.ZOMBIE_SPRITES[k], dx: slots[i].dx, dy: slots[i].dy, flip: false, phase: i + 1 });
+  }
+  return picked;
 };
 
 // Walking bob and sway, one pose per animation frame (4 frames, 250 ms each).
@@ -142,5 +202,5 @@ ZI_ART.ZOMBIE_WALK_POSES = [
 
 // Warm the image cache for the sprites Wandering can show, so the first fight doesn't flash (45 small PNGs).
 (function preload() {
-  try { const seen = {}; Object.values(ZI_ART.ZOMBIE_SPRITE_MAP).forEach(l => l.forEach(k => { if (seen[k]) return; seen[k] = 1; const im = new Image(); im.src = ZI_ART.ZOMBIE_SPRITES[k].src; })); } catch (e) {}
+  try { const seen = {}; Object.values(ZI_ART.ZOMBIE_SPRITE_MAP).concat([ZI_ART.MINION_POOL]).forEach(l => l.forEach(k => { if (seen[k]) return; seen[k] = 1; const im = new Image(); im.src = ZI_ART.ZOMBIE_SPRITES[k].src; })); } catch (e) {}
 })();

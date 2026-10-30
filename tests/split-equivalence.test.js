@@ -32,6 +32,12 @@ ADDED.add('getUnclaimedRouteRewards'); ADDED.add('ROUTE_XP_MULTIPLIERS');
 ['getTopBarResources','isDevView'].forEach(k => ADDED.add(k));
 // Shop purchases (Sam, Oct 27: "implement the Shop purchases"): RMAT prices, one purchase path, consumables re-buyable.
 ['shopPrice','shopCanAfford','shopPriceText','shopPurchase'].forEach(k => ADDED.add(k)); CHANGED_FN.add('shopState'); DATA_CHANGED.add('SHOP_ITEMS');
+// Intentional post-split additions/changes: seeded sector POI placement and daily modifiers; current recipe
+// generation and loot/wander rules; and expanded world/background catalogues. Keep the legacy comparison scoped
+// to portions that are still intended to be equivalent.
+['WORLD_DAILY_VARIATION','WORLD_ORDINARY_NAMES','WORLD_POI_POLICY','WORLD_POI_SECTOR_MAX','WORLD_POI_SECTOR_MIN','poiPlacementsForSector','worldDailyShift','worldDailySignal','worldDayIndex'].forEach(k => ADDED.add(k));
+['_appendGearRecipes','lootSafeChance','wanderPolicyStep','worldCell','zoneFromCell'].forEach(k => CHANGED_FN.add(k));
+['LEADER_ARCHETYPES','WORLD_NAMES'].forEach(k => DATA_CHANGED.add(k));
 const INTENDED = { zi_rmat: 2, zi_jobs: 3, zi_materials: 3, zi_stash: 3, zi_stat_xp: 3 };
 const results = []; const check = (n, c, x) => results.push([c ? 'PASS' : 'FAIL', n, x || '']);
 // CLOCK-01 T9 rescales these data tables; CL7 adds fractional schedule credit.

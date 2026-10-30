@@ -1,0 +1,32 @@
+art/crafting/recipes/arc-igniter-v1.png
+art/crafting/recipes/bone-weave-vest-v1.png
+art/crafting/recipes/circuit-splice-v1.png
+art/crafting/recipes/composite-plating-v1.png
+art/crafting/recipes/crystalline-core-v1.png
+art/crafting/recipes/echo-condenser-v1.png
+art/crafting/recipes/emp-coil-v1.png
+art/crafting/recipes/fracture-engine-v1.png
+art/crafting/recipes/fuel-converter-v1.png
+art/crafting/recipes/hazard-patch-kit-v1.png
+art/crafting/recipes/hollow-point-press-v1.png
+art/crafting/recipes/necrotic-membrane-v1.png
+art/crafting/recipes/neural-tap-v1.png
+art/crafting/recipes/plasma-conduit-v1.png
+art/crafting/recipes/quantum-splice-board-v1.png
+art/crafting/recipes/resonance-cell-v1.png
+art/crafting/recipes/revenant-core-v1.png
+art/crafting/recipes/siege-engine-frame-v1.png
+art/crafting/recipes/siege-frame-v1.png
+art/crafting/recipes/signal-zero-v1.png
+art/crafting/recipes/sterilization-unit-v1.png
+art/crafting/recipes/toxin-filter-v1.png
+art/crafting/recipes/void-lattice-v1.png
+character-creation.jsx
+game/character.js
+reference/art-generation-queue.md
+reports/appearance-2026-10-29/pre-change/char-crawler-ops.test.js
+reports/appearance-2026-10-29/pre-change/character-creation.jsx
+reports/appearance-2026-10-29/pre-change/character.js
+tests/char-crawler-ops.test.js
+Zombie Idler v2 - TEST SAVE.html
+Zombie Idler v2.html
