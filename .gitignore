@@ -76,3 +76,11 @@ crashlytics-build.properties
 
 # Static web build (node tools/build-web.cjs)
 dist/
+
+# Quarantine: files staged for Sam to delete. Never committed.
+reports/_to_delete/
+
+# One-shot cloud sync payloads. The repo IS the sync target, so committing an
+# archive of the repo into the repo is circular. Manifests and file lists stay.
+handoff/to-cloud/**/*.tar
+handoff/to-cloud/**/*.tar.gz

@@ -24,7 +24,7 @@ Retro pixel-art sprites requested for Zed Idler. The queue tracks assets separat
 
 ## Queued
 
-No base food sprites remain. Crafting recipe sprites are tracked below; higher-tier recipes remain queued. Rotten-condition variants are tracked separately below.
+No base food sprites remain. RMAT recipe art is complete; the current gear and consumable recipes are tracked below. Rotten-condition variants are tracked separately.
 
 ## Crafting recipe art
 
@@ -67,6 +67,67 @@ No base food sprites remain. Crafting recipe sprites are tracked below; higher-t
 | Signal Zero (T5) | Generated as a silent field radio with a flat display line | `art/crafting/recipes/signal-zero-v1.png` |
 
 All 35 RMAT recipe sprites across T0–T5 are integrated into both the main game page and test-save page. The images are generated in the survivor/bestiary-inspired hand-painted pixel style with restrained survival palettes and clear silhouettes. Weapon-adjacent crafting recipes are represented as static tools or components rather than depicting ammunition or use.
+
+## Gear and consumable recipe art
+
+All 54 current crafting entries from Rag Wrap through Scholar's Tonic have individual retro-style PNGs. They are saved in `art/crafting/gear-recipes/`, named `{recipe-id}-v1.png`, and mapped to their recipe detail panels in both game pages. Recipe Details now displays the selected sprite at 96px (up from 56px), while compact list icons stay at 32px.
+
+| Recipe ID | File |
+|---|---|
+| `rag_wrap` | `art/crafting/gear-recipes/rag_wrap-v1.png` |
+| `lucky_charm` | `art/crafting/gear-recipes/lucky_charm-v1.png` |
+| `scrap_adrenaline` | `art/crafting/gear-recipes/scrap_adrenaline-v1.png` |
+| `coal_paste` | `art/crafting/gear-recipes/coal_paste-v1.png` |
+| `field_bandage` | `art/crafting/gear-recipes/field_bandage-v1.png` |
+| `focus_tabs` | `art/crafting/gear-recipes/focus_tabs-v1.png` |
+| `salvagers_oil` | `art/crafting/gear-recipes/salvagers_oil-v1.png` |
+| `trauma_dressing` | `art/crafting/gear-recipes/trauma_dressing-v1.png` |
+| `overclock_patch` | `art/crafting/gear-recipes/overclock_patch-v1.png` |
+| `rmat_attractor` | `art/crafting/gear-recipes/rmat_attractor-v1.png` |
+| `thermal_gel` | `art/crafting/gear-recipes/thermal_gel-v1.png` |
+| `combat_stim_iv` | `art/crafting/gear-recipes/combat_stim_iv-v1.png` |
+| `apex_combat` | `art/crafting/gear-recipes/apex_combat-v1.png` |
+| `echo_siphon` | `art/crafting/gear-recipes/echo_siphon-v1.png` |
+| `nanite_serum` | `art/crafting/gear-recipes/nanite_serum-v1.png` |
+| `crystalline_surge` | `art/crafting/gear-recipes/crystalline_surge-v1.png` |
+| `crystalline_resonator` | `art/crafting/gear-recipes/crystalline_resonator-v1.png` |
+| `revenant_infusion` | `art/crafting/gear-recipes/revenant_infusion-v1.png` |
+| `echo_state` | `art/crafting/gear-recipes/echo_state-v1.png` |
+| `singularity_seed` | `art/crafting/gear-recipes/singularity_seed-v1.png` |
+| `iron_knuckles` | `art/crafting/gear-recipes/iron_knuckles-v1.png` |
+| `pipe_pistol` | `art/crafting/gear-recipes/pipe_pistol-v1.png` |
+| `spike_board` | `art/crafting/gear-recipes/spike_board-v1.png` |
+| `combat_knife` | `art/crafting/gear-recipes/combat_knife-v1.png` |
+| `steel_baton` | `art/crafting/gear-recipes/steel_baton-v1.png` |
+| `machete_blade` | `art/crafting/gear-recipes/machete_blade-v1.png` |
+| `combat_axe` | `art/crafting/gear-recipes/combat_axe-v1.png` |
+| `shock_baton` | `art/crafting/gear-recipes/shock_baton-v1.png` |
+| `jet_sledge` | `art/crafting/gear-recipes/jet_sledge-v1.png` |
+| `pipe_shotgun` | `art/crafting/gear-recipes/pipe_shotgun-v1.png` |
+| `compound_bow` | `art/crafting/gear-recipes/compound_bow-v1.png` |
+| `crossbow` | `art/crafting/gear-recipes/crossbow-v1.png` |
+| `shock_pistol` | `art/crafting/gear-recipes/shock_pistol-v1.png` |
+| `arc_carbine` | `art/crafting/gear-recipes/arc_carbine-v1.png` |
+| `flamethrower` | `art/crafting/gear-recipes/flamethrower-v1.png` |
+| `void_pulse_rifle` | `art/crafting/gear-recipes/void_pulse_rifle-v1.png` |
+| `scrap_helmet` | `art/crafting/gear-recipes/scrap_helmet-v1.png` |
+| `leather_gloves` | `art/crafting/gear-recipes/leather_gloves-v1.png` |
+| `soft_armor_vest` | `art/crafting/gear-recipes/soft_armor_vest-v1.png` |
+| `riot_helmet` | `art/crafting/gear-recipes/riot_helmet-v1.png` |
+| `combat_boots` | `art/crafting/gear-recipes/combat_boots-v1.png` |
+| `composite_helmet` | `art/crafting/gear-recipes/composite_helmet-v1.png` |
+| `molle_pack` | `art/crafting/gear-recipes/molle_pack-v1.png` |
+| `sensor_rig` | `art/crafting/gear-recipes/sensor_rig-v1.png` |
+| `perimeter_helmet` | `art/crafting/gear-recipes/perimeter_helmet-v1.png` |
+| `plate_carrier` | `art/crafting/gear-recipes/plate_carrier-v1.png` |
+| `runners_cloak` | `art/crafting/gear-recipes/runners_cloak-v1.png` |
+| `ghost_wrap` | `art/crafting/gear-recipes/ghost_wrap-v1.png` |
+| `adrenaline_shot` | `art/crafting/gear-recipes/adrenaline_shot-v1.png` |
+| `smoke_vial` | `art/crafting/gear-recipes/smoke_vial-v1.png` |
+| `tacticians_lens` | `art/crafting/gear-recipes/tacticians_lens-v1.png` |
+| `warlords_sigil` | `art/crafting/gear-recipes/warlords_sigil-v1.png` |
+| `combat_focus_draught` | `art/crafting/gear-recipes/combat_focus_draught-v1.png` |
+| `scholars_tonic` | `art/crafting/gear-recipes/scholars_tonic-v1.png` |
 
 ## Rotten variants generated
 

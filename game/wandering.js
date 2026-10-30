@@ -201,17 +201,26 @@ ZI.wanderPolicyStep = function(rng, ctx) {
   // The Fort is now a fixed Traversal site (Hearthguard gate), not a random roll.
   const pol = ZI.getPolicy(), P = ZI.POLICIES[pol.id] || ZI.POLICIES.ethical;
   const pool = ZI.ENCOUNTER_POOLS[P.id] || ZI.ENCOUNTER_POOLS.ethical;
-  let r = rng() * pool.reduce((a, e) => a + e.w, 0), e = pool[0];
-  for (const x of pool) { r -= x.w; if (r <= 0) { e = x; break; } }
+  const here = ZI.getTravZone && ZI.getTravZone();
+  const dailyVariation = ZI.WORLD_DAILY_VARIATION || {};
+  const atMs = Number.isFinite(ctx.simNow) ? ctx.simNow : undefined;
+  const dailyPressure = ZI.worldDailyShift ? ZI.worldDailyShift(here, 2, 1, atMs) : 0;
+  const weightNudge = dailyVariation.encounterWeightPct || 0;
+  const weights = pool.map(x => x.w * (['faction','raid','zombie'].includes(x.kind)
+    ? 1 + dailyPressure * weightNudge
+    : 1 - dailyPressure * weightNudge * 0.5));
+  let r = rng() * weights.reduce((a, w) => a + w, 0), e = pool[0];
+  for (let i = 0; i < pool.length; i++) { r -= weights[i]; if (r <= 0) { e = pool[i]; break; } }
   const lvl = ZI.effectiveLevel(e.checks[0]), lvl2 = ZI.effectiveLevel(e.checks[1]);
   const cmd = ZI.effectiveLevel('command');
   let faction = null, hex = 0, standing = null;
   if (e.kind === 'faction' || e.kind === 'trade' || e.kind === 'raid' || (e.rep && e.rep < 0)) {
-    faction = ZI.HEX_ORDER[Math.floor(rng() * ZI.HEX_ORDER.length)];
+    faction = ZI.choosePoiAwareFaction ? ZI.choosePoiAwareFaction(rng, here, atMs) : ZI.HEX_ORDER[Math.floor(rng() * ZI.HEX_ORDER.length)];
     hex = ZI.hexModifier(ZI.alignedFaction(), faction);
     standing = ZI.repTier(ZI.getRep(faction));
   }
   let chance = 48 + lvl * 1.1 + lvl2 * 0.4 + hex + (e.kind === 'faction' ? cmd * 0.3 : 0);
+  if (faction) chance += ZI.worldDailyShift ? ZI.worldDailyShift(here, 3, dailyVariation.factionCheckPct || 0, atMs) : 0;
   if (standing && (standing.name === 'Hostile' || standing.name === 'Hunted')) chance -= standing.name === 'Hunted' ? 18 : 10;
   if (P.id === 'heinous') chance += 6; // brute force
   chance = Math.max(10, Math.min(95, Math.round(chance)));
@@ -240,8 +249,9 @@ ZI.wanderPolicyStep = function(rng, ctx) {
     ? { name: e.name.replace(/ \(.*\)$/, '') + ' haul', value: Math.max(2, Math.round((6 + lvl * 0.6) * lootMult)), rarity: rng() < 0.12 * lootMult ? 'Uncommon' : 'Common' } : null;
   const dmg = ok ? 0 : Math.round(4 + rng() * 8 + (e.kind === 'raid' || e.kind === 'faction' ? 6 : 0));
   const how = e.kind === 'zombie' ? (P.resolve === 'evade' ? 'evaded' : 'cut down') : ok ? 'handled' : 'botched';
-  const text = `${P.icon} ${e.name}${fName ? ` (${fName}${hex ? `, hexagon ${hex > 0 ? '+' : ''}${hex}%` : ''})` : ''} — ${ok ? 'success' : 'failed'} (${chance}%): ${how}${loot ? `, +${loot.name}` : ''}${dmg ? `, took ${dmg} dmg` : ''} · ${e.checks[0]} XP${repTxt}`;
-  return { ok, encounter:e, chance, loot, dmg, faction, text, tone: ok ? 'player' : 'enemy' };
+  const reaction = faction && ZI.poiFactionReaction && ZI.poiFactionReaction(ZI.getTravZone && ZI.getTravZone(), faction);
+  const text = `${P.icon} ${e.name}${fName ? ` (${fName}${hex ? `, hexagon ${hex > 0 ? '+' : ''}${hex}%` : ''})` : ''} — ${ok ? 'success' : 'failed'} (${chance}%): ${how}${loot ? `, +${loot.name}` : ''}${dmg ? `, took ${dmg} dmg` : ''} · ${e.checks[0]} XP${repTxt}${reaction ? ` · ${reaction.text}` : ''}`;
+  return { ok, encounter:e, chance, loot, dmg, faction, factionReaction:reaction, text, tone: ok ? 'player' : 'enemy' };
 };
 // Messages for the Wandering combat log, delivered next time that screen is open.
 ZI.queueWanderLog = function(text) { const q = ZI._rj('zi_wander_log_queue', []); q.push(text); ZI._wj('zi_wander_log_queue', q); };
@@ -459,9 +469,11 @@ ZI.WanderSim = {
         else { inc('kills'); inc('xp', r.xp); inc('mats', r.mats); inc('loot'); }
       } else if (!wd && state._polMs >= PM) {
         state._polMs = 0; n++;
-        const r = ZI.wanderPolicyStep(rng);
+        const r = ZI.wanderPolicyStep(rng, { simNow:state._simNow });
         if (r.dmg) { state.hp = Math.max(1, state.hp - r.dmg); away.dmgTaken = (away.dmgTaken || 0) + r.dmg; ZI.injuryOnDamage && ZI.injuryOnDamage(r.dmg); }
         if (r.loot) { if (ZI.simPickup) ZI.simPickup(state, r.loot); else state.carried = (state.carried || []).concat([r.loot]); }
+        if (r.policeStationSearchEvent) away.policeStationSearches = (away.policeStationSearches || 0) + 1;
+        if (r.policeStationQuestComplete) away.policeStationQuestComplete = true;
         ZI.flushTooHeavy && ZI.flushTooHeavy(state, away, events); // BAL-A parity fix
         events.push({ kind:'policy', text: r.text, tone: r.tone, dmg: r.dmg || 0, loot: r.loot || null });
         away.events = (away.events || 0) + 1; away.eventLog = (away.eventLog || []).concat([r.text]).slice(-4);

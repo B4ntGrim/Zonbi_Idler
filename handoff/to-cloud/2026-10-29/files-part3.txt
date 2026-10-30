@@ -1,0 +1,45 @@
+art/crafting/recipes/nail-board-v1.png
+art/crafting/recipes/scrap-pouch-v1.png
+art/crafting/recipes/scrap-wire-v1.png
+character-creation.jsx
+game/character.js
+game/operations.js
+handoff/to-cloud/2026-10-29/dist-manifest-2.txt
+operations-ui.jsx
+reference/operations-schedule-proposal.md
+reports/char-crawler-ops-2026-10-29/REPORT.md
+reports/char-crawler-ops-2026-10-29/pre-change/Zombie Idler v2 - TEST SAVE.html
+reports/char-crawler-ops-2026-10-29/pre-change/Zombie Idler v2.html
+reports/char-crawler-ops-2026-10-29/pre-change/best1-enemy-identity.test.js
+reports/char-crawler-ops-2026-10-29/pre-change/bestiary-data.js
+reports/char-crawler-ops-2026-10-29/pre-change/game/camp.js
+reports/char-crawler-ops-2026-10-29/pre-change/game/combat.js
+reports/char-crawler-ops-2026-10-29/pre-change/game/save.js
+reports/char-crawler-ops-2026-10-29/pre-change/game/stats.js
+reports/char-crawler-ops-2026-10-29/pre-change/game/wandering.js
+reports/char-crawler-ops-2026-10-29/pre-change/operations-schedule-proposal.md
+reports/char-crawler-ops-2026-10-29/pre-change/screens-v2b.jsx
+reports/char-crawler-ops-2026-10-29/pre-change/screens-v3.jsx
+reports/char-crawler-ops-2026-10-29/pre-change/split-equivalence.test.js
+reports/char-crawler-ops-2026-10-29/pre-change/zombie-sprites.js
+reports/char-crawler-ops-2026-10-29/screenshots/cc-1.png
+reports/char-crawler-ops-2026-10-29/screenshots/cc-2.png
+reports/char-crawler-ops-2026-10-29/screenshots/cc-3.png
+reports/char-crawler-ops-2026-10-29/screenshots/cc-4.png
+reports/char-crawler-ops-2026-10-29/screenshots/ops-camp.png
+reports/char-crawler-ops-2026-10-29/screenshots/ops-solo.png
+reports/char-crawler-ops-2026-10-29/scripts/ccui.js
+tests/char-crawler-ops.test.js
+tests/export-import.test.js
+tools/build-web.cjs
+CODE_STATE.md
+DESIGN_HANDOFF.md
+Zombie Idler v2 - TEST SAVE.html
+Zombie Idler v2.html
+bestiary-data.js
+game/save.js
+game/stats.js
+game/wandering.js
+reference/00-document-index.md
+screens-v3.jsx
+tests/split-equivalence.test.js
