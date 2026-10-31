@@ -79,6 +79,7 @@ function StatLevelingScreen() {
     const nextXp  = p.id === 'scavenging' ? ZI._scavCumThreshold(level + 1) : xpForLvl(level + 1);
     return {
       id:p.id, name:p.name, icon:p.icon, level,
+      bonuses:p.bonuses || [],
       xp: Math.max(0, xp - floorXp), maxXp: Math.max(1, nextXp - floorXp),
       total: xp, color: PROF_COLORS[p.id] || 'var(--amber)', css: PROF_COLORS[p.id],
     };
@@ -96,19 +97,114 @@ function StatLevelingScreen() {
 
   const attrObj = ZI.SURVIVAL_ATTRS.find(a => a.key === selectedAttr || a.key === selectedAttr+'2');
 
-  // Click-and-drag on empty space pans the whole Stats page (buttons, sliders and text inputs still work normally).
-  const statsPanRef = React.useRef(null);
-  const startStatsPan = (e) => {
-    if (e.button !== 0 || e.target.closest('button, input, select, textarea, a, label, [role="slider"]')) return;
-    const el = statsPanRef.current; if (!el) return;
-    const x0 = e.clientX, y0 = e.clientY, l0 = el.scrollLeft, t0 = el.scrollTop;
-    el.style.cursor = 'grabbing';
-    const move = (ev) => { el.scrollLeft = l0 - (ev.clientX - x0); el.scrollTop = t0 - (ev.clientY - y0); };
-    const up = () => { el.style.cursor = 'grab'; window.removeEventListener('mousemove', move); window.removeEventListener('mouseup', up); };
-    window.addEventListener('mousemove', move); window.addEventListener('mouseup', up);
-  };
+  const statMilestonesPanel = (
+    <div className="panel" style={{ flex:'1 0 auto', minHeight:360, display:'flex', flexDirection:'column', overflow:'hidden' }}>
+      <div className="panel-title">Stat Milestones</div>
+      <div style={{ flex:1, minHeight:0, overflow:'auto', padding:8 }}>
+        {selectedAttr ? (
+          <>
+            <div style={{ fontFamily:'var(--font-body)', fontSize:14, color:'var(--amber)', marginBottom:4 }}>
+              {ZI.SURVIVAL_ATTRS.find(a=>a.key===selectedAttr||a.key===selectedAttr+'2')?.name || selectedAttr}
+            </div>
+            <div style={{ fontFamily:'var(--font-mono)', fontSize:9, color:'var(--text3)', marginBottom:10, lineHeight:1.6 }}>
+              {ZI.SURVIVAL_ATTRS.find(a=>a.key===selectedAttr||a.key===selectedAttr+'2')?.desc}
+            </div>
+            <div className="divider"/>
+            {[25,50,75,100].map(threshold => {
+              const current = stats.find(s=>s.key===selectedAttr)?.level || 0;
+              const reached = current * 5 >= threshold;
+              return (
+                <div key={threshold} style={{ padding:'7px 8px', marginBottom:5, border:`1px solid ${reached?'var(--amber)':'var(--border)'}`, background:reached?'rgba(200,169,110,0.08)':'var(--bg3)', opacity:reached?1:0.8 }}>
+                  <div style={{ display:'flex', alignItems:'center', gap:6, marginBottom:2 }}>
+                    <div style={{ width:7, height:7, borderRadius:'50%', background:reached?'var(--green)':'var(--border2)' }}/>
+                    <span style={{ fontFamily:'var(--font-body)', fontSize:12, color:reached?'var(--amber)':'var(--text3)' }}>Level {threshold/5} Milestone</span>
+                  </div>
+                  <div style={{ fontFamily:'var(--font-mono)', fontSize:9, color:'var(--text3)' }}>
+                    {threshold===25 && 'Minor perk unlock · Scaling bonus'}
+                    {threshold===50 && 'Intermediate perk · Weapon grade up'}
+                    {threshold===75 && 'Major perk · Build archetype synergy'}
+                    {threshold===100 && 'Mastery spike · Class evolution eligible'}
+                  </div>
+                </div>
+              );
+            })}
+          </>
+        ) : (
+          <div style={{ textAlign:'center', padding:20 }}>
+            <div style={{ fontFamily:'var(--font-title)', fontSize:13, color:'var(--text3)', marginBottom:6 }}>Select a Stat</div>
+            <div style={{ fontFamily:'var(--font-mono)', fontSize:9, color:'var(--text3)' }}>Choose a SURVIVAL attribute above to view its milestone path.</div>
+          </div>
+        )}
+        <div className="divider"/>
+        <div data-tome-milestones="1" style={{ paddingBottom:4 }}>
+          <div style={{ fontFamily:'var(--font-mono)', fontSize:10, color:'var(--amber)', letterSpacing:'0.08em', marginBottom:7 }}>TOME SCHEMATICS</div>
+          {(ZI.TOME_SERIES || []).map(series => {
+            const progress = ZI.tomeSeriesProgress && ZI.tomeSeriesProgress(series.id);
+            if (!progress) return null;
+            const next = progress.next, xp = ZI.bookXpBonus ? ZI.bookXpBonus(series.profession) : 0;
+            return <div key={series.id} data-tome-series={series.id} style={{ padding:'7px 8px', marginBottom:6, background:'var(--bg3)', border:'1px solid var(--border)' }}>
+              <div style={{ display:'flex', justifyContent:'space-between', gap:5, alignItems:'center' }}>
+                <span style={{ fontFamily:'var(--font-body)', fontSize:12, color:'var(--text)' }}>{series.name}</span>
+                <span style={{ fontFamily:'var(--font-mono)', fontSize:9, color:'var(--amber)' }}>{progress.copies}/{series.cap}</span>
+              </div>
+              {next ? <>
+                <div style={{ fontFamily:'var(--font-mono)', fontSize:9, color:'var(--text2)', marginTop:4 }}>Next: {next.copies} copies · {next.item} schematic</div>
+                <div style={{ fontFamily:'var(--font-mono)', fontSize:8, color:next.missing.length?'var(--amber)':'var(--text3)', marginTop:2 }}>{progress.copies<next.copies?`${next.copies-progress.copies} more tome copies`:`Waiting for ${next.missing.join(', ')}`}{next.station?` · ${next.station}`:''}</div>
+              </> : <div style={{ fontFamily:'var(--font-mono)', fontSize:9, color:'var(--green)', marginTop:4 }}>Series complete · all schematics earned</div>}
+              {xp>0 && <div style={{ fontFamily:'var(--font-mono)', fontSize:8, color:'var(--green)', marginTop:3 }}>📖 Books add +{xp}% {series.profession} XP</div>}
+            </div>;
+          })}
+          {!(ZI.TOME_SERIES || []).length && <div style={{ fontFamily:'var(--font-mono)', fontSize:9, color:'var(--text3)' }}>No tome collections found yet.</div>}
+          {ZI.ungroupedTomeCount && ZI.ungroupedTomeCount()>0 && <div data-ungrouped-tomes="1" style={{ padding:'6px 8px', marginBottom:6, background:'var(--bg3)', border:'1px solid var(--border)' }}>
+            <div style={{ display:'flex', justifyContent:'space-between', fontFamily:'var(--font-body)', fontSize:11, color:'var(--text)' }}><span>Ungrouped tomes</span><span>{ZI.ungroupedTomeCount()} copies</span></div>
+            <div style={{ fontFamily:'var(--font-mono)', fontSize:8, color:'var(--text3)', marginTop:2 }}>These copies are not assigned to a schematic series yet.</div>
+          </div>}
+          <div style={{ fontFamily:'var(--font-mono)', fontSize:8, color:'var(--text3)', lineHeight:1.4 }}>Copies are counted when stored at base. Book XP bonuses are tracked separately above.</div>
+        </div>
+      </div>
+    </div>
+  );
+
+  const liveStats = ZI.PROG && ZI.PROG.LIVE;
+  const loadoutStats = ZI.resolveLoadoutStats ? ZI.resolveLoadoutStats() : {};
+  const carryStats = ZI.carryTotals ? ZI.carryTotals() : null;
+  let combatStats = {};
+  try { combatStats = ZI.STAT_FORMULAS && ZI.STAT_FORMULAS.survivorStatBlock ? ZI.STAT_FORMULAS.survivorStatBlock() : {}; } catch (e) {}
+  const runStats = ZI.getWanderRun ? ZI.getWanderRun() : {};
+  const fmt = n => Number.isFinite(n) ? String(Math.round(n * 10) / 10) : '—';
+  const progressValue = key => liveStats && liveStats.display ? liveStats.display(key) : 'Not connected';
+  const overallStatGroups = [
+    { id:'attack', label:'ATTACK', rows:[
+      ['Weapon damage', `${combatStats.damageMin || 0}–${combatStats.damageMax || 0}`],
+      ['Accuracy rating', fmt(combatStats.accuracy)],
+      ['Critical chance', `${fmt(combatStats.crit)}%`],
+      ['Critical hit bonus', `+${fmt(combatStats.critBonus)} damage`],
+      ['Damage multiplier', progressValue('damage')],
+      ['Attack speed', progressValue('attackSpeed')],
+      ['Heavy swing chance', `${fmt(loadoutStats.heavySwingPct || 0)}%`],
+      ['Stagger chance', `${fmt(loadoutStats.staggerPct || 0)}%`],
+    ]},
+    { id:'defense', label:'DEFENSE', rows:[
+      ['Current health', `${fmt(runStats.hp == null ? ZI.maxHp() : runStats.hp)} / ${ZI.maxHp()} HP`],
+      ['Armor', `${fmt(loadoutStats.armorRating || 0)} flat · ${progressValue('armor')}`],
+      ['Evasion', `${fmt(combatStats.evasion)}%`],
+      ['Rest recovery', `${fmt(ZI.WANDER_REST_TABLE && ZI.WANDER_REST_TABLE.restHpPerMinutePct || 0)}% max HP / min`],
+      ['Health regeneration rank', progressValue('hpRegen')],
+    ]},
+    { id:'utility', label:'UTILITY', rows:[
+      ['Movement speed', progressValue('moveSpeed')],
+      ['Carry load', carryStats ? `${fmt(carryStats.loadKg)} / ${fmt(carryStats.capacityKg)} kg` : '—'],
+      ['Free carry capacity', carryStats ? `${fmt(Math.max(0, carryStats.capacityKg-carryStats.loadKg))} kg` : '—'],
+      ['Loot quality', `+${ZI.STAT_FORMULAS.scavengingQualityBonus(ZI.effectiveLevel('scavenging'))}%`],
+      ['Loot retained after retreat', `${Math.round(ZI.STAT_FORMULAS.scavDropProtection(ZI.effectiveLevel('scavenging'))*100)}%`],
+      ['Heal strength', `${ZI.STAT_FORMULAS.firstAidHealPercent(ZI.effectiveLevel('firstAid'))}% max HP`],
+      ['Scouting reveal', `${ZI.STAT_FORMULAS.stealthScoutCount(ZI.effectiveLevel('stealth'))} threats`],
+      ['Push distance', `${ZI.STAT_FORMULAS.stealthPushDistance(ZI.effectiveLevel('stealth'))} m`],
+    ]},
+  ];
+
   return (
-    <div ref={statsPanRef} onMouseDown={startStatsPan} className="screen-enter" style={{ display:'flex', flexWrap:'wrap', alignContent:'flex-start', gap:8, padding:8, height:'100%', overflow:'auto', position:'relative', cursor:'grab' }}>
+    <div className="screen-enter" style={{ display:'flex', flexWrap:'wrap', alignContent:'flex-start', gap:8, padding:8, height:'100%', overflow:'auto' }}>
       {xpFlash && (
         <div style={{
           position:'absolute', top:12, right:14, zIndex:60,
@@ -173,6 +269,7 @@ function StatLevelingScreen() {
             })}
           </div>
         </div>
+        {statMilestonesPanel}
       </div>
 
       {/* CENTER: Professions + Time display */}
@@ -338,27 +435,33 @@ function StatLevelingScreen() {
         {/* Professions */}
         <div className="panel" style={{ flex:'1 0 auto', minHeight:380, display:'flex', flexDirection:'column' }}>
           <div className="panel-title">Profession XP <span style={{ fontFamily:'var(--font-mono)', fontSize:9, color:'var(--text3)', marginLeft:6 }}>· PZ skill model · actions = XP</span></div>
-          <div style={{ flex:1, padding:8, display:'grid', gridTemplateColumns:'repeat(auto-fill, minmax(230px, 1fr))', gap:6, alignContent:'start' }}>
+          <div style={{ flex:1, padding:10, display:'grid', gridTemplateColumns:'repeat(auto-fill, minmax(280px, 1fr))', gap:8, alignContent:'start' }}>
             {professions.map(p => {
               const pct = (p.xp / p.maxXp) * 100;
               const color = p.css || p.color;
               const src = ZI.SKILL_XP_SOURCES[p.name]?.sources;
               const xpCopy = (src && src[0]) || p.desc || 'Actions in the field';
               return (
-                <div key={p.id} style={{ padding:'8px 10px', background:'var(--bg3)', border:`1px solid ${xpFlash && xpFlash.prof===p.name ? color : 'var(--border)'}`, transition:'border-color 0.3s' }}>
-                  <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:4 }}>
-                    <span style={{ fontFamily:'var(--font-body)', fontSize:13, color:'var(--text)', fontWeight:500 }}>
+                <div key={p.id} style={{ padding:'11px 13px', background:'var(--bg3)', border:`1px solid ${xpFlash && xpFlash.prof===p.name ? color : 'var(--border)'}`, transition:'border-color 0.3s' }}>
+                  <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:6 }}>
+                    <span style={{ fontFamily:'var(--font-body)', fontSize:15, color:'var(--text)', fontWeight:500 }}>
                       <span style={{ marginRight:5 }}>{p.icon}</span>{p.name}
                     </span>
-                    <span style={{ fontFamily:'var(--font-mono)', fontSize:11, color }}>Lv {p.level}/50</span>
+                    <span style={{ fontFamily:'var(--font-mono)', fontSize:12, color }}>Lv {p.level}/50</span>
                   </div>
                   <ProgressBar value={pct} color={color} height={5}/>
-                  <div style={{ display:'flex', justifyContent:'space-between', fontFamily:'var(--font-mono)', fontSize:9, color:'var(--text3)', marginTop:3 }}>
+                  <div style={{ display:'flex', justifyContent:'space-between', fontFamily:'var(--font-mono)', fontSize:10, color:'var(--text3)', marginTop:4 }}>
                     <span>{p.xp}/{p.maxXp} XP</span>
                     <span>{p.total} total</span>
                   </div>
-                  <div style={{ fontFamily:'var(--font-mono)', fontSize:8, color:'var(--text3)', marginTop:3, fontStyle:'italic' }}>
+                  <div style={{ fontFamily:'var(--font-mono)', fontSize:10, color:'var(--text3)', marginTop:5, lineHeight:1.4, fontStyle:'italic' }}>
                     +XP: {xpCopy}
+                  </div>
+                  <div data-profession-bonuses={p.id} style={{ marginTop:8, paddingTop:7, borderTop:'1px solid var(--border)' }}>
+                    <div style={{ fontFamily:'var(--font-mono)', fontSize:10, color:'var(--amber)', marginBottom:4 }}>PER LEVEL</div>
+                    {p.bonuses.map((bonus, i) => (
+                      <div key={i} style={{ fontFamily:'var(--font-mono)', fontSize:11, color:'var(--text2)', lineHeight:1.5, paddingLeft:9, textIndent:-8 }}>· {bonus}</div>
+                    ))}
                   </div>
                   {ZI.bookXpBonus && ZI.bookXpBonus(p.id) > 0 && <div data-book-xp={p.id} style={{ fontFamily:'var(--font-mono)', fontSize:9, color:'var(--green)', marginTop:3 }}>📖 Read books: +{ZI.bookXpBonus(p.id)}% profession XP</div>}
                   {(() => {
@@ -393,81 +496,26 @@ function StatLevelingScreen() {
         </div>
       </div>
 
-      {/* RIGHT: Unlock path for selected attr */}
-      <div style={{ flex:'1 1 230px', minWidth:220, maxWidth:300, minHeight:'100%', display:'flex', flexDirection:'column', gap:8 }}>
+      {/* RIGHT: current overall combat, defense, and utility values */}
+      <div style={{ flex:'1 1 260px', minWidth:240, maxWidth:340, minHeight:'100%', display:'flex', flexDirection:'column' }}>
         <div className="panel" style={{ flex:'1 0 auto', minHeight:420, display:'flex', flexDirection:'column', overflow:'hidden' }}>
-          <div className="panel-title">Stat Milestones</div>
-          <div style={{ flex:1, overflow:'auto', padding:8 }}>
-            {selectedAttr ? (
-              <>
-                <div style={{ fontFamily:'var(--font-body)', fontSize:14, color:'var(--amber)', marginBottom:4 }}>
-                  {ZI.SURVIVAL_ATTRS.find(a=>a.key===selectedAttr||a.key===selectedAttr+'2')?.name || selectedAttr}
-                </div>
-                <div style={{ fontFamily:'var(--font-mono)', fontSize:9, color:'var(--text3)', marginBottom:10, lineHeight:1.6 }}>
-                  {ZI.SURVIVAL_ATTRS.find(a=>a.key===selectedAttr||a.key===selectedAttr+'2')?.desc}
-                </div>
-                <div className="divider"/>
-                {[25,50,75,100].map(threshold => {
-                  const current = stats.find(s=>s.key===selectedAttr)?.level || 0;
-                  const reached = current * 5 >= threshold;
-                  return (
-                    <div key={threshold} style={{
-                      padding:'7px 8px', marginBottom:5,
-                      border:`1px solid ${reached?'var(--amber)':'var(--border)'}`,
-                      background: reached?'rgba(200,169,110,0.08)':'var(--bg3)',
-                      opacity: reached ? 1 : 0.8,
-                    }}>
-                      <div style={{ display:'flex', alignItems:'center', gap:6, marginBottom:2 }}>
-                        <div style={{ width:7, height:7, borderRadius:'50%', background: reached?'var(--green)':'var(--border2)' }}/>
-                        <span style={{ fontFamily:'var(--font-body)', fontSize:12, color: reached?'var(--amber)':'var(--text3)' }}>
-                          Level {threshold/5} Milestone
-                        </span>
-                      </div>
-                      <div style={{ fontFamily:'var(--font-mono)', fontSize:9, color:'var(--text3)' }}>
-                        {threshold === 25 && 'Minor perk unlock · Scaling bonus'}
-                        {threshold === 50 && 'Intermediate perk · Weapon grade up'}
-                        {threshold === 75 && 'Major perk · Build archetype synergy'}
-                        {threshold === 100 && 'Mastery spike · Class evolution eligible'}
-                      </div>
-                    </div>
-                  );
-                })}
-              </>
-            ) : (
-              <div style={{ textAlign:'center', padding:20 }}>
-                <div style={{ fontFamily:'var(--font-title)', fontSize:13, color:'var(--text3)', marginBottom:6 }}>Select a Stat</div>
-                <div style={{ fontFamily:'var(--font-mono)', fontSize:9, color:'var(--text3)' }}>Click any SURVIVAL attribute to view its milestone unlock path.</div>
-              </div>
-            )}
-            <div className="divider"/>
-            <div data-tome-milestones="1" style={{ paddingBottom:4 }}>
-              <div style={{ fontFamily:'var(--font-mono)', fontSize:10, color:'var(--amber)', letterSpacing:'0.08em', marginBottom:7 }}>TOME SCHEMATICS</div>
-              {(ZI.TOME_SERIES || []).map(series => {
-                const progress = ZI.tomeSeriesProgress && ZI.tomeSeriesProgress(series.id);
-                if (!progress) return null;
-                const next = progress.next;
-                const xp = ZI.bookXpBonus ? ZI.bookXpBonus(series.profession) : 0;
-                return <div key={series.id} data-tome-series={series.id} style={{ padding:'7px 8px', marginBottom:6, background:'var(--bg3)', border:'1px solid var(--border)' }}>
-                  <div style={{ display:'flex', justifyContent:'space-between', gap:5, alignItems:'center' }}>
-                    <span style={{ fontFamily:'var(--font-body)', fontSize:12, color:'var(--text)' }}>{series.name}</span>
-                    <span style={{ fontFamily:'var(--font-mono)', fontSize:9, color:'var(--amber)' }}>{progress.copies}/{series.cap}</span>
+          <div className="panel-title" style={{ display:'flex', alignItems:'center', justifyContent:'space-between' }}>
+            <span>Overall Stats</span><span style={{ fontFamily:'var(--font-mono)', fontSize:8, color:'var(--text3)' }}>LIVE VALUES</span>
+          </div>
+          <div data-overall-stats-scroll="1" style={{ flex:1, minHeight:0, overflowY:'auto', overflowX:'hidden', padding:8 }}>
+            {overallStatGroups.map(group => (
+              <section key={group.id} data-overall-category={group.id} style={{ marginBottom:10 }}>
+                <div style={{ fontFamily:'var(--font-mono)', fontSize:9, color:'var(--amber)', letterSpacing:'0.12em', paddingBottom:4, borderBottom:'1px solid var(--border)', marginBottom:4 }}>{group.label}</div>
+                {group.rows.map(([label,value]) => (
+                  <div key={label} style={{ display:'flex', justifyContent:'space-between', alignItems:'baseline', gap:8, padding:'3px 2px', borderBottom:'1px solid rgba(255,255,255,0.035)' }}>
+                    <span style={{ fontFamily:'var(--font-body)', fontSize:11, color:'var(--text2)' }}>{label}</span>
+                    <span style={{ fontFamily:'var(--font-mono)', fontSize:10, color:'var(--text)', textAlign:'right' }}>{value}</span>
                   </div>
-                  {next ? <>
-                    <div style={{ fontFamily:'var(--font-mono)', fontSize:9, color:'var(--text2)', marginTop:4 }}>Next: {next.copies} copies · {next.item} schematic</div>
-                    <div style={{ fontFamily:'var(--font-mono)', fontSize:8, color:next.missing.length ? 'var(--amber)' : 'var(--text3)', marginTop:2 }}>
-                      {progress.copies < next.copies ? `${next.copies - progress.copies} more tome copies` : `Waiting for ${next.missing.join(', ')}`}
-                      {next.station ? ` · ${next.station}` : ''}
-                    </div>
-                  </> : <div style={{ fontFamily:'var(--font-mono)', fontSize:9, color:'var(--green)', marginTop:4 }}>Series complete · all schematics earned</div>}
-                  {xp > 0 && <div style={{ fontFamily:'var(--font-mono)', fontSize:8, color:'var(--green)', marginTop:3 }}>📖 Books add +{xp}% {series.profession} XP</div>}
-                </div>;
-              })}
-              {!(ZI.TOME_SERIES || []).length && <div style={{ fontFamily:'var(--font-mono)', fontSize:9, color:'var(--text3)' }}>No tome collections found yet.</div>}
-              {ZI.ungroupedTomeCount && ZI.ungroupedTomeCount() > 0 && <div data-ungrouped-tomes="1" style={{ padding:'6px 8px', marginBottom:6, background:'var(--bg3)', border:'1px solid var(--border)' }}>
-                <div style={{ display:'flex', justifyContent:'space-between', fontFamily:'var(--font-body)', fontSize:11, color:'var(--text)' }}><span>Ungrouped tomes</span><span>{ZI.ungroupedTomeCount()} copies</span></div>
-                <div style={{ fontFamily:'var(--font-mono)', fontSize:8, color:'var(--text3)', marginTop:2 }}>These copies are not assigned to a schematic series yet.</div>
-              </div>}
-              <div style={{ fontFamily:'var(--font-mono)', fontSize:8, color:'var(--text3)', lineHeight:1.4 }}>Copies are counted when stored at base. Book XP bonuses are tracked separately above.</div>
+                ))}
+              </section>
+            ))}
+            <div style={{ fontFamily:'var(--font-mono)', fontSize:8, color:'var(--text3)', lineHeight:1.45, padding:'4px 2px' }}>
+              Overall Stats shows current character totals. Each profession square lists its three per-level bonuses.
             </div>
           </div>
         </div>

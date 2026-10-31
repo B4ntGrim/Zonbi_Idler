@@ -73,6 +73,16 @@ ZI.syncWanderState = function(partial) {
   ZI.saveWanderRun(s);
   return s;
 };
+ZI.CAMP_HP_RESTORE_PCT = 50;
+ZI.healAtCamp = function() {
+  const maxHp = ZI.maxHp ? ZI.maxHp() : 100;
+  const run = ZI.getWanderRun ? ZI.getWanderRun() : { hp:maxHp };
+  const before = Number.isFinite(run.hp) ? run.hp : maxHp;
+  const after = Math.min(maxHp, before + Math.round(maxHp * ZI.CAMP_HP_RESTORE_PCT / 100));
+  const restored = Math.max(0, after - before);
+  if (restored > 0 && ZI.syncWanderState) ZI.syncWanderState({ hp:after });
+  return { restored, hp:after, maxHp };
+};
 // Persist the live distance so leaving the tab doesn't reset progress.
 ZI.setWanderScroll = function(scroll) {
   const s = ZI.getWanderRun();
@@ -106,7 +116,7 @@ ZI._bgZombie = function(lap, rng) {
   rng = rng || Math.random;
   const pool = (ZI.fieldBestiary ? ZI.fieldBestiary() : (ZI.BESTIARY || [])).filter(z => { // Oct 29: + roster additions for new saves (Crawler)
     const rank = { F:0, E:1, D:2, C:3, B:4, A:5, S:6, BOSS:7 }[z.tier] ?? 0;
-    return rank <= Math.min(7, Math.floor(lap / 1.5));
+    return rank <= Math.min(7, Math.floor(lap / ZI.TIER_LAP_DIVISOR));
   });
   const z = pool.length ? pool[Math.floor(rng() * pool.length)] : null;
   return z ? { name: z.name, hp: z.hp, atk: z.dmg, xp: z.xp, seesThrough: ZI.retreatEvadeCounters ? ZI.retreatEvadeCounters(z) : false,
@@ -206,8 +216,9 @@ ZI.wanderPolicyStep = function(rng, ctx) {
   const atMs = Number.isFinite(ctx.simNow) ? ctx.simNow : undefined;
   const dailyPressure = ZI.worldDailyShift ? ZI.worldDailyShift(here, 2, 1, atMs) : 0;
   const weightNudge = dailyVariation.encounterWeightPct || 0;
+  const quieting = Math.max(0.5, 1 - Math.min(0.1225, ZI.professionBonus ? ZI.professionBonus('stealth', 0.0025) : 0));
   const weights = pool.map(x => x.w * (['faction','raid','zombie'].includes(x.kind)
-    ? 1 + dailyPressure * weightNudge
+    ? (1 + dailyPressure * weightNudge) * quieting
     : 1 - dailyPressure * weightNudge * 0.5));
   let r = rng() * weights.reduce((a, w) => a + w, 0), e = pool[0];
   for (let i = 0; i < pool.length; i++) { r -= weights[i]; if (r <= 0) { e = pool[i]; break; } }
@@ -245,13 +256,39 @@ ZI.wanderPolicyStep = function(rng, ctx) {
     repTxt = ` · ${fName} ${d >= 0 ? '+' : ''}${d} rep${rivTxt}`;
   }
   const lootMult = { ethical:0.8, immoral:1, criminal:1.25, heinous:1.8 }[P.id] || 1;
-  const loot = ok && (e.kind === 'loot' || e.kind === 'raid' || e.kind === 'trade')
-    ? { name: e.name.replace(/ \(.*\)$/, '') + ' haul', value: Math.max(2, Math.round((6 + lvl * 0.6) * lootMult)), rarity: rng() < 0.12 * lootMult ? 'Uncommon' : 'Common' } : null;
+  const forageFind = Math.min(0.1225, ZI.professionBonus ? ZI.professionBonus('foraging', 0.0025) : 0);
+  let loot = ok && (e.kind === 'loot' || e.kind === 'raid' || e.kind === 'trade')
+    ? { name: e.name.replace(/ \(.*\)$/, '') + ' haul', value: Math.max(2, Math.round((6 + lvl * 0.6) * lootMult)), rarity: rng() < Math.min(0.9, 0.12 * lootMult + forageFind) ? 'Uncommon' : 'Common' } : null;
+  if (loot) {
+    const gather = 1 + forageFind;
+    const quality = 1 + (ZI.STAT_FORMULAS.scavengingQualityBonus(ZI.effectiveLevel('scavenging')) || 0) / 100;
+    loot.value = Math.max(1, Math.round(loot.value * gather * quality));
+    const bonusSalvage = Math.min(0.1225, ZI.professionBonus ? ZI.professionBonus('scavenging', 0.0025) : 0);
+    // Draw unconditionally. A draw taken only when bonusSalvage > 0 makes the NUMBER of rolls
+    // depend on the survivor's Scavenging level, so the same seed yields different event
+    // sequences for different characters and seeded replay stops being comparable.
+    if (rng() < bonusSalvage) loot.value += 1;
+  }
+  const toolFinds = [];
+  const fieldTool = (family, material, amount, label) => {
+    if (!ok || !ZI.carriedHandTool || !ZI.carriedHandTool(family)) return;
+    const got = ZI.addMaterial ? ZI.addMaterial(material, amount) : 0;
+    if (got > 0) { ZI.useCarriedHandTool(family); toolFinds.push(`+${got} ${label}`); }
+  };
+  if (e.id === 'storehouse') { fieldTool('screwdriver','electronics',1,'Electronics (screwdriver)'); fieldTool('pliers','wiring',1,'Wiring (pliers)'); }
+  if (e.id === 'vehicle') {
+    fieldTool('wrench','fasteners',2,'Fasteners (wrench)');
+    const fuel = window.ZI_MATERIALS && window.ZI_MATERIALS.fuel;
+    if (ok && fuel && fuel.current >= 1 && ZI.carriedHandTool && ZI.carriedHandTool('torch')) {
+      const got = ZI.addMaterial ? ZI.addMaterial('metal',3) : 0;
+      if (got > 0) { fuel.current -= 1; ZI.useCarriedHandTool('torch'); toolFinds.push(`+${got} plate scrap (−1 Fuel)`); }
+    }
+  }
   const dmg = ok ? 0 : Math.round(4 + rng() * 8 + (e.kind === 'raid' || e.kind === 'faction' ? 6 : 0));
   const how = e.kind === 'zombie' ? (P.resolve === 'evade' ? 'evaded' : 'cut down') : ok ? 'handled' : 'botched';
   const reaction = faction && ZI.poiFactionReaction && ZI.poiFactionReaction(ZI.getTravZone && ZI.getTravZone(), faction);
-  const text = `${P.icon} ${e.name}${fName ? ` (${fName}${hex ? `, hexagon ${hex > 0 ? '+' : ''}${hex}%` : ''})` : ''} — ${ok ? 'success' : 'failed'} (${chance}%): ${how}${loot ? `, +${loot.name}` : ''}${dmg ? `, took ${dmg} dmg` : ''} · ${e.checks[0]} XP${repTxt}${reaction ? ` · ${reaction.text}` : ''}`;
-  return { ok, encounter:e, chance, loot, dmg, faction, factionReaction:reaction, text, tone: ok ? 'player' : 'enemy' };
+  const text = `${P.icon} ${e.name}${fName ? ` (${fName}${hex ? `, hexagon ${hex > 0 ? '+' : ''}${hex}%` : ''})` : ''} — ${ok ? 'success' : 'failed'} (${chance}%): ${how}${loot ? `, +${loot.name}` : ''}${dmg ? `, took ${dmg} dmg` : ''} · ${e.checks[0]} XP${repTxt}${reaction ? ` · ${reaction.text}` : ''}${toolFinds.length ? ` · tools: ${toolFinds.join(', ')}` : ''}`;
+  return { ok, encounter:e, chance, loot, dmg, faction, factionReaction:reaction, toolFinds, text, tone: ok ? 'player' : 'enemy' };
 };
 // Messages for the Wandering combat log, delivered next time that screen is open.
 ZI.queueWanderLog = function(text) { const q = ZI._rj('zi_wander_log_queue', []); q.push(text); ZI._wj('zi_wander_log_queue', q); };
@@ -328,7 +365,7 @@ ZI.WANDER_REST_TABLE = { maxHp: 100, restHpPerMinutePct: 5, restResumeAtHpPct: 8
 ZI.WanderSim = {
   emptySummary() { return { kills:0, xp:0, mats:0, dist:0, secs:0, loot:0, escapes:0, retreats:0, events:0, eventLog:[] }; },
   rollEncounter(state, rng) {
-    const boost = ZI.ACTIVE_TABLE ? (state.pressure || 0) * ZI.ACTIVE_TABLE.push.tierBoost * 1.5 : 0; // Push On: +1 tier step per pressure (1.5 laps = 1 tier)
+    const boost = ZI.ACTIVE_TABLE ? (state.pressure || 0) * ZI.ACTIVE_TABLE.push.tierBoost * 1.5 : 0; // Push On: +1 tier step per pressure (written when the divisor was 1.5). OPEN after TIER-01: the ×1.5 is now half a tier at 3.0 — Sam to decide (TIER-01 D4 kept it unchanged).
     return { kind:'zombie', z: ZI._bgZombie(Math.floor((state.scroll || 0) / 100) + boost, rng) };
   },
   resolveEncounter(state, enc, rng) {
@@ -364,6 +401,9 @@ ZI.WanderSim = {
     out.mats = T.matsMin + Math.floor(rng() * T.matsSpread); state.mats = (state.mats || 0) + out.mats;
     if (ZI.emitAction) { ZI.emitAction('kill', (z.xp || 10) / 10); ZI.emitAction('loot', 1); }
     out.loot = { name: z.name + ' salvage', value: Math.max(1, z.xp), rarity: 'Common' };
+    if (ZI.carriedHandTool && ZI.carriedHandTool('pliers') && ZI.addMaterial && ZI.addMaterial('bones',1) > 0) {
+      ZI.useCarriedHandTool('pliers'); out.toolFinds = ['+1 Bone Fragments (teeth and bone salvage)'];
+    }
     if (ZI.simPickup) { if (!ZI.simPickup(state, out.loot)) out.tooHeavy = true; } else state.carried = (state.carried || []).concat([out.loot]);
     if (ZI.wearEquippedOnKill) out.worn = ZI.wearEquippedOnKill();
     if (state.hp < T.topUpBelowHp && ZI.chargeTotals && ZI.chargeTotals().heal > 0) { const h = ZI.simHeal(state, rng, false); if (h.ok) { out.toppedUp = true; out.healSource = h.source; } }
@@ -439,7 +479,8 @@ ZI.WanderSim = {
         continue;
       }
       const A = ZI.ACTIVE_TABLE, EMp = A ? Math.round(EM / (1 + (state.pressure || 0) * A.push.encounterRateMult)) : EM;
-      const DM = A ? A.discoveryEverySec * 1000 : Infinity;
+      const findRate = 1 + Math.min(0.1225, ZI.professionBonus ? ZI.professionBonus('discovery', 0.0025) : 0);
+      const DM = A ? Math.round(A.discoveryEverySec * 1000 / findRate) : Infinity;
       state._discMs = state._discMs || 0;
       const promptLeft = state.prompt ? Math.max(0, state.prompt.expiresInMs) : Infinity;
       ZI.WanderSim._beforeSegment && ZI.WanderSim._beforeSegment(state, away); // instant stress (low HP) settles before the segment is measured

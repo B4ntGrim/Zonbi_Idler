@@ -5,18 +5,17 @@ ZI.LITERATURE_ITEMS = [
   { id:'book_will_i_ever_die', name:'Will I Ever Die', cat:'book', bookProfession:'firstAid', bookXpPct:10, icon:'📕', rarity:'rare', carryW:0.2, desc:'Read once for a permanent +10% First Aid profession XP bonus.' },
   { id:'tome_foraging_hippies', name:'Foraging for Hippies', cat:'tome', tomeSeries:'foraging_hippies', icon:'📜', rarity:'epic', carryW:0.25, desc:'A physical copy for the Foraging for Hippies tome series.' },
   { id:'tome_smithing_mjolnir', name:'Smithing with Mjolnir', cat:'tome', tomeSeries:'smithing_mjolnir', icon:'📜', rarity:'epic', carryW:0.25, desc:'A physical copy for the Smithing with Mjolnir tome series.' },
-  // These titles are approved tomes, currently ungrouped from a milestone series.
-  { id:'tome_chokes_enclosed', name:'Chokes & Enclosed', cat:'tome', icon:'📜', rarity:'rare', carryW:0.25, desc:'Ungrouped tome; series assignment pending.' },
-  { id:'tome_small_arms_workshop', name:'Small Arms Without a Workshop', cat:'tome', icon:'📜', rarity:'rare', carryW:0.25, desc:'Ungrouped tome; series assignment pending.' },
-  { id:'tome_i_shall_be_your_eyes', name:'I Shall Be Your Eyes', cat:'tome', icon:'📜', rarity:'rare', carryW:0.25, desc:'Ungrouped tome; series assignment pending.' },
-  { id:'tome_ballet_bad_weather', name:'Ballet for Bad Weather', cat:'tome', icon:'📜', rarity:'rare', carryW:0.25, desc:'Ungrouped tome; series assignment pending.' },
-  { id:'tome_lightfoots_quiet_step', name:'The Lightfoot’s Quiet Step', cat:'tome', icon:'📜', rarity:'rare', carryW:0.25, desc:'Ungrouped tome; series assignment pending.' },
-  { id:'tome_reload_this_series', name:'Reload This: The Series', cat:'tome', icon:'📜', rarity:'epic', carryW:0.25, desc:'Ungrouped tome series; milestone assignment pending.' },
-  { id:'tome_knights_reliquary_charter', name:'The Knight’s Reliquary: A Charter Series', cat:'tome', icon:'📜', rarity:'epic', carryW:0.25, desc:'Ungrouped tome series; milestone assignment pending.' },
-  { id:'tome_armorer_range_log', name:'The Armorer’s Range Log', cat:'tome', icon:'📜', rarity:'rare', carryW:0.25, desc:'Ungrouped tome; series assignment pending.' },
-  { id:'tome_hardware_and_things', name:'Hardware and Things', cat:'tome', icon:'📜', rarity:'rare', carryW:0.25, desc:'Ungrouped tome; series assignment pending.' },
-  { id:'tome_management_under_stress', name:'Management Under Stress', cat:'tome', icon:'📜', rarity:'rare', carryW:0.25, desc:'Ungrouped tome; series assignment pending.' },
-  { id:'tome_last_night_series', name:'The Last Night: The Series', cat:'tome', icon:'📜', rarity:'epic', carryW:0.25, desc:'Ungrouped tome series; milestone assignment pending.' },
+  { id:'tome_chokes_enclosed', name:'Chokes & Enclosed', cat:'tome', tomeSeries:'chokes_enclosed', icon:'📜', rarity:'rare', carryW:0.25, desc:'A physical copy for the Chokes & Enclosed tome series.' },
+  { id:'tome_small_arms_workshop', name:'Small Arms Without a Workshop', cat:'tome', tomeSeries:'small_arms_workshop', icon:'📜', rarity:'rare', carryW:0.25, desc:'A physical copy for the Small Arms Without a Workshop tome series.' },
+  { id:'tome_i_shall_be_your_eyes', name:'I Shall Be Your Eyes', cat:'tome', tomeSeries:'i_shall_be_your_eyes', icon:'📜', rarity:'rare', carryW:0.25, desc:'A physical copy for the I Shall Be Your Eyes tome series.' },
+  { id:'tome_ballet_bad_weather', name:'Ballet for Bad Weather', cat:'tome', tomeSeries:'ballet_bad_weather', icon:'📜', rarity:'rare', carryW:0.25, desc:'A physical copy for the Ballet for Bad Weather tome series.' },
+  { id:'tome_lightfoots_quiet_step', name:'The Lightfoot’s Quiet Step', cat:'tome', tomeSeries:'lightfoots_quiet_step', icon:'📜', rarity:'rare', carryW:0.25, desc:'A physical copy for The Lightfoot’s Quiet Step tome series.' },
+  { id:'tome_reload_this_series', name:'Reload This: The Series', cat:'tome', tomeSeries:'reload_this', icon:'📜', rarity:'epic', carryW:0.25, desc:'A physical copy for the Reload This tome series.' },
+  { id:'tome_knights_reliquary_charter', name:'The Knight’s Reliquary: A Charter Series', cat:'tome', tomeSeries:'knights_reliquary', icon:'📜', rarity:'epic', carryW:0.25, desc:'A physical copy for The Knight’s Reliquary tome series.' },
+  { id:'tome_armorer_range_log', name:'The Armorer’s Range Log', cat:'tome', tomeSeries:'armorer_range_log', icon:'📜', rarity:'rare', carryW:0.25, desc:'A physical copy for The Armorer’s Range Log tome series.' },
+  { id:'tome_hardware_and_things', name:'Hardware and Things', cat:'tome', tomeSeries:'hardware_and_things', icon:'📜', rarity:'rare', carryW:0.25, desc:'A physical copy for the Hardware and Things tome series.' },
+  { id:'tome_management_under_stress', name:'Management Under Stress', cat:'tome', tomeSeries:'management_under_stress', icon:'📜', rarity:'rare', carryW:0.25, desc:'A physical copy for the Management Under Stress tome series.' },
+  { id:'tome_last_night_series', name:'The Last Night: The Series', cat:'tome', tomeSeries:'last_night', icon:'📜', rarity:'epic', carryW:0.25, desc:'A physical copy for The Last Night tome series.' },
 ];
 ZI.GEAR_ITEMS.push(...ZI.LITERATURE_ITEMS);
 
@@ -33,6 +32,64 @@ ZI.TOME_SERIES = [
     { copies:70, recipe:'cr_shock_baton', item:'Shock Baton', requirements:{ smithing:25, engineering:10 } },
     { copies:85, recipe:'cr_siegebreaker_maul', item:'Siegebreaker Maul', requirements:{ smithing:30, combat:25 } },
     { copies:100, recipe:'cr_jet_sledge', item:'Jet-Assisted Sledge', requirements:{ smithing:35, engineering:25 }, station:'Armory Rank 3' },
+  ] },
+  { id:'chokes_enclosed', name:'Chokes & Enclosed', cap:50, profession:'combat', milestones:[
+    { copies:10, recipe:'cr_pipe_shotgun', item:'Improvised Pipe Shotgun', requirements:{ combat:5, smithing:5 } },
+    { copies:20, recipe:'cr_crossbow', item:'Crossbow', requirements:{ combat:12, mechanical:8 } },
+    { copies:50, recipe:'cr_plate_carrier', item:'Plate Carrier', requirements:{ combat:22, smithing:18 }, station:'Armory (Rank 3)' },
+  ] },
+  { id:'small_arms_workshop', name:'Small Arms Without a Workshop', cap:50, profession:'mechanical', milestones:[
+    { copies:10, recipe:'cr_pipe_pistol', item:'Pipe Pistol', requirements:{ mechanical:5, combat:5 } },
+    { copies:20, recipe:'cr_shock_pistol', item:'Shock Pistol', requirements:{ mechanical:12, engineering:8 } },
+    { copies:50, recipe:'cr_arc_carbine', item:'Arc Carbine', requirements:{ mechanical:22, engineering:18 }, station:'Research Lab (Rank 2)' },
+  ] },
+  { id:'i_shall_be_your_eyes', name:'I Shall Be Your Eyes', cap:50, profession:'discovery', milestones:[
+    { copies:10, recipe:'cr_sensor_rig', item:'Sensor Rig', requirements:{ discovery:5, mechanical:5 } },
+    { copies:20, recipe:'cr_tacticians_lens', item:'Tactician’s Lens', requirements:{ discovery:12, engineering:8 } },
+    { copies:50, recipe:'cr_scholars_tonic', item:'Scholar’s Tonic', requirements:{ discovery:22, medical:15 }, station:'Research Lab (Rank 3)' },
+  ] },
+  { id:'ballet_bad_weather', name:'Ballet for Bad Weather', cap:50, profession:'stealth', milestones:[
+    { copies:10, recipe:'cr_runners_cloak', item:'Runner’s Cloak', requirements:{ stealth:5, foraging:5 } },
+    { copies:20, recipe:'cr_compound_bow', item:'Compound Bow', requirements:{ stealth:12, engineering:8 } },
+    { copies:50, recipe:'thermal_gel', item:'Thermal Gel', requirements:{ stealth:22, medical:15 }, station:'Armory (Rank 2)' },
+  ] },
+  { id:'lightfoots_quiet_step', name:'The Lightfoot’s Quiet Step', cap:50, profession:'stealth', milestones:[
+    { copies:10, recipe:'cr_ghost_wrap', item:'Ghost Wrap', requirements:{ stealth:5, mechanical:5 } },
+    { copies:20, recipe:'cr_smoke_vial', item:'Smoke Vial', requirements:{ stealth:12, medical:8 } },
+    { copies:50, recipe:'cr_combat_boots', item:'Combat Boots', requirements:{ stealth:22, smithing:15 }, station:'Armory (Rank 1)' },
+  ] },
+  { id:'reload_this', name:'Reload This: The Series', cap:100, profession:'combat', milestones:[
+    { copies:10, recipe:'hollow_point_press', item:'Hollow Point Press', requirements:{ combat:5, mechanical:5 } },
+    { copies:30, recipe:'cr_combat_focus_draught', item:'Combat Focus Draught', requirements:{ combat:12, medical:8 } },
+    { copies:60, recipe:'cr_void_pulse_rifle', item:'Void Pulse Rifle', requirements:{ combat:22, engineering:18 }, station:'Fracture Point' },
+    { copies:100, recipe:'cr_warlords_sigil', item:'Warlord’s Sigil', requirements:{ combat:30, smithing:25 }, station:'Armory (Rank 4)' },
+  ] },
+  { id:'knights_reliquary', name:'The Knight’s Reliquary: A Charter Series', cap:100, profession:'smithing', milestones:[
+    { copies:10, recipe:'cr_spike_board', item:'Spike Board', requirements:{ smithing:5, combat:5 } },
+    { copies:30, recipe:'cr_steel_baton', item:'Steel Baton', requirements:{ smithing:12, combat:8 } },
+    { copies:60, recipe:'cr_riot_helmet', item:'Riot Helmet', requirements:{ smithing:22, combat:18 }, station:'Armory (Rank 1)' },
+    { copies:100, recipe:'cr_perimeter_helmet', item:'Perimeter Helmet', requirements:{ smithing:30, engineering:25 }, station:'Perimeter Access' },
+  ] },
+  { id:'armorer_range_log', name:'The Armorer’s Range Log', cap:50, profession:'smithing', milestones:[
+    { copies:10, recipe:'cr_scrap_helmet', item:'Scrap Helmet', requirements:{ smithing:5, mechanical:5 } },
+    { copies:20, recipe:'cr_soft_armor_vest', item:'Soft Armor Vest', requirements:{ smithing:12, medical:8 }, station:'Infirmary (Rank 1)' },
+    { copies:50, recipe:'cr_composite_helmet', item:'Composite Helmet', requirements:{ smithing:22, engineering:15 }, station:'Armory (Rank 2)' },
+  ] },
+  { id:'hardware_and_things', name:'Hardware and Things', cap:50, profession:'mechanical', milestones:[
+    { copies:10, recipe:'reinforced_pack', item:'Reinforced Pack', requirements:{ mechanical:5, scavenging:5 } },
+    { copies:20, recipe:'wire_mesh_trap', item:'Wire Mesh Trap', requirements:{ mechanical:12, engineering:8 } },
+    { copies:50, recipe:'signal_booster', item:'Signal Booster', requirements:{ mechanical:22, engineering:15 }, station:'Radio Tower (Rank 1)' },
+  ] },
+  { id:'management_under_stress', name:'Management Under Stress', cap:50, profession:'command', milestones:[
+    { copies:10, recipe:'cr_trauma_kit', item:'Trauma Kit', requirements:{ command:5, firstAid:5 } },
+    { copies:20, recipe:'sterilization_unit', item:'Sterilization Unit', requirements:{ command:12, medical:8 }, station:'Infirmary (Rank 2)' },
+    { copies:50, recipe:'cr_echo_siphon', item:'Echo Siphon', requirements:{ command:22, logistics:15 }, station:'Generator (Rank 2)' },
+  ] },
+  { id:'last_night', name:'The Last Night: The Series', cap:100, profession:'firstAid', milestones:[
+    { copies:10, recipe:'cr_field_bandage', item:'Field Bandage', requirements:{ firstAid:5, medical:5 } },
+    { copies:30, recipe:'cr_trauma_dressing', item:'Trauma Dressing', requirements:{ firstAid:12, medical:8 }, station:'Infirmary (Rank 1)' },
+    { copies:60, recipe:'cr_nanite_serum', item:'Nanite Repair Serum', requirements:{ firstAid:22, engineering:18 }, station:'Biolab (Rank 2)' },
+    { copies:100, recipe:'cr_revenant_infusion', item:'Revenant Infusion', requirements:{ firstAid:30, medical:25 }, station:'Revenant Program' },
   ] },
 ];
 

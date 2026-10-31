@@ -1,6 +1,6 @@
 # ART-02 — The width clamp: diagnosis and batch contract (Oct 30)
 
-Follows ART-01 §3A. `[PROPOSED]` — Sam to `[DECIDE]` §4 before Code starts.
+Follows ART-01 §3A. `[DECIDED Oct 31, Sam: option C]`. Applied Oct 31; see `reports/decisions-2026-10-31/REPORT.md`.
 
 ## 1. What the clamp actually does
 
@@ -52,7 +52,7 @@ the viewport. The width clamp does the opposite — it shrinks sprites individua
 lets the order break. Making width behave like height makes inversion structurally impossible
 rather than something to be tuned around.
 
-## 4. Options `[DECIDE]`
+## 4. Options `[DECIDED Oct 31: C]`
 
 | # | Option | At 420x260 | Verdict |
 |---|---|---|---|

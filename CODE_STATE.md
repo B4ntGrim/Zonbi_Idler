@@ -1,5 +1,15 @@
 # CODE_STATE — current implementation facts
 
+## Oct 31: decisions applied (TIER-01, ART-02, VIT-01, PROF-01)
+
+- **Tier divisor (TIER-01):** `ZI.TIER_LAP_DIVISOR = 3.0` in `game/core.js` (was 1.5). Readers: `_bgZombie` (`game/wandering.js`), `ZI.wanderDrawableTiers` (`game/world.js`, feeds `ZI.hideThreats`), and `poolForDepth` in `screens-v3.jsx` (not called anywhere; kept in step). Unchanged by design: camp horde tier `game/camp.js` (`/ 1.5`, D6) and the Push On term `× 1.5` (D4, open: now half a tier per pressure step).
+- **Width fit (ART-02 C):** `ZI.SCENE_WIDTH_SHARE = 0.65` in `game/core.js`. In `screens-v3.jsx` the per-sprite clamp is gone. `widthFit` is computed once per render over every drawable sprite (each bestiary entry's mapped art at its tier height, plus the SS-BG-01 minions at F height). `zombieHeightForTier` = `rawZombieHeightForTier` × `widthFit`. Commanders and minions share it.
+- **Max HP (VIT-01):** `ZI.VIT01 = { perPoint: 2, gate: 25, compoundPct: 1.5 }` and `ZI.vitalityHp(points, runawayOpen)` in `game/progression-live.js`. The live `ZI.maxHp` and `displayAt('maxHp')` add `L.vitalityHp()`. `L.vitalityPoints()` reads `ZI.survivalAttributePoints('V')` when that function exists, else 0, so it is dormant. Live max HP = 100 + stat gain above its start (0–20) + Endurance, then the status multiplier. Vitality, class gate (R6) and regen cost are not built.
+- **Catch-up (PROF-01):** `ZI.CATCHUP = { enabled: true, maxRatePct: 15, allowancePct: 50, graceDays: 2, awayCapDays: 14, maxLevel: 50 }` in `game/stats.js`. `ZI.catchUpAllowanceFor(prof, days)`; `ZI._profLevel1Xp(prof)` (148 for non-scavenging professions). Idle time is real days from `zi_skill_decay.lastActiveUtc`, which the bootstrap award wrapper stamps after `catchUpBonus` runs. Saved state under `zi_prof_catchup_v1` per track: `{ allowance, cap, carry }`.
+- **Tests:** new `tests/tier-01-divisor.test.js`, `tests/art-02-width-fit.test.js`, `tests/vit-01-maxhp.test.js`, `tests/prof-01-catchup.test.js`. Authorized edit in `tests/proposals-oct29.test.js`: 3 checks that asserted the old disabled catch-up and the 25% cap.
+- **Cache tags:** `core`, `world`, `wandering`, `progression-live`, `stats`, `screens-v3` bumped to `20261031-*` in both HTML files.
+- **Verification (Oct 31):** full run 1,188 pass / 27 fail across 52 suites. Test fixture edits: `best1` lapFor, `trav-01a` check 4, `fx3` seed 3 for checks 1 and 5. Open: fx4 check 1, r1 check 22, split-equivalence. Details: `reports/decisions-2026-10-31/REPORT.md`.
+
 ## Character Creation · Crawler · Operations (October 29)
 
 - **Character Creation:** New Game opens `CharacterCreationScreen` (`character-creation.jsx`; data/rules `game/character.js`): 4 steps, profile saved as `zi_survivor_profile` via `ZI.startNewInSlot(mode, slot, profile)`; professions = `ZI.LEADER_ARCHETYPES` (existing starting XP via `chooseLeader`); appearance placeholders, cosmetic only; gender = art only. Wandering `activeSurvivor` reads name/gender.

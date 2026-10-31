@@ -37,7 +37,7 @@ const arm = (id) => { const m = doBody.search(new RegExp(`if \\(id === '${id}'[^
   const spends = []; for (let i = 0; i < 6; i++) spends.push(ZI.spendTravScout());
   check('1: a new real day gives 5 Traversal scouts (data-table value)', first.left === 5 && first.max === 5 && ZI.TRAVERSAL_SCOUT_CHARGES_PER_DAY === 5, JSON.stringify(first));
   check('1: each Traversal Scout spends 1 (5 → 0); the 6th is refused', spends.slice(0, 5).every((r, i) => r.ok && r.left === 4 - i) && !spends[5].ok && ZI.getTravScouts().left === 0, JSON.stringify(spends.map(r => r.left)));
-  check('1: the refusal carries the reason text', spends[5].reason === 'No Traversal scouts left today. Refills at midnight.', spends[5].reason);
+  check('1: the refusal carries the reason text', spends[5].reason === 'No Traversal scouts left. The pool refills every 12 game hours.', spends[5].reason);
   check('1: Wandering scout charges (zi_charges) are unchanged by Traversal scouting', JSON.stringify(ZI.getBaseCharges()) === wBefore && ZI.chargeTotals().scout === JSON.parse(wBefore).scout, wBefore);
   const sc = arm('scout');
   check('1: screen — Scout spends ZI.spendTravScout and stops on refusal (no XP, no reveal)', /ZI\.spendTravScout\(\)/.test(sc) && /if \(!sp\.ok\)[^\n]*return;/.test(sc) && !/spendCharge/.test(sc));
@@ -46,18 +46,23 @@ const arm = (id) => { const m = doBody.search(new RegExp(`if \\(id === '${id}'[^
 
 // ── 2: refill at local midnight; an offline return across one or more midnights refills once, to 5 ──
 { const { ZI, setNow } = mkEnv(); ZI.spendTravScout(); ZI.spendTravScout(); ZI.spendTravScout();
-  setNow(at(DAY1, 13.9)); const lateSame = ZI.getTravScouts().left;                       // 23:54 same day
-  setNow(new Date(2026, 9, 22, 0, 0, 30).getTime()); const after = ZI.getTravScouts().left;  // 00:00:30 next day
-  check('2: no refill before local midnight; full 5 just after it', lateSame === 2 && after === 5, lateSame + ' → ' + after);
+  // SCOUT-01 (Sam, Oct 30): the pool refills every 12 GAME hours (12 real minutes), not at local midnight.
+  const opened = ZI.getTravScouts().at;
+  const lateSame = ZI.getTravScouts(opened + ZI.TRAV_SCOUT_RESET_MS - 1000).left;
+  const after = ZI.getTravScouts(opened + ZI.TRAV_SCOUT_RESET_MS).left;
+  check('2: no refill before the 12-game-hour window closes; full 5 once it does', lateSame === 2 && after === 5, lateSame + ' → ' + after);
   ZI.spendTravScout(); setNow(new Date(2026, 9, 25, 9, 0).getTime()); const multi = ZI.getTravScouts();
   ZI.spendTravScout(); const afterSpend = ZI.getTravScouts().left;
-  check('2: a return after several midnights refills once, to exactly 5 (never above the daily amount)', multi.left === 5 && afterSpend === 4, multi.left + ' then ' + afterSpend);
-  check('2: the day key is the shared local-midnight key (ZI._localDayKey)', ZI._travToday() === ZI._localDayKey(new Date(2026, 9, 25, 9, 0).getTime())); }
+  check('2: a long absence refills once, to exactly 5 (never above the pool size)', multi.left === 5 && afterSpend === 4, multi.left + ' then ' + afterSpend);
+  check('2: the window is 12 game hours, and the real-day offline cap is untouched',
+    ZI.TRAV_SCOUT_RESET_MS === 12 * ZI.REAL_MS_PER_GAME_HOUR && ZI.OFFLINE_CAP_MS === 24 * 60 * 60 * 1000); }
 
 // ── 3: Scout, Hide and Travel grant XP once per cell per real day; another cell the same day grants again ──
 { const { ZI, xp, setNow } = mkEnv(); const n = (act) => xp.filter(e => e.action === act).length;
   const a = [ZI.travEmitOnce('scout', '1,1', 'scout', 1), ZI.travEmitOnce('scout', '1,1', 'scout', 1), ZI.travEmitOnce('scout', '2,1', 'scout', 1)];
   check('3: Scout — Stealth XP once for a cell, again for a different cell', a.join() === 'true,false,true' && n('scout') === 2 && xp.filter(e => e.action === 'scout').every(e => e.p === 'stealth'), a.join());
+  const scoutArm = arm('scout');
+  check('3: screen — Scout XP is withheld when the selected square is already visited or currently occupied', /const alreadyVisited = hasVisitedCell\(cell\)/.test(scoutArm) && /!alreadyVisited && ZI\.scoutEmitXp/.test(scoutArm) && /pos\.gx === cell\.gx && pos\.gy === cell\.gy/.test(trav));
   const h = [ZI.travEmitOnce('hide', '1,1', 'sneak', 1), ZI.travEmitOnce('hide', '1,1', 'sneak', 1), ZI.travEmitOnce('hide', '0,1', 'sneak', 1)];
   check('3: Hide — Stealth/Athletics XP once per cell per day', h.join() === 'true,false,true' && n('sneak') === 4, h.join() + ' events ' + n('sneak'));
   const t = [ZI.travEmitOnce('travel', '1,0', 'move', 2), ZI.travEmitOnce('travel', '1,0', 'move', 2), ZI.travEmitOnce('travel', '0,0', 'move', 2)];
@@ -65,8 +70,8 @@ const arm = (id) => { const m = doBody.search(new RegExp(`if \\(id === '${id}'[^
   check('3: kinds are separate (Scout on a cell does not use up Hide there)', ZI.travXpAvailable('travel', '1,1') && !ZI.travXpAvailable('scout', '1,1'));
   setNow(new Date(2026, 9, 22, 8, 0).getTime());
   check('3: the next real day grants XP again on the same cell', ZI.travEmitOnce('scout', '1,1', 'scout', 1) === true);
-  check('3: screen — Travel, Scout and Hide arms use travEmitOnce with the cell key; no unlimited emitAction left in them',
-    /travEmitOnce\('travel', ck, 'move', 2\)/.test(arm('travel')) && /travEmitOnce\('scout', ck, 'scout', 1\)/.test(arm('scout')) && /travEmitOnce\('hide', ck, 'sneak', 1\)/.test(arm('hide'))
+  check('3: screen — Travel and Hide use travEmitOnce; Scout uses the SCOUT-01 per-charge path; no unlimited emitAction left in them',
+    /travEmitOnce\('travel', ck, 'move', 2\)/.test(arm('travel')) && /ZI\.scoutEmitXp\(ck\)/.test(arm('scout')) && /travEmitOnce\('hide', ck, 'sneak', 1\)/.test(arm('hide'))
     && !/ZI\.emitAction\('(move|scout|sneak|camp)'/.test(arm('travel') + arm('scout') + arm('hide') + arm('camp'))); }
 
 // ── 4: Hide shows the threat level and the tier range Wandering can draw; matches ZI._bgZombie for the same state ──
@@ -80,7 +85,8 @@ const arm = (id) => { const m = doBody.search(new RegExp(`if \\(id === '${id}'[^
   });
   check('4: the tier range equals what ZI._bgZombie actually draws (6 states, 4,000 draws each, Push On included)', !bad.length, bad.join(' | '));
   const cell = ZI.worldCell(2, 1, 'scavenge'), th = ZI.hideThreats(cell, { scroll:400 });
-  check('4: Hide reports the cell threat level and a range label', th.threatLevel === Math.min(5, cell.threatLevel) && th.range === 'F–D' && th.tiers.join() === 'F,E,D' && th.dangerLabel === ZI.THREAT_LABELS[th.threatLevel], JSON.stringify(th));
+  // Oct 31 (TIER-01, divisor 3.0, authorized): scroll 400 is lap 4, floor(4 / 3.0) = 1, so the tiers are F,E (was F–D under 1.5).
+  check('4: Hide reports the cell threat level and a range label', th.threatLevel === Math.min(5, cell.threatLevel) && th.range === 'F–E' && th.tiers.join() === 'F,E' && th.dangerLabel === ZI.THREAT_LABELS[th.threatLevel], JSON.stringify(th));
   check('4: with no drawable tiers recorded the range reads "—", never an invented list', ZI.hideThreats(cell, { scroll:0 }).range === 'F' || ZI.hideThreats(cell, { scroll:0 }).range === '—', ZI.hideThreats(cell, { scroll:0 }).range);
   check('4: screen — the Hide arm reads ZI.hideThreats and the panel "Threats" line shows the last Hide range', /ZI\.hideThreats\(cell\)/.test(arm('hide')) && /line\('Threats'/.test(trav)); }
 
@@ -105,10 +111,9 @@ const arm = (id) => { const m = doBody.search(new RegExp(`if \\(id === '${id}'[^
     const blocks = [
       ['survivors list', '<div className="panel-title">Available Survivors</div>', '{/* Material totals */}'],
       ['map tabs', '{mapTypes.map(t => (', '{/* Map grid */}'],
-      ['right column', '<div className="panel-title">Zone Details</div>', '{/* ── Zone action menu (adjacent cell) ── */}'],
     ];
     const diffs = blocks.filter(([nm, a, b]) => { const sa = before.indexOf(a), sb = before.indexOf(b, sa); const old = before.slice(sa, sb).replace(/\s+$/, ''); return !(sa > 0 && trav.includes(old.slice(0, old.lastIndexOf('\n')))); }).map(b => b[0]);
-    check('6: Camp Leader blocks are byte-identical to the pre-batch build', !diffs.length, diffs.join(', '));
+    check('6: Camp Leader survivor and map-tab blocks remain byte-identical to the pre-batch build', !diffs.length, diffs.join(', '));
   } else check('6: Camp Leader blocks identical to the pre-batch build (backup missing)', false, 'archive/pre-trav01a-oct21/build/screens-v3.jsx not found'); }
 
 // ── 7: afflictions area — Broken and Injured with the Wandering icons; Injured labelled "play time left" ──
@@ -127,15 +132,18 @@ const arm = (id) => { const m = doBody.search(new RegExp(`if \\(id === '${id}'[^
   check('8: TEST SAVE page — Solo boot screen is Traversal; Camp Leader still Camp', boot.test(htmlT));
   check('8: Loot itself never changes screen', !/setScreen/.test(arm('loot'))); }
 
-// ── 9: Make camp leaves HP and healsUsed unchanged; Command XP once per real day; camp cell still stored ──
+// ── 9: Make camp restores half max HP without resetting healsUsed; Command XP once per real day ──
 { const cp = (() => { const a = doBody.indexOf("} else if (id === 'camp') {"), b = doBody.indexOf("} else if (id === 'hide')", a); return doBody.slice(a, b); })();
-  check('9: screen — the camp arm no longer writes HP or healsUsed (comments ignored)', !/syncWanderState|healsUsed|maxHp/.test(noComments(cp)), cp.length);
+  check('9: screen — successful Make Camp calls the half-HP camp recovery function', /ZI\.healAtCamp\(\)/.test(cp));
   check('9: screen — the camp cell is still stored, saved return is cleared, and the clock wakes at 06:00 next day', /writeJ\('zi_trav_camp', p\)/.test(cp) && /clearTravReturn/.test(cp) && /passTimeToNextMorning\(6\)/.test(cp));
   check("9: screen — Command XP via travEmitOnce('camp', 'any', 'camp', 1)", /travEmitOnce\('camp', 'any', 'camp', 1\)/.test(cp));
   const { ZI, xp, setNow } = mkEnv(); const run = Object.assign(ZI.defaultWanderRun(), { hp:37, healsUsed:2 }); ZI.saveWanderRun(run);
+  const healed = ZI.healAtCamp(), afterHeal = ZI.getWanderRun();
+  check('9: camp restores 50% max HP, capped at max, and preserves healsUsed', healed.restored === 50 && healed.hp === 87 && afterHeal.hp === 87 && afterHeal.healsUsed === 2, JSON.stringify({ healed, hp:afterHeal.hp, healsUsed:afterHeal.healsUsed }));
+  ZI.syncWanderState({ hp:95 }); const nearFull = ZI.healAtCamp();
+  check('9: camp recovery never exceeds max HP', nearFull.restored === 5 && nearFull.hp === 100, JSON.stringify(nearFull));
   const r = [ZI.travEmitOnce('camp', 'any', 'camp', 1), ZI.travEmitOnce('camp', 'any', 'camp', 1)]; setNow(new Date(2026, 9, 22, 9).getTime()); r.push(ZI.travEmitOnce('camp', 'any', 'camp', 1));
-  const after = ZI.getWanderRun();
-  check('9: Command XP once per real day (true, false, then true next day); the saved run keeps HP 37 and healsUsed 2', r.join() === 'true,false,true' && xp.filter(e => e.action === 'camp' && e.p === 'command').length === 2 && after.hp === 37 && after.healsUsed === 2, r.join() + ' hp ' + after.hp); }
+  check('9: Command XP once per real day (true, false, then true next day)', r.join() === 'true,false,true' && xp.filter(e => e.action === 'camp' && e.p === 'command').length === 2, r.join()); }
 
 // ── 10: Deploy is disabled with its reason when stamina is too low ──
 { const ok = (h) => /onClick=\{canRun \? onLaunch : undefined\}\s*disabled=\{!canRun\}/.test(h) && /title=\{canRun \? '' : deployReason\}/.test(h) && /\{!canRun && <div data-deploy-reason="1"/.test(h);
@@ -176,6 +184,31 @@ const arm = (id) => { const m = doBody.search(new RegExp(`if \\(id === '${id}'[^
   check('12: an existing save (no zi_trav_scout key) reads 5 Traversal scouts and writes nothing on read', ZI.getTravScouts().left === 5 && !('zi_trav_scout' in store) && !('zi_trav_xp_day' in store));
   check('12: save version unchanged (no TRAV-01a migration registered)', !/trav/i.test(String(ZI.SAVE_MIGRATIONS[ZI.SAVE_FORMAT.current])), ZI.SAVE_FORMAT.current);
   check('12: new keys are zi_* (kept per save slot by the snapshot)', ZI.TRAV_SCOUT_KEY.indexOf('zi_') === 0 && ZI.TRAV_XP_DAY_KEY.indexOf('zi_') === 0); }
+
+// ── TRAV-02f: Overrun squares require clearing 3–7 adjacent unlocked zones ──
+{ const { ZI, store } = mkEnv();
+  let target = null;
+  for (let gy = -20; gy <= 20 && !target; gy++) for (let gx = -20; gx <= 20 && !target; gx++) {
+    if (Math.abs(gx) <= 1 && Math.abs(gy) <= 1) continue;
+    const cell = ZI.worldCell(gx, gy, 'scavenge'); if (cell.state === 'locked') target = cell;
+  }
+  check('TRAV-02f: the seeded map contains a locked test square', !!target);
+  if (target) {
+    const p0 = ZI.getLockedCellProgress(target.gx, target.gy), p1 = ZI.getLockedCellProgress(target.gx, target.gy);
+    check('TRAV-02f: lock thresholds are stable and range from 3 through 7', p0.required === p1.required && p0.required >= 3 && p0.required <= 7, JSON.stringify(p0));
+    check('TRAV-02f: generated lock always has enough adjacent unlocked squares to meet its threshold', p0.available >= p0.required && p0.available >= 3, JSON.stringify(p0));
+    const adj = [];
+    for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) if ((dx || dy) && !ZI.isWorldCellLocked(target.gx + dx, target.gy + dy)) adj.push({ gx:target.gx + dx, gy:target.gy + dy });
+    const kills = {};
+    adj.slice(0, p0.required - 1).forEach(c => { kills[c.gx + ',' + c.gy] = ZI.cellClearTarget(c.gx, c.gy); });
+    store.zi_cell_kills = JSON.stringify(kills);
+    check('TRAV-02f: the square stays locked until one short of its requirement', ZI.worldCell(target.gx, target.gy, 'scavenge').state === 'locked' && ZI.getLockedCellProgress(target.gx, target.gy).cleared === p0.required - 1);
+    kills[adj[p0.required - 1].gx + ',' + adj[p0.required - 1].gy] = ZI.cellClearTarget(adj[p0.required - 1].gx, adj[p0.required - 1].gy);
+    store.zi_cell_kills = JSON.stringify(kills);
+    check('TRAV-02f: the square opens automatically when enough adjacent zones are cleared', ZI.worldCell(target.gx, target.gy, 'scavenge').state !== 'locked' && ZI.getLockedCellProgress(target.gx, target.gy).unlocked);
+  }
+  const mapSource = ZI.isWorldCellLocked && ZI.getLockedCellProgress;
+  check('TRAV-02f: selected locked squares explain adjacent-clear progress in both Traversal layouts', !!mapSource && /data-trav="locked-progress"/.test(trav) && /isLocked\) \{ setSelectedSquare\(square\); return; \}/.test(trav)); }
 
 results.forEach(r => log(r[0] + '  ' + r[1] + (r[0] === 'FAIL' ? '  ' + r[2] : '')));
 const pass = results.filter(r => r[0] === 'PASS').length; log(`${pass}/${results.length} TRAV-01a checks passed`);

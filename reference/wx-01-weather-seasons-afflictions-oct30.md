@@ -101,6 +101,10 @@ Claude's placeholders; each belongs in a named constant.
   Because 1 game hour = 1 real minute, that cap is **96 game hours = 96 real minutes** either way.
   When an event reaches the cap the weather is **forced to change**, so it can never rain
   indefinitely. Rolled deterministically from save seed + day.
+- **Clear-sky guarantee `[DECIDED Sam, Oct 30]`:** after **48 consecutive game hours** of bad
+  weather, the next event is **forced Clear**. The 96-hour cap only limits a single event; audit
+  pass 1 found different bad weathers chaining for **621 game hours** (about 10.4 real hours) in
+  winter, every event individually legal. This closes that.
 - `[AUDIT]` Per-season min/max ranges, as named constants —
   `ZI.WEATHER_DURATION[season] = { minH, maxH }` with `maxH <= 96` enforced. A winter blizzard
   should be able to run long while summer rain stays short.

@@ -1,18 +1,20 @@
-// operations-ui.jsx — Operations page shown on the Schedule tab (Sam, Oct 29: build reference/operations-schedule-proposal.md).
-// Three sections: Now and next · Plan (activity catalog with availability) · Base schedule. Buttons open the screen
+// operations-ui.jsx — the Scheduling page (Sam, Oct 29: build reference/operations-schedule-proposal.md).
+// SCH-01 (Sam, Oct 30): named "Scheduling" (tab and title); Solo drops the duplicate Base schedule section;
+// Now and next is sorted urgent -> running -> idle with a return-time column; proposals start hidden.
+// Sections: Now and next · Plan (activity catalog with availability) · Base schedule (Camp Leader only). Buttons open the screen
 // that owns an activity; the one change made here is Camp Leader duty assignment (ZI.opsAssign / ZI.opsUnassign). Proposed activities are labeled "Design proposal" and cannot be selected.
 // The previous mock timeline (ScheduleScreenV2 in screens-v2b.jsx) is kept in the code, unused, for rollback.
 function OperationsScreen({ mode, setScreen }) {
   const ZI = window.ZI;
   const [, tick] = React.useState(0);
   React.useEffect(() => { const t = setInterval(() => tick(n => n + 1), 5000); return () => clearInterval(t); }, []);
-  const [showProposals, setShowProposals] = React.useState(true);
+  const [showProposals, setShowProposals] = React.useState(false);
   const [dutyMsg, setDutyMsg] = React.useState(null);
   const now = ZI.opsNow(mode), catalog = ZI.opsCatalog(mode);
   const isCamp = mode === 'camp', accent = isCamp ? 'var(--green)' : 'var(--amber)';
   const go = (screen) => screen && setScreen && setScreen(screen);
   const badge = (st) => {
-    const col = st.key === 'available' ? 'var(--green)' : st.key === 'proposal' ? 'var(--text3)' : st.key === 'busy' ? 'var(--blue)' : 'var(--amber)';
+    const col = st.key === 'available' ? 'var(--green)' : st.key === 'proposal' ? 'var(--text3)' : st.key === 'busy' ? 'var(--blue)' : st.key === 'injured' ? 'var(--amber)' : 'var(--amber)';
     return <span style={{ fontFamily:'var(--font-mono)', fontSize:9, color: col, border:`1px solid ${col}`, padding:'1px 6px', letterSpacing:'0.06em', whiteSpace:'nowrap' }}>{st.label}</span>;
   };
   const H = ({ children, sub }) => (
@@ -21,19 +23,25 @@ function OperationsScreen({ mode, setScreen }) {
       {sub && <div style={{ fontFamily:'var(--font-mono)', fontSize:10, color:'var(--text3)', marginTop:2 }}>{sub}</div>}
     </div>
   );
-  const row = (r) => (
+  // SCH-01 L2: endsAt gets its own right-aligned column; "now" once it has passed.
+  const endLabel = (r) => (Number.isFinite(r.endsAt) ? (Date.now() >= r.endsAt ? 'now' : ZI.opsClock(r.endsAt)) : null);
+  const row = (r) => {
+    const t = endLabel(r);
+    return (
     <div key={r.id} className="panel" style={{ padding:'8px 10px', display:'flex', gap:10, alignItems:'center', flexWrap:'wrap' }}>
       <span style={{ fontFamily:'var(--font-body)', fontSize:14, color:'var(--text)', minWidth:150 }}>{r.label}</span>
       <span style={{ fontFamily:'var(--font-mono)', fontSize:11, color:'var(--text2)', flex:'1 1 200px', minWidth:0 }}>{r.detail}</span>
+      {t && <span style={{ fontFamily:'var(--font-mono)', fontSize:11, color: t === 'now' ? 'var(--amber)' : 'var(--text2)', minWidth:52, textAlign:'right', whiteSpace:'nowrap' }}>{t}</span>}
       {r.screen && <button className="btn" onClick={() => go(r.screen)}>Open</button>}
     </div>
-  );
+    );
+  };
   const groups = [['field', 'Field operations'], ['base', 'Base and return operations']];
   return (
     <div style={{ height:'100%', overflow:'auto', padding:'16px 18px 60px' }}>
       <div style={{ maxWidth:980, margin:'0 auto' }}>
         <div style={{ display:'flex', alignItems:'baseline', gap:10, flexWrap:'wrap' }}>
-          <span style={{ fontFamily:'var(--font-title)', fontSize:24, color:'var(--text)' }}>Operations</span>
+          <span style={{ fontFamily:'var(--font-title)', fontSize:24, color:'var(--text)' }}>Scheduling</span>
           <span style={{ fontFamily:'var(--font-mono)', fontSize:11, color:'var(--text3)' }}>{isCamp ? 'Camp Leader: assignments to camp survivors and facilities' : 'Solo Survivor: your own plan, no camp roster'}</span>
         </div>
 
@@ -48,7 +56,7 @@ function OperationsScreen({ mode, setScreen }) {
 
         <H sub="Choose an activity; Open takes you to the screen that runs it. Design proposals are not playable yet.">Plan</H>
         <label style={{ fontFamily:'var(--font-mono)', fontSize:11, color:'var(--text2)', display:'inline-flex', gap:6, alignItems:'center', marginBottom:6 }}>
-          <input type="checkbox" checked={showProposals} onChange={e => setShowProposals(e.target.checked)}/> Show design proposals
+          <input type="checkbox" checked={showProposals} onChange={e => setShowProposals(e.target.checked)}/> Show {catalog.filter(a => a.proposal).length} design proposals
         </label>
         {groups.map(([gid, gname]) => {
           const items = catalog.filter(a => a.group === gid && (showProposals || !a.proposal));
@@ -74,8 +82,8 @@ function OperationsScreen({ mode, setScreen }) {
           );
         })}
 
-        <H sub={isCamp ? 'Camp duties staffed by your survivors. Assign one survivor per duty.' : 'Your upkeep at your base or forward camp.'}>Base schedule</H>
-        {isCamp ? (() => {
+        {isCamp && <H sub="Camp duties staffed by your survivors. Assign one survivor per duty.">Base schedule</H>}
+        {isCamp && (() => {
           const duties = ZI.opsCampDuties(), busy = ZI.opsRouteBusy(), roster = ZI.SQUAD_ROSTER || [];
           const staffed = duties.reduce((n, d) => n + d.whoIds.length, 0), cap = ZI.opsDutySlots();
           const assignedTo = {}; duties.forEach(d => d.whoIds.forEach(id => { assignedTo[id] = d.label; }));
@@ -106,12 +114,7 @@ function OperationsScreen({ mode, setScreen }) {
             <div style={{ fontFamily:'var(--font-mono)', fontSize:10, color:'var(--text3)' }}>Duties earn their profession XP while you are away (24-hour offline cap). Proposed camp chores (cooking, then weapon upkeep, then laundry) are listed under Plan as design proposals.</div>
           </div>
           );
-        })()
-        : (
-          <div style={{ display:'flex', flexDirection:'column', gap:6 }}>
-            {catalog.filter(a => a.group === 'base' && !a.proposal).map(a => row({ id: 'b:' + a.id, label: a.name, detail: ZI.opsActivityStatus(a, mode).label + ' · ' + a.result, screen: a.screen }))}
-          </div>
-        )}
+        })()}
       </div>
     </div>
   );

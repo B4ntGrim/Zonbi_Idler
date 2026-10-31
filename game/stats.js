@@ -40,23 +40,32 @@ ZI.addStatXp = function(stat, amount) {
 // Canonical profession tracks. Every gameplay action routes XP here so the
 // Stats page reflects live progress from every screen.
 ZI.PROFESSIONS = [
-  { id:'combat',     name:'Combat',      icon:'⚔', desc:'Killing power in the field.' },
-  { id:'firstAid',   name:'First Aid',   icon:'⛑', desc:'Heal strength and frequency.' },
-  { id:'scavenging', name:'Scavenging',  icon:'🔍', desc:'Loot quality and filtering.' },
-  { id:'stealth',    name:'Stealth',     icon:'🥷', desc:'Scouting reach and quiet pushes.' },
-  { id:'athletics',  name:'Athletics',   icon:'🏃', desc:'Movement speed and stamina.' },
-  { id:'endurance',  name:'Endurance',   icon:'🛡', desc:'Damage soaked and survived.' },
-  { id:'foraging',   name:'Foraging',    icon:'🌿', desc:'Wild finds while wandering.' },
-  { id:'smithing',   name:'Smithing',    icon:'🔨', desc:'Weapon & armor crafting.' },
-  { id:'medical',    name:'Medical',     icon:'💊', desc:'Consumable & medkit crafting.' },
-  { id:'mechanical', name:'Mechanical',  icon:'⚙', desc:'Gear, recycling & repair.' },
-  { id:'discovery',  name:'Discovery',   icon:'🧭', desc:'New recipes, zones & codex.' },
-  { id:'trading',    name:'Trading',     icon:'💰', desc:'Market deals and auctions.' },
-  { id:'diplomat',   name:'Diplomat',    icon:'🤝', desc:'Faction standing and rep.' },
-  { id:'logistics',  name:'Logistics',   icon:'📋', desc:'Schedules and camp tasks.' },
-  { id:'engineering',name:'Engineering', icon:'🏗', desc:'Traversal grid and builds.' },
-  { id:'command',    name:'Command',     icon:'⭐', desc:'Squad leadership and runs.' },
+  { id:'combat',     name:'Combat',      icon:'⚔', desc:'Killing power in the field.', bonuses:['+1 accuracy rating','+0.5 percentage points critical chance','+0.25% weapon damage'] },
+  { id:'firstAid',   name:'First Aid',   icon:'⛑', desc:'Heal strength and frequency.', bonuses:['+1.2 percentage points First Aid healing','+0.25% healing received','−0.5% treatment time'] },
+  { id:'scavenging', name:'Scavenging',  icon:'🔍', desc:'Loot quality and filtering.', bonuses:['+0.6 loot-quality rating','+1.84 percentage points loot retention on average','+0.25 percentage points bonus salvage chance'] },
+  { id:'stealth',    name:'Stealth',     icon:'🥷', desc:'Scouting reach and quiet pushes.', bonuses:['+1 scout revealed every 4 levels','+2.5 m quiet-push distance','−0.25% dangerous encounter share'] },
+  { id:'athletics',  name:'Athletics',   icon:'🏃', desc:'Movement speed and stamina.', bonuses:['+0.8 evasion rating','+1 initiative','+0.25% movement speed'] },
+  { id:'endurance',  name:'Endurance',   icon:'🛡', desc:'Damage soaked and survived.', bonuses:['+0.4 maximum HP','+0.2 percentage points damage reduction','+0.25% rest recovery speed'] },
+  { id:'foraging',   name:'Foraging',    icon:'🌿', desc:'Wild finds while wandering.', bonuses:['+0.25% gathered loot value','+0.25 percentage points Uncommon-find chance','+0.25% farm task output'] },
+  { id:'smithing',   name:'Smithing',    icon:'🔨', desc:'Weapon & armor crafting.', bonuses:['+0.25% weapon damage','+0.25 armor rating','+0.25% crafting material efficiency'] },
+  { id:'medical',    name:'Medical',     icon:'💊', desc:'Consumable & medkit crafting.', bonuses:['+0.25% medicine strength','+0.25% medicine yield','−0.25% injury recovery time'] },
+  { id:'mechanical', name:'Mechanical',  icon:'⚙', desc:'Gear, recycling & repair.', bonuses:['+0.25% repaired gear durability','+0.25% recycler material yield','+0.25% tool durability efficiency'] },
+  { id:'discovery',  name:'Discovery',   icon:'🧭', desc:'New recipes, zones & codex.', bonuses:['−0.25% site investigation risk','+0.25 percentage points nearby-find chance','+0.25% Discovery XP from recipe unlocks'] },
+  { id:'trading',    name:'Trading',     icon:'💰', desc:'Market deals and auctions.', bonuses:['−0.25% purchase prices','+0.25% sale prices','+0.25 percentage points transaction-protection refund chance'] },
+  { id:'diplomat',   name:'Diplomat',    icon:'🤝', desc:'Faction standing and rep.', bonuses:['+0.25% reputation gained','+0.25% contract rewards','−0.25% reputation loss on failed talks'] },
+  { id:'logistics',  name:'Logistics',   icon:'📋', desc:'Schedules and camp tasks.', bonuses:['+0.25% task output','+0.25% carrying capacity','+0.25% task efficiency'] },
+  { id:'engineering',name:'Engineering', icon:'🏗', desc:'Traversal grid and builds.', bonuses:['+0.25% built-defense durability','+0.25% build-material efficiency','−0.25% route hazard impact'] },
+  { id:'command',    name:'Command',     icon:'⭐', desc:'Squad leadership and runs.', bonuses:['+0.25% squad damage','+0.25% squad damage reduction','+0.25% squad task efficiency'] },
 ];
+// Profession ranks are the source of truth for passive gameplay bonuses.
+// A level L grants L increments; caps are enforced by the consuming system.
+ZI.professionLevelDelta = function(id) {
+  const level = ZI.effectiveLevel ? ZI.effectiveLevel(id) : ZI.statLevel ? ZI.statLevel(id) : 1;
+  return Math.max(1, Number(level) || 1);
+};
+ZI.professionBonus = function(id, perLevel) {
+  return ZI.professionLevelDelta(id) * (Number(perLevel) || 0);
+};
 ZI.STAT_XP_VER = 2;
 ZI.STAT_VER_KEY = 'zi_stat_xp_ver';
 // Ensure every track exists (default 0) exactly once; non-destructive migration.
@@ -115,8 +124,7 @@ ZI.awardXp = function(profId, amount, meta) {
   // The catch-up grant remains based on the unmodified action amount.
   const bookXpPct = ZI.bookXpBonus ? ZI.bookXpBonus(profId) : 0;
   const earned = Math.round(amount * (1 + bookXpPct / 100));
-  // Catch-up XP (Oct 29, replaces rust decay): extra XP on top of earned XP, only while enabled (off until the
-  // inactivity ramp is approved). Earned XP is never reduced.
+  // Catch-up XP (PROF-01, on since Oct 31): extra XP on top of earned XP after an absence. Earned XP is never reduced.
   const bonus = ZI.catchUpBonus ? ZI.catchUpBonus(profId, Math.round(amount)) : 0;
   const total = earned + bonus;
   ZI.addStatXp(profId, total);
@@ -255,13 +263,17 @@ ZI.STAT_FORMULAS = {
     const s = loadoutStats || (window.ZI.resolveLoadoutStats && window.ZI.resolveLoadoutStats()) || {};
     const combatLvl = window.ZI.statLevel ? window.ZI.statLevel('combat') : 1;
     const athLvl = window.ZI.statLevel ? window.ZI.statLevel('athletics') : 1;
+    const endurance = window.ZI.professionLevelDelta ? window.ZI.professionLevelDelta('endurance') : 0;
+    const combatDamage = 1 + (window.ZI.professionBonus ? window.ZI.professionBonus('combat', 0.0025) : 0);
     const wpn = s.weaponDamage || 8;
     return {
       name:'Survivor', hp: s.displayHP || 100, hpMax: s.displayHP || 100,
-      damageMin: Math.max(1, Math.round(wpn * 0.6)), damageMax: Math.max(2, Math.round(wpn * 1.1)), damageBonus: 0,
+      damageMin: Math.max(1, Math.round(wpn * 0.6 * combatDamage)), damageMax: Math.max(2, Math.round(wpn * 1.1 * combatDamage)), damageBonus: 0,
       accuracy: 55 + combatLvl, evasion: Math.round(athLvl * 0.8) + (window.ZI.activeEvadeBonus ? window.ZI.activeEvadeBonus() : 0),
       armor: s.armorRating || 0, crit: 5 + Math.round(combatLvl * 0.5), critBonus: this.CRIT_BONUS,
       lifesteal: 0, initiative: 10 + Math.round((s.speed || 100) / 10) + athLvl,
+      dmgReductionPct: Math.min(30, endurance * 0.2),
+      staggerResistPct: Math.min(30, window.ZI.professionBonus ? window.ZI.professionBonus('combat', 0.25) : 0),
       heavySwingPct: s.heavySwingPct || 0, staggerPct: s.staggerPct || 0, // CB1 weapon specials, read by resolveAttack
     };
   },
@@ -296,10 +308,12 @@ ZI.STAT_FORMULAS = {
     if (crit) dmg += atk.critBonus || 0;
     let dealt = Math.max(this.MIN_CHIP, dmg - (def.armor || 0));
     if (def.armorPct > 0) dealt = Math.max(this.MIN_CHIP, Math.round(dealt * (1 - def.armorPct / 100))); // STAT-02: percent Armor (only when the stat layer sets it)
+    if (def.dmgReductionPct > 0) dealt = Math.max(this.MIN_CHIP, Math.round(dealt * (1 - Math.min(80, def.dmgReductionPct) / 100)));
     if (def.dmgTakenPct > 0) dealt = Math.ceil(dealt * (1 + def.dmgTakenPct / 100)); // BAL-A A4: a Broken survivor takes more damage
     def.hp -= dealt;
     if (atk.lifesteal) atk.hp = Math.min(atk.hpMax, atk.hp + Math.floor(dealt * atk.lifesteal / 100));
-    if (atk.staggerPct > 0 && rng() * 100 < atk.staggerPct) def._skipNext = true; // CB1: stagger — the target loses its next attack
+    const staggerChance = Math.max(0, atk.staggerPct * (1 - Math.min(100, def.staggerResistPct || 0) / 100));
+    if (atk.staggerPct > 0 && rng() * 100 < staggerChance) def._skipNext = true; // CB1: stagger — the target loses its next attack
     heavy();
     return { result: crit ? 'crit' : 'hit', dealt, defHp: def.hp };
   },
@@ -390,55 +404,127 @@ ZI.TRAVERSAL_TABLE = {
 };
 ZI.TRAVERSAL_SCOUT_CHARGES_PER_DAY = ZI.TRAVERSAL_TABLE.scoutChargesPerDay;
 ZI.TRAV_HIDE_GAME_HOURS = ZI.TRAVERSAL_TABLE.hideGameHours;
-ZI.TRAV_HIDE_MAX_PER_24H = 2;
+// CLOCK-01 addendum (Sam, Oct 30): Make Camp and Hide reset on the GAME clock, one game day
+// apart (24 game hours = 24 real minutes), not once per real day. A real-day cooldown fought the
+// 24-minute day: you could camp once and then sit through dozens of in-game days unable to again.
+// ZI.OFFLINE_CAP_MS (24 REAL hours) is the offline-progress cap and is deliberately NOT changed.
+ZI.TRAV_RESET_MS = ZI.GAME_DAY_MS;          // one game day in real ms (24 real minutes)
+ZI.TRAV_HIDE_MAX_PER_GAME_DAY = 1;          // Sam, Oct 30: Hide is once per game day
+ZI.TRAV_HIDE_MAX_PER_24H = ZI.TRAV_HIDE_MAX_PER_GAME_DAY; // deprecated alias, kept for older callers
 ZI.TRAV_HIDE_USES_KEY = 'zi_trav_hide_uses';
 ZI.TRAV_CAMP_LAST_USED_KEY = 'zi_trav_camp_last_used';
 ZI._hideUsesAt = function(now) {
   now = Number.isFinite(now) ? now : ZI.clockNow();
   let uses = []; try { uses = JSON.parse(localStorage.getItem(ZI.TRAV_HIDE_USES_KEY) || '[]'); } catch (e) {}
   if (!Array.isArray(uses)) uses = [];
-  return uses.map(Number).filter(t => Number.isFinite(t) && t > now - ZI.OFFLINE_CAP_MS && t <= now).sort((a,b) => a-b);
+  return uses.map(Number).filter(t => Number.isFinite(t) && t > now - ZI.TRAV_RESET_MS && t <= now).sort((a,b) => a-b);
 };
 ZI.getHideUses = function(now) {
   const uses = ZI._hideUsesAt(now);
-  return { used:uses.length, max:ZI.TRAV_HIDE_MAX_PER_24H, left:Math.max(0, ZI.TRAV_HIDE_MAX_PER_24H-uses.length), nextAt:uses.length >= ZI.TRAV_HIDE_MAX_PER_24H ? uses[0] + ZI.OFFLINE_CAP_MS : null };
+  return { used:uses.length, max:ZI.TRAV_HIDE_MAX_PER_GAME_DAY, left:Math.max(0, ZI.TRAV_HIDE_MAX_PER_GAME_DAY-uses.length), nextAt:uses.length >= ZI.TRAV_HIDE_MAX_PER_GAME_DAY ? uses[0] + ZI.TRAV_RESET_MS : null };
 };
 ZI.spendHideUse = function(now) {
   now = Number.isFinite(now) ? now : ZI.clockNow();
-  const uses = ZI._hideUsesAt(now), left = ZI.TRAV_HIDE_MAX_PER_24H - uses.length;
-  if (left <= 0) return { ok:false, left:0, max:ZI.TRAV_HIDE_MAX_PER_24H, nextAt:uses[0] + ZI.OFFLINE_CAP_MS };
+  const uses = ZI._hideUsesAt(now), left = ZI.TRAV_HIDE_MAX_PER_GAME_DAY - uses.length;
+  if (left <= 0) return { ok:false, left:0, max:ZI.TRAV_HIDE_MAX_PER_GAME_DAY, nextAt:uses[0] + ZI.TRAV_RESET_MS };
   uses.push(now); try { localStorage.setItem(ZI.TRAV_HIDE_USES_KEY, JSON.stringify(uses)); } catch (e) {}
-  return { ok:true, left:left-1, max:ZI.TRAV_HIDE_MAX_PER_24H, nextAt:uses.length >= ZI.TRAV_HIDE_MAX_PER_24H ? uses[0] + ZI.OFFLINE_CAP_MS : null };
+  return { ok:true, left:left-1, max:ZI.TRAV_HIDE_MAX_PER_GAME_DAY, nextAt:uses.length >= ZI.TRAV_HIDE_MAX_PER_GAME_DAY ? uses[0] + ZI.TRAV_RESET_MS : null };
 };
 ZI.getCampCooldown = function(now) {
   now = Number.isFinite(now) ? now : ZI.clockNow();
   let usedAt = NaN; try { const raw = localStorage.getItem(ZI.TRAV_CAMP_LAST_USED_KEY); if (raw != null) usedAt = Number(raw); } catch (e) {}
-  const availableAt = Number.isFinite(usedAt) ? usedAt + ZI.OFFLINE_CAP_MS : 0;
+  const availableAt = Number.isFinite(usedAt) ? usedAt + ZI.TRAV_RESET_MS : 0;
   return { available:now >= availableAt, availableAt, remainingMs:Math.max(0, availableAt-now) };
 };
 ZI.spendCampUse = function(now) {
   now = Number.isFinite(now) ? now : ZI.clockNow();
   const status = ZI.getCampCooldown(now); if (!status.available) return { ok:false, ...status };
   try { localStorage.setItem(ZI.TRAV_CAMP_LAST_USED_KEY, String(now)); } catch (e) {}
-  return { ok:true, available:false, availableAt:now + ZI.OFFLINE_CAP_MS, remainingMs:ZI.OFFLINE_CAP_MS };
+  return { ok:true, available:false, availableAt:now + ZI.TRAV_RESET_MS, remainingMs:ZI.TRAV_RESET_MS };
 };
-ZI.TRAV_SCOUT_KEY = 'zi_trav_scout';     // { day, left }
+ZI.TRAV_SCOUT_KEY = 'zi_trav_scout';     // { at, left } — 'at' opens the 12-game-hour window
 ZI.TRAV_XP_DAY_KEY = 'zi_trav_xp_day';   // { day, done: { '<kind>:<gx>,<gy>': 1 } }
 ZI._travToday = function() {
   const t = ZI.clockNow ? ZI.clockNow() : Date.now(), d = new Date(t);
   return ZI._localDayKey ? ZI._localDayKey(t) : (d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate());
 };
 // Reading never writes: a stored day that is not today reads as a full pool (refills once, however many midnights passed).
-ZI.getTravScouts = function() {
-  const max = ZI.TRAVERSAL_TABLE.scoutChargesPerDay, day = ZI._travToday(), r = ZI._rj(ZI.TRAV_SCOUT_KEY, null);
-  if (!r || r.day !== day) return { day, left: max, max };
-  return { day, left: Math.max(0, Math.min(max, r.left | 0)), max };
+// SCOUT-01 (Sam, Oct 30): the scout pool refills every 12 GAME hours (12 real minutes), not at
+// local midnight. A record still holding the old { day, left } shape reads as a full pool, so no
+// save migration is needed. The window opens on the first spend, not on the first read.
+ZI.TRAV_SCOUT_RESET_MS = 12 * ZI.REAL_MS_PER_GAME_HOUR;
+ZI.getTravScouts = function(now) {
+  now = Number.isFinite(now) ? now : ZI.clockNow();
+  const max = ZI.TRAVERSAL_TABLE.scoutChargesPerDay, r = ZI._rj(ZI.TRAV_SCOUT_KEY, null);
+  const at = r && Number.isFinite(r.at) ? r.at : null;
+  if (at == null || now >= at + ZI.TRAV_SCOUT_RESET_MS) return { at: null, left: max, max, resetsAt: null };
+  return { at, left: Math.max(0, Math.min(max, r.left | 0)), max, resetsAt: at + ZI.TRAV_SCOUT_RESET_MS };
 };
-ZI.spendTravScout = function() {
-  const s = ZI.getTravScouts();
-  if (s.left <= 0) return { ok: false, reason: 'No Traversal scouts left today. Refills at midnight.', left: 0, max: s.max };
-  ZI._wj(ZI.TRAV_SCOUT_KEY, { day: s.day, left: s.left - 1 });
-  return { ok: true, left: s.left - 1, max: s.max };
+ZI.spendTravScout = function(now) {
+  now = Number.isFinite(now) ? now : ZI.clockNow();
+  const s = ZI.getTravScouts(now);
+  if (s.left <= 0) return { ok: false, reason: 'No Traversal scouts left. The pool refills every 12 game hours.', left: 0, max: s.max, resetsAt: s.resetsAt };
+  const at = s.at == null ? now : s.at;
+  ZI._wj(ZI.TRAV_SCOUT_KEY, { at, left: s.left - 1 });
+  return { ok: true, left: s.left - 1, max: s.max, resetsAt: at + ZI.TRAV_SCOUT_RESET_MS };
+};
+// Scout XP is earned PER CHARGE (Sam, Oct 30) rather than once per cell per real day, but only
+// for a square not already scouted in this window — so charges pay out while re-scouting the
+// same square does not. Other Traversal actions keep the per-real-day rule in travEmitOnce.
+ZI.TRAV_SCOUT_XP_KEY = 'zi_trav_scout_xp';   // { at, done: { 'gx,gy': 1 } }
+ZI._scoutXpRecord = function(now) {
+  now = Number.isFinite(now) ? now : ZI.clockNow();
+  const r = ZI._rj(ZI.TRAV_SCOUT_XP_KEY, null);
+  const at = r && Number.isFinite(r.at) ? r.at : null;
+  if (at == null || now >= at + ZI.TRAV_SCOUT_RESET_MS) return { at: null, done: {} };
+  return { at, done: (r && r.done) || {} };
+};
+ZI.scoutXpAvailable = function(cellKey, now) { return !ZI._scoutXpRecord(now).done[cellKey]; };
+ZI.scoutEmitXp = function(cellKey, now, scale) {
+  now = Number.isFinite(now) ? now : ZI.clockNow();
+  const rec = ZI._scoutXpRecord(now);
+  if (rec.done[cellKey]) return false;
+  rec.done[cellKey] = 1;
+  ZI._wj(ZI.TRAV_SCOUT_XP_KEY, { at: rec.at == null ? now : rec.at, done: rec.done });
+  ZI.emitAction && ZI.emitAction('scout', scale === undefined ? 1 : scale);
+  return true;
+};
+// ── Scout reach (Sam, Oct 30) ────────────────────────────────────────────────
+// Base is the adjacent square. Gear, Stealth, a working vehicle and a scouting bird each widen
+// it, and the total is clamped to 9. Sam, Oct 30: "if I were in a certain vehicle with a bonus to
+// traversal square travel length, the adjacent squares should expand to reflect that".
+ZI.SCOUT_RANGE_BASE = 1;
+ZI.SCOUT_RANGE_MAX = 9;
+ZI.SCOUT_STEALTH_LEVELS_PER_STEP = 4;   // matches the Stealth line "+1 scout revealed every 4 levels"
+ZI.SCOUT_VEHICLE_RANGE = 1;             // [PROPOSED] until vehicles carry their own traversal-length bonus
+ZI.scoutRangeParts = function() {
+  const parts = { base: ZI.SCOUT_RANGE_BASE, gear: 0, stealth: 0, vehicle: 0, companion: 0 };
+  try {
+    const lo = ZI.getLoadout ? ZI.getLoadout() : {};
+    Object.keys(lo).forEach(slot => {
+      const it = lo[slot] && ZI.getGearItem ? ZI.getGearItem(lo[slot]) : null;
+      if (it && Number(it.scoutRange) > 0) parts.gear += Number(it.scoutRange);
+    });
+  } catch (e) {}
+  const lvl = ZI.statLevel ? ZI.statLevel('stealth') : 1;
+  parts.stealth = Math.floor((Number(lvl) || 1) / ZI.SCOUT_STEALTH_LEVELS_PER_STEP);
+  const v = ZI.getVehicle ? ZI.getVehicle() : null;
+  if (v && v.found) parts.vehicle = Number(v.scoutRange) > 0 ? Number(v.scoutRange) : ZI.SCOUT_VEHICLE_RANGE;
+  // A captured Pigeon / Hawk widens the scout-reveal reach. Sending the bird from Traversal also
+  // spends one normal Scout charge and reveals a straight cardinal line.
+  parts.companion = ZI.scoutCompanionRange ? (Number(ZI.scoutCompanionRange()) || 0) : 0;
+  return parts;
+};
+ZI.scoutRange = function() {
+  const p = ZI.scoutRangeParts();
+  const total = p.base + p.gear + p.stealth + p.vehicle + p.companion;
+  return Math.max(ZI.SCOUT_RANGE_BASE, Math.min(ZI.SCOUT_RANGE_MAX, total));
+};
+// Chebyshev distance: a square is scoutable when it is within the current reach.
+ZI.canScoutCell = function(from, to) {
+  if (!from || !to) return false;
+  const d = Math.max(Math.abs((to.gx | 0) - (from.gx | 0)), Math.abs((to.gy | 0) - (from.gy | 0)));
+  return d > 0 && d <= ZI.scoutRange();
 };
 ZI._travXpDone = function() { const day = ZI._travToday(), r = ZI._rj(ZI.TRAV_XP_DAY_KEY, null); return (r && r.day === day && r.done) ? { day, done: r.done } : { day, done: {} }; };
 // cellKey: 'gx,gy' for per-cell limits, or any fixed label (Make camp uses 'any': once per real day overall).
@@ -452,15 +538,14 @@ ZI.travEmitOnce = function(kind, cellKey, actionId, scale) {
   return true;
 };
 
-// ─── CATCH-UP XP (Oct 29: Profession Rust Replacement, Priority 1) ───────────
-// Approved: never subtract XP; +15% max rate on future earned XP; one allowance per inactivity, capped at 25% of the
-// XP needed for the next level (snapshotted when the allowance starts); per-track; no allowance at level 50.
-// PENDING Sam's balance approval: grace before accumulation, ramp to +15%, whether the allowance refills after a new
-// inactivity. Until both numbers are set AND enabled is true, catchUpBonus always returns 0 (no gameplay change).
-ZI.CATCHUP = { key: 'zi_prof_catchup_v1', enabled: false, maxRatePct: 15, allowancePctOfNext: 25, maxLevel: 50,
-  graceDays: null,   // PENDING approval: idle days before any catch-up starts
-  rampDays: null,    // PENDING approval: idle days (after grace) to reach maxRatePct
-  pending: ['graceDays', 'rampDays', 'refill after a new inactivity period'] };
+// ─── CATCH-UP XP (PROF-01: rules P1–P5 decided by Sam Oct 30; built Oct 31) ───────────
+// Earned XP is never reduced. Days away are real days, on the same clock as skill decay (Sam, Oct 16).
+// P2: an absence of at least graceDays starts an allowance on the first award after it.
+// P3–P5: allowance = allowancePct (50%) × level-1 XP × min(daysAway, awayCapDays) / awayCapDays (a 14-day cap).
+// Each award adds up to maxRatePct (15%) of its amount from the allowance. That rate fades as the allowance is spent,
+// as in the PROF-01 sim, so it starts at +15% and ends at 0. A new absence replaces any unused allowance: one allowance
+// per inactivity. No allowance at maxLevel. Playing every day always finishes ahead of any intermittent pattern (AUD-01 pass 4).
+ZI.CATCHUP = { key: 'zi_prof_catchup_v1', enabled: true, maxRatePct: 15, allowancePct: 50, graceDays: 2, awayCapDays: 14, maxLevel: 50 };
 ZI.getCatchUp = function() {
   const v = ZI._rj(ZI.CATCHUP.key, null);
   return v && typeof v === 'object' && !Array.isArray(v) && v.tracks && typeof v.tracks === 'object' && !Array.isArray(v.tracks) ? v : { v: 1, tracks: {} };
@@ -471,28 +556,43 @@ ZI._profXpToNext = function(prof) {
   const thr = n => n <= 1 ? 0 : 50 * n + 12 * n * n;
   return thr(L + 1) - thr(L);
 };
-ZI.catchUpReady = function() { const C = ZI.CATCHUP; return !!C.enabled && Number.isFinite(C.graceDays) && C.graceDays >= 0 && Number.isFinite(C.rampDays) && C.rampDays > 0; };
-// Returns the extra XP for one award and spends it from the track's allowance. Never negative, never above the cap.
-// Idle time comes from the existing per-skill activity stamp (zi_skill_decay lastActiveUtc), which every award
-// already updates; a missing stamp counts as active now, so old saves never get backdated idle time.
+// Level-1 XP to level 2 on the live curve. This is the base for every allowance (PROF-01 P3).
+ZI._profLevel1Xp = function(prof) {
+  if (prof === 'scavenging') return ZI._scavCumThreshold(2) - ZI._scavCumThreshold(1);
+  const thr = n => n <= 1 ? 0 : 50 * n + 12 * n * n;
+  return thr(2) - thr(1);
+};
+// XP allowance for one absence. 0 below the grace period and at maxLevel.
+ZI.catchUpAllowanceFor = function(prof, daysAway) {
+  const C = ZI.CATCHUP;
+  if (!(daysAway >= C.graceDays) || ZI.statLevel(prof) >= C.maxLevel) return 0;
+  return Math.floor(ZI._profLevel1Xp(prof) * C.allowancePct / 100 * Math.min(daysAway, C.awayCapDays) / C.awayCapDays);
+};
+ZI.catchUpReady = function() { const C = ZI.CATCHUP; return !!C.enabled && Number.isFinite(C.graceDays) && C.graceDays >= 0; };
+// Returns the extra XP for one award and spends it from the track's allowance. Never negative, never above the allowance.
+// Idle time comes from the per-skill activity stamp (zi_skill_decay lastActiveUtc). The award wrapper in bootstrap.js
+// writes that stamp AFTER this runs, so it still holds the previous award here. A missing stamp counts as active now.
 ZI.catchUpBonus = function(prof, amount) {
   if (!ZI.catchUpReady() || ZI._inCatchUp || !prof || !(amount > 0)) return 0; // disabled: no reads/writes at all
   ZI._inCatchUp = true;
   try {
     const C = ZI.CATCHUP, now = ZI.clockNow(), all = ZI.getCatchUp();
     const raw = all.tracks[prof], t = raw && typeof raw === 'object' ? raw : {};
-    if (!(t.allowance >= 0)) t.allowance = 0; if (!(t.ratePct >= 0)) t.ratePct = 0;
+    const before = JSON.stringify(t);
     const last = (ZI.getDecay()[prof] || {}).lastActiveUtc, idleDays = Number.isFinite(last) ? Math.max(0, (now - last) / 86400000) : 0;
-    if (!(t.allowance > 0) && idleDays > C.graceDays) {
-      const next = ZI._profXpToNext(prof);
-      if (next > 0) { t.ratePct = Math.min(C.maxRatePct, C.maxRatePct * (idleDays - C.graceDays) / C.rampDays); t.allowance = Math.floor(next * C.allowancePctOfNext / 100); }
+    if (idleDays >= C.graceDays) { // first award after an absence: a fresh allowance replaces any unused one
+      t.allowance = ZI.catchUpAllowanceFor(prof, idleDays); t.cap = t.allowance; t.carry = 0;
     }
     let bonus = 0;
-    if (t.allowance > 0 && t.ratePct > 0) {
-      bonus = Math.max(0, Math.min(t.allowance, Math.floor(amount * Math.min(C.maxRatePct, t.ratePct) / 100)));
-      t.allowance -= bonus; if (t.allowance <= 0) { t.allowance = 0; t.ratePct = 0; }
+    if (t.allowance > 0 && t.cap > 0) {
+      const ratePct = C.maxRatePct * t.allowance / t.cap;      // fades as the allowance is spent
+      const exact = amount * ratePct / 100 + (t.carry || 0);    // carry keeps small awards from rounding to zero
+      bonus = Math.min(t.allowance, Math.floor(exact));
+      t.carry = exact - Math.floor(exact);
+      t.allowance -= bonus;
+      if (t.allowance <= 0) { t.allowance = 0; t.cap = 0; t.carry = 0; }
     }
-    all.tracks[prof] = t; ZI._wj(ZI.CATCHUP.key, all);
+    if (JSON.stringify(t) !== before) { all.tracks[prof] = t; ZI._wj(C.key, all); }
     return bonus;
   } catch (e) { return 0; } finally { ZI._inCatchUp = false; }
 };

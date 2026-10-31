@@ -215,7 +215,8 @@ ZI.worldCell = function(gx, gy, type) {
   const coord = String.fromCharCode(65 + col) + (row + 1);
   const difficulty = Math.max(1, Math.min(5, 1 + Math.floor(dist / 6) + (n > 0.72 ? 1 : 0)));
   // 'cleared' is real player progress (kills in the cell), not a random hash band.
-  const state = h < 0.08 ? 'locked' : (ZI.isCellCleared && ZI.isCellCleared(gx, gy)) ? 'cleared' : h > 0.92 ? 'contested' : 'available';
+  const lockProgress = ZI.isWorldCellLocked(gx, gy) && ZI.getLockedCellProgress ? ZI.getLockedCellProgress(gx, gy, seed) : null;
+  const state = lockProgress && !lockProgress.unlocked ? 'locked' : (ZI.isCellCleared && ZI.isCellCleared(gx, gy)) ? 'cleared' : h > 0.92 ? 'contested' : 'available';
   return {
     id: `${type}-${gx}-${gy}`, gx, gy, sx, sy, row, col, coord,
     name: (poi ? poi.name : locationPool[Math.floor(ZI.hash01(seed, gx, gy, 5) * locationPool.length)]) + ' ' + coord,
@@ -312,6 +313,39 @@ ZI.isCellCleared = function(gx, gy) {
   if (ZI.isHomeCell(gx, gy)) return true;
   return (ZI.getCellKills()[gx + ',' + gy] || 0) >= ZI.cellClearTarget(gx, gy);
 };
+// Locked cells represent zombie-overrun zones. A deterministic 3–7 adjacent unlocked
+// squares must be cleared before access opens. Keep at least three eligible neighbors
+// around every generated lock so no requirement can become impossible in a lock cluster.
+ZI.WORLD_LOCK_CHANCE = 0.08;
+ZI.LOCKED_CELL_CLEAR_MIN = 3;
+ZI.LOCKED_CELL_CLEAR_MAX = 7;
+ZI._rawWorldCellLocked = function(gx, gy, seed) {
+  seed = Number.isFinite(seed) ? seed : ZI.worldSeed();
+  return ZI.hash01(seed, gx, gy, 1) < ZI.WORLD_LOCK_CHANCE;
+};
+ZI.isWorldCellLocked = function(gx, gy, seed) {
+  seed = Number.isFinite(seed) ? seed : ZI.worldSeed();
+  if (!ZI._rawWorldCellLocked(gx, gy, seed)) return false;
+  let rawLockedNeighbors = 0;
+  for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) {
+    if (!dx && !dy) continue;
+    if (ZI._rawWorldCellLocked(gx + dx, gy + dy, seed)) rawLockedNeighbors++;
+  }
+  return rawLockedNeighbors <= 5;
+};
+ZI.getLockedCellProgress = function(gx, gy, seed) {
+  seed = Number.isFinite(seed) ? seed : ZI.worldSeed();
+  const neighbors = [];
+  for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) {
+    if (!dx && !dy) continue;
+    const nx = gx + dx, ny = gy + dy;
+    if (!ZI.isWorldCellLocked(nx, ny, seed)) neighbors.push({ gx:nx, gy:ny });
+  }
+  const desired = ZI.LOCKED_CELL_CLEAR_MIN + Math.floor(ZI.hash01(seed, gx, gy, 37) * (ZI.LOCKED_CELL_CLEAR_MAX - ZI.LOCKED_CELL_CLEAR_MIN + 1));
+  const required = Math.max(ZI.LOCKED_CELL_CLEAR_MIN, Math.min(desired, neighbors.length));
+  const cleared = neighbors.reduce((n, cell) => n + (ZI.isCellCleared(cell.gx, cell.gy) ? 1 : 0), 0);
+  return { required, cleared:Math.min(cleared, required), available:neighbors.length, unlocked:cleared >= required };
+};
 // Familiarity for the Wandering stress system: 'cleared' | 'explored' | 'unexplored'.
 ZI.cellFamiliarity = function(gx, gy) {
   if (ZI.isCellCleared(gx, gy)) return 'cleared';
@@ -322,12 +356,12 @@ ZI.cellFamiliarity = function(gx, gy) {
 // ─── HIDE: WHAT WANDERING CAN DRAW (TRAV-01a behavior 3, Sam Oct 21: T2, S2) ──────────────────────────
 // Cells do not hold zombie lists yet, so Hide reports only what Wandering really uses: the cell's threat level and
 // the tier range ZI._bgZombie can draw right now. Same rule as wandering.js (_bgZombie + rollEncounter):
-// lap = floor(scroll / 100) + Push On boost; a tier is drawable when its rank ≤ min(7, floor(lap / 1.5)).
+// lap = floor(scroll / 100) + Push On boost; a tier is drawable when its rank ≤ min(7, floor(lap / ZI.TIER_LAP_DIVISOR)).
 ZI.TIER_ORDER = ['F','E','D','C','B','A','S','BOSS'];
 ZI.wanderDrawableTiers = function(state) {
   const s = state || (ZI.getWanderRun ? ZI.getWanderRun() : {}) || {};
   const boost = ZI.ACTIVE_TABLE ? (s.pressure || 0) * ZI.ACTIVE_TABLE.push.tierBoost * 1.5 : 0;
-  const lap = Math.floor((s.scroll || 0) / 100) + boost, cap = Math.min(7, Math.floor(lap / 1.5));
+  const lap = Math.floor((s.scroll || 0) / 100) + boost, cap = Math.min(7, Math.floor(lap / ZI.TIER_LAP_DIVISOR));
   const present = {}; (ZI.BESTIARY || []).forEach(z => { present[z.tier] = 1; });
   return ZI.TIER_ORDER.filter((t, rank) => rank <= cap && present[t]);
 };

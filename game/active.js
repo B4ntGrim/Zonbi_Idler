@@ -183,7 +183,8 @@ ZI.discoveryRiskTier = function(siteId, state) {
   const A = ZI.ACTIVE_TABLE, site = A.sites[siteId], S = A.riskScore;
   const z = ZI.getTravZone ? ZI.getTravZone() : null;
   const eff = site.checks.reduce((a, k) => a + ZI.effectiveLevel(k), 0) / site.checks.length;
-  const score = site.siteTier * S.perSiteTier + ((z && z.difficulty) || 1) * S.perZoneDifficulty + ((state && state.pressure) || 0) * S.perPressure - eff * S.perSkillLevel;
+  const discoveryInsight = Math.min(12.25, ZI.professionBonus ? ZI.professionBonus('discovery', 0.25) : 0);
+  const score = site.siteTier * S.perSiteTier + ((z && z.difficulty) || 1) * S.perZoneDifficulty + ((state && state.pressure) || 0) * S.perPressure - (eff + discoveryInsight) * S.perSkillLevel;
   let t = 0; S.thresholds.forEach(th => { if (score >= th) t++; });
   return Math.min(3, t);
 };
@@ -371,10 +372,97 @@ ZI.endRunState = function(state, reason) {
 ZI.wanderHeal = function(state, rng) {
   const r = ZI.spendCharge('heal', rng); if (!r.ok) return r;
   const R = ZI.WANDER_REST_TABLE, L = ZI.effectiveLevel('firstAid');
-  const amt = Math.round(ZI.maxHp() * ZI.STAT_FORMULAS.firstAidHealPercent(L) / 100);
+  const received = 1 + Math.min(0.1225, ZI.professionBonus ? ZI.professionBonus('firstAid', 0.0025) : 0);
+  const amt = Math.round(ZI.maxHp() * ZI.STAT_FORMULAS.firstAidHealPercent(L) / 100 * received);
   state.hp = Math.min(ZI.maxHp(), state.hp + amt);
   ZI.emitAction && ZI.emitAction('heal', 1 + amt / 100);
   return { ok:true, source: r.source, healed: amt };
+};
+// Supplies may be used at home or while the survivor is actually resting at a Wandering checkpoint.
+// This is intentionally narrower than atBaseOrCamp so a checkpoint does not open general inventory management.
+ZI.canUseTraversalSupplies = function() {
+  if (!ZI.atBaseOrCamp || ZI.atBaseOrCamp()) return true;
+  const run = ZI.getWanderRun && ZI.getWanderRun();
+  return !!(run && run.resting && (run.restAt === 'checkpoint' || run.restAt === 'camp' || run.restAt === 'base'));
+};
+// Traversal field-resource actions reuse the same food, heal-charge, and bandage rules as the rest of the game.
+ZI.useTraversalSupply = function(kind) {
+  if (ZI.canUseTraversalSupplies && !ZI.canUseTraversalSupplies()) return { ok:false, reason:'Use supplies at your base, camp, or while resting at a checkpoint.' };
+  if (kind === 'food') {
+    const live = ZI.PROG && ZI.PROG.LIVE;
+    if (!live || !live.settleStatus || !live.saveStatus || !live.isFood) return { ok:false, reason:'Food is unavailable.' };
+    const status = live.settleStatus();
+    if (status.nutrition >= 100) return { ok:false, reason:'Nutrition is already full.' };
+    const candidates = [];
+    (ZI.getStash ? ZI.getStash() : []).forEach((id, index) => { if (live.isFood(id)) candidates.push({ id, source:'stash', index }); });
+    (ZI.getCarried ? ZI.getCarried() : []).forEach((entry, index) => { if (entry && live.isFood(entry.id)) for (let n = 0; n < (Number(entry.qty) || 1); n++) candidates.push({ id:entry.id, source:'carried', index }); });
+    const loadout = ZI.getLoadout ? ZI.getLoadout() : {};
+    Object.keys(loadout).forEach(slot => { if (loadout[slot] && live.isFood(loadout[slot])) candidates.push({ id:loadout[slot], source:'loadout', slot }); });
+    candidates.sort((a, b) => ((ZI.getGearItem(a.id).marketValue || 0) - (ZI.getGearItem(b.id).marketValue || 0)));
+    const item = candidates[0];
+    if (!item) return { ok:false, reason:'No edible food available in your supplies.' };
+    let consumed = false;
+    if (item.source === 'stash') consumed = !!(ZI.removeFromStash && ZI.removeFromStash(item.id, 'eat'));
+    else if (item.source === 'carried') consumed = !!(ZI._carriedRemove && ZI._carriedRemove(item.id, 1).ok);
+    else if (item.source === 'loadout') {
+      const current = ZI.getLoadout();
+      if (current[item.slot] === item.id) { current[item.slot] = null; ZI.saveLoadout(current); consumed = true; }
+    }
+    if (!consumed) return { ok:false, reason:'Could not remove that food item from your supplies.' };
+    const gained = Math.min(100 - status.nutrition, live.foodValue(item.id));
+    status.nutrition += gained; live.saveStatus(status);
+    const name = ZI.getGearItem(item.id).name;
+    return { ok:true, item:item.id, name, gained, nutrition:status.nutrition, text:`Ate ${name}: +${gained} nutrition (${Math.round(status.nutrition)}/100).` };
+  }
+  const run = ZI.getWanderRun ? ZI.getWanderRun() : null;
+  if (!run) return { ok:false, reason:'Health status is unavailable.' };
+  const maxHp = ZI.maxHp ? ZI.maxHp() : 100, hp = Number.isFinite(run.hp) ? run.hp : maxHp;
+  if (kind === 'medkit') {
+    if (hp >= maxHp) return { ok:false, reason:'Health is already full.' };
+    const charge = ZI.chargeTotals ? ZI.chargeTotals().heal : 0;
+    if (!charge) {
+      const atHome = !ZI.atBaseOrCamp || ZI.atBaseOrCamp();
+      const hasCarriedMedkit = () => (ZI.getCarried ? ZI.getCarried() : []).some(e => e.id === 'medkit' && (e.charges == null ? (ZI.kitFull ? ZI.kitFull('medkit') : 2) : e.charges) > 0);
+      const loadout = ZI.getLoadout ? ZI.getLoadout() : {}, slot = Object.keys(loadout).find(k => loadout[k] === 'medkit');
+      if (slot) {
+        if (atHome && ZI.unequipGear) ZI.unequipGear(slot);
+        else {
+          loadout[slot] = null; ZI.saveLoadout(loadout);
+          const carried = ZI.getCarried ? ZI.getCarried() : [];
+          carried.push({ id:'medkit', qty:1, charges:ZI.kitFull ? ZI.kitFull('medkit') : 2 }); ZI.saveCarried(carried);
+        }
+      }
+      if (!hasCarriedMedkit() && ZI.stashCount && ZI.stashCount('medkit') > 0) {
+        if (atHome && ZI.takeToCarried) {
+          const moved = ZI.takeToCarried('medkit', 1);
+          if (!moved.ok) return { ok:false, reason:moved.reason };
+        } else {
+          const stash = ZI.getStash(), i = stash.indexOf('medkit');
+          if (i >= 0) { stash.splice(i, 1); ZI.saveStash(stash); const carried = ZI.getCarried(); carried.push({ id:'medkit', qty:1, charges:ZI.kitFull ? ZI.kitFull('medkit') : 2 }); ZI.saveCarried(carried); }
+        }
+      }
+    }
+    const result = ZI.wanderAct ? ZI.wanderAct(s => { if (!Number.isFinite(s.hp)) s.hp = maxHp; return ZI.wanderHeal(s); }) : ZI.wanderHeal(run);
+    return result && result.ok ? Object.assign(result, { text:`Restored ${result.healed} HP with a medkit.` }) : result;
+  }
+  if (kind !== 'bandage') return { ok:false, reason:'Unknown supply.' };
+  const injury = ZI.getInjury && ZI.getInjury();
+  if (hp >= maxHp && !injury) return { ok:false, reason:'Health is full and there is no injury to treat.' };
+  let used = false;
+  if (ZI.removeFromStash && ZI.removeFromStash('field_bandage', 'use')) used = true;
+  if (!used && ZI._carriedRemove) used = ZI._carriedRemove('field_bandage', 1).ok;
+  if (!used) {
+    const loadout = ZI.getLoadout ? ZI.getLoadout() : {}, slot = Object.keys(loadout).find(k => loadout[k] === 'field_bandage');
+    if (slot && ZI.unequipGear) { ZI.unequipGear(slot); used = !!(ZI.removeFromStash && ZI.removeFromStash('field_bandage', 'use')); }
+  }
+  if (!used) return { ok:false, reason:'No field bandage available.' };
+  const item = ZI.getGearItem && ZI.getGearItem('field_bandage'), baseHeal = item && item.effect ? (item.effect.heal || 0) : 30;
+  const bonus = 1 + Math.min(0.1225, ZI.professionBonus ? ZI.professionBonus('medical', 0.0025) : 0);
+  const healed = Math.min(Math.max(0, maxHp - hp), Math.round(baseHeal * bonus));
+  if (injury && ZI.cureInjury) ZI.cureInjury('field_bandage');
+  if (healed && ZI.wanderAct) ZI.wanderAct(s => { s.hp = Math.min(maxHp, (Number.isFinite(s.hp) ? s.hp : maxHp) + healed); });
+  if (ZI.emitAction && healed) ZI.emitAction('heal', 1 + healed / 100);
+  return { ok:true, healed, cured:!!injury, text:`Restored ${healed} HP${injury ? ' and treated the injury' : ''} with a field bandage.` };
 };
 ZI.wanderScout = function(state, rng) {
   const p = state.prompt; if (!p) return { ok:false, reason:'Nothing to scout right now.' };
@@ -447,7 +535,8 @@ ZI.wanderAct = function(fn) { const s = ZI.getWanderRun(); const r = fn(s); ZI.s
 // down=true: the survivor lost the fight and is healed back on their feet (same amount as a top-up).
 ZI.simHeal = function(state, rng, down) {
   const r = ZI.spendCharge('heal', rng); if (!r.ok) return r;
-  const amt = Math.round(ZI.maxHp() * ZI.STAT_FORMULAS.firstAidHealPercent(ZI.effectiveLevel('firstAid')) / 100);
+  const received = 1 + Math.min(0.1225, ZI.professionBonus ? ZI.professionBonus('firstAid', 0.0025) : 0);
+  const amt = Math.round(ZI.maxHp() * ZI.STAT_FORMULAS.firstAidHealPercent(ZI.effectiveLevel('firstAid')) / 100 * received);
   state.hp = Math.min(ZI.maxHp(), (down ? 1 : state.hp) + amt);
   ZI.emitAction && ZI.emitAction('heal', 1 + amt / 100);
   return { ok:true, source: r.source, healed: amt };
@@ -1190,7 +1279,8 @@ ZI.setInjury = function() { return ZI.applyInjury('fort'); };                   
 ZI.treatInjury = function(playMinutes) {
   const j = ZI.getInjury(), playMs = Number(playMinutes) * 60 * 1000;
   if (!j || !Number.isFinite(playMs) || playMs <= 0) return;
-  j.remainingMs = Math.max(0, j.remainingMs - playMs);
+  const speedUp = Math.min(0.3675, (ZI.professionBonus ? ZI.professionBonus('firstAid', 0.005) : 0) + (ZI.professionBonus ? ZI.professionBonus('medical', 0.0025) : 0));
+  j.remainingMs = Math.max(0, j.remainingMs - playMs / Math.max(0.5, 1 - speedUp));
   if (j.remainingMs <= 0) ZI._clearInjury(); else ZI._wj(ZI.INJURY_KEY2, j);
 }; // O5: treatment subtracts real play minutes; Make camp does not treat injuries
 ZI.cureInjury = function(source) { if (!ZI.getInjury()) return false; ZI._clearInjury(); ZI._lastInjuryCure = source || 'cure'; return true; }; // interface for Batch B's Rest roll
@@ -1220,7 +1310,9 @@ ZI.tryBandageCure = function(state) {
   else { const lo = ZI.getLoadout(), sl = ['consumable1', 'consumable2', 'consumable3', 'throwable'].find(s => lo[s] === id); if (sl) { lo[sl] = null; ZI.saveLoadout(lo); used = 'slot'; } }
   if (!used) return false;
   ZI.cureInjury('field_bandage');
-  const it = ZI.getGearItem(id), heal = (it && it.effect && it.effect.heal) || 0;
+  const it = ZI.getGearItem(id), baseHeal = (it && it.effect && it.effect.heal) || 0;
+  const medBoost = 1 + Math.min(0.1225, ZI.professionBonus ? ZI.professionBonus('medical', 0.0025) : 0);
+  const heal = Math.round(baseHeal * medBoost);
   if (heal) { if (state) state.hp = Math.min(ZI.maxHp(), (state.hp || 0) + heal); else if (ZI.wanderAct) ZI.wanderAct(s => { s.hp = Math.min(ZI.maxHp(), (s.hp || 0) + heal); }); }
   return used;
 };

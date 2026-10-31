@@ -87,6 +87,9 @@ check('Ops screen never runs or queues work; its only write is Camp Leader duty 
 check('Ops: the chore design order is cooking → weapon upkeep → laundry', (() => { const s = mkEnv({}).ZI.OPS_CATALOG.filter(a => a.designOrder).sort((a, b) => a.designOrder - b.designOrder).map(a => a.id).join(); return s === 'cook,upkeep,laundry'; })());
 // ── Camp duty assignment ──
 { const store = { zi_world_seed:'1' }; mkEnv(store).ZI.startNewInSlot('camp', 1, { gender:'male', profession:'envoy' }); const E = mkEnv(store, T0 + 1000), Z = E.ZI;
+  // ROSTER-01 (Sam, Oct 30): a new game has only the player, so the camp survivors these duty
+  // checks assign have to be recruited first rather than assumed present.
+  (Z.DEMO_SQUAD_ROSTER || []).forEach(sv => Z.recruitSurvivor(sv));
   check('Duties: Solo cannot assign camp duties', !Z.opsAssign('sv_mason', 'scavenge', 'solo').ok && Z.getSchedule().assignments.length === 0);
   const r1 = Z.opsAssign('sv_mason', 'scavenge', 'camp');
   check('Duties: a duty with no facility requirement can be staffed (existing schedule)', r1.ok && Z.getSchedule().assignments.some(a => a.survivorId === 'sv_mason' && a.jobId === 'scavenge'));

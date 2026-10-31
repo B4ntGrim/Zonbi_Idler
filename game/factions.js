@@ -118,7 +118,8 @@ ZI.completeContract = function(id) {
   if (c.reward.gear && ZI.grantGear) ZI.grantGear(c.reward.gear, 1);
   ZI.saveContractSave(s);
   if (c.reward.rep && ZI.repApply) ZI.repApply(c.faction, c.reward.rep); // capped, clamped single rep path
-  const tierScale = 1 + (ZI.TIER_META[c.tier] ? ZI.TIER_META[c.tier].rank : 1) * 0.3;
+  const diplomatReward = 1 + Math.min(0.1225, ZI.professionBonus ? ZI.professionBonus('diplomat', 0.0025) : 0);
+  const tierScale = (1 + (ZI.TIER_META[c.tier] ? ZI.TIER_META[c.tier].rank : 1) * 0.3) * diplomatReward;
   ZI.emitAction('contract.complete', tierScale, { faction: c.faction });
   return true;
 };
@@ -166,6 +167,8 @@ ZI.repApply = function(fid, delta) {
   const s = ZI.getContractSave();
   let d = Math.max(-ZI.REP_MAX_EVENT, Math.min(ZI.REP_MAX_EVENT, Math.round(delta)));
   if (d < 0) d = Math.round(d * 1.25); // losing standing is faster than gaining it
+  const diplomatic = Math.min(0.1225, ZI.professionBonus ? ZI.professionBonus('diplomat', 0.0025) : 0);
+  d = d >= 0 ? Math.round(d * (1 + diplomatic)) : Math.round(d * (1 - diplomatic));
   let v = Math.max(-1000, Math.min(2500, (s.repByFaction[fid] || 0) + d));
   if (fid === 'lodge') v = Math.max(ZI.LODGE_MIN_REP, v); // the Lodge never goes Hostile
   s.repByFaction[fid] = v; s.repLastOffense = s.repLastOffense || {};

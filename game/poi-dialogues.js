@@ -206,7 +206,7 @@ ZI.resolvePoiStoryChoice = function(cell, choice) {
   if (choice === 'route') {
     state.routeAids[`${cell.gx},${cell.gy}`] = { bonus:15, expires: (ZI.clockNow ? ZI.clockNow() : Date.now()) + 7 * 86400000 };
     writeStory(state);
-    return { tone:'good', text:`${npc.name} points out a quieter approach. Your next Traversal loot attempt here gets +15% safety; the lead lasts seven days.` };
+    return { tone:'good', text:`${npc.name} points out a quieter approach. Your next Loot attempt at this location gains 15 percentage points of safe-loot chance, up to 95%. The bonus is used up after that attempt, whether it succeeds or fails, and expires after seven real days.` };
   }
   return null;
 };

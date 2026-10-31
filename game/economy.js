@@ -116,11 +116,75 @@ ZI.addRmat = function(tierKeyOrRank, qty) {
   const h = ZI.getRmatHoldings(); h[key] = (h[key] || 0) + (qty || 0);
   try { localStorage.setItem(ZI.RMAT_HOLD_KEY, JSON.stringify(h)); } catch (e) {}
 };
+
+// ─── MYSTIC JESTER BULK TRADES ───────────────────────────────────────────────
+// The Jester is a rotating guest at the existing RMAT Shop, not a global market
+// seller. Offers accept exact lots from the base stash only; no generic sell path.
+ZI.JESTER_TRADE_KEY = 'zi_mystic_jester_trade';
+ZI.JESTER_TRADE_CYCLE_DAYS = 7;
+ZI.JESTER_TRADE_VISIT_DAYS = 2;
+ZI.JESTER_TRADE_LOTS_PER_OFFER = 2;
+ZI.JESTER_TRADE_OFFERS = [
+  { id:'bandages', itemId:'bandage', qty:4, reward:{ T0:2 }, note:'Clean wraps are worth more than their weight.' },
+  { id:'rations', itemId:'ration', qty:3, reward:{ T0:2 }, note:'Sealed food travels well between strange places.' },
+  { id:'crowbars', itemId:'crowbar', qty:2, reward:{ T0:3 }, note:'A little leverage opens many doors.' },
+  { id:'field-medkits', itemId:'medkit', qty:2, reward:{ T0:3 }, note:'Keep the labels intact, if you can.' },
+  { id:'work-boots', itemId:'boots_t1', qty:2, reward:{ T0:2 }, note:'He has a buyer who walks a lot.' },
+  { id:'construction-helmets', itemId:'helmet_t1', qty:2, reward:{ T0:2 }, note:'Hard hats. Soft stories.' },
+];
+ZI.jesterTradeVisit = function(day) {
+  const d = Number.isFinite(day) ? Math.max(1, Math.floor(day)) : (ZI.getGameTime ? ZI.getGameTime().day : 1);
+  const offset = (d - 1) % ZI.JESTER_TRADE_CYCLE_DAYS;
+  const cycle = Math.floor((d - 1) / ZI.JESTER_TRADE_CYCLE_DAYS);
+  return { present:offset < ZI.JESTER_TRADE_VISIT_DAYS, day:d, cycle, daysRemaining:offset < ZI.JESTER_TRADE_VISIT_DAYS ? ZI.JESTER_TRADE_VISIT_DAYS - offset : ZI.JESTER_TRADE_CYCLE_DAYS - offset };
+};
+ZI.getJesterTradeSave = function() {
+  let s; try { s = JSON.parse(localStorage.getItem(ZI.JESTER_TRADE_KEY) || 'null'); } catch (e) { s = null; }
+  if (!s || typeof s !== 'object') s = { v:1, cycle:-1, lots:{} };
+  // A prepared journal contains full after-images, so interrupted trades can be
+  // replayed idempotently without duplicating the RMAT payout.
+  if (s.pending && s.pending.stash && s.pending.wallet) {
+    ZI.saveStash(s.pending.stash);
+    try { localStorage.setItem(ZI.RMAT_HOLD_KEY, JSON.stringify(s.pending.wallet)); } catch (e) {}
+    s.cycle = s.pending.cycle; s.lots = s.pending.lots; delete s.pending;
+    try { localStorage.setItem(ZI.JESTER_TRADE_KEY, JSON.stringify(s)); } catch (e) {}
+  }
+  return s;
+};
+ZI.jesterTradeOffers = function(day) {
+  const visit = ZI.jesterTradeVisit(day), save = ZI.getJesterTradeSave();
+  const offerCount = Math.min(3, ZI.JESTER_TRADE_OFFERS.length);
+  return Array.from({ length:offerCount }, (_, i) => {
+    const offer = ZI.JESTER_TRADE_OFFERS[(visit.cycle * offerCount + i) % ZI.JESTER_TRADE_OFFERS.length];
+    const used = save.cycle === visit.cycle ? (save.lots[offer.id] || 0) : 0;
+    return Object.assign({}, offer, { lotsRemaining:Math.max(0, ZI.JESTER_TRADE_LOTS_PER_OFFER - used), stashCount:ZI.stashCount ? ZI.stashCount(offer.itemId) : (ZI.getStash().filter(id => id === offer.itemId).length) });
+  });
+};
+ZI.jesterTrade = function(offerId) {
+  const visit = ZI.jesterTradeVisit();
+  if (!visit.present) return { ok:false, reason:'The Mystic Jester is away from the Shop.' };
+  const offer = ZI.jesterTradeOffers().find(o => o.id === offerId);
+  if (!offer) return { ok:false, reason:'That is not one of the Jester’s current bulk requests.' };
+  if (offer.lotsRemaining < 1) return { ok:false, reason:'The Jester has filled this order for the visit.' };
+  if (!ZI.getGearItem || !ZI.getGearItem(offer.itemId) || ZI.isStoryItem(offer.itemId)) return { ok:false, reason:'That item cannot be traded.' };
+  const stash = ZI.getStash().slice(), have = stash.filter(id => id === offer.itemId).length;
+  if (have < offer.qty) return { ok:false, reason:`Bring ${offer.qty} ${ZI.getGearItem(offer.itemId).name} in your stash for one lot.` };
+  let removed = 0;
+  const afterStash = stash.filter(id => { if (id === offer.itemId && removed < offer.qty) { removed++; return false; } return true; });
+  const save = ZI.getJesterTradeSave(), lots = Object.assign({}, save.cycle === visit.cycle ? save.lots : {});
+  lots[offer.id] = (lots[offer.id] || 0) + 1;
+  const wallet = ZI.getRmatHoldings(); Object.entries(offer.reward).forEach(([tier, qty]) => { wallet[tier] = (wallet[tier] || 0) + qty; });
+  const pending = { cycle:visit.cycle, lots, stash:afterStash, wallet };
+  try { localStorage.setItem(ZI.JESTER_TRADE_KEY, JSON.stringify(Object.assign({}, save, { v:1, pending }))); }
+  catch (e) { return { ok:false, reason:'Trade could not be saved. No items were taken.' }; }
+  const done = ZI.getJesterTradeSave();
+  if (ZI.emitAction) ZI.emitAction('transaction', 1 + Math.min(0.1225, ZI.professionBonus ? ZI.professionBonus('trading', 0.0025) : 0));
+  return { ok:true, offer, wallet:done && ZI.getRmatHoldings(), text:`Traded ${offer.qty} ${ZI.getGearItem(offer.itemId).name} for ${Object.entries(offer.reward).map(([k,q]) => `${q} ${k} RMAT`).join(' + ')}.` };
+};
 // ─── TOP BAR RESOURCES (Oct 27) ─────────────────────────────────────────────
 // The one backend reader for the header's resource strip, in display order. Read-only; the top bar polls it.
 // Each entry: { current, max, rate, pending }. pending = the system isn't built yet; the chip shows "—".
-//   Nutrition — ZI.getNutrition() → { current, max } (FOOD-01 meter, 0–100). Not built yet.
-//   Food      — camp food: Food-slot items in the base stash (FOOD-01 O9).
+//   Nutrition and Food — the player's 0–100 nutrition meter. Food inventory quantity is shown in Traversal Field Resources.
 //   Ammo      — ZI.getAmmo() → number. No ammo store exists yet.
 //   Fuel      — ZI_MATERIALS.fuel (saved material).
 //   RMAT      — RMAT wallet, all tiers T0–T5.
@@ -130,12 +194,7 @@ ZI.getTopBarResources = function() {
   out.Nutrition = nut && Number.isFinite(nut.current)
     ? { current: nut.current, max: nut.max || 100, rate: 0, pending: false }
     : { current: 0, max: 100, rate: 0, pending: true };
-  let food = 0;
-  try {
-    const isFood = id => { const g = ZI.getGearItem && ZI.getGearItem(id); return !!g && g.slot === 'consumable3'; };
-    (ZI.getStash ? ZI.getStash() : []).forEach(id => { if (isFood(id)) food++; });
-  } catch (e) {}
-  out.Food = { current: food, max: 0, rate: 0, pending: false };
+  out.Food = Object.assign({}, out.Nutrition);
   const ammo = typeof ZI.getAmmo === 'function' ? ZI.getAmmo() : null;
   out.Ammo = Number.isFinite(ammo) ? { current: ammo, max: 0, rate: 0, pending: false } : { current: 0, max: 0, rate: 0, pending: true };
   const F = window.ZI_MATERIALS && window.ZI_MATERIALS.fuel;
@@ -215,7 +274,8 @@ ZI.shopBuy = function(entry) {
 ZI.shopPrice = function(entry) {
   const base = entry.cost || null; if (!base) return null;
   const mult = entry.costScale === 'level' ? ZI.shopLevel(entry.id) + 1 : 1;
-  const out = {}; Object.entries(base).forEach(([k, q]) => { out[k] = q * mult; }); return out;
+  const discount = Math.min(0.1225, ZI.professionBonus ? ZI.professionBonus('trading', 0.0025) : 0);
+  const out = {}; Object.entries(base).forEach(([k, q]) => { out[k] = Math.max(1, Math.ceil(q * mult * (1 - discount))); }); return out;
 };
 ZI.shopCanAfford = function(entry) {
   const price = ZI.shopPrice(entry); if (!price) return false;
@@ -237,12 +297,16 @@ ZI.shopPurchase = function(entry) {
   if (!ZI.shopCanAfford(entry)) return { ok:false, reason:`Needs ${ZI.shopPriceText(entry)}.` };
   if (entry.grant && entry.grant.kind === 'gear' && !(ZI.getGearItem && ZI.getGearItem(entry.grant.itemId))) return { ok:false, reason:'That item is missing from the game data.' };
   Object.entries(price).forEach(([k, q]) => ZI.addRmat(k, -q));
+  const protectionChance = Math.min(0.1225, ZI.professionBonus ? ZI.professionBonus('trading', 0.0025) : 0);
+  const refundTier = Object.keys(price).sort((a, b) => Number(a.slice(1)) - Number(b.slice(1)))[0];
+  const refund = protectionChance > 0 && refundTier && ZI.roll('tradeprotection') < protectionChance ? { [refundTier]:1 } : null;
+  if (refund) Object.entries(refund).forEach(([k, q]) => ZI.addRmat(k, q));
   ZI.shopBuy(entry);
-  return { ok:true, price, text:`Bought ${entry.name} for ${Object.entries(price).map(([k, q]) => q + ' ' + k).join(' + ')} RMAT.` };
+  return { ok:true, price, refund, text:`Bought ${entry.name} for ${Object.entries(price).map(([k, q]) => q + ' ' + k).join(' + ')} RMAT${refund ? ' (trade protection refunded 1 ' + refundTier + ')' : ''}.` };
 };
 
 // Grant sinks (single stores; consumed by their systems when wired).
-ZI.unlockShopRecipe = function(id) { try { const k='zi_unlocked_recipes'; const set=JSON.parse(localStorage.getItem(k)||'[]'); if(!set.includes(id)){set.push(id);localStorage.setItem(k,JSON.stringify(set)); if(ZI.emitAction) ZI.emitAction('discover');} } catch(e){} };
+ZI.unlockShopRecipe = function(id) { try { const k='zi_unlocked_recipes'; const set=JSON.parse(localStorage.getItem(k)||'[]'); if(!set.includes(id)){set.push(id);localStorage.setItem(k,JSON.stringify(set)); if(ZI.emitAction) ZI.emitAction('discover', 1 + Math.min(0.1225, ZI.professionBonus ? ZI.professionBonus('discovery', 0.0025) : 0));} } catch(e){} };
 ZI.isRecipeUnlocked = function(id) { try { return JSON.parse(localStorage.getItem('zi_unlocked_recipes')||'[]').includes(id); } catch(e){ return false; } };
 ZI.applyCapacity = function(field, amount) { try { const k='zi_caps'; const c=JSON.parse(localStorage.getItem(k)||'{}'); c[field]=(c[field]||0)+(amount||0); localStorage.setItem(k,JSON.stringify(c)); } catch(e){} };
 ZI.getCapacity = function(field) { try { return (JSON.parse(localStorage.getItem('zi_caps')||'{}'))[field]||0; } catch(e){ return 0; } };
@@ -325,13 +389,17 @@ ZI.SHOP_ITEMS = [
 // Every mutation (`M[key].current = ...`, used throughout the codebase) now
 // auto-persists via a Proxy, and values are restored from storage on load.
 window.ZI_MATERIALS = (function() {
+  // Placeholder unit values are catalog metadata only; they are not wired into any live trade or loot balance.
   const defs = {
-    metal:       { name:'Metal',       icon:'⚙', color:'#b4c2cf', current:0, max:500, sources:['Scrap autos','Industrial loot','Demolition'] },
-    wood:        { name:'Wood',        icon:'🪵', color:'#c49a5e', current:0, max:500, sources:['Forest scavenge','Demolition','Furniture'] },
-    cloth:       { name:'Cloth',       icon:'🧵', color:'#9fb0cc', current:0, max:300, sources:['Clothing items','Sheets','Tarps'] },
-    electronics: { name:'Electronics', icon:'⚡', color:'#6ab0e0', current:0,  max:200, sources:['Appliances','Vehicles','Lab loot'] },
-    fuel:        { name:'Fuel',        icon:'🔥', color:'#e07a30', current:0, max:300, sources:['Vehicle siphons','Generators','Caches'] },
-    medical:     { name:'Medical',     icon:'💊', color:'#50c878', current:0,  max:150, sources:['Hospital loot','Pharmacy','Crafted'] },
+    metal:       { name:'Metal',       icon:'⚙', sprite:'art/retro-items/metal-retro-v1.png', color:'#b4c2cf', current:0, max:500, sources:['Scrap autos','Industrial loot','Demolition'], placeholderUnitValue:4 },
+    wood:        { name:'Wood',        icon:'🪵', sprite:'art/retro-items/wood-retro-v1.png', color:'#c49a5e', current:0, max:500, sources:['Forest scavenge','Demolition','Furniture'], placeholderUnitValue:2 },
+    cloth:       { name:'Cloth',       icon:'🧵', sprite:'art/retro-items/cloth-retro-v1.png', color:'#9fb0cc', current:0, max:300, sources:['Clothing items','Sheets','Tarps'], placeholderUnitValue:3 },
+    electronics: { name:'Electronics', icon:'⚡', sprite:'art/retro-items/electronics-retro-v1.png', color:'#6ab0e0', current:0, max:200, sources:['Appliances','Vehicles','Lab loot'], placeholderUnitValue:8 },
+    fuel:        { name:'Fuel',        icon:'🔥', sprite:'art/retro-items/fuel-retro-v1.png', color:'#e07a30', current:0, max:300, sources:['Vehicle siphons','Generators','Caches'], placeholderUnitValue:6 },
+    medical:     { name:'Medical',     icon:'💊', sprite:'art/retro-items/medical-retro-v1.png', color:'#50c878', current:0, max:150, sources:['Hospital loot','Pharmacy','Crafted'], placeholderUnitValue:9 },
+    bones:       { name:'Bone Fragments', icon:'🦴', sprite:'art/retro-items/bones-retro-v1.png', color:'#d7cbb0', current:0, max:200, sources:['Pliers salvage after zombie encounters','Crafting salvage'], placeholderUnitValue:1 },
+    fasteners:   { name:'Fasteners', icon:'⚙', sprite:'art/retro-items/fasteners-retro-v1.png', color:'#aeb8c2', current:0, max:200, sources:['Hammer and wrench salvage','Workshops'], placeholderUnitValue:3 },
+    wiring:      { name:'Wiring', icon:'〰', sprite:'art/retro-items/wiring-retro-v1.png', color:'#d89b52', current:0, max:200, sources:['Needle-nose pliers','Electrical salvage'], placeholderUnitValue:4 },
   };
   const KEY = 'zi_materials';
   let persisted = {};
@@ -351,6 +419,11 @@ window.ZI_MATERIALS = (function() {
   });
   return wrapped;
 })();
+ZI.addMaterial = function(key, amount) {
+  const m = window.ZI_MATERIALS && window.ZI_MATERIALS[key];
+  if (!m || !Number.isFinite(amount) || amount <= 0) return 0;
+  const before = m.current; m.current = Math.min(m.max, before + Math.floor(amount)); return m.current - before;
+};
 
 // ─── RECYCLER OPERATORS + QUEUEING (Bugs 2 and 3) ────────────────────────────
 // Operator roster (moved from the Recycler screen so game rules can check it). Camp survivors may only run the
@@ -368,15 +441,40 @@ ZI.availableRecyclerOperators = function(mode) {
 };
 ZI.defaultRecyclerOperator = function(mode) { const m = mode === undefined ? ZI.currentGameMode() : mode; return m === 'camp' ? 'mira' : 'solo'; };
 ZI.canUseRecyclerOperator = function(opId, mode) { return ZI.availableRecyclerOperators(mode).some(o => o.id === opId); };
-// Queue one item on the normal recycle job lane. Same duration/output maths the screen used before.
-ZI.queueRecycle = function(item, opId, mode) {
+ZI.recyclerToolMatch = function(item) {
+  const o = item && item.outputs || {};
+  if (o.metal > 0 && o.electronics > 0) return { family:'screwdriver', label:'Screwdriver' };
+  if (o.metal > 0) return { family:'wrench', label:'Wrench' };
+  if (o.electronics > 0) return { family:'pliers', label:'Pliers' };
+  return null;
+};
+// Queue one item on the normal recycle job lane; an assisted job reserves its tool until finish/cancel.
+ZI.queueRecycle = function(item, opId, mode, toolAssist) {
   if (!ZI.canUseRecyclerOperator(opId, mode)) return { ok:false, reason:'operator not available in this mode' };
   if (!ZI.isRecyclable(item)) return { ok:false, reason:'not recyclable' };
   const op = ZI.RECYCLER_OPERATORS.find(o => o.id === opId);
   const effSpeed = op.speed + (ZI.recyclerOpSpeedBonus ? ZI.recyclerOpSpeedBonus() : 0);
-  const duration = item.weight * 14000 / effSpeed / 1000; // enqueueJob wants seconds
-  const boosted = Object.assign({}, item, { outputs: Object.fromEntries(Object.entries(item.outputs).map(([k, v]) => [k, Math.floor(v * op.bonusMult)])) });
-  const job = ZI.enqueueJob('recycle', item.id, duration, { item: boosted }, 1);
+  const match = toolAssist ? ZI.recyclerToolMatch(item) : null;
+  if (toolAssist && (!match || match.family !== toolAssist)) return { ok:false, reason:'that tool does not fit this salvage' };
+  if (toolAssist && item.fromToolScrap) return { ok:false, reason:'broken tools can be recycled, but cannot assist a recycler job' };
+  let reservedToolId = null;
+  if (toolAssist && !item.fromToolScrap) {
+    const stash = ZI.getStash(), index = stash.findIndex(id => { const g = ZI.getGearItem(id); return g && g.toolFamily === toolAssist && g.toolCondition !== 'broken'; });
+    if (index < 0) return { ok:false, reason:'keep a usable matching tool in Stockpile first' };
+    reservedToolId = stash.splice(index, 1)[0]; ZI.saveStash(stash);
+  }
+  if (item.fromToolScrap) {
+    const stash = ZI.getStash(), index = stash.indexOf(item.gearItemId);
+    if (index < 0) return { ok:false, reason:'broken tool is no longer in Stockpile' };
+    reservedToolId = stash.splice(index, 1)[0]; ZI.saveStash(stash);
+  }
+  const duration = item.weight * (toolAssist === 'pliers' ? 10500 : 14000) / effSpeed / 1000;
+  const outputs = Object.fromEntries(Object.entries(item.outputs).map(([k, v]) => [k, Math.floor(v * op.bonusMult)]));
+  if (toolAssist === 'wrench' && outputs.metal > 0) outputs.metal += 1;
+  if (toolAssist === 'screwdriver' && outputs.electronics > 0) outputs.electronics += 1;
+  if (toolAssist === 'pliers' && outputs.electronics > 0) { outputs.wiring = (outputs.wiring || 0) + 1; }
+  const boosted = Object.assign({}, item, { outputs });
+  const job = ZI.enqueueJob('recycle', item.id, duration, { item:boosted, toolFamily:toolAssist || null, reservedToolId }, 1);
   return { ok:true, job };
 };
 // Eligible = has material outputs, is not a story item, and is not already in the recycle queue.
@@ -384,6 +482,33 @@ ZI.isRecyclable = function(item) {
   if (!item || !item.outputs || !Object.values(item.outputs).some(v => v > 0)) return false;
   if (item.isStory || (ZI.isStoryItem && (ZI.isStoryItem(item.id) || (item.gearId && ZI.isStoryItem(item.gearId))))) return false;
   return !ZI.jobsByType('recycle').some(j => j.refId === item.id);
+};
+ZI.brokenToolRecyclerItems = function() {
+  const seen = {};
+  return ZI.getStash().map(id => ZI.getGearItem(id)).filter(g => g && g.toolScrap).map(g => {
+    const n = seen[g.id] || 0; seen[g.id] = n + 1;
+    return { id:`tool-scrap:${g.id}:${n}`, name:g.name, tier:1, rarity:'Common', weight:g.weight || 1, outputs:Object.assign({}, g.outputs), sprite:g.sprite, icon:g.icon, fromToolScrap:true, gearItemId:g.id };
+  });
+};
+ZI.handToolScavenge = function(poiType) {
+  const finds = [];
+  const award = (family, material, amount, label) => {
+    if (!ZI.carriedHandTool || !ZI.carriedHandTool(family)) return;
+    const got = ZI.addMaterial(material, amount);
+    if (got > 0) { ZI.useCarriedHandTool(family); finds.push(`+${got} ${label} (tool)`); }
+  };
+  if (['hardware-store','school','scrapyard','office-building'].includes(poiType)) award('hammer','fasteners',2,'Fasteners');
+  if (['hardware-store','scrapyard','police-station','transit-depot'].includes(poiType)) award('pliers','wiring',1,'Wiring');
+  if (['hardware-store','police-station','transit-depot'].includes(poiType)) award('screwdriver','electronics',1,'Electronics');
+  if (['scrapyard','gas-station','police-station'].includes(poiType) && ZI.carriedHandTool && ZI.carriedHandTool('wrench')) award('wrench','fasteners',2,'Fasteners');
+  if (['scrapyard','gas-station','hardware-store'].includes(poiType) && ZI.carriedHandTool && ZI.carriedHandTool('torch')) {
+    const fuel = window.ZI_MATERIALS && window.ZI_MATERIALS.fuel;
+    if (fuel && fuel.current >= 1) {
+      const got = ZI.addMaterial('metal',3);
+      if (got > 0) { fuel.current -= 1; ZI.useCarriedHandTool('torch'); finds.push(`+${got} Metal from cut plate scrap (−1 Fuel)`); }
+    }
+  }
+  return finds;
 };
 // Recycle All: queues every eligible item through queueRecycle (the normal job lane and grantRecycleOutput).
 ZI.recycleAll = function(items, opId, mode) {

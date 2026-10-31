@@ -170,3 +170,69 @@ intended shape: commit early, free later.
    is needed to `offerSize`.
 3. Is forcing specialisation (A2) the intent, or should generalists stay viable?
 4. Gate ratio: 2× as proposed, or another number?
+
+---
+
+# Addendum B — Full Breakdown panel, shield, and attribute caps (Sam, Oct 30, voice)
+
+## B1. Full Breakdown panel `[DECIDED Sam]`
+
+A button on the stats screen opens **one scrolling page** — not tabs — with three sections in this
+order: **Attack, Defence, Utility**.
+
+Each stat is one row showing its total, expandable into where the total came from:
+**Base / Level / Gear / Effects**. Negatives render in red, so a player can see at a glance what is
+hurting them (weather, wounds, afflictions) rather than only what is helping.
+
+| Section | Header number | Contents |
+|---|---|---|
+| **Attack** | combined **damage per second** | damage, crit chance, crit damage, attack speed |
+| **Defence** | **effective health** — HP + shield scaled by armor and evasion. hpRegen is excluded and gets its own row | maxHp, hpRegen, armor, evasion, (shield from gear) |
+| **Utility** | none — too mixed for one number | two groups: **Movement** (moveSpeed) and **Loot** (the six Insight/Lucky stats) |
+
+Why Utility has no header: its stats do not combine into anything a player would compare. DPS and
+effective health both answer "is this gear better"; "rare loot chance plus move speed" answers
+nothing.
+
+## B2. Shield leaves the rank system `[DECIDED Sam]`
+
+**Shield comes only from items.** It is removed from `P.STATS` ranks (it was 50 → 80 over 30 ranks).
+In the Full Breakdown it therefore appears under Gear only, never under Level.
+
+That leaves Aptitude one stat short of three, so its slot is taken by:
+
+**Flat damage reduction `[DECIDED Sam]`** — subtracts a fixed amount from every incoming hit, while
+**armor stays the percentage reducer**. The two must not be the same mechanic twice.
+
+Sam's concern, recorded because it drives pass 3: this is an idle game ground against many zombies,
+so flat reduction is the dangerous kind. Grow it faster than zombie damage and whole low tiers do
+literally nothing; grow it slower and the stat is dead weight. Two guards, both `[PROPOSED]`:
+
+1. **Minimum damage floor** — every hit always lands for at least **20%** of its damage.
+2. **Tier scaling** — the flat amount is scaled against the zombie's tier, so it shines against
+   swarms in the current zone without trivialising them.
+
+→ Both go to **audit pass 3**, which fails the design if any current-zone tier becomes harmless or
+if flat DR contributes under 5% mitigation at L35–70.
+
+## B3. Attribute caps and convergence  ~~`[DECIDED Sam]`~~  **SUPERSEDED by Addendum C**
+
+> Cap 13 / 104 points / milestones at L20-85 are **retired**. See Addendum C below.
+
+
+**Every build converges at L100.** Sam's reasoning: everyone faces the same final boss, so everyone
+needs the full kit available. What differentiates players is the **order** they take things in, not
+where they end up.
+
+The arithmetic that forced a decision:
+
+- 1 attribute point per level, L2–L100 = **99 points**
+- 8 attributes × cap 12 = 96 → everything maxes at about L97, leaving the last levels with nothing
+  to spend
+
+So: **5 milestone points** at **L20, 35, 50, 70 and 85**, spread through the mid game where the
+grind is longest. 99 + 5 = **104**, and 8 × **13** = 104. **Attribute cap is 13**, and the last
+level-up still matters.
+
+→ **Audit pass 2** confirms convergence and measures how different a focused build feels from an
+even one at L25/50/75.

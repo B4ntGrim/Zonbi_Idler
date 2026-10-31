@@ -31,27 +31,28 @@ const mkEnv = (store, now) => {
   Z.applyInjury('test', false);
   check('P1: injury still lowers Combat effectiveness (capped)', Z.effectiveLevel('combat') < Z.statLevel('combat') && Z.effectiveLevel('combat') >= Math.floor(Z.statLevel('combat') * 0.8), Z.effectiveLevel('combat'));
   check('P1: the old decay records are kept (rollback-safe)', !!E.store.zi_skill_decay && !!E.store.zi_decay_clock); }
-// ── P1: catch-up XP is off by default and has no effect ──
+// ── P1 (superseded Oct 31 by PROF-01, authorized by Sam): catch-up is on; a 60-day absence starts an allowance ──
 { const E = mkEnv({ zi_world_seed:'1', zi_stat_xp: JSON.stringify({ endurance: 5000 }), zi_skill_decay: JSON.stringify({ endurance: { lastActiveUtc: T0 - 60 * DAY, floorXp: 0, floorProgress: {} } }) });
   const Z = E.ZI; Z.awardXp('endurance', 100);
-  check('P1: catch-up is disabled until Sam approves the ramp (no bonus, no new save key)', !Z.CATCHUP.enabled && Z.CATCHUP.graceDays === null && Z.CATCHUP.rampDays === null && Z.getStatXp().endurance === 5100 && !E.store.zi_prof_catchup_v1); }
+  check('PROF-01 (authorized Oct 31): catch-up is on; first award after 60 idle days gets +15% (100 → 115)', Z.CATCHUP.enabled && Z.getStatXp().endurance === 5115, Z.getStatXp().endurance);
+  check('PROF-01: the allowance is saved under the existing key', !!E.store.zi_prof_catchup_v1); }
 // ── P1: catch-up caps, with a test-only config ──
 { const E = mkEnv({ zi_world_seed:'1', zi_stat_xp: JSON.stringify({ endurance: 5000, combat: 5000 }),
     zi_skill_decay: JSON.stringify({ endurance: { lastActiveUtc: T0 - 60 * DAY, floorXp: 0, floorProgress: {} }, combat: { lastActiveUtc: T0, floorXp: 0, floorProgress: {} } }) });
-  const Z = E.ZI; Object.assign(Z.CATCHUP, { enabled: true, graceDays: 2, rampDays: 5 });
-  const next = Z._profXpToNext('endurance'), cap = Math.floor(next * 0.25);
+  const Z = E.ZI; Object.assign(Z.CATCHUP, { enabled: true, graceDays: 2 });
+  const cap = Z.catchUpAllowanceFor('endurance', 60); // PROF-01 (Oct 31): 50% of level-1 XP at a 14-day absence
   const before = Z.getStatXp().endurance; let maxRatio = 0, steps = 0;
   for (let i = 0; i < 400; i++) { const x0 = Z.getStatXp().endurance; Z.awardXp('endurance', 40); const got = Z.getStatXp().endurance - x0; maxRatio = Math.max(maxRatio, (got - 40) / 40); steps++; }
   const extra = Z.getStatXp().endurance - before - 40 * steps;
   check('P1 (test config): bonus never above +15% of an award', maxRatio <= 0.15 + 1e-9 && maxRatio > 0, maxRatio);
-  check('P1 (test config): total bonus from one allowance never above 25% of XP-to-next (snapshotted)', extra === cap && cap > 0, extra + ' / ' + cap);
+  check('PROF-01 (authorized Oct 31): total bonus from one absence equals its allowance (50% of level-1 XP)', extra === cap && cap > 0, extra + ' / ' + cap);
   check('P1 (test config): allowance ends at exactly 0, never negative', Z.getCatchUp().tracks.endurance.allowance === 0);
   const c0 = Z.getStatXp().combat; Z.awardXp('combat', 40);
   check('P1 (test config): a recently used track gets no bonus and its allowance is independent', Z.getStatXp().combat === c0 + 40);
   const t0 = Z.getStatXp().endurance; Z.awardXp('endurance', 3);
   check('P1 (test config): tiny awards round the bonus down (cannot exceed the cap by repetition)', Z.getStatXp().endurance - t0 === 3);
   const Y = mkEnv({ zi_world_seed:'1', zi_stat_xp: JSON.stringify({ combat: 9e6 }), zi_skill_decay: JSON.stringify({ combat: { lastActiveUtc: T0 - 60 * DAY, floorXp: 0, floorProgress: {} } }) }).ZI;
-  Object.assign(Y.CATCHUP, { enabled: true, graceDays: 2, rampDays: 5 }); Y.awardXp('combat', 100);
+  Object.assign(Y.CATCHUP, { enabled: true, graceDays: 2 }); Y.awardXp('combat', 100);
   check('P1 (test config): no allowance at level 50', Y.statLevel('combat') === 50 && Y.getStatXp().combat === 9e6 + 100);
   Z.awardXp('endurance', 0); Z.awardXp('endurance', -5); Z.awardXp('endurance', NaN);
   check('P1: zero, negative and invalid amounts grant nothing', Z.getStatXp().endurance === t0 + 3); }

@@ -7,10 +7,15 @@
 ZI.CRAFT_RECIPES = [
   // ── T0 — Trace (Common) ──
   { id:'scrap_pouch',  name:'Scrap Pouch',  icon:'👝', tier:0, out:[{n:'Trace RMAT',q:3}], cost:{wood:10,metal:5}, time:180, unlock:'Default', enemy:'Shambler', lore:'A bag made from a torn jacket and twist ties. Holds things. Barely.' },
-  { id:'nail_board',   name:'Nail Board',   icon:'🪓', tier:0, out:[{n:'Trace RMAT',q:2}], cost:{wood:15,metal:8}, time:300, unlock:'Default', enemy:'Shambler', lore:'A plank. With nails in it. Classic.' },
+  { id:'nail_board',   name:'Nail Board',   icon:'🪓', tier:0, out:[{n:'Trace RMAT',q:2}], cost:{wood:15,metal:8,fasteners:4}, time:300, unlock:'Default', enemy:'Shambler', lore:'A plank. With nails in it. Classic.' },
   { id:'scrap_wire',   name:'Scrap Wire',   icon:'🔗', tier:0, out:[{n:'Trace RMAT',q:4}], cost:{metal:20}, time:480, unlock:'Default', enemy:'Crawler', lore:'Stripped from a chain-link fence. Still has rust. You call that character.' },
   { id:'tinder_bundle',name:'Tinder Bundle',icon:'🌿', tier:0, out:[{n:'Trace RMAT',q:2},{n:'Fuel',q:5}], cost:{wood:25}, time:360, unlock:'Default', enemy:'Crawler', lore:'Dried bark, dead leaves, and something unidentifiable. It burns, which is all that matters.' },
-  { id:'crude_splint', name:'Crude Splint', icon:'🩼', tier:0, out:[{n:'Trace RMAT',q:2}], cost:{wood:10,cloth:8}, time:240, unlock:'Scavenge Camp (Rank 1)', enemy:'Crawler', lore:"Two sticks and a strip of curtain. A field doctor's last resort." },
+  // MED-01 (Sam, Oct 30): M1 renamed to Crude Crutch, id kept so existing saves survive.
+  // M4 it no longer outputs Trace RMAT — it produces the crutch itself. kind:'gear' keeps the
+  // RMAT grant in jobs.js from firing. M8: Trace RMAT now unlocks the next medical tier instead.
+  { id:'crude_splint', name:'Crude Crutch', icon:'🩼', tier:0, kind:'gear', out:[{n:'Crude Crutch',q:1}], grantsGear:'crude_splint', grantsQty:1, cost:{wood:10,cloth:8}, time:240, unlock:'Scavenge Camp (Rank 1)', enemy:'Crawler', lore:"Two sticks and a strip of curtain. A field doctor's last resort." },
+  // MED-01 M9: the upgrade. Gated by ZI.recipeGate below; craft time is [PROPOSED].
+  { id:'improvised_splint', name:'Improvised Splint', icon:'🪢', tier:1, kind:'gear', out:[{n:'Improvised Splint',q:1}], grantsGear:'improvised_splint', grantsQty:1, cost:{wood:15,cloth:12}, time:600, unlock:'Trace RMAT ×10', enemy:'Crawler', lore:'Padded, bound and actually set. The limb keeps mending after you walk away.' },
 
   // ── T1 — Scrap-Grade (Uncommon) ──
   { id:'reinforced_pack',name:'Reinforced Pack',icon:'🎒', tier:1, out:[{n:'Mechanical RMAT',q:1}], cost:{metal:40}, time:2700, unlock:'Default', enemy:'Shambler', lore:'Stitched together from warehouse shelving and dumpster finds. Smells like regret.' },
@@ -27,7 +32,7 @@ ZI.CRAFT_RECIPES = [
   { id:'hollow_point_press',name:'Hollow Point Press',icon:'🔧', tier:2, out:[{n:'Mechanical RMAT',q:1},{n:'Ammo',q:10}], cost:{metal:40,wood:15,fuel:10}, time:5400, unlock:'Armory (Rank 1)', enemy:'Runner', lore:'A modified reloading press from a gun shop backroom. The dies are improvised. The brass is questionable.' },
   { id:'sterilization_unit',name:'Sterilization Unit',icon:'🧫', tier:2, out:[{n:'Medical RMAT',q:2}], cost:{metal:25,cloth:20,medical:30,fuel:10}, time:7200, unlock:'Infirmary (Rank 2)', enemy:'Spitter', lore:'A pressure cooker modified with UV tubes and copper coil. Kills 99.9% of known pathogens. Unknown ones are on their own.' },
   { id:'composite_plating',name:'Composite Plating',icon:'🛡', tier:2, out:[{n:'Structural RMAT',q:1}], cost:{metal:50,wood:30,cloth:20}, time:9000, unlock:'Perimeter (Rank 2)', enemy:'Brute', lore:"Layers of corrugated steel and hardboard pressed together in a vise. It's heavy. That's the point." },
-  { id:'circuit_splice', name:'Circuit Splice', icon:'💡', tier:2, out:[{n:'Electronic RMAT',q:1}], cost:{electronics:35,metal:10,fuel:5}, time:4200, unlock:'Research Lab (Rank 2)', enemy:'Runner', lore:'Fourteen salvaged circuit boards, reprogrammed with a cracked laptop and a lot of patience.' },
+  { id:'circuit_splice', name:'Circuit Splice', icon:'💡', tier:2, out:[{n:'Electronic RMAT',q:1}], cost:{electronics:35,metal:10,fuel:5,wiring:6}, time:4200, unlock:'Research Lab (Rank 2)', enemy:'Runner', lore:'Fourteen salvaged circuit boards, reprogrammed with a cracked laptop and a lot of patience.' },
   { id:'toxin_filter',   name:'Toxin Filter',   icon:'🧪', tier:2, out:[{n:'Chem RMAT',q:1},{n:'Bio RMAT',q:1}], cost:{cloth:20,medical:15,fuel:25}, time:8100, unlock:'Outpost (Rank 3)', enemy:'Spitter', lore:'Activated charcoal packed into a gas mask canister. Filters most things. Do not test with Spitter acid.' },
 
   // ── T3 — Concentrated (Epic) ──
@@ -106,6 +111,7 @@ ZI._appendGearRecipes = function(){ const R = ZI._gearRecipe; ZI.CRAFT_RECIPES.p
   // ── Armor & Utility ──
   R('scrap_helmet',1,1,2100,{metal:30,cloth:10}), R('leather_gloves',1,1,1800,{cloth:20,fuel:8}),
   R('soft_armor_vest',1,2,4500,{cloth:40,metal:25},'Infirmary (Rank 1)'),
+  R('bone_vest',1,1,3000,{bones:8,cloth:12},'Default'),
   R('riot_helmet',1,2,5400,{metal:40,cloth:20},'Armory (Rank 1)'),
   R('combat_boots',1,2,3600,{metal:20,cloth:15,fuel:10},'Armory (Rank 1)'),
   R('composite_helmet',1,3,10800,{metal:60,cloth:30,electronics:10},'Armory (Rank 2)'),
@@ -120,8 +126,17 @@ ZI._appendGearRecipes = function(){ const R = ZI._gearRecipe; ZI.CRAFT_RECIPES.p
   R('tacticians_lens',1,4,28800,{electronics:12,cloth:4},'Research Lab (Rank 3)'),
   R('warlords_sigil',1,5,72000,{metal:40,electronics:30,medical:20},'Armory (Rank 4)'),
   R('combat_focus_draught',2,3,10800,{medical:6},'Infirmary (Rank 2)'),
-  R('scholars_tonic',2,4,21600,{medical:10,electronics:10},'Research Lab (Rank 3)')
+  R('scholars_tonic',2,4,21600,{medical:10,electronics:10},'Research Lab (Rank 3)'),
+  // Field wildlife kit: the net/trap are reusable, and capture actions live in Traversal.
+  R('bird_net',1,0,900,{cloth:12,metal:6,wood:4},'Workshop (Rank 1)'),
+  R('bird_trap',1,0,1200,{metal:18,wood:10,cloth:4},'Workshop (Rank 1)')
 ); };
+
+// Capture outcomes are shown as reference cards in Crafting, not recipes that can be queued.
+ZI.CRAFT_RECIPES.push(
+  { id:'bird_pigeon', name:'Captured Pigeon', icon:'🕊️', tier:0, kind:'gear', fieldOnly:true, out:[{n:'Captured Pigeon',q:1}], cost:{}, time:0, unlock:'Traversal field capture', captureMethod:'Carry a Bird Net, then use it from Traversal. The net is reusable.', lore:'A small scout companion. Each flight costs one Traversal Scout charge and covers up to two squares in one cardinal direction.', enemy:'Field capture' },
+  { id:'bird_hawk', name:'Captured Hawk', icon:'🦅', tier:1, kind:'gear', fieldOnly:true, out:[{n:'Captured Hawk',q:1}], cost:{}, time:0, unlock:'Traversal field capture', captureMethod:'Keep a pigeon in your inventory and carry a Bird Trap. Use the trap in Traversal; the pigeon is consumed as bait.', lore:'A long-range scout companion. Each flight costs one Traversal Scout charge and covers up to four squares in one cardinal direction.', enemy:'Field capture' }
+);
 
 // Per-enemy RMAT drop-rate curves for the crafting detail panel (T0…T5 %).
 ZI.CRAFT_DROP_RATES = {
@@ -133,4 +148,23 @@ ZI.CRAFT_DROP_RATES = {
   Titan:     [25, 25, 25, 15, 7, 3],
   Colossus:  [10, 15, 20, 25, 20, 10],
   Nightmare: [3, 7, 10, 15, 30, 35],
+};
+
+// ─── Recipe gates (MED-01, Oct 30) ───────────────────────────────────────────
+// One entry point for "this recipe is listed but locked". The crafting browser calls
+// ZI.recipeGate; tome schematics keep their own gate and are delegated to unchanged.
+ZI.medRecipeGate = function(recipeId) {
+  if (recipeId !== 'improvised_splint' || !ZI.MED_SPLINT_UNLOCK) return null;
+  const U = ZI.MED_SPLINT_UNLOCK, held = (ZI.getRmatHoldings ? ZI.getRmatHoldings() : {})[U.rmatTier] || 0;
+  const unlocked = ZI.isSplintUnlocked ? ZI.isSplintUnlocked() : false;
+  return { label:'Medical Tier', series:'Trace RMAT', seriesId:'med_tier',
+    currentCopies: Math.min(held, U.rmatQty), copies: U.rmatQty, item:'Improvised Splint',
+    requirements:{}, station:null,
+    missing: (unlocked || held >= U.rmatQty) ? [] : [(U.rmatQty - held) + ' more Trace RMAT'],
+    unlocked: unlocked };
+};
+ZI.recipeGate = function(recipeId) {
+  const med = ZI.medRecipeGate(recipeId);
+  if (med) return med;
+  return ZI.tomeSchematicGate ? ZI.tomeSchematicGate(recipeId) : null;
 };

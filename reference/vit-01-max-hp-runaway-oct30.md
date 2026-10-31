@@ -1,5 +1,7 @@
 # VIT-01 — Max HP runaway for tank builds (slice brief, Oct 30)
 
+**Decided Oct 31 (Sam): max HP has no ceiling.** R5 (the 300 HP stop) is dropped. R1–R4 are built in `game/progression-live.js` (`ZI.vitalityHp`, `ZI.VIT01`) but **dormant**: no Vitality value is stored yet (attribute storage is STAT-03, not decided). Not built: R6 (class gate) and the regen cost in §3. Open: the R3 gate (25) is above the attribute cap in AUD-01 (10), so the runaway cannot open until that is settled. Also: the live base adds only the stat's gain above 40, so the live ceiling before Endurance is 120, not the 160 used in §2.
+
 **Status:** `[CONCEPT Oct 30]` from Sam — max HP is additive on the base, and "there should be a
 runaway for max HP for certain builds". Everything below is `[PROPOSED]`.
 

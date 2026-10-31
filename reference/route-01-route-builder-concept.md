@@ -63,6 +63,7 @@
 - `[OPEN]` Battery capacity (how many route loops per charge) and generator fuel cost.
 - `[OPEN]` How bikes and vehicles are obtained (crafted, found, quest), and whether a bike uses fuel.
 - `[OPEN]` Which repair items, tools, or actions are required to restore a stranded vehicle.
+- `[PROPOSED Oct 30]` Handyman tools connect Stockpile's Recycler to salvage and vehicle recovery; see `vehicle-recycler-tools-proposal.md`. This proposal does not yet define the permanent vehicle restoration recipe.
 - `[OPEN]` `[CODE]` How Routes works today (route cards, stops, dead buttons from PF6), so the builder reuses it.
 
 ## 4. Watch for

@@ -1,7 +1,7 @@
 # TIER-01 — Tier escalation divisor (batch contract draft, Oct 30)
 
 **Batch ID:** TIER-01
-**Status:** draft contract. Sam locks §2 before Code starts.
+**Status:** `[DECIDED Oct 31, Sam]`: divisor 3.0 as proposed. Applied Oct 31; report in `reports/decisions-2026-10-31/REPORT.md`; acceptance checks in `tests/tier-01-divisor.test.js`.
 **Source of truth:** `reference/market-01-pricing-and-clock-sim-oct30.md` §2 and §6; harness
 `tools/balance-sim/clock_sim.py` + `survivor_stats.py`.
 **Target:** E:\Zed_Idler
@@ -21,7 +21,7 @@ drawable at `rank ≤ floor(lap/1.5)`, and the survivor walking 1.4 m/s, rank *r
 whole roster before the end of day 1. Regen does not fix this: across 60–180 s pacing and 0–40 %/min
 regen the first forced stop never passed 0.69 game days.
 
-## 2. Decided behaviour  `[PROPOSED — needs Sam's lock]`
+## 2. Decided behaviour  `[DECIDED Oct 31]`
 
 | # | Rule | Tag |
 |---|---|---|

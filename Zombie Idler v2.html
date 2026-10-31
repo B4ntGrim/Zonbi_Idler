@@ -11,31 +11,31 @@
 <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
 <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
 <script src="image-slot.js"></script>
-<script src="game/core.js?v=20261029-proposals1"></script>
-<script src="game/world.js?v=20261029-trav-controls2"></script>
-<script src="game/poi-dialogues.js?v=20261029-trav-controls2"></script>
-<script src="game/save.js?v=20261029-charops1"></script>
-<script src="game/stats.js?v=20261029-charops1"></script>
+<script src="game/core.js?v=20261031-tier01"></script>
+<script src="game/world.js?v=20261031-tier01"></script>
+<script src="game/poi-dialogues.js?v=20261030-poi-copy1"></script>
+<script src="game/save.js?v=20261030-slot1"></script>
+<script src="game/stats.js?v=20261031-prof01"></script>
 <script src="game/progression.js?v=20261028-stat02c"></script>
-<script src="game/items.js?v=20261028-wander-pace"></script>
-<script src="game/crafting.js?v=1791700100000"></script>
+<script src="game/items.js?v=20261031-retro-items1"></script>
+<script src="game/crafting.js?v=20261030-bird-flow1"></script>
 <script src="game/combat.js?v=1791700100000"></script>
 <script src="game/factions.js?v=1791700100000"></script>
 <script src="game/camp.js?v=20261030-look2"></script>
-<script src="game/jobs.js?v=20261025-clock-parity"></script>
-<script src="game/economy.js?v=20261027-shop1"></script>
-<script src="game/wandering.js?v=20261029-trav-controls2"></script>
+<script src="game/jobs.js?v=20261030-tools1"></script>
+<script src="game/economy.js?v=20261031-retro-stockpile1"></script>
+<script src="game/wandering.js?v=20261031-tier01"></script>
 <script src="game/fort.js?v=1791700100000"></script>
 <script src="game/infiltration.js?v=20261026-infiltration1"></script>
-<script src="game/active.js?v=20261029-proposals1"></script>
+<script src="game/active.js?v=20261030-trav-supplies4"></script>
 <script src="game/police-station.js?v=20261029-policepoi1"></script>
-<script src="game/routes.js?v=20261025-clock-parity"></script>
+<script src="game/routes.js?v=20261031-vehicle-gate1"></script>
 <script src="game/survival-data.js?v=1791700100000"></script>
-<script src="game/literature.js?v=20261030-literature1"></script>
-<script src="game/bootstrap.js?v=20261025-clock-parity"></script>
-<script src="game/progression-live.js?v=20261029-proposals1"></script>
+<script src="game/literature.js?v=20261030-literature2"></script>
+<script src="game/bootstrap.js?v=20261031-item-catalog1"></script>
+<script src="game/progression-live.js?v=20261031-vit01"></script>
 <script src="game/character.js?v=20261030-cc-walk-v3"></script>
-<script src="game/operations.js?v=20261029-duties1"></script>
+<script src="game/operations.js?v=20261030-sch01a"></script>
 <script src="bestiary-data.js?v=20261029-charops1"></script>
 <script src="pixel-art.js?v=1791700100000"></script>
 <script src="zombie-sprites.js?v=20261030-art03"></script>
@@ -47,13 +47,13 @@
 <script src="crafting-frame-proposals.js?v=20261027-craft-proposals3"></script>
 <script type="text/babel" src="crafting-frame-proposals.jsx?v=20261027-craft-proposals7"></script>
 <script type="text/babel" src="tweaks-panel.jsx?v=1791700100000"></script>
-<script type="text/babel" src="progression-ui.jsx?v=20261028-stat02c"></script>
+<script type="text/babel" src="progression-ui.jsx?v=20261030-med01"></script>
 <script type="text/babel" src="character-sprite.jsx?v=20261030-cc-walk-v2"></script>
 <script type="text/babel" src="character-creation.jsx?v=20261030-cc-walk-v2"></script>
-<script type="text/babel" src="operations-ui.jsx?v=20261029-duties1"></script>
-<script type="text/babel" src="screens-v2.jsx?v=20261030-literature1"></script>
-<script type="text/babel" src="screens-v2b.jsx?v=20261027-shop1"></script>
-<script type="text/babel" src="screens-v3.jsx?v=20261030-crawler2"></script>
+<script type="text/babel" src="operations-ui.jsx?v=20261030-sch01a"></script>
+<script type="text/babel" src="screens-v2.jsx?v=20261030-stats-readable1"></script>
+<script type="text/babel" src="screens-v2b.jsx?v=20261031-shop-unlock-style1"></script>
+<script type="text/babel" src="screens-v3.jsx?v=20261031-retro-stockpile1"></script>
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -365,10 +365,10 @@ function TopBar({ mode, screen, setScreen, threatLevel, worldEvent }) {
   const gameClock = String(gameNow.hh).padStart(2,'0') + ':' + String(gameNow.mm).padStart(2,'0');
   const isCamp = mode === 'camp';
   const tabs = isCamp ? [
-    ['camp-main','Overview'], ['camp-schedule','Schedule'], ['traversal','Traversal'], ['marketplace','Shop'], ['rmat-crafting','Crafting'],
+    ['camp-main','Overview'], ['camp-schedule','Scheduling'], ['traversal','Traversal'], ['marketplace','Shop'], ['rmat-crafting','Crafting'],
     ['stockpile','Stockpile'], ['factions','Factions'], ['stat-leveling','Stats'], ['hack-slash','Wandering'], ['codex','Codex'],
   ] : [
-    ['solo-main','Routes'], ['traversal','Traversal'], ['solo-schedule','Schedule'], ['marketplace','Shop'], ['rmat-crafting','Crafting'],
+    ['solo-main','Routes'], ['traversal','Traversal'], ['solo-schedule','Scheduling'], ['marketplace','Shop'], ['rmat-crafting','Crafting'],
     ['stockpile','Stockpile'], ['factions','Factions'], ['stat-leveling','Stats'], ['hack-slash','Wandering'], ['codex','Codex'],
   ];
 
@@ -668,11 +668,12 @@ function ResourceChip({ label, value, block }) {
     Food:'var(--green2)', Scrap:'var(--text2)', Ammo:'var(--amber)', Medicine:'var(--blue)',
     Fuel:'var(--red2)', RMAT:'var(--purple)',
   };
-  // Nutrition is a 0–100 meter: colour it by its FOOD level (Starving … Peak Fueled).
-  const color = label === 'Nutrition'
+  // Nutrition is a 0–100 meter: colour it by its hunger level (Starving … Peak Fueled).
+  const isNutritionMeter = label === 'Nutrition' || label === 'Food';
+  const color = isNutritionMeter
     ? (value.pending ? 'var(--text3)' : getNutritionLevel(value.current).color)
     : value.pending ? 'var(--text3)' : (colors[label] || 'var(--text2)');
-  const shown = value.pending ? '—' : label === 'Nutrition' ? `${Math.round(value.current)}%` : fmt(value.current);
+  const shown = value.pending ? '—' : isNutritionMeter ? `${Math.round(value.current)}%` : fmt(value.current);
   if (label === 'RMAT') {
     const holdings = ZI.getRmatHoldings ? ZI.getRmatHoldings() : {};
     const tiers = ZI.RMAT_TIERS || [];
@@ -929,7 +930,7 @@ function SaveFilesScreen({ mode, onBack }) {
                     <div style={{ fontFamily:'var(--font-body)', fontSize:16, color:'var(--text)' }}>{sl.label}</div>
                     <div style={{ fontFamily:'var(--font-mono)', fontSize:11, color:'var(--text2)', marginTop:3, display:'flex', gap:14, flexWrap:'wrap' }}>
                       <span>Saved {fmt(sl.savedAt)}</span>
-                      {sl.summary && <span>Leader Lv {sl.summary.level}</span>}
+                      {sl.summary && <span>{sl.summary.professionName} · Level {sl.summary.level}</span>}
                       {sl.summary && <span>{sl.summary.distance.toLocaleString()} m travelled</span>}
                     </div>
                   </>
@@ -1866,8 +1867,8 @@ function LeaderSiegePanel({ threatLevel }) {
                 <button onClick={() => { ZI.treatLeader(); force(n=>n+1); }} style={{ fontFamily:'var(--font-mono)', fontSize:8, cursor:'pointer', background:'rgba(80,200,120,0.12)', border:'1px solid var(--green)', color:'var(--green)', padding:'2px 6px' }}>Treat (Infirmary)</button>
               </div>
             ) : (
-              <button onClick={() => { ZI.deployLeader(!ZI.isLeaderDeployed()); force(n=>n+1); }} title="Deploying enables Pack Leader but risks injury" style={{ width:'100%', fontFamily:'var(--font-mono)', fontSize:10, padding:'5px', cursor:'pointer', marginBottom:8, background: ZI.isLeaderDeployed()?'rgba(200,169,110,0.15)':'var(--bg4)', border:`1px solid ${ZI.isLeaderDeployed()?'var(--amber)':'var(--border)'}`, color: ZI.isLeaderDeployed()?'var(--amber)':'var(--text2)' }}>
-                {ZI.isLeaderDeployed() ? '● Deployed — recall to camp' : '○ Deploy to field (risks injury)'}
+              <button onClick={() => { ZI.deployLeader(!ZI.isLeaderDeployed()); force(n=>n+1); }} title={ZI.isLeaderDeployed() ? 'You are in the field — click to return to base' : 'Deploying enables Pack Leader but risks injury'} style={{ width:'100%', fontFamily:'var(--font-mono)', fontSize:10, padding:'5px', cursor:'pointer', marginBottom:8, background: ZI.isLeaderDeployed()?'rgba(200,169,110,0.15)':'var(--bg4)', border:`1px solid ${ZI.isLeaderDeployed()?'var(--amber)':'var(--border)'}`, color: ZI.isLeaderDeployed()?'var(--amber)':'var(--text2)' }}>
+                {ZI.isLeaderDeployed() ? '● Deployed' : '○ Deploy to field (risks injury)'}
               </button>
             )}
             <div className="divider" style={{ margin:'6px 0' }}/>
@@ -3460,6 +3461,31 @@ function RmatCraftingScreen() {
   return <window.CraftingWorkspace><RmatCraftingRecipeBrowser/></window.CraftingWorkspace>;
 }
 
+// Crafting art is authored at illustration resolution. Render it through a
+// small pixel buffer so every recipe card uses the same retro sprite treatment.
+function RetroCraftSprite({ src, name, size }) {
+  const canvasRef = useRef(null);
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas || !src) return;
+    const ctx = canvas.getContext('2d');
+    const image = new Image();
+    image.onload = () => {
+      const w = 48, h = 48;
+      canvas.width = w; canvas.height = h;
+      ctx.clearRect(0, 0, w, h);
+      const scale = Math.min(w / image.naturalWidth, h / image.naturalHeight);
+      const dw = Math.max(1, Math.round(image.naturalWidth * scale));
+      const dh = Math.max(1, Math.round(image.naturalHeight * scale));
+      ctx.imageSmoothingEnabled = true;
+      ctx.drawImage(image, Math.round((w - dw) / 2), Math.round((h - dh) / 2), dw, dh);
+    };
+    image.src = src;
+  }, [src]);
+  return <canvas ref={canvasRef} role="img" aria-label={name} title={name}
+    style={{ width:size, height:size, imageRendering:'pixelated', flexShrink:0 }} />;
+}
+
 function RmatCraftingRecipeBrowser() {
   const M = window.ZI_MATERIALS;
   const [stock, setStock] = useState(() => {
@@ -3479,7 +3505,10 @@ function RmatCraftingRecipeBrowser() {
     nail_board: 'art/crafting/recipes/nail-board-v1.png',
     scrap_wire: 'art/crafting/recipes/scrap-wire-v1.png',
     tinder_bundle: 'art/crafting/recipes/tinder-bundle-v1.png',
-    crude_splint: 'art/crafting/recipes/crude-splint-v3.png',
+    crude_splint: 'art/crafting/recipes/crude-splint-v2.png',
+    improvised_splint: 'art/retro-items/improvised_splint-retro-v1.png',
+    bone_vest: 'art/retro-items/bone_vest-retro-v1.png',
+    siegebreaker_maul: 'art/retro-items/siegebreaker_maul-retro-v1.png',
     reinforced_pack: 'art/crafting/recipes/reinforced-pack-v1.png',
     barricade_panel: 'art/crafting/recipes/barricade-panel-v1.png',
     cloth_wrap_kit: 'art/crafting/recipes/cloth-wrap-kit-v1.png',
@@ -3510,7 +3539,7 @@ function RmatCraftingRecipeBrowser() {
     fracture_engine: 'art/crafting/recipes/fracture-engine-v1.png',
     revenant_core: 'art/crafting/recipes/revenant-core-v1.png',
     signal_zero: 'art/crafting/recipes/signal-zero-v1.png',
-    rag_wrap: 'art/crafting/gear-recipes/rag_wrap-v1.png',
+    rag_wrap: 'art/retro-items/rag_wrap-retro-v1.png',
     lucky_charm: 'art/crafting/gear-recipes/lucky_charm-v1.png',
     scrap_adrenaline: 'art/crafting/gear-recipes/scrap_adrenaline-v1.png',
     coal_paste: 'art/crafting/gear-recipes/coal_paste-v1.png',
@@ -3564,15 +3593,28 @@ function RmatCraftingRecipeBrowser() {
     warlords_sigil: 'art/crafting/gear-recipes/warlords_sigil-v1.png',
     combat_focus_draught: 'art/crafting/gear-recipes/combat_focus_draught-v1.png',
     scholars_tonic: 'art/crafting/gear-recipes/scholars_tonic-v1.png',
+    bird_net: 'art/retro-items/bird_net-retro-v1.png',
+    bird_trap: 'art/retro-items/bird_trap-retro-v1.png',
+    bird_pigeon: 'art/animals/birds/04-pigeon.png',
+    bird_hawk: 'art/animals/birds/03-hawk.png',
   };
-  const recipeIcon = (recipe, size) => recipeSpriteById[recipe.id]
-    ? <img src={recipeSpriteById[recipe.id]} alt={recipe.name} style={{width:size,height:size,objectFit:'contain',imageRendering:'pixelated',flexShrink:0}} />
+  const recipeIcon = (recipe, size) => {
+    const spriteKey = recipe.grantsGear || recipe.id.replace(/^cr_/, '');
+    const sprite = recipeSpriteById[recipe.id] || recipeSpriteById[spriteKey];
+    return sprite
+    ? <RetroCraftSprite src={sprite} name={recipe.name} size={size} />
     : <span style={{fontSize:size}}>{recipe.icon}</span>;
+  };
   const sel = recipes.find(r => r.id === selId) || null;
-  const tomeGate = (r) => ZI.tomeSchematicGate ? ZI.tomeSchematicGate(r.id) : null;
+  const tomeGate = (r) => ZI.recipeGate ? ZI.recipeGate(r.id) : (ZI.tomeSchematicGate ? ZI.tomeSchematicGate(r.id) : null);
+  const craftCost = (r) => {
+    const smithingEfficiency = r.kind === 'gear' ? Math.min(0.1225, ZI.professionBonus ? ZI.professionBonus('smithing', 0.0025) : 0) : 0;
+    return Object.fromEntries(Object.entries(r.cost).map(([k, q]) => [k, Math.max(1, Math.ceil(q * (1 - smithingEfficiency)))]));
+  };
   const canCraft = (r) => {
+    if (r.fieldOnly) return false;
     const gate = tomeGate(r);
-    return (!gate || gate.unlocked) && Object.entries(r.cost).every(([k, q]) => (stock[k] || 0) >= q);
+    return (!gate || gate.unlocked) && Object.entries(craftCost(r)).every(([k, q]) => (stock[k] || 0) >= q);
   };
 
   const fmtDur = (sec) => {
@@ -3588,7 +3630,7 @@ function RmatCraftingRecipeBrowser() {
     if (!canCraft(r)) return;
     setStock(prev => {
       const next = { ...prev };
-      Object.entries(r.cost).forEach(([k, q]) => { next[k] = Math.max(0, (next[k] || 0) - q); if (M[k]) M[k].current = next[k]; });
+      Object.entries(craftCost(r)).forEach(([k, q]) => { next[k] = Math.max(0, (next[k] || 0) - q); if (M[k]) M[k].current = next[k]; });
       return next;
     });
     // Enqueue as a timed job (Workshop-slotted). Grant fires on completion.
@@ -3657,7 +3699,7 @@ function RmatCraftingRecipeBrowser() {
               return (
                 <div key={key} style={{padding:'7px 9px', background:'var(--bg3)', border:'1px solid var(--border)'}}>
                   <div style={{display:'flex', alignItems:'center', gap:7, marginBottom:4}}>
-                    <span style={{fontSize:13}}>{m.icon}</span>
+                    {m.sprite ? <img src={m.sprite} alt={m.name} title={m.name} style={{width:20,height:20,objectFit:'contain',imageRendering:'pixelated',flexShrink:0}}/> : <span style={{fontSize:13}}>{m.icon}</span>}
                     <span style={{fontFamily:'var(--font-body)', fontSize:11, color:'var(--text)', flex:1}}>{m.name}</span>
                     <span style={{fontFamily:'var(--font-mono)', fontSize:11, color:m.color}}>{cur}/{m.max}</span>
                   </div>
@@ -3749,14 +3791,16 @@ function RmatCraftingRecipeBrowser() {
                         });
                       })()}
                     </div>
-                    {tomeGate(r) && !tomeGate(r).unlocked
+                    {r.fieldOnly
+                      ? <span className="tag" style={{color:'#7fe0ff', borderColor:'#7fe0ff', background:'rgba(127,224,255,0.12)'}}>FIELD CAPTURE</span>
+                      : tomeGate(r) && !tomeGate(r).unlocked
                       ? <span className="tag" style={{color:'#c59af2', borderColor:'#c59af2', background:'rgba(160,100,220,0.12)'}}>🔒 Schematic Locked</span>
                       : ok
                       ? <span className="tag" style={{color:'#3dcf8e', borderColor:'#3dcf8e', background:'rgba(61,207,142,0.12)'}}>✓ Craftable</span>
                       : <span className="tag" style={{color:'#f06a5a', borderColor:'#f06a5a', background:'rgba(207,61,61,0.12)'}}>✗ Missing</span>}
                   </div>
-                  <div style={{display:'flex', gap:5, flexWrap:'wrap', marginBottom:6}}>
-                    {Object.entries(r.cost).map(([k, q]) => {
+                  {!r.fieldOnly && <div style={{display:'flex', gap:5, flexWrap:'wrap', marginBottom:6}}>
+                    {Object.entries(craftCost(r)).map(([k, q]) => {
                       const have = (stock[k] || 0) >= q;
                       return (
                         <span key={k} style={{
@@ -3767,11 +3811,12 @@ function RmatCraftingRecipeBrowser() {
                         }}>{M[k]?.icon} {q} {M[k]?.name || k}</span>
                       );
                     })}
-                  </div>
+                  </div>}
                   <div style={{display:'flex', gap:12, alignItems:'center', flexWrap:'wrap'}}>
                     <span style={{fontFamily:'var(--font-mono)', fontSize:10, color:tc}}>→ {r.out.map(o => `${o.q}× ${o.n}`).join(', ')}</span>
-                    <span style={{fontFamily:'var(--font-mono)', fontSize:10, color:'var(--amber)'}}>⏱ {fmtDur(r.time)}</span>
-                    <span style={{fontFamily:'var(--font-mono)', fontSize:9, color:'var(--text3)', marginLeft:'auto'}}>Unlock: {r.unlock}</span>
+                    {r.fieldOnly
+                      ? <span style={{fontFamily:'var(--font-mono)', fontSize:9, color:'#7fe0ff'}}>Capture: {r.captureMethod}</span>
+                      : <><span style={{fontFamily:'var(--font-mono)', fontSize:10, color:'var(--amber)'}}>⏱ {fmtDur(r.time)}</span><span style={{fontFamily:'var(--font-mono)', fontSize:9, color:'var(--text3)', marginLeft:'auto'}}>Unlock: {r.unlock}</span></>}
                   </div>
                 </div>
               );
@@ -3805,13 +3850,14 @@ function RmatCraftingRecipeBrowser() {
                 {sel.grantsGear && window.ZI_CRAFTING_FRAMES.getRecords().some(r => r.id === sel.grantsGear) && <a className="btn btn-sm" style={{marginBottom:10}} href={window.ZI_CRAFTING_FRAMES.href(sel.grantsGear)}>Proposed frame preview</a>}
                 <div style={{display:'flex', flexDirection:'column', gap:5, marginBottom:10}}>
                   <InfoRow label="Output" value={sel.out.map(o => `${o.q}× ${o.n}`).join(', ')} color={tc}/>
-                  <InfoRow label="Craft Time" value={`${fmtDur(sel.time)} game · ${fmtReal(craftRealSec(sel))} real`} color="var(--amber)"/>
+                  {!sel.fieldOnly && <><InfoRow label="Craft Time" value={`${fmtDur(sel.time)} game · ${fmtReal(craftRealSec(sel))} real`} color="var(--amber)"/>
                   <InfoRow label="Drop Source" value={sel.enemy} color="var(--red2)"/>
-                  <InfoRow label="Unlocked By" value={sel.unlock} color="var(--text2)"/>
-                  {gate && <InfoRow label="Tome Schematic" value={`${gate.series} · ${gate.currentCopies}/${gate.copies} copies${gate.missing?.length ? ` · Needs ${gate.missing.join(', ')}` : ''}`} color={gate.unlocked ? '#3dcf8e' : '#c59af2'}/>}
+                  <InfoRow label="Unlocked By" value={sel.unlock} color="var(--text2)"/></>}
+                  {sel.fieldOnly && <InfoRow label="Capture Method" value={sel.captureMethod} color="#7fe0ff"/>}
+                  {gate && <InfoRow label={gate.label || "Tome Schematic"} value={`${gate.series} · ${gate.currentCopies}/${gate.copies} copies${gate.missing?.length ? ` · Needs ${gate.missing.join(', ')}` : ''}`} color={gate.unlocked ? '#3dcf8e' : '#c59af2'}/>}
                 </div>
                 <div className="divider"/>
-                <div style={{fontFamily:'var(--font-mono)', fontSize:9, color:'var(--text3)', margin:'8px 0'}}>REQUIRED MATERIALS</div>
+                {sel.fieldOnly ? <div style={{fontFamily:'var(--font-mono)', fontSize:10, color:'#7fe0ff', margin:'8px 0 12px', lineHeight:1.5}}>FIELD CAPTURE · {sel.lore}</div> : <><div style={{fontFamily:'var(--font-mono)', fontSize:9, color:'var(--text3)', margin:'8px 0'}}>REQUIRED MATERIALS</div>
                 <div style={{display:'flex', flexDirection:'column', gap:5, marginBottom:12}}>
                   {Object.entries(sel.cost).map(([k, q]) => {
                     const have = stock[k] || 0;
@@ -3835,17 +3881,17 @@ function RmatCraftingRecipeBrowser() {
                       <span style={{fontFamily:'var(--font-mono)', fontSize:9, color:tier.color, width:30, textAlign:'right'}}>{rates[i] || 0}%</span>
                     </div>
                   ))}
-                </div>
+                </div></>}
               </div>
               <div style={{padding:10, borderTop:'1px solid var(--border)'}}>
-                <button onClick={() => onCraftClick(sel)} disabled={!ok} style={{
+                {sel.fieldOnly ? <div style={{fontFamily:'var(--font-mono)', fontSize:10, lineHeight:1.5, color:'#7fe0ff', textAlign:'center'}}>Use this capture action in Traversal. This card cannot be crafted from materials.</div> : <button onClick={() => onCraftClick(sel)} disabled={!ok} style={{
                   width:'100%', padding:'10px', cursor: ok ? 'pointer' : 'not-allowed',
                   fontFamily:'var(--font-body)', fontSize:13, letterSpacing:'0.06em',
                   background: ok ? '#1a3020' : 'var(--bg4)', color: ok ? '#3dcf8e' : 'var(--text3)',
                   border:`1px solid ${ok ? '#3dcf8e' : 'var(--border)'}`,
                 }}>
                   {gate && !gate.unlocked ? '🔒 Schematic Locked' : ok ? (sel.tier === 5 ? '⚠ Begin Exotic Craft' : '⚙ Craft Now') : '✗ Materials Insufficient'}
-                </button>
+                </button>}
               </div>
             </div>
           );

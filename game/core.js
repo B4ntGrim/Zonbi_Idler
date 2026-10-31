@@ -83,6 +83,13 @@ ZI.heartbeatOfflineWindow = function(now) {
 };
 ZI.CLOCK_KEY = 'zi_game_clock';
 ZI.CLOCK_RATE = 3600 * 1000 / ZI.REAL_MS_PER_GAME_HOUR; // game seconds per real second (600; was 0.5)
+// TIER-01 (Sam, Oct 31): tier escalation divisor. A tier is drawable when its rank <= floor(lap / ZI.TIER_LAP_DIVISOR),
+// lap = floor(scroll / 100) + Push On boost. 3.0 makes BOSS drawable at 1.04 game days of walking (was 0.52 at 1.5).
+// Readers: _bgZombie (wandering.js), wanderDrawableTiers (world.js), the Traversal pool (screens-v3.jsx).
+// camp.js horde tier is a separate system and keeps its own 1.5.
+ZI.TIER_LAP_DIVISOR = 3.0;
+// ART-02 (Sam, Oct 31): the widest zombie sprite, at its tier height, fits this share of the scene width (one global fit).
+ZI.SCENE_WIDTH_SHARE = 0.65;
 ZI._clock = function() {
   let c; try { c = JSON.parse(localStorage.getItem(ZI.CLOCK_KEY) || 'null'); } catch (e) { c = null; }
   if (!c) { c = { base: 14 * 3600, day: 1, at: Date.now(), rate: ZI.CLOCK_RATE }; localStorage.setItem(ZI.CLOCK_KEY, JSON.stringify(c)); }

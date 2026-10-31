@@ -727,6 +727,32 @@ window.SatelliteTraversalScreen = function SatelliteTraversalScreen({ setScreen,
     }
     return p;
   });
+  // A Scout earns Stealth XP only before the player has traveled into that cell.
+  // Persist visits separately from scout results so the rule survives reloads.
+  const [visitedCells, setVisitedCells] = React.useState(() => {
+    const visited = readJ('zi_trav_visited', {});
+    const currentKey = pos.gx + ',' + pos.gy;
+    if (!visited[currentKey]) { visited[currentKey] = true; writeJ('zi_trav_visited', visited); }
+    return visited;
+  });
+  const markCellVisited = p => {
+    if (!p || !Number.isFinite(p.gx) || !Number.isFinite(p.gy)) return;
+    const visitKey = p.gx + ',' + p.gy;
+    setVisitedCells(previous => {
+      if (previous[visitKey]) return previous;
+      const next = { ...previous, [visitKey]: true };
+      writeJ('zi_trav_visited', next);
+      return next;
+    });
+  };
+  const hasVisitedCell = cell => {
+    if (!cell || !Number.isFinite(cell.gx) || !Number.isFinite(cell.gy)) return false;
+    const cellKey = cell.gx + ',' + cell.gy;
+    const storedPos = readJ('zi_trav_pos', null);
+    return !!visitedCells[cellKey]
+      || (pos.gx === cell.gx && pos.gy === cell.gy)
+      || !!(storedPos && storedPos.gx === cell.gx && storedPos.gy === cell.gy);
+  };
   const [view, setView] = React.useState(() => ({ sx: pos.sx || 0, sy: pos.sy || 0 }));
   React.useEffect(() => { setMapTransform({ scale:1, x:0, y:0 }); }, [activeType]);
   React.useEffect(() => { setMapTransform(prev => ({ scale:prev.scale, x:0, y:0 })); }, [view.sx, view.sy]);
@@ -789,7 +815,7 @@ window.SatelliteTraversalScreen = function SatelliteTraversalScreen({ setScreen,
     if (drag.moved) window.setTimeout(() => { panMovedRef.current = false; }, 0);
   };
   // Smoke-test fix (Oct 20): follow moves the game makes itself (forced retreat home, return after a Base rest).
-  React.useEffect(() => ZI.onTravPosChange ? ZI.onTravPosChange(() => { const p = readJ('zi_trav_pos', null); if (p && p.gx != null) { setPos(p); setView({ sx: p.sx || 0, sy: p.sy || 0 }); } }) : undefined, []);
+  React.useEffect(() => ZI.onTravPosChange ? ZI.onTravPosChange(() => { const p = readJ('zi_trav_pos', null); if (p && p.gx != null) { setPos(p); markCellVisited(p); setView({ sx: p.sx || 0, sy: p.sy || 0 }); } }) : undefined, []);
   const [explored, setExplored] = React.useState(() => ZI.getExploredSectors());
   const sectorOverview = (() => {
     const byKey = new Map();
@@ -848,8 +874,12 @@ window.SatelliteTraversalScreen = function SatelliteTraversalScreen({ setScreen,
   const [camp, setCamp] = React.useState(() => readJ('zi_trav_camp', null));
   const [looted, setLooted] = React.useState(() => readJ('zi_trav_looted', {}));
   const [scouted, setScouted] = React.useState(() => readJ('zi_trav_scouted', {}));
+  const [birdMenuOpen, setBirdMenuOpen] = React.useState(false);
+  const [birdNotice, setBirdNotice] = React.useState(null);
+  const [birdFlight, setBirdFlight] = React.useState(null);
   const [actionCell, setActionCell] = React.useState(null);
   const [actionResult, setActionResult] = React.useState(null);
+  const [poiStoryResult, setPoiStoryResult] = React.useState(null);
   const [fortOpen, setFortOpen] = React.useState(false);
   const [questTick, setQuestTick] = React.useState(0);
   React.useEffect(() => { ZI.getFortPos(); setQuestTick(t => t + 1); const t = setInterval(() => setQuestTick(x => x + 1), 3000); return () => clearInterval(t); }, []);
@@ -858,6 +888,7 @@ window.SatelliteTraversalScreen = function SatelliteTraversalScreen({ setScreen,
   // TRAV-01a (Sam, Oct 21: T5, S7): Camp Leader controls show only in Camp Leader mode. Solo reads the active save's mode.
   const isCampMode = ((ZI.getActiveSlot && ZI.getActiveSlot()) || {}).mode === 'camp';
   const [travTick, setTravTick] = React.useState(0);           // re-render after a scout, XP or Hide changes stored state
+  const [supplyNotice, setSupplyNotice] = React.useState(null);
   React.useEffect(() => { const t = setInterval(() => setTravTick(x => x + 1), 60000); return () => clearInterval(t); }, []);
   const [hideSeen, setHideSeen] = React.useState({});           // cell key → last Hide result this session (panel "Threats" line)
   const [sheetMode, setSheetMode] = React.useState(false);      // T13: touch opens the zone panel as a bottom sheet
@@ -975,8 +1006,11 @@ window.SatelliteTraversalScreen = function SatelliteTraversalScreen({ setScreen,
     if (id.indexOf('infiltrate-') === 0) {
       const result = ZI.resolveInfiltration(cell, id);
       res = { tone: result.tone || (result.ok ? 'good' : 'warn'), text: result.message };
+    } else if (id === 'inspect-bicycle') {
+      const result = ZI.inspectBicycle();
+      res = { tone:result.ok ? 'good' : 'warn', text:result.ok ? 'Bicycle recovered. Mechanical 5 and Engineering 2 let you put it back into service.' : result.reason };
     } else if (id === 'travel') {
-      const p = ZI.zoneFromCell(cell); setPos(p); writeJ('zi_trav_pos', p);
+      const p = ZI.zoneFromCell(cell); setPos(p); markCellVisited(p); writeJ('zi_trav_pos', p);
       ZI.clearTravReturn && ZI.clearTravReturn(); // BAL-A D1: the player's own move replaces any saved return
       const xpT = ZI.travEmitOnce('travel', ck, 'move', 2); // TRAV-01a T14: Athletics XP once per cell per real day
       res = { tone:'good', text:`You move into ${cell.name}.${xpT ? ' +Athletics XP.' : ''}` };
@@ -994,6 +1028,10 @@ window.SatelliteTraversalScreen = function SatelliteTraversalScreen({ setScreen,
         if (roll <= chance) {
           const literature = ZI.rollLiteratureLoot && ZI.rollLiteratureLoot(cell);
           if (literature) got.push(`${literature.icon || '📚'} ${literature.name} (carried)`);
+          const foundTool = ZI.handToolForPoi && ZI.handToolForPoi(cell.poiType);
+          if (foundTool && ZI.grantGear && ZI.grantGear(foundTool, 1)) { const tool = ZI.getGearItem(foundTool); got.push(`${tool ? tool.name : 'Hand tool'} added to Stockpile`); }
+          const toolFinds = ZI.handToolScavenge ? ZI.handToolScavenge(cell.poiType) : [];
+          got.push(...toolFinds);
           if (routeAid && ZI.consumePoiRouteAid) ZI.consumePoiRouteAid(cell);
           ZI.emitAction && ZI.emitAction('loot', 1 + cell.difficulty * 0.3); // Scavenging XP only on a clean search
           res = { tone:'good', text:`Clean search (${chance}% safe, rolled ${roll}). You scavenge ${cell.name}: ${got.join(', ')}. +Scavenging XP.` };
@@ -1013,22 +1051,29 @@ window.SatelliteTraversalScreen = function SatelliteTraversalScreen({ setScreen,
       const sp = ZI.spendTravScout();
       if (!sp.ok) { setActionResult({ tone:'warn', text: sp.reason }); setTravTick(t => t + 1); return; }
       const ns = { ...scouted, [key]: true }; setScouted(ns); writeJ('zi_trav_scouted', ns);
-      const xpS = ZI.travEmitOnce('scout', ck, 'scout', 1); // P1: Stealth XP once per cell per real day
+      // Scouting pays XP only before first travel into the target. A stale visit map must never
+      // award XP for the square currently occupied; scoutXpAvailable also prevents repeat XP in
+      // the same 12-game-hour scout window.
+      const alreadyVisited = hasVisitedCell(cell);
+      const xpS = !alreadyVisited && ZI.scoutEmitXp ? ZI.scoutEmitXp(ck) : false;
+      if (alreadyVisited) markCellVisited(cell);
       const danger = ZI.THREAT_LABELS[Math.min(5, cell.threatLevel)];
-      res = { tone:'info', text:`Scouted ${coord}: threat ${danger}, ${cell.biome} terrain, supplies up to RMAT T${cell.rmatTier}. ${looted[key] ? 'Already looted.' : 'Unlooted.'}${xpS ? ' +Stealth XP.' : ' No XP: already earned here today.'} Traversal scouts ${sp.left}/${sp.max} today.` };
+      const scoutXpText = xpS ? ' +Stealth XP for scouting before travel.' : alreadyVisited ? ' No XP: you have already traveled here.' : ' No XP: already earned for this square during the current Scout window.';
+      res = { tone:'info', text:`Scouted ${coord}: threat ${danger}, ${cell.biome} terrain, supplies up to RMAT T${cell.rmatTier}. ${looted[key] ? 'Already looted.' : 'Unlooted.'}${scoutXpText} Traversal scouts ${sp.left}/${sp.max} today.` };
     } else if (id === 'camp' && !ZI.canCampAt(cell)) {
       res = { tone:'warn', text:`You can't make camp on ${coord} while Fallow Ground is in progress.` };
     } else if (id === 'camp') {
       const used = ZI.spendCampUse();
       if (!used.ok) { setActionResult({ tone:'warn', text:`Make Camp is ready in ${shortWait(used.remainingMs)}.` }); setTravTick(t => t + 1); return; }
-      const p = ZI.zoneFromCell(cell); setPos(p); writeJ('zi_trav_pos', p);
+      const p = ZI.zoneFromCell(cell); setPos(p); markCellVisited(p); writeJ('zi_trav_pos', p);
       setCamp(p); writeJ('zi_trav_camp', p);
       ZI.clearTravReturn && ZI.clearTravReturn(); // BAL-A D1
+      const campHeal = ZI.healAtCamp ? ZI.healAtCamp() : { restored:0, hp:0, maxHp:ZI.maxHp ? ZI.maxHp() : 100 };
       const xpC = ZI.travEmitOnce('camp', 'any', 'camp', 1); // TRAV-01a T15: Command XP once per real day
       const day = ZI.passTimeToNextMorning ? ZI.passTimeToNextMorning(6) : null;
-      // TRAV-01a T15: Make camp no longer sets HP to full or resets healsUsed (it was a free, unlimited full heal).
+      // Camp restores about half of maximum HP, without resetting healsUsed or curing injuries.
       // BAL-A O5: Make camp no longer treats the injury (only certain items cure it)
-      res = { tone:'good', text:`You make camp at ${coord}.${day ? ` Day ${day} begins.` : ''} This is your new safe rest point: a Forced Retreat brings you here.${xpC ? ' +Command XP.' : ''}` };
+      res = { tone:'good', text:`You make camp at ${coord}.${day ? ` Day ${day} begins.` : ''}${campHeal.restored ? ` You recover ${campHeal.restored} HP (${campHeal.hp}/${campHeal.maxHp}).` : ' You are already at full HP.'} This is your new safe rest point: a Forced Retreat brings you here.${xpC ? ' +Command XP.' : ''}` };
     } else if (id === 'hide') {
       const used = ZI.spendHideUse();
       if (!used.ok) { setActionResult({ tone:'warn', text:`Hide is ready in ${shortWait(Math.max(0, used.nextAt - ZI.clockNow()))}.` }); setTravTick(t => t + 1); return; }
@@ -1040,6 +1085,63 @@ window.SatelliteTraversalScreen = function SatelliteTraversalScreen({ setScreen,
       res = { tone:'info', text:`You stay hidden in ${coord} for 12 game hours. Threat level ${th.threatLevel}/5 (${th.dangerLabel}). Threats here: tiers ${th.range}, the range Wandering can meet right now.${xpH ? ' +Stealth XP.' : ' No XP: already earned here today.'}` };
     }
     setActionResult(res);
+    setTravTick(t => t + 1);
+  };
+  const scoutWithBird = (direction) => {
+    if (birdFlight) { setBirdNotice('Your bird is still in flight.'); return; }
+    const bird = ZI.getScoutBird ? ZI.getScoutBird() : null;
+    if (!bird) { setBirdNotice('You need a captured pigeon or hawk to send a scout bird.'); return; }
+    const D = DIRS[direction];
+    if (!D) return;
+    const range = Math.max(1, ZI.scoutBirdDistance ? ZI.scoutBirdDistance() : 1);
+    const targets = [];
+    for (let step=1; step<=range; step++) {
+      const gx = pos.gx + D.dx * step, gy = pos.gy + D.dy * step;
+      const cell = ZI.worldCell(gx, gy, 'scavenge');
+      if (!cell || cell.state === 'locked') break;
+      targets.push(cell);
+    }
+    if (!targets.length) { setBirdNotice(`The path ${D.label.toLowerCase()} is blocked by an overrun square.`); return; }
+    const charge = ZI.spendTravScout();
+    if (!charge.ok) { setBirdNotice(charge.reason); setTravTick(t => t + 1); return; }
+    const nextScouted = { ...scouted };
+    const reports = [];
+    targets.forEach(cell => {
+      const cellKey = keyG(cell.gx, cell.gy);
+      nextScouted[cellKey] = true;
+      const alreadyVisited = hasVisitedCell(cell);
+      const xp = !alreadyVisited && ZI.scoutEmitXp ? ZI.scoutEmitXp(`${cell.gx},${cell.gy}`) : false;
+      reports.push(`${cell.coord}: ${ZI.THREAT_LABELS[Math.min(5, cell.threatLevel || 0)]} threat, ${cell.biome}, supplies to RMAT T${cell.rmatTier}${xp ? ' +Stealth XP' : ''}`);
+      ZI.markSectorExplored(Math.floor(cell.gx / COLS), Math.floor(cell.gy / ROWS));
+    });
+    setScouted(nextScouted); writeJ('zi_trav_scouted', nextScouted);
+    setExplored(ZI.getExploredSectors());
+    const box = mapViewportRef.current;
+    if (box) {
+      const boxRect = box.getBoundingClientRect();
+      const hereEl = box.querySelector(`[data-cell="${pos.gx},${pos.gy}"]`);
+      const end = targets[targets.length - 1];
+      const endEl = box.querySelector(`[data-cell="${end.gx},${end.gy}"]`);
+      const hereRect = hereEl && hereEl.getBoundingClientRect();
+      const endRect = endEl && endEl.getBoundingClientRect();
+      const from = hereRect ? { x:hereRect.left - boxRect.left + hereRect.width/2, y:hereRect.top - boxRect.top + hereRect.height/2 } : { x:boxRect.width/2, y:boxRect.height/2 };
+      const edge = { x:D.dx < 0 ? 8 : D.dx > 0 ? boxRect.width - 8 : from.x, y:D.dy < 0 ? 8 : D.dy > 0 ? boxRect.height - 8 : from.y };
+      const to = endRect ? { x:endRect.left - boxRect.left + endRect.width/2, y:endRect.top - boxRect.top + endRect.height/2 } : edge;
+      setBirdFlight({ from, to, icon:bird.sprite, phase:'start' });
+      requestAnimationFrame(() => setBirdFlight(f => f ? { ...f, phase:'fly' } : null));
+      setTimeout(() => setBirdFlight(null), 1250);
+    }
+    setBirdNotice(`${bird.name} scouted ${targets.length} square${targets.length === 1 ? '' : 's'} ${D.label.toLowerCase()}. ${reports.join(' · ')} Scout charges: ${charge.left}/${charge.max}.`);
+    setBirdMenuOpen(false); setTravTick(t => t + 1);
+  };
+  const capturePigeon = () => {
+    const result = ZI.capturePigeon ? ZI.capturePigeon() : { ok:false, reason:'Bird capture is unavailable.' };
+    setBirdNotice(result.ok ? 'Pigeon captured and added to your inventory.' : result.reason);
+    setTravTick(t => t + 1);
+  };
+  const captureHawk = () => {
+    const result = ZI.captureHawk ? ZI.captureHawk() : { ok:false, reason:'Bird capture is unavailable.' };
+    setBirdNotice(result.ok ? 'The pigeon was used as bait. Hawk captured and added to your inventory.' : result.reason);
     setTravTick(t => t + 1);
   };
   const ACTIONS = [
@@ -1061,7 +1163,9 @@ window.SatelliteTraversalScreen = function SatelliteTraversalScreen({ setScreen,
     if (id === 'enter') { if (note) setActionResult({ tone:'info', text:note }); enterWandering(cell, label); return; }
     if (id === 'story') {
       const result = ZI.resolvePoiStoryChoice && ZI.resolvePoiStoryChoice(cell, label);
-      setActionResult(result || { tone:'info', text:note || 'The encounter passes quietly.' }); setTravTick(t => t + 1); return;
+      setActionResult(null);
+      setPoiStoryResult({ cellKey:`${cell.gx},${cell.gy}`, result:result || { tone:'info', text:note || 'The encounter passes quietly.' } });
+      setTravTick(t => t + 1); return;
     }
     if (id === 'dialogue') { if (note) setActionResult({ tone:'info', text:note }); return; }
     doAction(id, cell);
@@ -1140,8 +1244,21 @@ window.SatelliteTraversalScreen = function SatelliteTraversalScreen({ setScreen,
       + carried.reduce((sum, x) => sum + (x.id === id ? Number(x.qty) || 1 : 0), 0);
     const carry = ZI.carryTotals ? ZI.carryTotals() : null;
     const nutrition = ZI.getNutrition ? ZI.getNutrition() : null;
-    const top = ZI.getTopBarResources ? ZI.getTopBarResources() : {};
-    const medkits = countItem('medkit'), bandages = countItem('field_bandage'), food = top.Food?.current || 0;
+    const scoutBird = ZI.getScoutBird ? ZI.getScoutBird() : null;
+    const birdNetReady = ZI.hasFieldTool ? ZI.hasFieldTool('bird_net') : false;
+    const birdTrapReady = ZI.hasFieldTool ? ZI.hasFieldTool('bird_trap') : false;
+    const isFoodItem = id => ZI.PROG?.LIVE?.isFood ? ZI.PROG.LIVE.isFood(id) : (() => { const g = ZI.getGearItem(id); return !!g && g.slot === 'consumable3' && !(g.effect && g.effect.lootPct); })();
+    const foodItems = stash.concat(Object.values(loadout), carried.flatMap(entry => Array.from({ length:Math.max(1, Number(entry.qty) || 1) }, () => entry.id)));
+    const medkits = countItem('medkit'), bandages = countItem('field_bandage'), food = foodItems.filter(isFoodItem).length;
+    const run = ZI.getWanderRun ? ZI.getWanderRun() : null, maxHp = ZI.maxHp ? ZI.maxHp() : 100;
+    const hp = Math.max(0, Math.min(maxHp, run && Number.isFinite(run.hp) ? run.hp : maxHp));
+    const atHome = ZI.canUseTraversalSupplies ? ZI.canUseTraversalSupplies() : (!ZI.atBaseOrCamp || ZI.atBaseOrCamp());
+    const injury = ZI.getInjury && ZI.getInjury();
+    const useSupply = kind => {
+      const result = ZI.useTraversalSupply ? ZI.useTraversalSupply(kind) : { ok:false, reason:'Supply use is unavailable.' };
+      setSupplyNotice({ kind, ok:!!result.ok, text:result.ok ? result.text : result.reason });
+      setTravTick(x => x + 1);
+    };
     const meter = (label, value, max, color, detail) => (
       <div style={{ marginTop:6 }}>
         <div style={{ display:'flex', justifyContent:'space-between', gap:6, fontFamily:'var(--font-mono)', fontSize:11, color:'var(--text2)', marginBottom:3 }}>
@@ -1158,15 +1275,37 @@ window.SatelliteTraversalScreen = function SatelliteTraversalScreen({ setScreen,
           {meter('Pack slots', carry.pocketsUsed, Math.max(1, carry.pocketsMax), carry.pocketsFree <= 0 ? 'var(--amber)' : 'var(--green)', `${carry.pocketsUsed} / ${carry.pocketsMax}`)}
         </>}
         {nutrition && meter('Nutrition', nutrition.current, nutrition.max || 100, nutrition.current < 25 ? 'var(--red2)' : 'var(--amber)', `${nutrition.current} / ${nutrition.max || 100}`)}
+        <div style={{ display:'flex', justifyContent:'center', gap:5, marginTop:8, paddingTop:6, borderTop:'1px solid var(--border)' }}>
+          {scoutBird ? (
+            <button type="button" aria-label={`Send ${scoutBird.name} to scout`} title={`${scoutBird.name}: scout up to ${scoutBird.scoutBirdDistance} squares in a cardinal direction. Costs 1 Traversal Scout.`} onClick={() => { setBirdMenuOpen(v => !v); setBirdNotice(null); }} style={{ width:66, height:58, flex:'0 0 66px', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', gap:2, padding:3, border:'1px solid #7fe0ff', background:birdMenuOpen ? 'rgba(127,224,255,0.15)' : 'var(--bg3)', color:'var(--text)', cursor:'pointer' }}>
+              <img src={scoutBird.sprite} alt="" style={{ width:30, height:30, objectFit:'contain', imageRendering:'pixelated' }}/>
+              <span style={{ fontFamily:'var(--font-mono)', fontSize:8 }}>Send Scout</span>
+            </button>
+          ) : (
+            <button type="button" aria-label="Capture a pigeon with a Bird Net" title={birdNetReady ? 'Use your carried Bird Net to capture a pigeon.' : 'Bring a Bird Net from Stockpile to capture a pigeon.'} onClick={capturePigeon} style={{ width:66, height:58, flex:'0 0 66px', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', gap:2, padding:3, border:'1px solid var(--border)', background:'var(--bg3)', color:birdNetReady ? 'var(--text)' : 'var(--text3)', cursor:'pointer', opacity:birdNetReady ? 1 : 0.65 }}>
+              <span style={{ fontSize:24 }}>🕸</span><span style={{ fontFamily:'var(--font-mono)', fontSize:8 }}>Catch Pigeon</span>
+            </button>
+          )}
+        </div>
+        {scoutBird && birdMenuOpen && <div role="group" aria-label="Choose bird scouting direction" style={{ display:'grid', gridTemplateColumns:'repeat(4, 1fr)', gap:4, marginTop:5 }}>
+          {[['n','↑ North'],['s','↓ South'],['e','→ East'],['w','← West']].map(([d,label]) => <button key={d} type="button" onClick={() => scoutWithBird(d)} style={{ padding:'5px 2px', border:'1px solid var(--border)', background:'var(--bg3)', color:'var(--amber)', fontFamily:'var(--font-mono)', fontSize:9, cursor:'pointer' }}>{label}</button>)}
+        </div>}
+        {scoutBird && scoutBird.id === 'bird_pigeon' && <button type="button" onClick={captureHawk} title={birdTrapReady ? 'Use the pigeon as bait in your carried Bird Trap. The pigeon is consumed.' : 'Bring a Bird Trap from Stockpile and keep the pigeon as bait.'} style={{ width:'100%', marginTop:5, padding:'5px 6px', border:'1px solid var(--border)', background:'var(--bg3)', color:birdTrapReady ? 'var(--text)' : 'var(--text3)', fontFamily:'var(--font-mono)', fontSize:9, cursor:'pointer', opacity:birdTrapReady ? 1 : 0.65 }}>🪤 Use Pigeon + Bird Trap to Catch Hawk</button>}
+        {birdNotice && <div role="status" data-trav="bird-result" style={{ marginTop:5, padding:'5px 6px', borderLeft:'2px solid #7fe0ff', background:'rgba(127,224,255,0.07)', fontFamily:'var(--font-mono)', fontSize:9, color:'var(--text2)', lineHeight:1.4 }}>{birdNotice}</div>}
         <div style={{ display:'flex', justifyContent:'space-between', gap:5, marginTop:8, paddingTop:6, borderTop:'1px solid var(--border)' }}>
-          {[['🧰','Medkits',medkits],['🩺','Bandages',bandages],['🥫','Food',food]].map(([icon,label,count]) => (
-            <div key={label} style={{ flex:1, minWidth:0, textAlign:'center', background:'var(--bg3)', padding:'5px 2px' }}>
-              <div style={{ fontSize:15 }}>{icon}</div>
-              <div style={{ fontFamily:'var(--font-mono)', fontSize:10, color:'var(--text3)' }}>{label}</div>
-              <div style={{ fontFamily:'var(--font-mono)', fontSize:13, color:'var(--text)', fontWeight:'bold' }}>{count}</div>
-            </div>
+          {[
+            { kind:'medkit', icon:'🧰', label:'Medkits', count:medkits },
+            { kind:'bandage', icon:'🩺', label:'Bandages', count:bandages },
+            { kind:'food', icon:'🥫', label:'Food', count:food },
+          ].map(({ kind, icon, label, count }) => (
+            <button key={label} type="button" aria-label={`Use ${label.toLowerCase()}`} title={`Click to use ${label.toLowerCase()}`} onClick={() => useSupply(kind)} style={{ flex:1, minWidth:0, width:'100%', display:'flex', flexDirection:'column', alignItems:'center', textAlign:'center', gap:2, padding:'5px 2px', border:'1px solid var(--border)', background:'var(--bg3)', color:'var(--text)', cursor:'pointer' }}>
+              <span style={{ fontSize:18, lineHeight:1.2 }}>{icon}</span>
+              <span style={{ fontFamily:'var(--font-mono)', fontSize:10, color:'var(--text3)' }}>{label}</span>
+              <span style={{ fontFamily:'var(--font-mono)', fontSize:13, color:'var(--text)', fontWeight:'bold' }}>{count}</span>
+            </button>
           ))}
         </div>
+        {supplyNotice && <div role="status" style={{ marginTop:5, fontFamily:'var(--font-mono)', fontSize:9, color:supplyNotice.ok ? 'var(--green)' : 'var(--red2)' }}>{supplyNotice.ok ? '✓ ' : '✕ '}{supplyNotice.text}</div>}
       </div>
     );
   };
@@ -1183,14 +1322,16 @@ window.SatelliteTraversalScreen = function SatelliteTraversalScreen({ setScreen,
   const zoneActs = (c) => {
     const key = keyG(c.gx, c.gy), ck = c.gx + ',' + c.gy, here = isHereCell(c), adj = isAdjCell(c), locked = c.state === 'locked';
     const chance = ZI.lootSafeChance(c), ts = ZI.getTravScouts();
+    const poiSite = ZI.poiSiteForCell && ZI.poiSiteForCell(c);
     const far = locked ? 'Locked zone.' : (!here && !adj) ? 'Too far — move next to it.' : null;
     const xpNote = (kind, label) => ZI.travXpAvailable(kind, kind === 'camp' ? 'any' : ck) ? `${label} XP once per ${kind === 'camp' ? 'day' : 'zone a day'}` : 'XP already earned today';
     return [
       { id:'travel', icon:'➜', label:'Travel',    reason: here ? "You're already here." : far, cost: `Moves you in · ${xpNote('travel', 'Athletics')}` },
       { id:'loot',   icon:'◈', label:'Loot',      reason: far || (looted[key] ? 'Already looted.' : null), cost: `Once per zone · ${Math.min(95, chance + ((ZI.poiRouteAid && ZI.poiRouteAid(c)) ? ZI.poiRouteAid(c).bonus : 0))}% safe${(ZI.poiRouteAid && ZI.poiRouteAid(c)) ? ' · local lead' : ''} · a failed roll hurts` },
-      { id:'scout',  icon:'👁', label: ZI.isPoliceStationCell && ZI.isPoliceStationCell(c) ? 'Scout Police Station' : 'Scout', reason: far || (ts.left <= 0 ? 'No Traversal scouts left today. Refills at midnight.' : null), cost: `1 Traversal scout (${ts.left}/${ts.max} today) · ${xpNote('scout', 'Stealth')}` },
+      { id:'scout',  icon:'👁', label: ZI.isPoliceStationCell && ZI.isPoliceStationCell(c) ? 'Scout Police Station' : 'Scout', reason: far || (ts.left <= 0 ? 'No Traversal scouts left today. Refills at midnight.' : null), cost: `1 Traversal scout (${ts.left}/${ts.max} today) · ${hasVisitedCell(c) ? 'no XP after traveling here' : ZI.scoutXpAvailable && !ZI.scoutXpAvailable(ck) ? 'XP already earned in this Scout window' : 'Stealth XP before first travel'}` },
       { id:'hide',   icon:'◌', label:'Hide',      reason: far || (hideUses.left <= 0 ? `Ready in ${shortWait(Math.max(0, hideUses.nextAt - ZI.clockNow()))}.` : null), cost: `${ZI.TRAVERSAL_TABLE.hideGameHours} game hours · ${hideUses.left}/${hideUses.max} uses left · each returns after 24h · ${xpNote('hide', 'Stealth')}` },
       { id:'camp',   icon:'⛺', label:'Make Camp', reason: far || (!ZI.canCampAt(c) ? "You can't make camp here while Fallow Ground is in progress." : !campCooldown.available ? `Ready in ${shortWait(campCooldown.remainingMs)}.` : null), cost: `Until 06:00 next game day · 24h refill after use · sets your rest point · ${xpNote('camp', 'Command')}` },
+      ...(poiSite && poiSite.id === 'scrapyard' ? [{ id:'inspect-bicycle', icon:'🚲', label:'Inspect bicycle', reason: far || (ZI.hasWorkingVehicle() ? 'A working vehicle is already in your inventory.' : ZI.vehicleSkillReason('bicycle')), cost:'Find a usable bike · Mechanical 5 · Engineering 2' }] : []),
     ].concat((ZI.infiltrationOptions ? ZI.infiltrationOptions(c) : []).map(a => ({ ...a, reason: far || a.reason })));
   };
   const panelItems = (c) => {
@@ -1230,6 +1371,7 @@ window.SatelliteTraversalScreen = function SatelliteTraversalScreen({ setScreen,
     const intel = ZI.getInfiltrationIntel && ZI.getInfiltrationIntel();
     const poiSite = ZI.poiSiteForCell && ZI.poiSiteForCell(c);
     const routeAid = ZI.poiRouteAid && ZI.poiRouteAid(c);
+    const lockedProgress = c.state === 'locked' && ZI.getLockedCellProgress ? ZI.getLockedCellProgress(c.gx, c.gy) : null;
     const feats = [ZI.isFortCell(c) && '🏰 Fort', poiSite && `${poiSite.icon} ${poiSite.name}`, ZI.isFallowCell(c) && '🌾 Fallow Ground', camp && camp.gx === c.gx && camp.gy === c.gy && '⛺ Your camp', start && start.gx === c.gx && start.gy === c.gy && '◎ Starting zone'].filter(Boolean);
     const far = locked ? 'Locked zone.' : (!here && !adj) ? 'Too far — move next to it.' : null;
     const acts = zoneActs(c);
@@ -1242,6 +1384,9 @@ window.SatelliteTraversalScreen = function SatelliteTraversalScreen({ setScreen,
       <div data-trav="zone-panel" data-tick={travTick} style={{ fontSize:14 }}>
         <div style={{ fontFamily:'var(--font-mono)', fontSize:12, color:'var(--text2)', letterSpacing:'0.1em' }}>ZONE {coord} · {here ? 'YOU ARE HERE' : adj ? 'NEXT TO YOU' : locked ? 'LOCKED' : 'FAR AWAY'}</div>
         <div style={{ fontFamily:'var(--font-title)', fontSize:20, color:'var(--amber)', margin:'3px 0 10px', lineHeight:1.2 }}>{c.name}</div>
+        {lockedProgress && <div role="status" data-trav="locked-progress" style={{ marginBottom:9, padding:'8px 9px', background:'rgba(240,90,60,0.1)', borderLeft:'3px solid var(--red2)', fontFamily:'var(--font-body)', fontSize:13, color:'var(--text)', lineHeight:1.4 }}>
+          <strong>Overrun.</strong> Clear {Math.max(0, lockedProgress.required - lockedProgress.cleared)} more surrounding squares to open this zone ({lockedProgress.cleared}/{lockedProgress.required} cleared). It opens automatically once enough adjacent squares are cleared.
+        </div>}
         {inTutMenu && (
           <div style={{ display:'flex', alignItems:'center', gap:8, marginBottom:8, padding:'6px 9px', border:'1px solid #ff3b3b', background:'rgba(255,59,59,0.1)' }}>
             <span style={{ fontFamily:'var(--font-mono)', fontSize:11, color:'#ff3b3b', letterSpacing:'0.08em' }}>TUTORIAL</span>
@@ -1251,10 +1396,13 @@ window.SatelliteTraversalScreen = function SatelliteTraversalScreen({ setScreen,
         )}
         {line('Familiarity', FAM_LABEL[fam] || '—', fam === 'cleared' ? 'var(--green)' : 'var(--text)', 'familiarity')}
         {line('Loot', looted[key] ? 'Looted' : `${chance}% safe · 2–3 supplies, 2–${5 + 2 * tier} each`, looted[key] ? 'var(--text3)' : 'var(--text)', 'loot')}
-        {line('Danger', `${ZI.THREAT_LABELS[Math.min(5, c.threatLevel || 0)]} (${c.threatLevel || 0}/5)`, (c.threatLevel || 0) > 3 ? 'var(--red2)' : 'var(--amber)', 'danger')}
-        {line('Threats', seen ? `Tiers ${seen.range} (from your last Hide)` : 'Unknown — Hide here to learn', seen ? 'var(--text)' : 'var(--text3)', 'threats')}
+        {line('Danger', <span aria-label={`Difficulty ${c.difficulty}/5`} style={{ display:'inline-flex', alignItems:'center', gap:6 }}>
+          <span style={{ display:'inline-flex', gap:2 }}>{Array.from({length:5}, (_, i) => <span key={i} style={{ color:i < c.difficulty ? '#f0d060' : 'var(--bg4)' }}>★</span>)}</span>
+          <span>Difficulty {c.difficulty}/5</span>
+        </span>, 'var(--amber)', 'danger')}
+        {line('Threats', `${ZI.THREAT_LABELS[Math.min(5, c.threatLevel || 0)]} (${c.threatLevel || 0}/5)${seen ? ` · Tiers ${seen.range} (from your last Hide)` : ' · Hide here to learn enemy tiers'}`, (c.threatLevel || 0) > 3 ? 'var(--red2)' : 'var(--text)', 'threats')}
         {intel && intel.gx === c.gx && intel.gy === c.gy && line('Intel', `Survey team reported near ${intel.coord}`, '#7fe0ff', 'faction-intel')}
-        {routeAid && line('Local lead', `Safer approach · +${routeAid.bonus}% safety on your next loot attempt`, '#7fe0ff', 'story-route-aid')}
+        {routeAid && line('Local lead', `Next Loot here: +${routeAid.bonus} percentage points to safe chance (max 95%). One use; consumed after the attempt. Expires in ${Math.max(1, Math.ceil((routeAid.expires - ZI.clockNow()) / 86400000))} real day(s).`, '#7fe0ff', 'story-route-aid')}
         {line('Features', feats.length ? feats.join(' · ') : 'None', 'var(--text)', 'features')}
         {poiSite && <div data-trav="poi-dialogue" data-poi={poiSite.id} style={{ marginTop:10, padding:11, background:'rgba(240,208,96,0.07)', border:'1px solid rgba(240,208,96,0.45)' }}>
           <div style={{ display:'flex', alignItems:'center', gap:10, marginBottom:8 }}>
@@ -1265,14 +1413,18 @@ window.SatelliteTraversalScreen = function SatelliteTraversalScreen({ setScreen,
           </div>
           <div style={{ fontFamily:'var(--font-body)', fontSize:15, color:'var(--text2)', lineHeight:1.45, marginBottom:9 }}>{poiSite.arrival}</div>
           {(() => { const thread = ZI.poiStoryForCell && ZI.poiStoryForCell(c); if (!thread) return null; return <div data-story-npc={thread.npc.id} style={{ marginBottom:9, padding:'8px 9px', borderLeft:'2px solid #7fe0ff', background:'rgba(127,224,255,0.06)' }}>
-            <div style={{ fontFamily:'var(--font-title)', color:'#7fe0ff', fontSize:15 }}>{thread.npc.name}{thread.bond ? ` · remembers you (${thread.bond})` : ''}</div>
+            <div style={{ fontFamily:'var(--font-title)', color:'#7fe0ff', fontSize:15 }}>{thread.npc.name}{thread.bond ? ' · remembers you' : ''}</div>
             <div style={{ fontFamily:'var(--font-body)', fontSize:13, color:'var(--text2)', lineHeight:1.4 }}>{thread.npc.tell} {thread.relicFound ? 'The keepsake you found still connects you.' : 'Your past gives the moment a familiar edge.'}</div>
             <div style={{ display:'flex', flexDirection:'column', gap:5, marginTop:7 }}>{thread.options.map((option, i) => <button key={`story-${i}`} data-story-choice={option.storyChoice} disabled={!!far} onClick={() => runSiteAction('story', c, null, option.storyChoice)} style={{ textAlign:'left', padding:'7px 9px', cursor:far ? 'not-allowed' : 'pointer', opacity:far ? 0.55 : 1, background:'var(--bg3)', border:'1px solid var(--border)', color:'var(--text)' }}><span style={{ marginRight:8 }}>{option.icon}</span>{option.label}</button>)}</div>
+            {poiStoryResult && poiStoryResult.cellKey === `${c.gx},${c.gy}` && <div role="status" data-trav="story-result" style={{ marginTop:8, padding:'8px 9px', background:'rgba(127,224,255,0.08)', borderLeft:`3px solid ${toneColor[poiStoryResult.result.tone] || '#7fe0ff'}`, fontFamily:'var(--font-body)', fontSize:13, color:'var(--text)', lineHeight:1.4 }}>{poiStoryResult.result.text}</div>}
           </div>; })()}
           <div style={{ display:'flex', flexDirection:'column', gap:6 }}>{poiSite.options.map((option, i) => { const optionReason = far || (option.kind === 'enter' && !here ? 'Travel to this square before entering.' : null); return <button key={i} data-poi-option={option.label} disabled={!!optionReason} title={optionReason || ''} onClick={() => runSiteAction(option.kind || 'dialogue', c, option.text, option.label)} style={{ display:'flex', alignItems:'center', gap:9, textAlign:'left', padding:'9px 10px', cursor:optionReason ? 'not-allowed' : 'pointer', opacity:optionReason ? 0.55 : 1, background:'var(--bg3)', border:'1px solid var(--border)', color:'var(--text)' }}>
             <span style={{ width:24, flexShrink:0, textAlign:'center', fontSize:19 }}>{option.icon}</span><span style={{ fontFamily:'var(--font-body)', fontSize:15, lineHeight:1.25 }}>{option.label}</span>
           </button>; })}</div>
         </div>}
+        {actionResult && (
+          <div data-trav="result" style={{ marginTop:8, padding:'8px 10px', background:'var(--bg4)', borderLeft:`3px solid ${toneColor[actionResult.tone]}`, fontFamily:'var(--font-body)', fontSize:13, color:'var(--text)', lineHeight:1.45 }}>{actionResult.text}</div>
+        )}
         <div className="divider"/>
         <div style={{ display:'flex', flexDirection:'column', gap:5 }}>
           {ZI.isFortCell(c) && (here || adj) && (
@@ -1284,18 +1436,15 @@ window.SatelliteTraversalScreen = function SatelliteTraversalScreen({ setScreen,
           {acts.map(a => (
               <button key={a.id} data-action={a.id} data-panel-focus={focusId === a.id ? '1' : undefined} disabled={!!a.reason} onMouseEnter={() => noteTutHover(a.id)} onFocus={() => noteTutHover(a.id)} onClick={() => { noteTutHover(a.id); if (!a.reason) runSiteAction(a.id, c); }} style={{
               display:'flex', alignItems:'center', gap:10, textAlign:'left', padding:'6px 10px', cursor: a.reason ? 'not-allowed' : 'pointer', opacity: a.reason ? 0.55 : 1,
-              background:'var(--bg3)', border:`1px solid ${inTutMenu && tutHover.includes(a.id) ? '#ff3b3b' : 'var(--border)'}`, color:'var(--text)', boxShadow: focusId === a.id ? '0 0 0 2px #7fe0ff inset, 0 0 10px rgba(127,224,255,0.5)' : undefined }}>
-              <span style={{ width:26, fontSize:19, textAlign:'center', color:'#f0d060' }}>{a.icon}</span>
+              background:'var(--bg3)', border:`1px solid ${inTutMenu && tutHover.includes(a.id) ? '#ff3b3b' : a.id === 'inspect-bicycle' ? '#4e7789' : 'var(--border)'}`, color:'var(--text)', boxShadow: focusId === a.id ? '0 0 0 2px #7fe0ff inset, 0 0 10px rgba(127,224,255,0.5)' : undefined }}>
+              <span style={{ width:26, fontSize:19, textAlign:'center', color:a.id === 'inspect-bicycle' ? '#7fe0ff' : '#f0d060' }}>{a.icon}</span>
               <span style={{ flex:1 }}>
-                <span style={{ display:'block', fontFamily:'var(--font-body)', fontSize:15 }}>{a.label}</span>
-                <span data-action-note={a.reason ? 'reason' : 'cost'} style={{ display:'block', fontFamily:'var(--font-mono)', fontSize:12, lineHeight:1.3, color: a.reason ? 'var(--red2)' : 'var(--text2)' }}>{a.reason || a.cost}</span>
+                <span style={{ display:'block', fontFamily:'var(--font-body)', fontSize:15, color:a.id === 'inspect-bicycle' ? '#9ddfff' : 'inherit' }}>{a.label}</span>
+                <span data-action-note={a.reason ? 'reason' : 'cost'} style={{ display:'block', fontFamily:'var(--font-mono)', fontSize:12, lineHeight:1.3, color: a.id === 'inspect-bicycle' ? (a.reason ? '#7e9aa8' : '#9ddfff') : a.reason ? 'var(--red2)' : 'var(--text2)' }}>{a.reason || a.cost}</span>
               </span>
             </button>
           ))}
         </div>
-        {actionResult && (
-          <div data-trav="result" style={{ marginTop:8, padding:'8px 10px', background:'var(--bg4)', borderLeft:`3px solid ${toneColor[actionResult.tone]}`, fontFamily:'var(--font-body)', fontSize:13, color:'var(--text)', lineHeight:1.45 }}>{actionResult.text}</div>
-        )}
         {here && setScreen && (
           <button className="btn btn-amber" data-trav="wander" data-panel-focus={focusId === 'wander' ? '1' : undefined} style={{ width:'100%', marginTop:8, boxShadow: focusId === 'wander' ? '0 0 0 2px #7fe0ff inset, 0 0 10px rgba(127,224,255,0.5)' : undefined }} onClick={() => enterWandering(c, poiSite ? `Enter ${poiSite.name}` : 'Start wandering')}>{poiSite ? `▶ Enter ${poiSite.name} · open Wandering` : ZI.isPoliceStationCell && ZI.isPoliceStationCell(c) ? '▶ Enter Police Station · open Wandering' : `▶ Start wandering around this ${c.name.replace(/ [A-H]\d+$/, '')}`}</button>
         )}
@@ -1358,7 +1507,7 @@ window.SatelliteTraversalScreen = function SatelliteTraversalScreen({ setScreen,
             <div style={{ fontFamily:'var(--font-mono)', fontSize:9, color:'var(--text2)', marginBottom:6, letterSpacing:'0.1em' }}>CAMP STOCK</div>
             {Object.entries(window.ZI_MATERIALS).slice(0,6).map(([key, m]) => (
               <div key={key} style={{ display:'flex', alignItems:'center', gap:6, marginBottom:4 }}>
-                <span style={{ fontSize:12 }}>{m.icon}</span>
+                {m.sprite ? <img src={m.sprite} alt={m.name} title={m.name} style={{ width:16, height:16, objectFit:'contain', imageRendering:'pixelated', flexShrink:0 }}/> : <span style={{ fontSize:12 }}>{m.icon}</span>}
                 <span style={{ fontFamily:'var(--font-mono)', fontSize:10, color:'var(--text2)', width:60, flexShrink:0 }}>{m.name}</span>
                 <div style={{ flex:1 }}><ProgressBar value={(m.current/m.max)*100} color={m.color} height={4}/></div>
                 <span style={{ fontFamily:'var(--font-mono)', fontSize:10, color:m.color, width:32, textAlign:'right' }}>{m.current}</span>
@@ -1522,7 +1671,7 @@ window.SatelliteTraversalScreen = function SatelliteTraversalScreen({ setScreen,
                     onClick={() => {
                       if (mapPanMode || panMovedRef.current) return;
                       if (!isCampMode) { openSoloPanel(square); return; } // TRAV-01a T13: select, don't hover (every platform)
-                      if (isLocked) return;
+                      if (isLocked) { setSelectedSquare(square); return; }
                       if (isHere(r, c) && ZI.isFortCell(gOf(r, c))) { setFortOpen(true); return; } // inside the Fort's cell
                       if (isHere(r, c)) { setActionCell(square); setActionResult(null); return; } // your own zone: Loot / Scout / Make Camp / Hide
                       if (isAdjacent(r, c)) { setActionCell(square); setActionResult(null); if (tutStep >= 0 && tutStep <= 2) setTutStep(3); return; }
@@ -1573,10 +1722,10 @@ window.SatelliteTraversalScreen = function SatelliteTraversalScreen({ setScreen,
                       borderLeft:'10px solid transparent',
                       borderTop:`10px solid ${sColor}`,
                     }}/>
-                    {/* Difficulty stars */}
-                    <div style={{ position:'absolute', top:3, left:3, display:'flex', gap:1 }}>
+                    {/* Difficulty dots; this count matches the Danger stars in Zone Details. */}
+                    <div aria-label={`Difficulty ${square.difficulty}/5`} title={`Difficulty ${square.difficulty}/5`} style={{ position:'absolute', top:3, left:3, display:'flex', gap:1 }}>
                       {Array.from({length:square.difficulty}).map((_, i) => (
-                        <div key={i} style={{ width:3, height:3, background:'#f0d060', boxShadow:'0 0 2px rgba(240,208,96,0.6)' }}/>
+                        <div key={i} style={{ width:3, height:3, borderRadius:'50%', background:'#f0d060', boxShadow:'0 0 2px rgba(240,208,96,0.6)' }}/>
                       ))}
                     </div>
                     {/* Fort + Fallow Ground markers */}
@@ -1602,6 +1751,7 @@ window.SatelliteTraversalScreen = function SatelliteTraversalScreen({ setScreen,
                     )}
                     {camp && camp.gx === square.gx && camp.gy === square.gy && !isHere(r, c) && <div style={{ position:'absolute', top:2, right:12, zIndex:2, fontSize:11 }} title="Your camp">⛺</div>}
                     {looted[cellKey(r, c)] && <div style={{ position:'absolute', top:12, left:3, zIndex:2, fontFamily:'var(--font-mono)', fontSize:8, color:'#e6c47e', textShadow:'0 1px 2px #000' }} title="Looted">✓</div>}
+                    {scouted[cellKey(r, c)] && <div style={{ position:'absolute', top:2, left:3, zIndex:2, fontFamily:'var(--font-mono)', fontSize:9, color:'#7fe0ff', textShadow:'0 1px 2px #000' }} title="Scouted">◉</div>}
                     {/* Lock or zone label */}
                     {isLocked ? (
                       <div style={{
@@ -1626,6 +1776,7 @@ window.SatelliteTraversalScreen = function SatelliteTraversalScreen({ setScreen,
           ))}
 
           </div>
+          {birdFlight && <img aria-hidden="true" src={birdFlight.icon} style={{ position:'absolute', zIndex:20, width:28, height:28, objectFit:'contain', imageRendering:'pixelated', pointerEvents:'none', left:birdFlight.phase === 'fly' ? birdFlight.to.x : birdFlight.from.x, top:birdFlight.phase === 'fly' ? birdFlight.to.y : birdFlight.from.y, transform:'translate(-50%, -50%)', transition:'left 1s linear, top 1s linear', filter:'drop-shadow(0 0 4px #7fe0ff)' }}/>}
           </div>
 
           {/* Legend */}
@@ -1638,12 +1789,12 @@ window.SatelliteTraversalScreen = function SatelliteTraversalScreen({ setScreen,
               </div>
             ))}
             <div style={{ flex:1 }}/>
-            <div style={{ display:'flex', gap:1 }}>
+            <div aria-label="Five dots equal five stars" style={{ display:'flex', gap:3 }}>
               {Array.from({length:5}).map((_,i)=>(
-                <div key={i} style={{ width:4, height:4, background:'#f0d060' }}/>
+                <div key={i} style={{ width:5, height:5, borderRadius:'50%', background:'#f0d060' }}/>
               ))}
             </div>
-            <span style={{ fontFamily:'var(--font-mono)', fontSize:9, color:'var(--text2)' }}>= 5 Stars (max difficulty)</span>
+            <span style={{ fontFamily:'var(--font-mono)', fontSize:9, color:'var(--text2)' }}>= ★★★★★ (max difficulty)</span>
           </div>
         </div>
       </div>
@@ -1659,10 +1810,11 @@ window.SatelliteTraversalScreen = function SatelliteTraversalScreen({ setScreen,
                 <div style={{ fontFamily:'var(--font-title)', fontSize:16, color:'var(--amber)', marginBottom:4 }}>
                   {sq.name}
                 </div>
+                {sq.state === 'locked' && ZI.getLockedCellProgress && (() => { const lp = ZI.getLockedCellProgress(sq.gx, sq.gy); return <div role="status" data-trav="locked-progress" style={{ marginBottom:10, padding:'8px 9px', background:'rgba(240,90,60,0.1)', borderLeft:'3px solid var(--red2)', fontFamily:'var(--font-body)', fontSize:12, color:'var(--text)', lineHeight:1.4 }}><strong>Overrun.</strong> Clear {Math.max(0, lp.required - lp.cleared)} more surrounding squares ({lp.cleared}/{lp.required}) to open access.</div>; })()}
                 <div style={{ fontFamily:'var(--font-mono)', fontSize:9, color:'var(--text2)', marginBottom:10 }}>
                   {ZI.BIOMES.find(b=>b.id===sq.biome)?.name} · {activeType.toUpperCase()}
                 </div>
-                <div style={{ display:'flex', gap:4, marginBottom:10 }}>
+                <div aria-label={`Danger: difficulty ${sq.difficulty} out of 5`} style={{ display:'flex', gap:4, marginBottom:10 }}>
                   {Array.from({length:5}).map((_,i)=>(
                     <div key={i} style={{
                       width:14, height:14,
@@ -1672,12 +1824,12 @@ window.SatelliteTraversalScreen = function SatelliteTraversalScreen({ setScreen,
                     }}/>
                   ))}
                   <span style={{ fontFamily:'var(--font-mono)', fontSize:10, color:'var(--text2)', marginLeft:6 }}>
-                    Difficulty {sq.difficulty}/5
+                    Danger · Difficulty {sq.difficulty}/5
                   </span>
                 </div>
                 <div style={{ display:'flex', flexDirection:'column', gap:5, marginBottom:12 }}>
                   <InfoRow label="State"      value={sq.state} color={stateColors[sq.state]}/>
-                  <InfoRow label="Threat"     value={`${sq.threatLevel}/5`} color={sq.threatLevel>3?'var(--red2)':'var(--amber)'}/>
+                  <InfoRow label="Threats"    value={`${ZI.THREAT_LABELS[Math.min(5, sq.threatLevel || 0)]} · ${sq.threatLevel}/5`} color={sq.threatLevel>3?'var(--red2)':'var(--text)'}/>
                   <InfoRow label="Duration"   value={fmtTime(sq.duration*60)} color="var(--text)"/>
                   <InfoRow label="RMAT Tier"  value={ZI.RMAT_TIERS[sq.rmatTier]?.name||'—'} color={ZI.RMAT_TIERS[sq.rmatTier]?.color||'var(--text3)'}/>
                   <InfoRow label="Assigned"   value={`${selectedSurvivors.length} survivor${selectedSurvivors.length!==1?'s':''}`} color="var(--amber)"/>
@@ -2121,7 +2273,7 @@ window.WanderingScreen = function WanderingScreen({ route, setScreen }) {
   // in each 300px cell). Scale enemies to the crouched survivor during a strike so both poses stay visually aligned.
   const PUNCH_BODY_SCALE = 0.8584;
   const tierFit = Math.min(1, (sceneHeight * 0.88 - 46) / (survivorBodyPx * 84 / 48));
-  const zombieHeightForTier = (tier) => Math.round(survivorBodyPx * (TIER_BODY[tier] || 48) / 48 * tierFit * (closeCombatLoadout && survivorStriking ? PUNCH_BODY_SCALE : 1));
+  const rawZombieHeightForTier = (tier) => Math.round(survivorBodyPx * (TIER_BODY[tier] || 48) / 48 * tierFit * (closeCombatLoadout && survivorStriking ? PUNCH_BODY_SCALE : 1));
   // Walk timing: one step of the v4 cycle covers 0.316 of the body height. The scenery scrolls at exactly that speed
   // so the planted foot stays put on the ground (no sliding / walking in place). Display only.
   const STEP_SECONDS = { walk:0.7, jog:0.48, run:0.36 };
@@ -2165,20 +2317,36 @@ window.WanderingScreen = function WanderingScreen({ route, setScreen }) {
   ];
   // Depth-gated pool: only zombies whose tier rank is unlocked by current lap.
   const poolForDepth = (lap) => {
-    // F at lap0, +1 tier ~every 1.5 laps; tougher Traversal zones start higher.
+    // F at lap0, +1 tier every ZI.TIER_LAP_DIVISOR laps (TIER-01); tougher Traversal zones start higher.
     const zoneBoost = zone ? Math.max(0, (zone.difficulty || 1) - 1) : 0;
-    const maxRank = Math.min(7, Math.floor(lap / 1.5) + zoneBoost);
+    const maxRank = Math.min(7, Math.floor(lap / window.ZI.TIER_LAP_DIVISOR) + zoneBoost);
     const elig = undeadTypes.filter(u => (TIER_RANK[u.tier] ?? 0) <= maxRank);
     return elig.length ? elig : undeadTypes.filter(u => (TIER_RANK[u.tier] ?? 0) === 0);
   };
+  // ART-02 (Sam, Oct 31): one global width fit, the same idea as tierFit. The widest drawable sprite, at its own tier
+  // height, must fit ZI.SCENE_WIDTH_SHARE of the scene. Every tier shrinks by the same factor, so the height ladder can
+  // never reorder on a narrow screen. Replaces the old per-sprite clamp, which shrank each sprite by a different amount.
+  const widthFit = (() => {
+    const share = (window.ZI && window.ZI.SCENE_WIDTH_SHARE) || 0.65;
+    const lookOf = t => (window.ZI_ART.zombieLook ? (window.ZI_ART.zombieLook(t).scale || 1) : 1);
+    let worst = 0;
+    const consider = (sprite, tier, look) => {
+      if (sprite) worst = Math.max(worst, sprite.w * rawZombieHeightForTier(tier) * (sprite.fit === 'cover' ? look : 1) / sprite.h);
+    };
+    undeadTypes.forEach(z => {
+      const look = lookOf(z.type);
+      ((window.ZI_ART.ZOMBIE_SPRITE_MAP || {})[z.bestiaryId] || []).forEach(k => consider(window.ZI_ART.ZOMBIE_SPRITES[k], z.tier, look));
+    });
+    (window.ZI_ART.MINION_POOL || []).forEach(k => consider(window.ZI_ART.ZOMBIE_SPRITES[k], 'F', 1));
+    return worst > 0 ? Math.min(1, sceneWidth * share / worst) : 1;
+  })();
+  const zombieHeightForTier = (tier) => Math.round(rawZombieHeightForTier(tier) * widthFit);
   const zombieMetricsFor = (enemy) => {
     const sprite = window.ZI_ART.zombieSprite && window.ZI_ART.zombieSprite(enemy.bestiaryId, enemy.id);
     const lookScale = window.ZI_ART.zombieLook ? (window.ZI_ART.zombieLook(enemy.type).scale || 1) : 1;
     // Sprite-backed crawlers keep their existing low-to-the-ground display size; stats are unaffected.
     let targetHeight = Math.round(zombieHeightForTier(enemy.tier) * (sprite && sprite.fit === 'cover' ? lookScale : 1));
     const sourceHeight = sprite ? sprite.h * 2 : 96 * lookScale;
-    const maxW = sceneWidth * 0.5, w = sprite ? sprite.w * 2 * targetHeight / sourceHeight : 0;
-    if (w > maxW) targetHeight = Math.round(targetHeight * maxW / w);
     return { sprite, targetHeight, scale:targetHeight / sourceHeight, lookScale };
   };
   // SS-BG-01: minions stand behind a commander. Display only - they are not combatants, take no
@@ -2312,6 +2480,7 @@ window.WanderingScreen = function WanderingScreen({ route, setScreen }) {
         if (r.outcome === 'healed') lines.push({ type:'player', text:`⛑ You patch yourself up mid-fight (${r.healSource === 'base' ? 'base charge' : 'med kit'}).` });
         if (r.outcome === 'revived') lines.push({ type:'player', text:'💀 Revenant Infusion triggers — back on your feet.' });
         if (r.outcome === 'win' || r.outcome === 'healed') lines.push({ type:'kill', text:`💀 ${r.enemy} defeated! +${r.xp} XP · looted ${r.loot ? r.loot.name : 'nothing'}` });
+        if (r.toolFinds && r.toolFinds.length) lines.push({ type:'init', text:`🧰 Tool salvage: ${r.toolFinds.join(', ')}` });
         if (r.toppedUp) lines.push({ type:'player', text:'⛑ Heal used to top up.' });
         if (r.worn && r.worn.length) lines.push({ type:'enemy', text:`⚠ Worn out: ${r.worn.join(', ')} — repair in Stockpile → Storage before it helps again.` });
         if (r.outcome === 'forcedRetreat' && r.fr) lines.push({ type:'enemy', text:`☠ ${window.ZI.forcedRetreatText(r.fr)}` });
@@ -3313,13 +3482,13 @@ window.WanderingScreen = function WanderingScreen({ route, setScreen }) {
 
       {/* ── GEAR LOADOUT OVERLAY ── */}
       {showGear && (() => {
-        const filterCat = { ALL:null, WEAPONS:'weapon', ARMOR:'armor', GEAR:'gear', ITEMS:'consumable' }[gearFilter];
+        const filterCat = { ALL:null, WEAPONS:'weapon', ARMOR:'armor', GEAR:'gear', ITEMS:'consumable', TOOLS:'tool' }[gearFilter];
         const visibleStash = stash.map(id => window.ZI.getGearItem(id)).filter(Boolean)
           .filter(it => !filterCat || it.cat === filterCat);
         const rc = (r) => window.ZI.RARITY_COLORS[r] || 'var(--text3)';
         const equip = (id) => { const it = window.ZI.getGearItem(id); const r = window.ZI.equipGear(id, it.slot); if (r) { setLoadout({ ...r.loadout }); setStash([ ...r.stash ]); } };
         const unequip = (slotId) => { const r = window.ZI.unequipGear(slotId); setLoadout({ ...r.loadout }); setStash([ ...r.stash ]); };
-        const groups = [['weapon','WEAPONS'],['armor','ARMOR'],['gear','GEAR'],['consumable','CONSUMABLES']];
+        const groups = [['weapon','WEAPONS'],['armor','ARMOR'],['gear','GEAR'],['consumable','CONSUMABLES'],['tool','TOOLS']];
         const StatBar = ({ label, value, color }) => (
           <div style={{ marginBottom:7 }}>
             <div style={{ display:'flex', justifyContent:'space-between', fontFamily:'var(--font-mono)', fontSize:9, marginBottom:2 }}>
@@ -3348,7 +3517,7 @@ window.WanderingScreen = function WanderingScreen({ route, setScreen }) {
                     <div style={{ display:'flex', flexDirection:'column', gap:5 }}>
                       <InfoRow label="Weapon Dmg" value={`+${Math.round(gearStats.weaponDamage * 0.25)}`} color="var(--red2)"/>
                       <InfoRow label="Loot Find" value={`+${gearStats.lootFind}`} color="var(--green)"/>
-                      <InfoRow label="Slots Filled" value={`${gearStats.filled}/14`} color="var(--text2)"/>
+                      <InfoRow label="Slots Filled" value={`${gearStats.filled}/${window.ZI.GEAR_SLOTS.length}`} color="var(--text2)"/>
                     </div>
                     {!gearStats.hasWeapon && (
                       <div style={{ marginTop:8, fontFamily:'var(--font-mono)', fontSize:8, color:'var(--red2)', lineHeight:1.5 }}>⚠ No weapon equipped — combat damage relies on base stats only.</div>
@@ -3380,7 +3549,7 @@ window.WanderingScreen = function WanderingScreen({ route, setScreen }) {
                                     <span style={{ fontSize:15 }}>{it.icon}</span>
                                     <div style={{ minWidth:0, flex:1 }}>
                                       <div style={{ fontFamily:'var(--font-mono)', fontSize:9, color:'var(--text)', whiteSpace:'nowrap', overflow:'hidden', textOverflow:'ellipsis' }}>{it.name}</div>
-                                      <div style={{ fontFamily:'var(--font-mono)', fontSize:8, color:'var(--text3)' }}>{s.label}</div>
+                                      <div style={{ fontFamily:'var(--font-mono)', fontSize:8, color:'var(--text3)' }}>{s.label}{it.toolCondition ? ` · ${it.toolCondition}` : ''}</div>
                                       {dur && <div data-slot-durability="popup" style={{ marginTop:3 }}>
                                         <div style={{ fontFamily:'var(--font-mono)', fontSize:9, color:durColor, whiteSpace:'nowrap' }}>Durability {Math.round(dur.current)}/{dur.max}</div>
                                         <div style={{ width:'100%', height:6, marginTop:2, background:'var(--bg4)', borderRadius:2 }}><div style={{ height:'100%', width:`${durPct}%`, background:durColor, borderRadius:2 }}/></div>
@@ -3402,7 +3571,7 @@ window.WanderingScreen = function WanderingScreen({ route, setScreen }) {
                 <div style={{ flex:1, minWidth:0, display:'flex', flexDirection:'column' }}>
                   <div className="panel" style={{ flex:1, display:'flex', flexDirection:'column', overflow:'hidden' }}>
                     <div style={{ display:'flex', gap:4, padding:'8px 8px 0' }}>
-                      {['ALL','WEAPONS','ARMOR','GEAR','ITEMS'].map(t => (
+                      {['ALL','WEAPONS','ARMOR','GEAR','ITEMS','TOOLS'].map(t => (
                         <button key={t} onClick={() => setGearFilter(t)} style={{
                           fontFamily:'var(--font-mono)', fontSize:9, padding:'3px 9px', cursor:'pointer',
                           background: gearFilter===t ? '#2a2318' : 'transparent',
@@ -3414,15 +3583,15 @@ window.WanderingScreen = function WanderingScreen({ route, setScreen }) {
                     </div>
                     <div style={{ flex:1, overflow:'auto', padding:8, display:'grid', gridTemplateColumns:'repeat(auto-fill, minmax(150px,1fr))', gap:4, alignContent:'start' }}>
                       {visibleStash.map(it => (
-                        <div key={it.id} onClick={() => equip(it.id)} title={ZI.describeGearItem(it)} style={{
-                          padding:'6px 8px', cursor:'pointer', background:'var(--bg3)',
+                        <div key={it.id} onClick={() => it.slot && equip(it.id)} title={`${ZI.describeGearItem(it)}${it.slot ? '\nClick to equip' : ''}`} style={{
+                          padding:'6px 8px', cursor:it.slot ? 'pointer' : 'default', background:'var(--bg3)',
                           border:'1px solid var(--border)', borderTop:`2px solid ${rc(it.rarity)}`,
                           display:'flex', alignItems:'center', gap:7,
                         }}>
-                          <span style={{ fontSize:15 }}>{it.icon}</span>
+                          {it.sprite ? <img src={it.sprite} alt={it.name} style={{ width:28, height:28, objectFit:'contain', imageRendering:'pixelated' }}/> : <span style={{ fontSize:15 }}>{it.icon}</span>}
                           <div style={{ minWidth:0, flex:1 }}>
                             <div style={{ fontFamily:'var(--font-mono)', fontSize:9, color:'var(--text)', whiteSpace:'nowrap', overflow:'hidden', textOverflow:'ellipsis' }}>{it.name}</div>
-                            <div style={{ fontFamily:'var(--font-mono)', fontSize:8, color:rc(it.rarity) }}>{it.rarity} · {it.cat}</div>
+                            <div style={{ fontFamily:'var(--font-mono)', fontSize:8, color:it.toolCondition === 'broken' ? 'var(--red2)' : rc(it.rarity) }}>{it.cat === 'tool' ? `Tool · ${it.toolCondition}` : `${it.rarity} · ${it.cat}`}</div>
                             <div style={{ fontFamily:'var(--font-mono)', fontSize:7, color:'var(--text2)', whiteSpace:'nowrap', overflow:'hidden', textOverflow:'ellipsis' }}>
                               {ZI.itemStatLines(it).slice(0,2).join(' · ') || it.desc || it.cat}
                             </div>
@@ -3726,13 +3895,14 @@ window.RecyclerScreen = function RecyclerScreen() {
     ];
     // Prepend items gathered from Wandering runs so fresh loot recycles first.
     const wander = (ZI.getWanderLoot && ZI.getWanderLoot()) || [];
-    return [...wander, ...starter];
+    const brokenTools = (ZI.brokenToolRecyclerItems && ZI.brokenToolRecyclerItems()) || [];
+    return [...wander, ...brokenTools, ...starter];
   });
 
   // Queue lives in the persisted, always-on Job Engine (zi_jobs) — not local
   // state — so it survives tab switches, reloads, and settles offline.
   const [, forceRerender] = React.useState(0);
-  React.useEffect(() => { const t = setInterval(() => forceRerender(n => n + 1), 250); return () => clearInterval(t); }, []);
+  React.useEffect(() => { const t = setInterval(() => { forceRerender(n => n + 1); setInventory(inv => [...inv.filter(it => !it.fromToolScrap), ...((ZI.brokenToolRecyclerItems && ZI.brokenToolRecyclerItems()) || [])]); }, 1000); return () => clearInterval(t); }, []);
   const queue = ZI.jobsByType('recycle');
   const gameMode = ZI.currentGameMode();
   const isCampMode = gameMode === 'camp';
@@ -3760,6 +3930,10 @@ window.RecyclerScreen = function RecyclerScreen() {
     if (r.ok) setInventory(inv => inv.filter(i => i.id !== item.id));
     // Note: the item is NOT removed from zi_wander_loot here — it's removed by
     // ZI.grantRecycleOutput on completion, so a cancelled job doesn't lose it.
+  };
+  const addWithTool = (item, family) => {
+    const r = ZI.queueRecycle(item, op.id, undefined, family);
+    if (r.ok) setInventory(inv => inv.filter(i => i.id !== item.id));
   };
 
   const removeFromQueue = (jobId) => {
@@ -3860,6 +4034,8 @@ window.RecyclerScreen = function RecyclerScreen() {
             {visible.map(item => {
               const tColor = ZI.tierColor(item);
               const tMeta = ZI.tierMeta(item);
+              const assist = ZI.recyclerToolMatch && ZI.recyclerToolMatch(item);
+              const hasAssistTool = assist && ZI.getStash().some(id => { const g = ZI.getGearItem(id); return g && g.toolFamily === assist.family && g.toolCondition !== 'broken'; });
               return (
               <div key={item.id}
                 onClick={() => addToQueue(item)}
@@ -3875,6 +4051,7 @@ window.RecyclerScreen = function RecyclerScreen() {
                   <span style={{ display:'flex', alignItems:'center', gap:5, minWidth:0 }}>
                     <span style={{ color:tColor, fontSize:11, flexShrink:0 }} title={`Tier ${tMeta.label}`}>◆</span>
                     {item.fromWandering && <span title="Recovered from a Wandering run" style={{ color:'var(--green)', flexShrink:0 }}>◈</span>}
+                    {item.sprite && <img src={item.sprite} alt="" style={{ width:24, height:24, objectFit:'contain', imageRendering:'pixelated' }}/>}
                     <span style={{ fontFamily:'var(--font-body)', fontSize:12, color:tColor, whiteSpace:'nowrap', overflow:'hidden', textOverflow:'ellipsis' }}>{item.name}</span>
                   </span>
                   <Tag color={tColor}>{tMeta.label}</Tag>
@@ -3884,14 +4061,17 @@ window.RecyclerScreen = function RecyclerScreen() {
                     const m = ZI_MATERIALS[mat];
                     return (
                       <span key={mat} style={{ fontFamily:'var(--font-mono)', fontSize:9, color:m?.color || 'var(--text2)' }}>
-                        {m?.icon} {amt} {m?.name}
+                        {m?.sprite && <img src={m.sprite} alt="" style={{ width:12, height:12, objectFit:'contain', imageRendering:'pixelated', verticalAlign:'middle' }}/>} {!m?.sprite && m?.icon} {amt} {m?.name}
                       </span>
                     );
                   })}
                 </div>
-                <div style={{ display:'flex', justifyContent:'space-between' }}>
+                <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', gap:5 }}>
                   <span style={{ fontFamily:'var(--font-mono)', fontSize:9, color:'#aab4bc' }} title="Drives recycle time, not value">Weight: {item.weight}kg</span>
-                  <span style={{ fontFamily:'var(--font-mono)', fontSize:9, color:'var(--amber)' }}>+ Add</span>
+                  <div style={{ display:'flex', gap:5, alignItems:'center' }}>
+                    {hasAssistTool && <button onClick={e => { e.stopPropagation(); addWithTool(item, assist.family); }} title={`${assist.label} assists this salvage and wears one condition step when the job completes`} style={{ fontFamily:'var(--font-mono)', fontSize:8, padding:'2px 4px', cursor:'pointer', color:'var(--green)', background:'var(--bg4)', border:'1px solid var(--green)' }}>Use {assist.label}</button>}
+                    <span style={{ fontFamily:'var(--font-mono)', fontSize:9, color:'var(--amber)' }}>+ Add</span>
+                  </div>
                 </div>
               </div>
               );
@@ -4000,7 +4180,7 @@ window.RecyclerScreen = function RecyclerScreen() {
               return (
                 <div key={key} style={{ padding:'6px 8px', background:'var(--bg3)', border:'1px solid var(--border)' }}>
                   <div style={{ display:'flex', alignItems:'center', gap:6, marginBottom:4 }}>
-                    <span style={{ fontSize:14 }}>{m.icon}</span>
+                    {m.sprite ? <img src={m.sprite} alt={m.name} title={m.name} style={{ width:20, height:20, objectFit:'contain', imageRendering:'pixelated', flexShrink:0 }}/> : <span style={{ fontSize:14 }}>{m.icon}</span>}
                     <span style={{ fontFamily:'var(--font-body)', fontSize:12, color:'var(--text)', flex:1 }}>{m.name}</span>
                     <span style={{ fontFamily:'var(--font-mono)', fontSize:11, color:m.color }}>
                       {m.current}/{m.max}
@@ -4109,6 +4289,7 @@ window.StockpileScreen = function StockpileScreen({ initialTab = 'recycler', pre
     fish_legendary:14, powdered_milk:15, hard_cheese:16, canned_butter:17, meat:18, vegetables:19,
   };
   const itemVisual = (it, size=18) => {
+    if (it && it.sprite) return <img src={it.sprite} alt={it.name} title={it.name} style={{ width:size, height:size, objectFit:'contain', flex:`0 0 ${size}px`, imageRendering:'pixelated' }}/>;
     const spriteIndex = it ? FOOD_SPRITE_INDEX[it.id] : undefined;
     if (spriteIndex !== undefined) return <span role="img" aria-label={it.name} title={it.name} style={{
       display:'inline-block', flex:`0 0 ${size}px`, width:size, height:size,
@@ -4118,12 +4299,13 @@ window.StockpileScreen = function StockpileScreen({ initialTab = 'recycler', pre
     return <span aria-hidden="true" style={{ fontSize:size * 0.82, lineHeight:1, flexShrink:0 }}>{it && it.icon || '📦'}</span>;
   };
   const repair = (id) => { const it = Z.getGearItem(id); if (!it) return; const d = Z.itemDurability(it); if (!d || d.current >= d.max) return; if (!Z.canAffordRepair(it)) return; const cost = Z.repairCost(it); const M = window.ZI_MATERIALS||{}; Object.entries(cost.materials).forEach(([k,q])=>{ if(M[k]) M[k].current=Math.max(0,M[k].current-q); }); Object.entries(cost.rmat||{}).forEach(([k,q])=>Z.addRmat(k,-q)); Z.enqueueJob('repair', id, Math.max(30, Math.round((d.max-d.current)*2)), {}); setLoadout({ ...Z.getLoadout() }); };
-  const filterCat = { ALL:null, WEAPONS:'weapon', ARMOR:'armor', GEAR:'gear', ITEMS:'consumable' }[gearFilter];
+  const repairTool = (id) => { const r = Z.repairHandTool(id); setStash(Z.getStash()); setLoadout({ ...Z.getLoadout() }); setLiteratureNote(r.ok ? `${Z.getGearItem(r.itemId)?.name || 'Tool'} repaired.` : r.reason); };
+  const filterCat = { ALL:null, WEAPONS:'weapon', ARMOR:'armor', GEAR:'gear', ITEMS:'consumable', TOOLS:'tool' }[gearFilter];
   // Group stash item ids → counts, then filter.
   const stashCounts = stash.reduce((m, id) => { m[id] = (m[id]||0)+1; return m; }, {});
   const visibleStash = Object.keys(stashCounts).map(id => Z.getGearItem(id)).filter(Boolean)
     .filter(it => !filterCat || it.cat === filterCat);
-  const gearGroups = [['weapon','WEAPONS'],['armor','ARMOR'],['gear','GEAR'],['consumable','CONSUMABLES']];
+  const gearGroups = [['weapon','WEAPONS'],['armor','ARMOR'],['gear','GEAR'],['consumable','CONSUMABLES'],['tool','TOOLS']];
   return (
     <div style={{ display:'flex', flexDirection:'column', height:'100%', overflow:'hidden' }}>
       {/* Sub-menu */}
@@ -4164,7 +4346,7 @@ window.StockpileScreen = function StockpileScreen({ initialTab = 'recycler', pre
                   return (
                     <div key={key} style={{ padding:'8px 10px', background:'var(--bg3)', border:'1px solid var(--border)' }}>
                       <div style={{ display:'flex', alignItems:'center', gap:6, marginBottom:5 }}>
-                        <span style={{ fontSize:16 }}>{m.icon}</span>
+                        {m.sprite ? <img src={m.sprite} alt={m.name} title={m.name} style={{ width:22, height:22, objectFit:'contain', imageRendering:'pixelated', flexShrink:0 }}/> : <span style={{ fontSize:16 }}>{m.icon}</span>}
                         <span style={{ fontFamily:'var(--font-body)', fontSize:13, color:'var(--text)', flex:1 }}>{m.name}</span>
                         <span style={{ fontFamily:'var(--font-mono)', fontSize:12, color:m.color }}>{m.current}/{m.max}</span>
                       </div>
@@ -4189,6 +4371,7 @@ window.StockpileScreen = function StockpileScreen({ initialTab = 'recycler', pre
               <div style={{ padding:'0 10px 10px', display:'grid', gridTemplateColumns:'repeat(auto-fill, minmax(200px,1fr))', gap:6 }}>
                 {Object.keys(stashCounts).map(id => Z.getGearItem(id)).filter(Boolean).map(it => {
                   const dur = Z.itemDurability(it);
+                  const toolRepair = it.cat === 'tool' && it.toolCondition !== 'ready' ? Z.handToolRepairCheck(it.id) : null;
                   const isFood = FOOD_SPRITE_INDEX[it.id] !== undefined;
                   const read = it.cat === 'book' && Z.isSkillBookRead && Z.isSkillBookRead(it.id);
                   const isLiterature = it.cat === 'book' || it.cat === 'tome';
@@ -4198,10 +4381,14 @@ window.StockpileScreen = function StockpileScreen({ initialTab = 'recycler', pre
                   };
                   return <div key={it.id} style={{ padding:8, background:isFood ? 'rgba(61,207,142,0.08)' : 'var(--bg3)', border:'1px solid var(--border)', borderTop:`2px solid ${isFood ? 'var(--green)' : rc(it.rarity)}` }}>
                     <div style={{ display:'flex', gap:8, alignItems:'center' }}>{itemVisual(it, isFood ? 42 : 18)}<span style={{ flex:1, fontFamily:'var(--font-body)', fontSize:13 }}>{it.name}</span><b style={{ fontFamily:'var(--font-mono)', fontSize:12, color:'var(--amber)' }}>×{stashCounts[it.id]}</b></div>
-                    <div style={{ fontFamily:'var(--font-mono)', fontSize:9, color:'var(--text2)', marginTop:4 }}>{isLiterature ? (it.cat === 'book' ? `${read ? 'Read · ' : 'Unread · '}+${it.bookXpPct}% ${it.bookProfession} XP` : (it.tomeSeries ? 'Tome-series copy' : 'Ungrouped tome')) : it.rarity}{dur ? ` · Condition ${Math.round(dur.current)}/${dur.max}` : ''}</div>
+                    <div style={{ fontFamily:'var(--font-mono)', fontSize:9, color:it.toolCondition === 'broken' ? 'var(--red2)' : 'var(--text2)', marginTop:4 }}>{it.cat === 'tool' ? `Tool · ${it.toolCondition}` : isLiterature ? (it.cat === 'book' ? `${read ? 'Read · ' : 'Unread · '}+${it.bookXpPct}% ${it.bookProfession} XP` : (it.tomeSeries ? 'Tome-series copy' : 'Ungrouped tome')) : it.rarity}{dur ? ` · Condition ${Math.round(dur.current)}/${dur.max}` : ''}</div>
                     {isLiterature && <div style={{ display:'flex', gap:5, marginTop:6 }}>
                       {it.cat === 'book' && <button className="btn" disabled={!!read || !Z.atBaseOrCamp()} onClick={() => actLiterature('read')} title={!Z.atBaseOrCamp() ? 'Read at base or camp' : 'Read once for its permanent profession XP bonus'}>{read ? 'Lesson learned' : 'Read'}</button>}
                       <button className="btn" disabled={!Z.atBaseOrCamp()} onClick={() => actLiterature('burn')} title="Convert one copy into kindling at base or camp">Convert to kindling</button>
+                    </div>}
+                    {toolRepair && <div style={{ display:'flex', alignItems:'center', gap:5, marginTop:6 }}>
+                      <button className="btn" disabled={!toolRepair.ok || !Z.atBaseOrCamp()} onClick={() => { const r = Z.repairHandTool(it.id); setLiteratureNote(r.ok ? `${it.name} repaired.` : r.reason); setStash(Z.getStash()); }} title={toolRepair.ok ? 'Repair with Mechanical 2 or Engineering 2; costs 2 Metal and 1 Electronics' : toolRepair.reason}>Repair tool</button>
+                      <span style={{ fontFamily:'var(--font-mono)', fontSize:8, color:'var(--text3)' }}>{toolRepair.reason || 'Mechanical 2 / Engineering 2 · 2 Metal + 1 Electronics'}</span>
                     </div>}
                   </div>;
                 })}
@@ -4232,7 +4419,8 @@ window.StockpileScreen = function StockpileScreen({ initialTab = 'recycler', pre
                         {Z.GEAR_SLOTS.filter(s => s.accepts === cat).map(s => {
                           const it = loadout[s.id] && Z.getGearItem(loadout[s.id]);
                           const dur = it ? Z.itemDurability(it) : null;
-                          const worn = it ? Z.itemWorn(it) : false;
+                          const worn = it ? (Z.itemWorn(it) || it.toolCondition === 'broken') : false;
+                          const toolRepair = it && it.cat === 'tool' && it.toolCondition !== 'ready' ? Z.handToolRepairCheck(it.id) : null;
                           const durPct = dur ? (dur.current / dur.max) * 100 : 100;
                           const durColor = durPct <= 20 ? '#f06a5a' : durPct <= 50 ? '#E0A93F' : '#3dcf8e';
                           const damaged = dur && dur.current < dur.max;
@@ -4250,7 +4438,7 @@ window.StockpileScreen = function StockpileScreen({ initialTab = 'recycler', pre
                                     {itemVisual(it, 28)}
                                     <div style={{ minWidth:0, flex:1 }}>
                                       <div style={{ fontFamily:'var(--font-mono)', fontSize:9, color: worn ? '#f06a5a' : 'var(--text)', whiteSpace:'nowrap', overflow:'hidden', textOverflow:'ellipsis' }}>{it.name}{worn ? ' (worn)' : ''}</div>
-                                      <div style={{ fontFamily:'var(--font-mono)', fontSize:8, color:'var(--text3)' }}>{s.label}</div>
+                                      <div style={{ fontFamily:'var(--font-mono)', fontSize:8, color:'var(--text3)' }}>{s.label}{it.toolCondition ? ` · ${it.toolCondition}` : ''}</div>
                                     </div>
                                     <button onClick={(e) => { e.stopPropagation(); unequip(s.id); }} title="Unequip" style={{
                                       fontFamily:'var(--font-mono)', fontSize:8, padding:'1px 5px', cursor:'pointer',
@@ -4274,6 +4462,7 @@ window.StockpileScreen = function StockpileScreen({ initialTab = 'recycler', pre
                                       )}
                                     </div>
                                   )}
+                                  {toolRepair && <button onClick={(e) => { e.stopPropagation(); repairTool(it.id); }} disabled={!toolRepair.ok || !Z.atBaseOrCamp()} title={toolRepair.ok ? 'Repair with Mechanical 2 or Engineering 2; costs 2 Metal and 1 Electronics' : toolRepair.reason} style={{ fontFamily:'var(--font-mono)', fontSize:8, padding:'2px 5px', cursor:toolRepair.ok ? 'pointer' : 'not-allowed', color:toolRepair.ok ? 'var(--green)' : 'var(--text3)', background:'var(--bg4)', border:'1px solid var(--border)' }}>Repair · 2 Metal + 1 Electronics</button>}
                                 </>
                               ) : (
                                 <span style={{ fontFamily:'var(--font-mono)', fontSize:9, color:'var(--text3)' }}>{s.label}</span>
@@ -4295,7 +4484,7 @@ window.StockpileScreen = function StockpileScreen({ initialTab = 'recycler', pre
                 {/* Crafted stash */}
                 <div style={{ flex:'1 1 320px', minWidth:0 }}>
                   <div style={{ display:'flex', gap:4, marginBottom:8 }}>
-                    {['ALL','WEAPONS','ARMOR','GEAR','ITEMS'].map(t => (
+                    {['ALL','WEAPONS','ARMOR','GEAR','ITEMS','TOOLS'].map(t => (
                       <button key={t} onClick={() => setGearFilter(t)} style={{
                         fontFamily:'var(--font-mono)', fontSize:9, padding:'3px 9px', cursor:'pointer',
                         background: gearFilter===t ? '#2a2318' : 'transparent',
@@ -4306,8 +4495,8 @@ window.StockpileScreen = function StockpileScreen({ initialTab = 'recycler', pre
                   </div>
                   <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill, minmax(150px,1fr))', gap:4, alignContent:'start' }}>
                     {visibleStash.map(it => (
-                      <div key={it.id} onClick={() => equip(it.id)} title={`${ZI.describeGearItem(it)}\nClick to equip`} style={{
-                        padding:'6px 8px', cursor:'pointer', background:'var(--bg3)',
+                      <div key={it.id} onClick={() => it.slot && equip(it.id)} title={`${ZI.describeGearItem(it)}${it.slot ? '\nClick to equip' : ''}`} style={{
+                        padding:'6px 8px', cursor:it.slot ? 'pointer' : 'default', background:'var(--bg3)',
                         border:'1px solid var(--border)', borderTop:`2px solid ${rc(it.rarity)}`,
                         display:'flex', alignItems:'center', gap:7,
                       }}>
@@ -4316,7 +4505,7 @@ window.StockpileScreen = function StockpileScreen({ initialTab = 'recycler', pre
                           <div style={{ fontFamily:'var(--font-mono)', fontSize:9, color:'var(--text)', whiteSpace:'nowrap', overflow:'hidden', textOverflow:'ellipsis' }}>
                             {it.name}{stashCounts[it.id] > 1 ? ` ×${stashCounts[it.id]}` : ''}
                           </div>
-                          <div style={{ fontFamily:'var(--font-mono)', fontSize:8, color:rc(it.rarity) }}>{it.rarity} · {it.cat}</div>
+                          <div style={{ fontFamily:'var(--font-mono)', fontSize:8, color:it.toolCondition === 'broken' ? 'var(--red2)' : rc(it.rarity) }}>{it.cat === 'tool' ? `Tool · ${it.toolCondition}` : `${it.rarity} · ${it.cat}`}</div>
                           <div style={{ fontFamily:'var(--font-mono)', fontSize:7, color:'var(--text2)', whiteSpace:'nowrap', overflow:'hidden', textOverflow:'ellipsis' }}>
                             {ZI.itemStatLines(it).slice(0,2).join(' · ') || it.desc || it.cat}
                           </div>

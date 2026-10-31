@@ -1,5 +1,7 @@
 # PROF-01 — Profession XP catch-up: simulation results (Oct 30)
 
+**Applied Oct 31** (P1–P5 as decided), in `game/stats.js` (`ZI.CATCHUP`). Two differences from the sim, both chosen by the build: the rate fades with the allowance and has no ramp (the pending `rampDays` is removed; the sim fades the same way); the base is the live level-1 XP of 148, so the 14-day allowance is 74 XP, where the sim's table shows 50 (the sim uses 100). A new absence replaces any unused allowance.
+
 Sam asked for this to be modelled **before anything is built**. Model:
 `tools/balance-sim/prof_xp_catchup.py`. Source of the rules: "Character Creation Instructions
 (Draft)", Oct 28 — +15% max rate, 25% boosted allowance, decay as the allowance is consumed.
@@ -64,3 +66,51 @@ low professions currently helps high ones most.
 Offline catch-up, repeated inactivity cycles across all 16 tracks simultaneously, the no-damage
 Combat / stalled-Endurance case, and level-up boundary behaviour. The model is single-profession;
 extending it to 16 is straightforward once the rules above are settled.
+
+---
+
+# Decisions (Sam, Oct 30, voice)
+
+The simulation's three findings all got an answer.
+
+| # | Decision | Replaces | Tag |
+|---|---|---|---|
+| P1 | **No daily streak system.** Catch-up only | — | `[DECIDED Sam]` |
+| P2 | **Threshold = 2 days away** | 3 days | `[DECIDED Sam]` |
+| P3 | **Bonus size based on level-1 XP** (flat), not the current level's requirement | 25% of `xp_to_next` | `[DECIDED Sam]` |
+| P4 | **Boosted allowance 50%** | 25% | `[DECIDED Sam]` |
+
+**On P1.** A streak was considered and dropped because it pulls the opposite way: a streak rewards
+players who never miss a day, catch-up helps players who have been away. Running both would have the
+game paying out in both directions at once.
+
+**On P2.** §2 showed the threshold is a cliff, not a dial — at 3 days a 5-on/2-off player earned
+**0.00%**, at 2 days the full **6.70%**. Sam's reasoning: players are rarely away more than a day or
+two, so the mechanic should catch the weekend rather than only the long absence.
+
+**On P3.** §3 found the bonus grew with level (2.99% at L1 → 7.02% at L20) because the allowance was
+measured against `xp_to_next`, which rises on the `curveK 1.5` curve. Basing it on level-1 XP makes
+the absolute bonus constant, so it lands hardest *relative* to a neglected low-level profession —
+which is what catch-up is for.
+
+**On P4.** §1 showed deliberate inactivity never beat consistent play at any level or pattern, so
+there is headroom. At 25% the largest effect anywhere was ~170 XP over 120 days, which no player
+would notice.
+
+→ **Audit pass 4** re-runs the model under P2–P4 and fails the design if any intermittent pattern
+finishes ahead of always-active.
+
+## P5 — the allowance scales with time away `[DECIDED Sam, Oct 30]`
+
+Audit pass 4 found that a flat level-1-XP allowance gave a 30-day absence (0.11%) *less* than a
+skipped weekend (1.89%) — the opposite of catch-up. Sam's fix:
+
+**The allowance scales with days away**, from the 2-day threshold up to a **14-day cap**. A
+fortnight away earns the largest boost; beyond that it stops growing.
+
+Unchanged: the 2-day threshold (P2), the 15% max rate, and the level-1-XP base (P3).
+
+`[PROPOSED]` form: `allowance = ALLOWANCE x xp_to_next(1) x min(daysAway, 14) / 14`
+
+The no-exploit rule still governs: playing every day must finish ahead of any intermittent pattern,
+so nobody gains by staying away deliberately. → verified in **AUD-01b re-run 4**.

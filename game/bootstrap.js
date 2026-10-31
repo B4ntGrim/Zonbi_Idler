@@ -24,10 +24,15 @@
   // Fixed issue A (change 2): the RMAT wallet is always available, so a craft job that finished while the player
   // was away credits its RMAT during the load-time catch-up instead of silently dropping it.
   var ALWAYS = { addRmat:1, getRmatHoldings:1, RMAT_HOLD_KEY:1 };
+  // Restore by DESCRIPTOR, not by assignment. `ZI[k] = hidden[k]` turns an accessor property into
+  // a plain data property holding whatever the getter happened to return when it was hidden, so a
+  // live getter silently freezes at load (ROSTER-01, Oct 30: ZI.SQUAD_ROSTER stopped updating).
   var asOf = function (line, fn) {
     var hidden = {}, k;
-    for (k in DEF) if (DEF[k] > line && !ALWAYS[k] && Object.prototype.hasOwnProperty.call(ZI, k)) { hidden[k] = ZI[k]; delete ZI[k]; }
-    try { fn(); } finally { for (k in hidden) ZI[k] = hidden[k]; }
+    for (k in DEF) if (DEF[k] > line && !ALWAYS[k] && Object.prototype.hasOwnProperty.call(ZI, k)) {
+      hidden[k] = Object.getOwnPropertyDescriptor(ZI, k); delete ZI[k];
+    }
+    try { fn(); } finally { for (k in hidden) Object.defineProperty(ZI, k, hidden[k]); }
   };
   // Fail loudly if a module did not load (a 404 or stale cache would otherwise leave ZI half-built).
   var need = { core:'tierOf', world:'worldCell', save:'listSlots', stats:'awardXp', items:'GEAR_ITEMS', crafting:'CRAFT_RECIPES', combat:'simulateCombat', factions:'getRep', camp:'CAMP_STRUCTURES', jobs:'_settleJobs', economy:'addRmat', wandering:'WanderEngine', fort:'getFortPos', routes:'ROUTES', 'survival-data':'MOODLES' };
@@ -39,6 +44,13 @@
   asOf(748, function () {
 // Now that GEAR_ITEMS + getGearItem exist, append the gear/consumable recipes.
 ZI._appendGearRecipes();
+// Sam, Oct 31: temporary item-value data for the catalog; not used by live trade or crafting balance.
+ZI.CRAFT_RECIPES.forEach(r => {
+  if (!Number.isFinite(r.placeholderUnitValue)) {
+    const ingredientUnits = Object.values(r.cost || {}).reduce((sum, amount) => sum + (Number(amount) || 0), 0);
+    r.placeholderUnitValue = Math.max(1, Math.round(((Number(r.tier) || 0) + 1) * 5 + ingredientUnits / 10));
+  }
+});
 // CLOCK-01 T9: appended gear/consumable recipes follow the same 10× game-second rescale.
 ZI.CRAFT_RECIPES.forEach(function (r) { if (Number.isFinite(r.time)) r.time /= 10; });
   });

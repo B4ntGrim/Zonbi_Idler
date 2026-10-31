@@ -33,9 +33,10 @@ const ruleOk = (probes, from, until, key) => probes.length > 0 && probes.every(p
 const sig = (probes, key) => probes.map(p => (p.t - T0) + ':' + (p[key] > 0 ? 1 : 0)).join(',');
 const dmgBuff = (r, from, sec) => r.at(from, () => r.Z.addBuff({ dmgPct: 50, durationSec: sec }));
 
+// Oct 31 (TIER-01 divisor 3.0): fixture seed 3 for checks 1 and 5 (was 7). The divisor re-rolls the seed-7 walk, and seed 7 puts no encounter in the buff window, so the checks passed on nothing. Assertions unchanged.
 // 1 — G1 criterion: 1-s, uneven, bulk and step-capped processing, watched and offline, give the same buff window
 { const F = T0 + 60 * S, U = F + 90 * S, END = T0 + 10 * M; // early window: a fresh run fights in its first minutes
-  const play = (mode) => { const r = rig({ maxSteps: mode === 'capped' ? 3 : 0 }); dmgBuff(r, F, 90);
+  const play = (mode) => { const r = rig({ seed: 3, maxSteps: mode === 'capped' ? 3 : 0 }); dmgBuff(r, F, 90);
     if (mode === 'sec' || mode === 'watched') for (let t = T0 + S; t <= END; t += S) r.tick(t, mode === 'watched');
     else if (mode === 'uneven') { const g = r.Z.seededRng(99); let t = T0; while (t < END) { t = Math.min(END, t + Math.round(1 + g() * 36) * S); r.tick(t); } }
     else { r.tick(END); drain(r); }
@@ -68,8 +69,8 @@ const dmgBuff = (r, from, sec) => r.at(from, () => r.Z.addBuff({ dmgPct: 50, dur
 
 // 5 — long absence (72 h, FX2 cap) with carried time: the buff window matches an uninterrupted run over the same 24 h
 { const F = T0 + 48 * H + M, U = F + 2 * M; // the processed window starts at 48 h (24 h cap); a fresh run fights in its first minutes
-  const away = rig({ maxSteps: 40 }); dmgBuff(away, F, 120); away.tick(T0 + 72 * H); drain(away);
-  const watched = rig({ t0: T0 + 48 * H, run: { lastTickAt: T0 + 48 * H } }); dmgBuff(watched, F, 120);
+  const away = rig({ seed: 3, maxSteps: 40 }); dmgBuff(away, F, 120); away.tick(T0 + 72 * H); drain(away);
+  const watched = rig({ seed: 3, t0: T0 + 48 * H, run: { lastTickAt: T0 + 48 * H } }); dmgBuff(watched, F, 120);
   for (let t = T0 + 48 * H + 10 * S; t <= T0 + 48 * H + 30 * M; t += 10 * S) watched.tick(t);
   const win = (p) => p.filter(x => x.t >= T0 + 48 * H && x.t < F + 10 * M);
   check('5: 72 h away in 40-step calls: the buff applies over the same simulated window as an uninterrupted run (processing starts at the 24 h cap)',

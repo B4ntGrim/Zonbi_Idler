@@ -15,6 +15,8 @@ ZI.grantJobCraft = function(recipeId, qty, meta) {
     else if (ZI.GEAR_ITEMS) r.out.forEach(o => { const g = ZI.GEAR_ITEMS.find(gi => gi.name === o.n); if (g && ZI.grantGear) ZI.grantGear(g.id, o.q || 1); });
     if ((r.kind === 'rmat' || !r.kind) && ZI.addRmat) r.out.forEach(o => { if (/rmat/i.test(o.n)) ZI.addRmat(r.tier, o.q || 1); });
   }
+  const medicalYield = r.kind === 'consumable' ? Math.min(0.1225, ZI.professionBonus ? ZI.professionBonus('medical', 0.0025) : 0) : 0;
+  if (r.grantsGear && medicalYield > 0 && ZI.roll('medicalyield') < medicalYield && ZI.grantGear) ZI.grantGear(r.grantsGear, 1);
   const scale = 1 + (r.tier || 0) * 0.4;
   if (r.kind === 'gear') ZI.emitAction && ZI.emitAction('craft.smith', scale);
   else if (r.kind === 'consumable') ZI.emitAction && ZI.emitAction('craft.medical', scale);
@@ -23,8 +25,14 @@ ZI.grantJobCraft = function(recipeId, qty, meta) {
 // Recycle-completion grant: applies an item's material outputs to the stockpile.
 // Returns true only if materials were actually available to credit — if the
 // material store isn't ready yet, the job is NOT consumed (retried next tick).
-ZI.grantRecycleOutput = function(item) {
-  if (!item || !item.outputs) return true; // malformed job — don't retry forever, just drop it
+ZI.grantRecycleOutput = function(item, meta) {
+  meta = meta || {};
+  // Malformed job: dropped rather than retried forever — but any tool it reserved must come back,
+  // otherwise the tool is destroyed with no job to show for it (review, Oct 30).
+  if (!item || !item.outputs) {
+    if (meta.reservedToolId && ZI.grantGear) ZI.grantGear(meta.reservedToolId, 1);
+    return true;
+  }
   const M = window.ZI_MATERIALS;
   if (!M || !Object.keys(M).length) {
     if (typeof console !== 'undefined') console.warn('[ZI JobEngine] ZI_MATERIALS not ready — deferring recycle grant', item.name);
@@ -33,10 +41,16 @@ ZI.grantRecycleOutput = function(item) {
   let grantedAny = false;
   Object.entries(item.outputs).forEach(([mat, amt]) => {
     const target = M[mat]; if (!target) return;
-    target.current = Math.min(target.max, target.current + amt);
+    const mechYield = Math.min(0.1225, ZI.professionBonus ? ZI.professionBonus('mechanical', 0.0025) : 0);
+    const extra = ZI.roll && mechYield > 0 && ZI.roll('recyclebonus') < mechYield ? 1 : 0;
+    target.current = Math.min(target.max, target.current + amt + extra);
     grantedAny = true;
   });
   if (item.fromWandering && ZI.consumeWanderLoot) ZI.consumeWanderLoot(item.id);
+  if (!item.fromToolScrap && meta.reservedToolId && ZI.getGearItem && ZI.grantGear) {
+    const tool = ZI.getGearItem(meta.reservedToolId);
+    if (tool && tool.toolNextId) ZI.grantGear(tool.toolNextId, 1);
+  }
   if (ZI.emitAction) ZI.emitAction('recycle', 1);
   if (typeof console !== 'undefined') console.log('[ZI JobEngine] recycled', item.name, '→', item.outputs);
   return true;
@@ -87,7 +101,7 @@ ZI._grantJob = function(j) {
   if (j.type === 'craft') return ZI.grantJobCraft ? (ZI.grantJobCraft(j.refId, j.qty, j.meta), true) : false;
   if (j.type === 'repair') { const it = ZI.getGearItem(j.refId); if (it) { const m = ZI.getDuraMap(); m[j.refId] = ZI.itemDurabilityMax(it); ZI.saveDuraMap(m); if (ZI.emitAction) ZI.emitAction('repair', 1 + ZI.tierRank(it) * 0.5); } return true; }
   if (j.type === 'build') { const cs = ZI.getCampSave(); cs.built[j.refId] = j.meta.toLevel; ZI.saveCampSave(cs); if (ZI.emitAction) ZI.emitAction('build', 1); return true; }
-  if (j.type === 'recycle') return ZI.grantRecycleOutput ? ZI.grantRecycleOutput(j.meta.item) : false;
+  if (j.type === 'recycle') return ZI.grantRecycleOutput ? ZI.grantRecycleOutput(j.meta.item, j.meta) : false;
   return true; // unknown job type — don't block the queue on it
 };
 // Offline catch-up: walk the queue forward through elapsed real time, respecting slots.
@@ -137,6 +151,11 @@ ZI.jobRemaining = function(j) {
   return Math.max(0, Math.round((j.startedAt + j.duration * 1000 - ZI.now()) / 1000));
 };
 ZI.jobsByType = function(type) { return ZI.getJobs().jobs.filter(j => j.type === type); };
-ZI.cancelJob = function(id) { const s = ZI.getJobs(); s.jobs = s.jobs.filter(j => j.id !== id); ZI.saveJobs(s); ZI._settleJobs(ZI.now()); };
+ZI.cancelJob = function(id) {
+  const s = ZI.getJobs(), job = s.jobs.find(j => j.id === id);
+  s.jobs = s.jobs.filter(j => j.id !== id); ZI.saveJobs(s);
+  if (job && job.type === 'recycle' && job.meta && job.meta.reservedToolId && ZI.grantGear) ZI.grantGear(job.meta.reservedToolId, 1);
+  ZI._settleJobs(ZI.now());
+};
 // The JobEngine ticker (foreground) + one settle on load (offline catch-up).
 ZI.JobEngine = { timer:null, start(){ if(this.timer) return; this.timer=setInterval(()=>{ try{ ZI.heartbeatOfflineWindow(); ZI._settleJobs(ZI.now()); ZI.settleSchedule(); ZI.settleRouteRuns && ZI.settleRouteRuns(); }catch(e){} },1000); } };

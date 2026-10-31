@@ -49,6 +49,12 @@ Two distinct named pieces are required. These descriptions are not combat rules.
 - A source panel distinguishes current records, proposals and archived prototype values. Unimplemented description effects are not promoted to numerical stats.
 - An undefined value is never treated as zero. Undefined socket counts do not display a fabricated number of sockets.
 
+## Recipe sector cards `[PROPOSED — separate from the weapon frame gallery]`
+
+The Crafting recipe browser may gain category cards for **Food / Cooking** and **Vehicles**. The Vehicles card is visible but locked until **Character Level 30**; it then opens vehicle restoration recipes. Individual recipes retain their own character-level and profession-skill gates, so unlocking the sector does not grant every vehicle. Character level is separate from the profession tracks, which range from 1 to 50. Vehicle bundle counts, gates, tools, and stations are recorded in `reference/vehicle-recycler-tools-proposal.md`.
+
+This proposal does not change the existing Proposed Frame Cards gallery, which remains a display-only weapon-concept review and does not grant recipes or progression.
+
 Implementation: `crafting-frame-proposals.js`, `crafting-frame-proposals.jsx`, `crafting-frame-proposals.css`, `weapon-design-data.js`, and both HTML entry pages. The standalone Weapons navigation and Stockpile links have been removed.
 
 ## Oct 27 evening update (Sam)

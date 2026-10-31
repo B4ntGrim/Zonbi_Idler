@@ -32,6 +32,39 @@ ADDED.add('getUnclaimedRouteRewards'); ADDED.add('ROUTE_XP_MULTIPLIERS');
 ['getTopBarResources','isDevView'].forEach(k => ADDED.add(k));
 // Shop purchases (Sam, Oct 27: "implement the Shop purchases"): RMAT prices, one purchase path, consumables re-buyable.
 ['shopPrice','shopCanAfford','shopPriceText','shopPurchase'].forEach(k => ADDED.add(k)); CHANGED_FN.add('shopState'); DATA_CHANGED.add('SHOP_ITEMS');
+// MED-01 (Sam, Oct 30): the Crude Crutch becomes a reusable medical aid and Trace RMAT unlocks the Improvised
+// Splint. New runtime symbols live in game/items.js and game/crafting.js; the legacy monolith predates them.
+['MED_AIDS','MED_AID_USES_KEY','MED_REGEN_KEY','MED_SPLINT_UNLOCK','getMedAidUses','saveMedAidUses','medAidUses',
+ 'medAidBreakChance','medAidBlocker','useMedAid','isSplintUnlocked','unlockImprovisedSplint','addMedRegenBurst',
+ 'medRegenBurst','medRegenBonus','medRecipeGate','recipeGate'].forEach(k => ADDED.add(k));
+// Hand tools and salvage baseline (Sam, Oct 30): five tools with ready/worn/broken states that recover
+// contextual materials in Traversal, Wandering and Routes, assist Recycler jobs, and can be repaired.
+// Reviewed Oct 30: the three changed functions all exist to reserve a tool for an assisted recycle job and
+// hand it back (worn on completion, unchanged on cancel). The legacy monolith predates all of it.
+['carriedHandTool','useCarriedHandTool','handToolForPoi','handToolRepairCheck','repairHandTool',
+ 'routeToolSalvage','handToolScavenge','recyclerToolMatch','brokenToolRecyclerItems','addMaterial'].forEach(k => ADDED.add(k));
+['_grantJob','cancelJob','grantRecycleOutput','queueRecycle','equipGear','wanderPolicyStep','resolveRunNodes',
+ 'resolvePreparedRouteNodes'].forEach(k => CHANGED_FN.add(k));
+DATA_CHANGED.add('CRAFT_RECIPES');
+// SLOT-01 and the CLOCK-01 addendum (Sam, Oct 30): save cards show the survivor's profession and
+// level instead of the Camp Leader level, and Make Camp / Hide reset one GAME day apart.
+// _summary changed because it reported ZI.leaderLevel() for every slot. The legacy monolith
+// predates all of it. ZI.OFFLINE_CAP_MS (the 24-real-hour offline cap) is unchanged.
+['professionName','_levelFromXp','_summaryFromSnapshot','slotSummary','TRAV_RESET_MS',
+ 'TRAV_HIDE_MAX_PER_GAME_DAY'].forEach(k => ADDED.add(k));
+['_summary','listSlots','_hideUsesAt','getHideUses','spendHideUse','getCampCooldown','spendCampUse'].forEach(k => CHANGED_FN.add(k));
+// SCOUT-01 (Sam, Oct 30): Traversal scout charges refill every 12 GAME hours, XP is earned per
+// charge for squares not yet scouted in that window, and reach grows from the adjacent square to
+// at most 9 via gear, Stealth, a working vehicle and a scouting bird. The legacy monolith predates it.
+['TRAV_SCOUT_RESET_MS','TRAV_SCOUT_XP_KEY','_scoutXpRecord','scoutXpAvailable','scoutEmitXp',
+ 'SCOUT_RANGE_BASE','SCOUT_RANGE_MAX','SCOUT_STEALTH_LEVELS_PER_STEP','SCOUT_VEHICLE_RANGE',
+ 'scoutRangeParts','scoutRange','canScoutCell'].forEach(k => ADDED.add(k));
+['getTravScouts','spendTravScout'].forEach(k => CHANGED_FN.add(k));
+// ROSTER-01 (Sam, Oct 30): a new game listed five hardcoded strangers. SQUAD_ROSTER is now an
+// accessor returning the player's own survivor plus anyone actually recruited and saved.
+['SQUAD_ROSTER_KEY','DEMO_SQUAD_ROSTER','PLAYER_SURVIVOR_ID','playerRosterEntry',
+ 'getRecruitedSurvivors','saveRecruitedSurvivors','recruitSurvivor'].forEach(k => ADDED.add(k));
+DATA_CHANGED.add('SQUAD_ROSTER');
 // Intentional post-split additions/changes: seeded sector POI placement and daily modifiers; current recipe
 // generation and loot/wander rules; and expanded world/background catalogues. Keep the legacy comparison scoped
 // to portions that are still intended to be equivalent.

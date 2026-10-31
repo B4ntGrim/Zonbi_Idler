@@ -17,6 +17,12 @@ import math, random
 LEVEL_CURVE_K = 1.5          # mirrors ZI STAT-02 curveK
 BASE_XP_L1    = 100
 
+# AUD-01 pass 4 — Sam's Oct 30 decisions
+ACCRUAL_DAYS  = 2            # P2: was 3; 2 catches the weekend player
+ALLOWANCE     = 0.50         # P4: was 0.25
+AWAY_CAP_DAYS = 14           # P5: allowance scales with days away up to this
+MAX_RATE      = 0.15         # unchanged
+
 def xp_to_next(level):
     """Base XP required for `level` -> `level+1`."""
     return BASE_XP_L1 * (level ** LEVEL_CURVE_K)
@@ -30,18 +36,25 @@ class Profession:
         self.boost_earned = 0.0   # bonus XP actually granted (for audit)
         self.base_earned = 0.0
 
-    def tick_idle(self, days, accrual_days):
-        """No qualifying activity: accrue toward the allowance."""
+    def tick_idle(self, days, accrual_days=ACCRUAL_DAYS):
+        """No qualifying activity: accrue toward the allowance.
+
+        AUD-01 pass 4 (Sam, Oct 30): threshold is 2 days, and the allowance is
+        ALLOWANCE x level-1 XP - flat, not a share of the current level's
+        requirement - so the bonus lands hardest relative to a neglected
+        low-level profession instead of a high-level one."""
         self.idle_days += days
-        if self.idle_days >= accrual_days and self.allowance <= 0:
-            cap = 0.25 * xp_to_next(self.level)      # doc: 25% of base XP to next
+        if self.idle_days >= accrual_days:
+            # P5: scale with how long they were away, capped at AWAY_CAP_DAYS.
+            scale = min(self.idle_days, AWAY_CAP_DAYS) / AWAY_CAP_DAYS
+            cap = ALLOWANCE * xp_to_next(1) * scale
             self.allowance = self.allowance_cap = cap
 
     def rate(self):
-        """Bonus rate now: max 15%, fading linearly as the allowance is spent."""
+        """Bonus rate now: max MAX_RATE, fading linearly as the allowance is spent."""
         if self.allowance <= 0 or self.allowance_cap <= 0:
             return 0.0
-        return 0.15 * (self.allowance / self.allowance_cap)
+        return MAX_RATE * (self.allowance / self.allowance_cap)
 
     def earn(self, base_xp):
         self.idle_days = 0.0
@@ -61,7 +74,7 @@ class Profession:
             self.xp -= xp_to_next(self.level); self.level += 1
         return granted
 
-def run(days, level, pattern, accrual_days, xp_per_active_day=40.0):
+def run(days, level, pattern, accrual_days=ACCRUAL_DAYS, xp_per_active_day=40.0):
     p = Profession('test', level)
     for d in range(days):
         if pattern(d):
@@ -128,3 +141,69 @@ def sweep():
 
 if __name__ == '__main__':
     sweep()
+
+def pass4():
+    """AUD-01 pass 4 — re-run under Sam's decisions. FAIL if any intermittent
+    pattern finishes ahead of always-active."""
+    DAYS = 120
+    pats = [('always active',      lambda d: True),
+            ('5 on / 2 off',       lambda d: d % 7 < 5),
+            ('10 on / 10 off',     lambda d: (d // 10) % 2 == 0),
+            ('30 days off first',  lambda d: d >= 30)]
+    print(f'\n=== AUD-01 PASS 4 — threshold {ACCRUAL_DAYS}d, allowance {ALLOWANCE:.0%} '
+          f'of level-1 XP, max rate {MAX_RATE:.0%} ===\n')
+    print(f'{"level":>6}{"pattern":>20}{"active":>8}{"end lv":>8}{"total XP":>11}'
+          f'{"bonus XP":>10}{"bonus %":>9}')
+    fails = []
+    for level in (1, 8, 20):
+        base = None
+        for name, fn in pats:
+            p = run(DAYS, level, fn)
+            tot = p.base_earned + p.boost_earned
+            if name == 'always active':
+                base = tot
+            elif tot > base:
+                fails.append((level, name, tot, base))
+            active = sum(1 for d in range(DAYS) if fn(d))
+            print(f'{level:>6}{name:>20}{active:>8}{p.level:>8}{tot:>11.0f}'
+                  f'{p.boost_earned:>10.1f}{pct(p.boost_earned, p.base_earned):>8.2f}%')
+        print()
+    print('FAIL CHECK: any intermittent pattern ahead of always-active?')
+    print('  ' + ('FAIL ' + str(fails) if fails else 'PASS — always-active wins at every level'))
+
+    print('\nRelative boost by level (should now be LARGEST at low level):')
+    for level in (1, 8, 20, 40):
+        p = run(DAYS, level, lambda d: d % 7 < 5)
+        print(f'  L{level:<3} weekend player: {pct(p.boost_earned, p.base_earned):>5.2f}% bonus')
+
+if __name__ == '__main__':
+    pass4()
+
+def pass4b():
+    DAYS = 120
+    pats = [('always active',  lambda d: True),
+            ('5 on / 2 off',   lambda d: d % 7 < 5),
+            ('10 on / 10 off', lambda d: (d // 10) % 2 == 0),
+            ('14 off first',   lambda d: d >= 14),
+            ('30 off first',   lambda d: d >= 30)]
+    print(f'\n=== AUD-01b RE-RUN 4 — allowance scales with days away (cap {AWAY_CAP_DAYS}d) ===\n')
+    print(f'{"pattern":>18}{"active":>8}{"total XP":>11}{"bonus XP":>10}{"bonus %":>9}')
+    base = None; fails = []
+    for name, fn in pats:
+        p = run(DAYS, 8, fn)
+        tot = p.base_earned + p.boost_earned
+        if name == 'always active': base = tot
+        elif tot > base: fails.append((name, tot, base))
+        active = sum(1 for d in range(DAYS) if fn(d))
+        print(f'{name:>18}{active:>8}{tot:>11.0f}{p.boost_earned:>10.1f}'
+              f'{pct(p.boost_earned, p.base_earned):>8.2f}%')
+    print(f'\nFAIL CHECK: intermittent ahead of always-active? '
+          f'{"FAIL " + str(fails) if fails else "PASS"}')
+    print('\nDoes a long absence now beat a weekend?')
+    for days in (2, 5, 14, 30):
+        p = Profession('t', 8)
+        p.tick_idle(days, ACCRUAL_DAYS)
+        print(f'  {days:>2}d away -> allowance {p.allowance_cap:>6.1f} XP')
+
+if __name__ == '__main__':
+    pass4b()

@@ -425,16 +425,28 @@ function ShopScreen() {
 
   // Oct 27: purchases are live. One path (ZI.shopPurchase) checks the gate and the RMAT wallet, then grants.
   const [notice, setNotice] = React.useState(null);
+  React.useEffect(() => {
+    const timer = setInterval(rerender, 5000);
+    return () => clearInterval(timer);
+  }, []);
   const buy = (entry) => {
     const r = ZI.shopPurchase(entry);
     setNotice({ id: entry.id, ok: r.ok, text: r.ok ? r.text : r.reason });
+    rerender();
+  };
+  const [tradeNotice, setTradeNotice] = React.useState(null);
+  const jesterVisit = ZI.jesterTradeVisit();
+  const jesterOffers = ZI.jesterTradeOffers();
+  const trade = (offer) => {
+    const r = ZI.jesterTrade(offer.id);
+    setTradeNotice({ id:offer.id, ok:r.ok, text:r.ok ? r.text : r.reason });
     rerender();
   };
   const wallet = ZI.getRmatHoldings();
 
   const ProgressLine = ({ c, label, color }) => (
     <div style={{ marginBottom:3 }}>
-      <div style={{ display:'flex', justifyContent:'space-between', fontFamily:'var(--font-mono)', fontSize:8, color:'var(--text3)', marginBottom:1 }}>
+      <div style={{ display:'flex', justifyContent:'space-between', fontFamily:'var(--font-mono)', fontSize:9, color:'var(--text3)', marginBottom:2 }}>
         <span>{label}</span><span>{c.cur.toLocaleString?.() ?? c.cur} / {c.req.toLocaleString?.() ?? c.req}</span>
       </div>
       <div style={{ height:4, background:'var(--bg4)', borderRadius:2 }}>
@@ -452,15 +464,15 @@ function ShopScreen() {
     const maxLvl = entry.grant?.maxLevel || 1;
     return (
       <div style={{
-        padding:'9px 11px', background:'var(--bg3)', border:'1px solid var(--border)',
-        borderLeft:`3px solid ${col}`, opacity: st === 'locked' ? 0.85 : 1,
+        padding:'11px 12px', background:`linear-gradient(110deg, ${col}12, var(--bg3) 42%)`, border:`1px solid ${col}66`,
+        borderLeft:`4px solid ${col}`, opacity: st === 'locked' ? 0.9 : 1,
       }}>
         <div style={{ display:'flex', alignItems:'center', gap:7, marginBottom:4 }}>
-          <span style={{ fontSize:15 }}>{entry.icon}</span>
-          <span style={{ fontFamily:'var(--font-body)', fontSize:13, color:col, flex:1 }}>{entry.name}</span>
-          <span className="tag" style={{ color:col, borderColor:col, background:col+'22' }}>{meta.label}</span>
+          <span style={{ fontSize:18, filter:'saturate(0.75)' }}>{entry.icon}</span>
+          <span style={{ fontFamily:'var(--font-body)', fontSize:15, fontWeight:700, color:col, flex:1, textShadow:`0 0 8px ${col}55` }}>{entry.name}</span>
+          <span className="tag" style={{ fontSize:10, color:col, borderColor:col, background:col+'22', letterSpacing:'0.05em' }}>{meta.label}</span>
         </div>
-        <div style={{ fontFamily:'var(--font-mono)', fontSize:9, color:'var(--text2)', marginBottom:7, lineHeight:1.5 }}>{entry.desc}</div>
+        <div style={{ fontFamily:'var(--font-mono)', fontSize:11, color:'var(--text2)', marginBottom:8, lineHeight:1.5 }}>{entry.desc}</div>
         {st === 'locked' && (
           <div style={{ marginBottom:6 }}>
             {prog.distance && <ProgressLine c={prog.distance} label="Wandering distance" color={col}/>}
@@ -475,17 +487,17 @@ function ShopScreen() {
             </span>
           ) : st === 'unlocked' ? (
             <>
-              <span data-shop-price={entry.id} style={{ fontFamily:'var(--font-mono)', fontSize:10, color: ZI.shopCanAfford(entry) ? 'var(--text2)' : 'var(--red2)' }}>
+            <span data-shop-price={entry.id} style={{ fontFamily:'var(--font-mono)', fontSize:11, color: ZI.shopCanAfford(entry) ? col : 'var(--red2)' }}>
                 {ZI.shopPriceText(entry)} {entry.repeatable && entry.grant?.maxLevel ? `· Lvl ${lvl}/${maxLvl}` : ''}
               </span>
               <button data-shop-buy={entry.id} onClick={() => buy(entry)} disabled={!ZI.shopCanAfford(entry)} title={ZI.shopCanAfford(entry) ? 'Buy with RMAT' : 'Not enough RMAT'} style={{
-                marginLeft:'auto', fontFamily:'var(--font-mono)', fontSize:10, padding:'3px 12px',
+                marginLeft:'auto', fontFamily:'var(--font-mono)', fontSize:12, fontWeight:'bold', padding:'5px 14px',
                 background: ZI.shopCanAfford(entry) ? 'var(--amber)' : 'var(--bg4)', border:'1px solid ' + (ZI.shopCanAfford(entry) ? 'var(--amber)' : 'var(--border)'),
                 color: ZI.shopCanAfford(entry) ? '#000' : 'var(--text3)', cursor: ZI.shopCanAfford(entry) ? 'pointer' : 'not-allowed',
               }}>Buy</button>
             </>
           ) : (
-            <span style={{ fontFamily:'var(--font-mono)', fontSize:9, color:'var(--text3)' }}>🔒 Locked — meet the gate to unlock{ZI.shopPrice(entry) ? ` · price ${ZI.shopPriceText(entry)}` : ''}</span>
+            <span style={{ fontFamily:'var(--font-mono)', fontSize:10, color:col }}>🔒 Locked — meet the gate to unlock{ZI.shopPrice(entry) ? ` · price ${ZI.shopPriceText(entry)}` : ''}</span>
           )}
         </div>
         {notice && notice.id === entry.id && <div data-shop-notice={notice.ok ? 'ok' : 'fail'} style={{ marginTop:6, fontFamily:'var(--font-mono)', fontSize:9, color: notice.ok ? 'var(--green)' : 'var(--red2)' }}>{notice.ok ? '✓ ' : '✕ '}{notice.text}</div>}
@@ -523,6 +535,38 @@ function ShopScreen() {
             </div>
           );
         })}
+        <div className="panel" data-jester-trades style={{ padding:0, flexShrink:0, borderColor:jesterVisit.present ? 'var(--purple)' : 'var(--border)' }}>
+          <div className="panel-title" style={{ display:'flex', alignItems:'center', gap:8 }}>
+            <span>🎭 Mystic Jester · Bulk Requests</span>
+            <span style={{ marginLeft:'auto', fontFamily:'var(--font-mono)', fontSize:9, color:jesterVisit.present ? 'var(--green)' : 'var(--text3)' }}>
+              {jesterVisit.present ? `At the Shop · ${jesterVisit.daysRemaining} day${jesterVisit.daysRemaining === 1 ? '' : 's'} left` : `Away · returns in ${jesterVisit.daysRemaining} day${jesterVisit.daysRemaining === 1 ? '' : 's'}`}
+            </span>
+          </div>
+          <div style={{ padding:8, display:'grid', gridTemplateColumns:'repeat(auto-fill, minmax(260px,1fr))', gap:6 }}>
+            {jesterOffers.map(offer => {
+              const item = ZI.getGearItem(offer.itemId), canTrade = jesterVisit.present && offer.lotsRemaining > 0 && offer.stashCount >= offer.qty;
+              const rewardText = Object.entries(offer.reward).map(([tier, qty]) => `${qty} ${tier} RMAT`).join(' + ');
+              return <div key={offer.id} style={{ padding:'9px 11px', background:'var(--bg3)', border:'1px solid var(--border)' }}>
+                <div style={{ display:'flex', alignItems:'center', gap:7, marginBottom:4 }}>
+                  <span style={{ fontSize:15 }}>{item?.icon || '◈'}</span>
+                  <span style={{ fontFamily:'var(--font-body)', fontSize:13, color:'var(--text)', flex:1 }}>{item?.name || offer.itemId}</span>
+                  <span className="tag" style={{ color:'var(--purple)', borderColor:'var(--purple)', background:'rgba(168,85,247,0.12)' }}>Bulk</span>
+                </div>
+                <div style={{ fontFamily:'var(--font-mono)', fontSize:9, color:'var(--text2)', marginBottom:7, lineHeight:1.5 }}>
+                  Wants {offer.qty} · You have {offer.stashCount} in Stockpile · Pays {rewardText}<br/>{offer.note}
+                </div>
+                <div style={{ display:'flex', alignItems:'center', gap:8 }}>
+                  <span style={{ fontFamily:'var(--font-mono)', fontSize:9, color:offer.lotsRemaining ? 'var(--text3)' : 'var(--green)' }}>
+                    {offer.lotsRemaining ? `${offer.lotsRemaining} lot${offer.lotsRemaining === 1 ? '' : 's'} left this visit` : 'Order filled this visit'}
+                  </span>
+                  <button onClick={() => trade(offer)} disabled={!canTrade} title={!jesterVisit.present ? 'The Jester is away from the Shop' : (offer.stashCount < offer.qty ? `Need ${offer.qty} in Stockpile` : 'Trade one bulk lot')} style={{ marginLeft:'auto', fontFamily:'var(--font-mono)', fontSize:10, padding:'3px 12px', background:canTrade ? 'var(--purple)' : 'var(--bg4)', border:'1px solid ' + (canTrade ? 'var(--purple)' : 'var(--border)'), color:canTrade ? '#fff' : 'var(--text3)', cursor:canTrade ? 'pointer' : 'not-allowed' }}>Trade</button>
+                </div>
+                {tradeNotice && tradeNotice.id === offer.id && <div style={{ marginTop:6, fontFamily:'var(--font-mono)', fontSize:9, color:tradeNotice.ok ? 'var(--green)' : 'var(--red2)' }}>{tradeNotice.ok ? '✓ ' : '✕ '}{tradeNotice.text}</div>}
+              </div>;
+            })}
+          </div>
+          <div style={{ padding:'0 10px 8px', fontFamily:'var(--font-mono)', fontSize:8, color:'var(--text3)' }}>Trades use stored Stockpile items only. Equipped, carried, and story items are never included.</div>
+        </div>
         <div style={{ fontFamily:'var(--font-mono)', fontSize:8, color:'var(--text3)', textAlign:'center', padding:4 }}>
           Prices are in RMAT. They are starting values for the economy check (the circuit toggle's 10 T2 is decided).
         </div>

@@ -19,7 +19,7 @@ const mkEnv = (store0) => {
   return { ZI: fw.ZI, store };
 };
 const RK = { F:0, E:1, D:2, C:3, B:4, A:5, S:6, BOSS:7 };
-const lapFor = (rank) => (rank + 1) * 1.5 - 1e-9;           // a lap whose pool is exactly tiers 0..rank
+const lapFor = (rank) => (rank + 1) * Z.TIER_LAP_DIVISOR - 1e-9;   // a lap whose pool is exactly tiers 0..rank (TIER-01: tied to the divisor)
 const forcePick = (Z, id) => { const rec = Z.BESTIARY.find(b => b.id === id), rank = RK[rec.tier], pool = Z.BESTIARY.filter(b => (RK[b.tier] ?? 0) <= rank), i = pool.indexOf(rec);
   return Z._bgZombie(lapFor(rank), () => (i + 0.5) / pool.length); }; // an rng that lands on that record
 const codexMode = (Z) => Z.WANDER_SIM_TABLE.codexFromWandering === false ? 'A' : Z.WANDER_SIM_TABLE.codexFromWandering === true ? 'B' : 'unset';

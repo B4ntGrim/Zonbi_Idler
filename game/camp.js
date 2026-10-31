@@ -37,6 +37,9 @@ ZI.unassignJob = function(survivorId) {
 // Award a job's idle XP for `hours` (profession full, attr × ratio) via the bus.
 ZI.emitScheduleTick = function(jobId, hours, remainder) {
   const job = ZI.getJob(jobId); if (!job || hours <= 0) return;
+  const logisticsOutput = Math.min(0.1225, ZI.professionBonus ? ZI.professionBonus('logistics', 0.0025) : 0);
+  const outputMult = (1 + logisticsOutput) * (1 + logisticsOutput)
+    * (jobId === 'farm' ? 1 + Math.min(0.1225, ZI.professionBonus ? ZI.professionBonus('foraging', 0.0025) : 0) : 1);
   // Retain sub-point XP between live ticks. Rounding each one-second grant used to
   // make the total depend on how often the page settled the same elapsed time.
   const grant = (track, amount) => {
@@ -45,8 +48,8 @@ ZI.emitScheduleTick = function(jobId, hours, remainder) {
     remainder[track] = total - whole;
     if (whole > 0) ZI.awardXp(track, whole, { action:'schedule.tick', jobId });
   };
-  grant(job.profession, job.xpPerHour * hours);
-  if (job.attr) grant(job.attr, job.xpPerHour * hours * (job.attrRatio || 0.4));
+  grant(job.profession, job.xpPerHour * hours * outputMult);
+  if (job.attr) grant(job.attr, job.xpPerHour * hours * (job.attrRatio || 0.4) * outputMult);
 };
 // Offline catch-up: settle each assignment's elapsed time in game hours (capped). 1 game hour = ZI.REAL_MS_PER_GAME_HOUR.
 ZI.settleSchedule = function(window) {
@@ -143,7 +146,11 @@ ZI.structureNextCost = function(id) {
   const st = ZI.getStructure(id); if (!st) return null;
   const lvl = ZI.structureLevel(id);
   if (lvl >= st.maxLevel) return null;
-  return st.build[lvl] || null;
+  const cost = st.build[lvl]; if (!cost) return null;
+  const efficiency = Math.min(0.1225, ZI.professionBonus ? ZI.professionBonus('engineering', 0.0025) : 0);
+  if (!efficiency) return cost;
+  const materials = Object.fromEntries(Object.entries(cost.materials || {}).map(([k, q]) => [k, Math.max(1, Math.ceil(q * (1 - efficiency)))]));
+  return Object.assign({}, cost, { materials });
 };
 ZI.canAffordStructure = function(id) {
   const cost = ZI.structureNextCost(id); if (!cost) return false;
@@ -180,11 +187,16 @@ ZI.buildStructure = function(id) {
 ZI.structureEffect = function(id, key) {
   const st = ZI.getStructure(id); const lvl = ZI.structureLevel(id);
   if (!st || !lvl || !st.effectPerLevel || st.effectPerLevel[key] == null) return 0;
-  return st.effectPerLevel[key] * lvl;
+  const base = st.effectPerLevel[key] * lvl;
+  if (id === 'farm' && key === 'foodOutput') return Math.round(base * (1 + Math.min(0.1225, ZI.professionBonus ? ZI.professionBonus('foraging', 0.0025) : 0)));
+  return base;
 };
 ZI.recyclerOpSpeedBonus = function() { return ZI.structureEffect('recycler', 'opSpeed'); };
 ZI.rosterCapacity = function() { return 4 + ZI.structureEffect('barracks', 'rosterCapacity'); };
-ZI.campDefenseRating = function() { return ZI.structureEffect('watchtower', 'defenseRating'); };
+ZI.campDefenseRating = function() {
+  const base = ZI.structureEffect('watchtower', 'defenseRating');
+  return Math.round(base * (1 + Math.min(0.1225, ZI.professionBonus ? ZI.professionBonus('engineering', 0.0025) : 0)));
+};
 
 // ─── CAMP LEADER (fixed player avatar) ───────────────────────────────────────
 ZI.LEADER_KEY = 'zi_leader';
@@ -282,7 +294,7 @@ ZI.getSiegeSave = function() {
 };
 ZI.saveSiegeSave = function(s) { try { localStorage.setItem(ZI.SIEGE_KEY, JSON.stringify(s)); } catch (e) {} };
 // Walls HP scales with the fortification structure level.
-ZI.wallMaxHp = function() { return 100 + ZI.structureLevel('walls') * 120; };
+ZI.wallMaxHp = function() { return Math.round((100 + ZI.structureLevel('walls') * 120) * (1 + Math.min(0.1225, ZI.professionBonus ? ZI.professionBonus('engineering', 0.0025) : 0))); };
 // Countdown to the next siege (threat pulls it sooner; a periodic floor keeps cadence).
 ZI.siegeCountdown = function(threatLevel) {
   const s = ZI.getSiegeSave();

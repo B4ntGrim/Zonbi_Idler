@@ -17,7 +17,7 @@
     restLossPerGameDay: 25 / 6,    // one tiredness tier per six game days (~2.4 real h; Sam, Oct 28: slower; audit value)
     napRest: 25, napGameHours: 2,   // nap at base: one tier back, costs 2 game hours (audit values)
     tierEdges: [75, 50, 25],       // ≥75 tier 0 · ≥50 tier 1 · ≥25 tier 2 · below tier 3
-    startNutrition: 70, startRest: 70,
+    startNutrition: 100, startRest: 70,
     foodNutrition: 25,             // audit: one food item = one game day of hunger (one tier)
     autoEatRequiresShop: true,     // Sam, Oct 28 (overrides FOOD-01 P6/P8 — see REPORT H6)
     autoEatShopId: 'qol_autoeat', autoEatBelow: 50,
@@ -193,15 +193,33 @@
 
   // ─── H4: the 10 stats add on top of the current survivor ────────────────────
   const origMaxHp = ZI.maxHp;
-  L._baseMaxHp = () => origMaxHp() + L.bonus('maxHp'); // no status mods here (avoids a loop through L.mods)
+  // ─── VIT-01 (Sam, Oct 31): Vitality and the max-HP runaway. Max HP has NO ceiling. ───
+  // R2: each Vitality point adds +2 max HP, uncapped.
+  // R3: the runaway opens only when the maxHp stat is at its ranks cap AND Vitality is at or above ZI.VIT01.gate.
+  // R4: each Vitality point past the gate adds +2 HP, and each one is worth 1.5% more than the one before.
+  // Vitality has no stored value in the game yet (attribute storage is STAT-03, not decided). vitalityPoints() reads
+  // ZI.survivalAttributePoints('V') when that exists; until then it is 0, so R2 and the runaway are dormant and max HP is unchanged.
+  // R6 (class gate) is not built: it needs the survivor's class, and Vitality is not stored yet.
+  ZI.VIT01 = { perPoint: 2, gate: 25, compoundPct: 1.5 };
+  ZI.vitalityHp = function (points, runawayOpen) {
+    const v = Math.max(0, Math.floor(Number(points) || 0)), C = ZI.VIT01;
+    if (!runawayOpen || v < C.gate) return v * C.perPoint;
+    const g = C.compoundPct / 100, n = v - C.gate;
+    // Point j past the gate (j = 1..n) gives perPoint × (1+g)^(j-1). Closed form of that sum: perPoint × ((1+g)^n − 1) / g.
+    return C.gate * C.perPoint + C.perPoint * (Math.pow(1 + g, n) - 1) / g;
+  };
+  L.vitalityPoints = () => (typeof ZI.survivalAttributePoints === 'function' ? Math.max(0, Number(ZI.survivalAttributePoints('V')) || 0) : 0);
+  L.vitalityHp = () => ZI.vitalityHp(L.vitalityPoints(), L.rank('maxHp') >= P.CONFIG.ranksToCap);
+  L._baseMaxHp = () => origMaxHp() + L.bonus('maxHp') + L.vitalityHp() + (ZI.professionBonus ? ZI.professionBonus('endurance', 0.4) : 0); // no status mods here (avoids a loop through L.mods)
   ZI.maxHp = function () {
     const m = L.mods();
-    return Math.max(1, Math.round((origMaxHp.apply(this, arguments) + L.bonus('maxHp')) * (1 + (m.maxHp || 0))));
+    const enduranceHp = ZI.professionBonus ? ZI.professionBonus('endurance', 0.4) : 0;
+    return Math.max(1, Math.round((origMaxHp.apply(this, arguments) + L.bonus('maxHp') + L.vitalityHp() + enduranceHp) * (1 + (m.maxHp || 0))));
   };
   // What the player sees (H4: values shown as they act on the survivor; never ranks).
   L.displayAt = function (key, r) {
     const d = P.statDef(key), v = P.statValue(key, r);
-    if (key === 'maxHp') return String(Math.round(origMaxHp() + v - d.start));
+    if (key === 'maxHp') return String(Math.round(origMaxHp() + v - d.start + L.vitalityHp() + (ZI.professionBonus ? ZI.professionBonus('endurance', 0.4) : 0)));
     if (key === 'hpRegen') return Math.round(v / d.start * 100) + '% regen';
     if (key === 'evasion' || key === 'critChance') return '+' + Math.round(v - d.start) + '%';
     return P.formatStat(key, v);
@@ -225,7 +243,9 @@
   const R = ZI.WANDER_REST_TABLE, baseRegen = R.restHpPerMinutePct;
   try {
     Object.defineProperty(R, 'restHpPerMinutePct', { configurable: true, enumerable: true,
-      get() { const m = L.mods(); return baseRegen * (L.value('hpRegen') / P.statDef('hpRegen').start) * Math.max(0.1, 1 + (m.hpRegen || 0)); } });
+      get() { const m = L.mods(); // MED-01 M10: the splint's regen burst multiplies the rest rate while it lasts.
+        const enduranceRecovery = Math.min(0.1225, ZI.professionBonus ? ZI.professionBonus('endurance', 0.0025) : 0);
+        return baseRegen * (L.value('hpRegen') / P.statDef('hpRegen').start) * Math.max(0.1, 1 + (m.hpRegen || 0)) * (1 + (ZI.medRegenBonus ? ZI.medRegenBonus() : 0)) * (1 + enduranceRecovery); } });
   } catch (e) {}
 
   // ─── Shop: Auto-Eat (H5; price and gate are PLACEHOLDERS) ───────────────────
