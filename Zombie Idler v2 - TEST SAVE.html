@@ -65,6 +65,7 @@
 <script src="game/bootstrap.js?v=20261025-clock-parity"></script>
 <script src="game/progression-live.js?v=20261029-proposals1"></script>
 <script src="game/character.js?v=20261030-look2"></script>
+<script src="game/activity-feed.js?v=20261031-companions1"></script>
 <script src="game/operations.js?v=20261029-duties1"></script>
 <script src="bestiary-data.js?v=20261029-charops1"></script>
 <script src="pixel-art.js?v=1791700100000"></script>
@@ -80,6 +81,7 @@
 <script type="text/babel" src="progression-ui.jsx?v=20261028-stat02c"></script>
 <script type="text/babel" src="character-sprite.jsx?v=20261030-look2"></script>
 <script type="text/babel" src="character-creation.jsx?v=20261030-look2"></script>
+<script type="text/babel" src="activity-bar.jsx?v=20261031-companions1"></script>
 <script type="text/babel" src="operations-ui.jsx?v=20261029-duties1"></script>
 <script type="text/babel" src="screens-v2.jsx?v=20261028-stat02"></script>
 <script type="text/babel" src="screens-v2b.jsx?v=20261027-shop1"></script>
@@ -746,11 +748,18 @@ function ResourceChip({ label, value, block }) {
 }
 
 // ─── SETTINGS (gear button in the top bar) ────────────────────────────────────
-function SettingsButton() {
+function SettingsButton({ above = false } = {}) {
   const [open, setOpen] = useState(false);
   const [st, setSt] = useState(() => ZI.getSettings());
   const set = (k, v) => { ZI.setSetting(k, v); setSt(ZI.getSettings()); };
   const OPTS = [
+    { k:'activityBar', label:'Activity bar', desc:'Show all gains at the bottom of the screen.' },
+    { k:'activityNumbers', label:'Exact gain amounts', desc:'Reveal numeric XP and resource gains.' },
+    { k:'activityProfession', label:'Profession XP', desc:'Show profession progress.' },
+    { k:'activityExperience', label:'Other experience', desc:'Show character experience.' },
+    { k:'activityResources', label:'Resources and items', desc:'Show supplies, materials and gear.' },
+    { k:'activityCompanionsOnly', label:'Companions only', desc:'Filter gains to companion sources.' },
+    { k:'activityCombine', label:'Combine repeated gains', desc:'Group matching consecutive notifications.' },
     { k:'damageNumbers', label:'Damage numbers', desc:'Show red damage numbers over the survivor and zombies in Wandering.' },
   ];
   return (
@@ -762,7 +771,7 @@ function SettingsButton() {
       {open && (
         <>
           <div onClick={() => setOpen(false)} style={{ position:'fixed', inset:0, zIndex:190 }}/>
-          <div className="panel" style={{ position:'absolute', top:36, left:0, zIndex:200, width:280, padding:12, background:'var(--bg2)', borderColor:'var(--amber)', boxShadow:'0 8px 24px rgba(0,0,0,0.6)' }}>
+          <div className="panel" style={{ position:'absolute', top:above ? 'auto' : 36, bottom:above ? 36 : 'auto', right:above ? 0 : 'auto', left:above ? 'auto' : 0, maxHeight:'70vh', overflowY:'auto', zIndex:200, width:280, padding:12, background:'var(--bg2)', borderColor:'var(--amber)', boxShadow:'0 8px 24px rgba(0,0,0,0.6)' }}>
             <div style={{ fontFamily:'var(--font-mono)', fontSize:11, color:'var(--amber)', letterSpacing:'0.12em', marginBottom:8 }}>SETTINGS</div>
             {OPTS.map(o => (
               <label key={o.k} style={{ display:'flex', gap:10, alignItems:'flex-start', cursor:'pointer', padding:'6px 0' }}>
@@ -4500,6 +4509,8 @@ function App() {
       <div style={{flex:1, overflow:'hidden', position:'relative'}}>
         {renderScreen()}
       </div>
+
+      {screen !== 'mode-select' && screen !== 'save-files' && window.ActivityBar && <ActivityBar/>}
 
       {TweaksPanel && (
         <TweaksPanel>
