@@ -75,6 +75,7 @@ if (problems.length) { console.error('build-web: ' + problems.join('; ')); proce
 // 3. Runtime files.
 fs.readdirSync(ROOT, { withFileTypes: true }).forEach(e => { if (e.isFile() && /\.(js|css)$/.test(e.name) && !SKIP(e.name)) copyFile(e.name); });
 COPY_DIRS.forEach(d => fs.existsSync(path.join(ROOT, d)) && walk(d));
+copyFile('companion-prototype.html');
 write('index.html', html); write(PAGE, html); write('.nojekyll', '');
 // 4. Remove files left from an earlier build whose source is gone (never touches .git).
 const prune = (rel) => fs.readdirSync(path.join(OUT, rel), { withFileTypes: true }).forEach(e => {
